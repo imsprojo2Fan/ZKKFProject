@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>即刻简历</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- Favicon -->
+    <link rel="icon" type="image/ico" href="../../static/img/logo/logoPic.png">
+    <link rel="stylesheet" href="../../static/css/root.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/awesome-bootstrap-checkbox/v0.2.3/awesome-bootstrap-checkbox.min.css">
+    <link href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
+    <script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>
+    <style>
+        .form-group{
+            line-height: 30px;
+            margin-bottom: 10px;
+        }
+        .form-group label{
+            font-weight: 600;
+            height: 30px;
+            line-height: 30px;
+        }
+        .form-group div{
+            margin-top: 3px;
+        }
+        .form-group div>span{
+            font-size: 15px;
+        }
+
+        .modal-content hr{
+            margin-top: 0px;
+            margin-bottom: 0px;
+            margin-left: 60px;
+        }
+
+        .item{
+            padding: 13px 0px;
+            height: fit-content;
+            border-bottom: 0px solid #eee;
+            border-top: 0px solid #eee;
+            background: #F3F5F8;
+            box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .item:hover{
+            background: rgba(97, 149, 255, 0.6);
+            color: #ffffff;
+        }
+
+        /* 2. Small devices (tablets, 767px and Down) */
+        @media (max-width: 767px) {
+            .form-group div{
+                margin-top: -10px;
+            }
+            .hr{
+                margin-left: 0px;
+            }
+            .item div{
+                margin-top: 5px;
+            }
+            .item .col-sm-2{
+                text-align: right;
+            }
+        }
+
+    </style>
+</head>
+<body style="padding-bottom: 15%;">
+<div id="loading" class="loading-wrap" style="display: none;">
+    <div class="loader" >
+        <div class="la-ball-clip-rotate-multiple la-3x">
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loaderTxt">数据交互中...</div>
+    </div>
+</div>
+<input type="hidden" id="token" value="{{._xsrf}}">
+<div id="mainContent" class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">消息提醒</h3>
+        <hr>
+    </div>
+    <div class="panel-body" style="padding-bottom: 6%;margin-top: -25px;">
+        <div class="row" id="itemWrap">
+            <div class="col-md-12 item" onclick="detail()">
+                <div class="col-sm-3">才华有限公司</div>
+                <div class="col-sm-4">简略消息</div>
+                <div class="col-sm-3">
+                    <div>2018-11-11 18:18:18</div>
+                </div>
+                <div class="col-sm-2">查看详情&nbsp;&nbsp;<i class="fa fa-angle-right " aria-hidden="true"></i></div>
+            </div>
+            <div class="col-md-12 item" >
+                <div class="col-sm-3">才华有限公司</div>
+                <div class="col-sm-4">简略消息</div>
+                <div class="col-sm-3">
+                    <div>2018-11-11 18:18:18</div>
+                </div>
+                <div class="col-sm-2">查看详情&nbsp;&nbsp;<i class="fa fa-angle-right " aria-hidden="true"></i></div>
+            </div>
+            <div class="col-md-12 item" >
+                <div class="col-sm-3">才华有限公司</div>
+                <div class="col-sm-4">简略消息</div>
+                <div class="col-sm-3">
+                    <div>2018-11-11 18:18:18</div>
+                </div>
+                <div class="col-sm-2">查看详情&nbsp;&nbsp;<i class="fa fa-angle-right " aria-hidden="true"></i></div>
+            </div>
+            <div class="col-md-12 item" >
+                <div class="col-sm-3">才华有限公司</div>
+                <div class="col-sm-4">简略消息</div>
+                <div class="col-sm-3">
+                    <div>2018-11-11 18:18:18</div>
+                </div>
+                <div class="col-sm-2">查看详情&nbsp;&nbsp;<i class="fa fa-angle-right " aria-hidden="true"></i></div>
+            </div>
+            <div class="col-md-12 item" >
+                <div class="col-sm-3">才华有限公司</div>
+                <div class="col-sm-4">简略消息</div>
+                <div class="col-sm-3">
+                    <div>2018-11-11 18:18:18</div>
+                </div>
+                <div class="col-sm-2">查看详情&nbsp;&nbsp;<i class="fa fa-angle-right " aria-hidden="true"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--模态框（Modal） -->
+<div class="modal fade" id="detailModal" style="overflow-y: auto;" tabindex="-1"  role="dialog" aria-labelledby="madeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" id="modalClose" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h3 style="font-weight: 700" class="modal-title" id="editModalLabel">
+                    消息详情<span id="detailTime" style="font-size: 13px;font-weight: 300;margin-left: 12px;">2018-11-11 18:18:18</span>
+                </h3>
+                <span class="form-label" id="modalTip"></span>
+            </div>
+            <div class="modal-body" style="position: relative;height: auto">
+                <form class="form-horizontal" autocomplete="off">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">公司名称<span class="red"></span></label>
+                        <div class="col-sm-8" >
+                            <div id="detailCompany">才华有限公司</div>
+                        </div>
+                    </div>
+                    <hr class="hr">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">对方称谓<span class="red"></span></label>
+                        <div class="col-sm-8" >
+                            <div id="detailName">才华有限公司</div>
+                        </div>
+                    </div>
+                    <hr class="hr">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">联系方式<span class="red"></span></label>
+                        <div class="col-sm-8" >
+                            <div id="detailContact">imsprojo2fan@foxmail.com</div>
+                        </div>
+                    </div>
+                    <hr class="hr">
+                    <div class="form-group" style="height: auto">
+                        <label class="col-sm-3 control-label form-label">留言信息<span class="red"></span></label>
+                        <div class="col-sm-8" >
+                            <div style="line-height: 25px;margin-top: 7px;" id="detailMessage">
+                                看了你的简历觉得我们可以更深入的交流我们的岗位详情,希望你能来我们公司面试,面试地址是...
+                                看了你的简历觉得我们可以更深入的交流我们的岗位详情,希望你能来我们公司面试,面试地址是...
+                                看了你的简历觉得我们可以更深入的交流我们的岗位详情,希望你能来我们公司面试,面试地址是...
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="text-align: center;margin-top: 15px;">
+                <button type="button" onclick="javascript:$('#modalClose').click();" class="btn btn-default">
+                    关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../../static/js/util.js"></script>
+<script>
+    var parentWin = window.parent;
+    var dataArr;
+    $(function () {
+        //$('#detailModal').modal("show");
+        $.post("/main/message/listAll",{_xsrf:$("#token").val()},function (r) {
+            $('#itemWrap').html("");
+            dataArr = r.data;
+            if(dataArr.length===0){
+                $('#itemWrap').html("<div style='text-align: center;margin-top: 25px;'><p>暂无消息</p></div>");
+            }
+            for(var i=0;i<dataArr.length;i++){
+                var obj = dataArr[i];
+                var message = obj.Message;
+                if(message&&message.length>15){
+                    message = message.substring(0,13)+"...";
+                }
+                if(!message){
+                    message = "暂未填写"
+                }
+
+                var unixTimestamp = new Date(obj.Created) ;
+                var commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
+
+                $('#itemWrap').append('<div class="col-md-12 item" onclick="detail('+i+')">\n' +
+                        '                <div class="col-sm-3">'+obj.Company+'</div>\n' +
+                        '                <div title="'+obj.Message+'" class="col-sm-4">'+message+'</div>\n' +
+                        '                <div class="col-sm-3">\n' +
+                        '                    <div>'+commonTime+'</div>\n' +
+                        '                </div>\n' +
+                        '                <div class="col-sm-2">查看详情&nbsp;&nbsp;<i class="fa fa-angle-right " aria-hidden="true"></i></div>\n' +
+                        '            </div>')
+            }
+        })
+    });
+    function detail(index) {
+        var obj = dataArr[index];
+        var company = obj.Company;
+        var name = obj.Name;
+        var contact = obj.Email;
+        var message = obj.Message;
+        var create = obj.Created;
+        $('#detailCompany').html(company);
+        $('#detailName').html(name);
+        $('#detailContact').html(contact);
+        $('#detailMessage').html(message)
+        var unixTimestamp = new Date(obj.Created) ;
+        var commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
+        $('#detailTime').html(commonTime);
+        $('#detailModal').modal("show");
+    }
+</script>
+</body>
+</html>

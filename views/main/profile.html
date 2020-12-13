@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../../static/assets/images/icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../static/assets/images/icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../static/assets/images/icon.png">
+    <link rel="stylesheet" href="../../static/css/root.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/awesome-bootstrap-checkbox/v0.2.3/awesome-bootstrap-checkbox.min.css">
+
+    <style>
+        html{
+            overflow: hidden;
+        }
+        .red{
+            color:red;
+        }
+        .help-block{
+            font-size: 12px;
+            color: #999999;
+        }
+        .sweet-alert{
+            margin-top: -325px!important;
+        }
+        /* 2. Small devices (tablets, 767px and Down) */
+        @media (max-width: 767px) {
+
+        }
+        #editCode{
+            width: 115px;
+            display: inline-block;
+            float: left;
+        }
+        #editCodeBtn{
+            margin-left: 35px;
+            float: left;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body style="padding-bottom: 15%;">
+<div id="loading" class="loading-wrap" style="display: none;">
+    <div class="loader" >
+        <div class="la-ball-clip-rotate-multiple la-3x">
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loaderTxt">数据交互中...</div>
+    </div>
+</div>
+<input type="hidden" id="token" value="{{._xsrf}}">
+<div id="mainContent" class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">个人设置</h3>
+        <hr>
+    </div>
+    <div class="panel-body" style="padding-bottom: 6%;margin-top: -25px;">
+        <div class="row" >
+            <div class="col-md-12" >
+                <form class="form-horizontal" autocomplete="off">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">账号<span class="red">*</span></label>
+                        <div class="col-sm-6">
+                            <input type="hidden" id="id">
+                            <input type="text" class="form-control" maxlength="30" style="ime-mode:disabled" id="account" placeholder="至少6个字符,将不可更改" >
+                            <span class="help-block text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">密码<span class="red">*</span></label>
+                        <div class="col-sm-6">
+                            <input type="password" class="form-control" onfocus="javascript:this.value = ''" maxlength="30" style="ime-mode:disabled" id="password" placeholder="至少6个字符" >
+                            <span class="help-block text-success"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">确认密码<span class="red">*</span></label>
+                        <div class="col-sm-6">
+                            <input type="password" class="form-control" maxlength="30" onfocus="javascript:this.value = ''" style="ime-mode:disabled" id="password2" placeholder="至少6个字符" >
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">邮箱地址<span class="red"></span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" maxlength="60"  id="email"  >
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="col-md-12">
+                <hr style="margin-top: 60px;">
+                <div class="col-sm-12" style="text-align: center;">
+                    <button id="submit" type="button" class="btn btn-success">提交更新</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--模态框（Modal） -->
+<div class="modal fade" id="emailModal" style="overflow-y: auto" tabindex="-1"  data-backdrop="static" role="dialog" aria-labelledby="madeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" id="modalClose" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h3 style="font-weight: 700" class="modal-title" id="editModalLabel">
+                    更新邮箱
+                </h3>
+                <span class="form-label" id="modalTip"></span>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" autocomplete="off">
+                    <div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label form-label">邮箱地址<span class="red"></span></label>
+                            <div class="col-sm-8" >
+                                <input type="text" onfocus="javascript:$('#modalTip').html('')" class="form-control" id="editEmail" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label form-label">验证码<span class="red"></span></label>
+                            <div class="col-sm-8">
+                                <input type="text" onfocus="javascript:$('#modalTip').html('')" class="form-control" maxlength="6" style="ime-mode:disabled;text-align: center" id="editCode" placeholder="验证码" >
+                                <button type="button" id="editCodeBtn" class="btn btn-default">获取验证码</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="editSubmit" class="btn btn-success">
+                    提交更新
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script src="../../static/js/jquery.min.js"></script>
+<script src="../../static/plugins/bootstrap/bootstrap.min.js"></script>
+<script src="../../static/plugins/bootstrap/bootstrap-select/bootstrap-select.min.js"></script>
+<script src="../../static/plugins/icheck/icheck.min.js"></script>
+<script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="../../static/js/util.js"></script>
+<script src="../../static/js/main/profile.js?v={{ .random}}"></script>
+</body>
+</html>

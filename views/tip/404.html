@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="description" content="">
+    <meta name="keywords" content="" />
+    <link rel="shortcut  icon" type="image/x-icon" href="../../static/assets/images/icon.png" media="screen"  />
+    <title>Page404</title>
+
+    <!-- ========== Css Files ========== -->
+    <link href="../../static/tip/err/err.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style type="text/css">
+        body{background: #F5F5F5;}
+        html{
+            overflow-x: hidden;
+        }
+        img{max-width:90% !important; height:auto !important;}
+    </style>
+    <script>
+        $(function () {
+            var path = window.location.pathname;
+            var pathArr = path.split("/");
+            if(pathArr[1]=="main"){
+                $('#btn').html("刷新当前页");
+                $('#btn').on("click",function () {
+                    location.reload();
+                });
+            }else{
+                $('#btn').html("返回首页");
+                $('#btn').on("click",function () {
+                    location.href = "/";
+                });
+            }
+        })
+    </script>
+</head>
+<body>
+
+<div class="error-pages">
+    <img id="img" src="../../static/tip/404.png" alt="404" class="img" >
+    <h1>Sorry but we couldn’t find this page</h1>
+    <h4>It seems that this page doesn’t exist or has been removed</h4>
+    {{/*<form>
+        <input type="text" class="form-control" placeholder="Search for Page">
+        <i class="fa fa-search"></i>
+    </form>*/}}
+
+    <div class="bottom-links">
+        <a href="javascript:void(0)" id="btn" class="btn btn-default"></a>
+    </div>
+
+</div>
+
+</body>
+</html>

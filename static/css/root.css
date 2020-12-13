@@ -1,0 +1,33 @@
+/* === Icons === */
+/* Font Awesome */
+/*@import url('fonts-awesome.min.css');*/
+@import url('../../static/css/font-awesome.min.css');
+/* ================================================
+Main Css
+================================================ */
+/* Bootstrap Main Css File (unedited) */
+@import url('../../static/plugins/bootstrap/bootstrap.min.css');
+@import url('../../static/back/assets/vendor/linearicons/style.css');
+@import url('../../static/back/assets/css/main.css');
+@import url('../../static/css/util.css');
+@import url('../../static/css/loader.css');
+/* ================================================
+Plugin Css
+================================================ */
+@import url('../plugins/bootstrap/bootstrap-checkbox/awesome-bootstrap-checkbox.css');
+/* Bootstrap Select */
+@import url('../../static/plugins/bootstrap/bootstrap-select/bootstrap-select.min.css');
+@import url('../../static/plugins/bootstrap/bootstrap-toggle/bootstrap-toggle.min.css');
+@import url('../../static/plugins/bootstrap/bootstrap-slider/bootstrap-slider.min.css');
+/* Sweet Alert */
+@import url('../../static/plugins/sweetalert/sweetalert.min.css');
+/* Bootstrap icheck */
+@import url('../plugins/icheck/skins/all.css');
+/* Bootstrap switch */
+@import url('../../static/plugins/bootstrap/bootstrap-switch/bootstrap-switch.min.css');
+@import url('../../static/plugins/bootstrap/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css');
+/* Data Tables */
+@import url('../../static/plugins/datatables/datatables.css');
+
+
+

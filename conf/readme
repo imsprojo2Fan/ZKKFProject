@@ -1,0 +1,20 @@
+
+1.安装beego
+go get github.com/astaxie/beego
+
+2.beego工具安装
+go get github.com/beego/bee
+
+3.数据库驱动
+go get github.com/go-sql-driver/mysql
+_ "github.com/go-sql-driver/mysql" // import your used driver
+
+4.安装 ORM
+go get github.com/astaxie/beego/orm
+
+5.程序初始化执行顺序
+入口main.go --> models.init() --> router.init() --> sysinit.init() --> main.init() --> main.go.main()
+
+6.id:wx3b7bf2440d8f7edf
+
+7.secret:57d1d23c42d010ae99a0aed121ddb8b4

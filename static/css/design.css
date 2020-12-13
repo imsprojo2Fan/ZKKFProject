@@ -1,0 +1,150 @@
+html{
+    overflow-y:hidden;
+    overflow-x: hidden;
+}
+body{
+    font-size: 14px;
+}
+.page-header {
+    padding-bottom: 0px;
+    margin: 40px 0 20px;
+    border-bottom: 0px solid #eee;
+}
+.mHead{
+    position: fixed;
+    top:0;
+    width: 100%;
+    z-index: 99;
+    background: #f5f5f5;
+}
+.mHead div{
+    padding-left: 15px;
+}
+.breadcrumb{
+    margin-bottom: 0;
+    font-size: 15px;
+}
+.content{
+    padding-top:50px;
+    padding-bottom: 35px;
+}
+.container-padding{
+    margin-top: -15px;
+}
+.panel .panel-body{
+    padding-top: 18px!important;
+}
+.h1, .h2, .h3, h1, h2, h3 {
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
+/*下拉框宽度设置*/
+.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: 140px;
+    height: 30px;
+}
+.red{
+    color: red;
+}
+.col-center-block {
+    float: none;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.modal-dialog{
+    /*margin-left:35%;*/
+}
+.modal-backdrop{
+    z-index: 0!important;
+}
+#tip{
+    color: red;
+    font-size: 12px;
+}
+
+.active{
+    color: #6195ff;
+    cursor: pointer;
+}
+
+.transparent_class {
+    filter:alpha(opacity=85);
+    -moz-opacity:0.85;
+    -khtml-opacity: 0.85;
+    opacity: 0.85;
+}
+.table.dataTable thead th, table.dataTable td{
+    text-align: center;
+    vertical-align: middle;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 5px;
+    line-height: 1.42857143;
+    vertical-align: middle;
+    border-top: 1px solid #ddd;
+}
+table.dataTable.no-footer {
+    border-bottom: 1px solid #ddd;
+}
+table.dataTable thead th, table.dataTable tfoot th {
+    font-size: 15px;
+}
+.dataTables_wrapper .dataTables_filter input{
+    height: 30px!important;
+}
+textarea {
+    padding: 10px 10px;
+    min-height: 60px;
+    max-height: 60px;
+    resize: vertical;
+}
+
+.form-control-static{
+    font-weight: bold;
+}
+.form-control-static span{
+    font-weight: normal;
+}
+
+.form-control{
+    height: 30px;
+}
+.form-group{
+    margin-bottom: 7px;
+}
+.form-group p{
+    margin: 0;
+}
+.col-sm-1 .bootstrap-select>.dropdown-toggle{
+    width: 70%;
+}
+.col-sm-1 .bootstrap-select .dropdown-menu{
+    min-width: 70%;
+}
+.col-sm-1 .random .bootstrap-select>.dropdown-toggle{
+
+}
+.col-sm-1 .dropdown .btn{
+    padding: 4px 10px;
+}
+.dropdown .btn{
+    padding: 4px 20px;
+}
+
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9{
+    padding-right: 0;
+}
+.btn-group-xs > .btn, .btn-xs {
+    padding: 3px 10px;
+    font-size: 12px;
+    margin-left: 3px;
+}
+.bootstrap-switch-id-redirectSwitch_edit{
+    height: 30px;
+}
+.bootstrap-switch .bootstrap-switch-handle-off, .bootstrap-switch .bootstrap-switch-handle-on, .bootstrap-switch .bootstrap-switch-label{
+    line-height: 18px;
+}
+
+
