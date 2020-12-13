@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
+	"strings"
 	"time"
 )
 
@@ -14,8 +14,8 @@ type MainController struct {
 	BaseController
 }
 
-func(this *MainController) Index()  {
-	session,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+func (this *MainController) Index() {
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	userInfo := session.Get("user")
 	this.Data["userInfo"] = userInfo
 	this.Data["account"] = session.Get("account")
@@ -30,22 +30,25 @@ func(this *MainController) Index()  {
 	this.TplName = "main/index.html"
 }
 
-func(this *MainController) Redirect()  {
+func (this *MainController) Redirect() {
 	redirect := this.Ctx.Input.Param(":redirect")
 	this.Data["_xsrf"] = this.XSRFToken()
 	this.Data["random"] = time.Now().Unix()
-	redirect = "main/"+redirect
+	redirect = "main/" + redirect
+	if !strings.Contains(redirect, ".html") {
+		redirect = redirect + ".html"
+	}
 	this.TplName = redirect
 }
 
-func(this *MainController) Alive()  {
-	this.jsonResult(http.StatusOK,1, "alive!", sysinit.SysInitTime)
+func (this *MainController) Alive() {
+	this.jsonResult(http.StatusOK, 1, "alive!", sysinit.SysInitTime)
 }
 
-func(this *MainController) Upload4Pic()  {
+func (this *MainController) Upload4Pic() {
 
-	f, _, _ := this.GetFile("file")                  //获取上传的文件
-	_dir := "../file4resume"
+	f, _, _ := this.GetFile("file") //获取上传的文件
+	_dir := "./file"
 	exist, err := utils.PathExists(_dir)
 	if err != nil {
 		fmt.Printf("get dir error![%v]\n", err)
@@ -64,16 +67,14 @@ func(this *MainController) Upload4Pic()  {
 			fmt.Printf("mkdir success!\n")
 		}
 	}
-	fileName := time.Now().Unix()
-	fileName_ := strconv.FormatInt(fileName,10)+".jpg"
-	path := _dir+"/"+fileName_          //文件目录
+	fileName := utils.RandomString(16) + ".jpg"
+	path := _dir + "/" + fileName       //文件目录
 	_ = f.Close()                       //关闭上传的文件，不然的话会出现临时文件不能清除的情况
 	err = this.SaveToFile("file", path) //存文件
 
-	if err!=nil{
-		this.jsonResult(http.StatusOK,-1, "上传文件失败!", nil)
-	}else{
-		this.jsonResult(http.StatusOK,1, "上传文件成功!", fileName_)
+	if err != nil {
+		this.jsonResult(http.StatusOK, -1, "上传文件失败!", nil)
+	} else {
+		this.jsonResult(http.StatusOK, 1, "上传文件成功!", fileName)
 	}
 }
-

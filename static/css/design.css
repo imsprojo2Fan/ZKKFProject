@@ -91,7 +91,7 @@ table.dataTable thead th, table.dataTable tfoot th {
     font-size: 15px;
 }
 .dataTables_wrapper .dataTables_filter input{
-    height: 30px!important;
+    height: 28px!important;
 }
 textarea {
     padding: 10px 10px;

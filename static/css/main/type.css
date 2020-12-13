@@ -1,12 +1,4 @@
 
-#imgWrap{
-    width: 75px;
-    height: 75px;
-    border: 1px solid #eee;
-    text-align: center;
-    line-height: 75px;
-    margin-bottom: 10px;
-}
 #imgWrap img{
     width: 25px;
 }

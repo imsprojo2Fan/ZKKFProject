@@ -1,5 +1,5 @@
 let myTable;
-
+let prefix = "/main/type";
 window.onresize = function() {
     let bodyHeight = window.innerHeight;
     console.log("bodyHeight:"+bodyHeight);
@@ -27,6 +27,7 @@ $(document).ready(function() {
             refresh();
         }
     });
+
     $('#tabHref02').on("click",function () {
         let isActive = $(this).attr("class");
         if(!isActive){
@@ -37,6 +38,14 @@ $(document).ready(function() {
             $('#tab1').fadeOut(200);
             $("#tab2").fadeIn(200);
         }
+    });
+
+    $('#uploadPic').on('click',function () {
+        openWindow("/main/uploadPic","中科科辅",1000,600);
+    });
+
+    $('#edit_uploadPic').on('click',function () {
+        openWindow("/main/uploadPic","中科科辅",1000,600);
     });
 
     //datatable setting
@@ -53,7 +62,7 @@ $(document).ready(function() {
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 30,
         ajax: {
-            url: '/main/type/list',
+            url: prefix+'/list',
             type: 'POST',
             data:{
                 _xsrf:$("#token", parent.document).val()
@@ -70,7 +79,7 @@ $(document).ready(function() {
                     return "<span title='"+data+"'>"+temp+"</span>"
                 } },
             { data: 'img',"render":function (data) {
-                let filePath = "/file/"+img;
+                let filePath = "/file/"+data;
                     return "<img width='30' src='"+filePath+"'>";
                 } },
             { data: 'updated',"render":function (data,type,row,meta) {
@@ -121,37 +130,13 @@ $(document).ready(function() {
     let rowData;
     $('#myTable').on("click",".btn-default",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
-        $('#detail_account').html(rowData.account);
-        if(rowData.actived==1){
-            $('#detail_actived').html("<span style='color:green'>正常</span>");
-        }else{
-            $('#detail_actived').html("<span style='color: red'>禁用</span>");
+        $('#detail_name').html(rowData.name);
+        $('#detail_img').html("<a target='_blank' href='/file/"+rowData.img+"'>"+rowData.img+"</a>");
+        let description = rowData.description;
+        if(!description){
+            description = "暂未填写";
         }
-
-        let str = "";
-        if(rowData.type==0){
-            str = "普通用户";
-        }else if(rowData.type==1){
-            str = "管理员";
-        }else if(rowData.type==2){
-            str = "高级管理员";
-        }else if(rowData.type==3){
-            str = "超级管理员";
-        }else{
-            str = "访客";
-        }
-        $('#detail_type').html(str);
-        let email = rowData.email;
-        if(!email){
-            email = "暂未填写";
-        }
-        $('#detail_email').html(email);
-        let remark = rowData.remark;
-        if(!remark){
-            remark = "暂未填写";
-        }
-        $('#detail_label').html(rowData.label);
-        $('#detail_remark').html(remark);
+        $('#detail_description').html(description);
         let created = rowData.created;
         let unixTimestamp = new Date(created) ;
         let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
@@ -170,16 +155,11 @@ $(document).ready(function() {
     });
     $('#myTable').on("click",".btn-info",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
-        $('#Id').val(rowData.id);
-        $('#account_edit').val(rowData.account);
-        $('#actived_edit').selectpicker('val',rowData.actived);
-        $("#actived_edit").selectpicker('refresh');
-        $("#type_edit").selectpicker('val',rowData.type);
-        $("#type_edit").selectpicker('refresh');
-        $('#password_edit').val(rowData.password);
-        $('#email_edit').val(rowData.email);
-        $('#label_edit').val(rowData.label);
-        $('#remark_edit').val(rowData.remark);
+        $('#id').val(rowData.id);
+        $('#edit_name').val(rowData.name);
+        $('#edit_picName').html(rowData.img);
+        $('#edit_picVal').val(rowData.img);
+        $('#edit_description').val(rowData.description);
         $('#tip').html("");
         $('#editModal').modal("show");
     });
@@ -206,38 +186,24 @@ $(document).ready(function() {
 } );
 
 function add(){
-    let account = $('#account').val().trim();
-    let actived = $('#actived').val();
-    let type = $('#type').val();
-    let password = $('#password').val().trim();
-    let email = $('#email').val().trim();
-    let remark = $('#remark').val().trim();
-    if (!account){
-        swal("系统提示",'账号不能为空!',"warning");
+    let name = $('#name').val().trim();
+    let description = $('#description').val().trim();
+    let img = $('#picVal').val();
+    if (!name){
+        swal("系统提示",'分组名称不能为空!',"warning");
         return;
     }
-    if(email){
-        if (!checkEmail(email)){
-            swal("系统提示",'邮箱格式不正确!',"warning");
-        }
-    }
-    if (!password){
-        swal("系统提示",'密码不能为空!',"warning");
-        return;
-    }
+
     $.ajax({
-        url : "/main/user/add",
+        url : prefix+"/add",
         type : "POST",
         dataType : "json",
         cache : false,
         data : {
             _xsrf:$("#token", parent.document).val(),
-            account:account,
-            actived:actived,
-            type:type,
-            password:password,
-            email:email,
-            remark:remark
+            name:name,
+            img:img,
+            description:description
         },
         beforeSend:function(){
             $('#loading').fadeIn(200);
@@ -257,35 +223,24 @@ function add(){
 }
 
 function edit(){
-    let account = $('#account_edit').val().trim();
-    let actived = $('#actived_edit').val();
-    let type = $('#type_edit').val();
-    let password = $('#password_edit').val().trim();
-    let email = $('#email_edit').val().trim();
-    let remark = $('#remark_edit').val().trim();
-    if (!password){
-        swal("系统提示",'密码不能为空!',"warning");
+    let name = $('#edit_name').val().trim();
+    let description = $('#edit_description').val().trim();
+    let img = $('#edit_picVal').val();
+    if (!name){
+        swal("系统提示",'分组名称不能为空!',"warning");
         return;
     }
-    if(email){
-        if (!checkEmail(email)){
-            swal("系统提示",'邮箱格式不正确!',"warning");
-        }
-    }
     $.ajax({
-        url : "/main/user/update",
+        url : prefix+"/update",
         type : "POST",
         dataType : "json",
         cache : false,
         data : {
             _xsrf:$("#token", parent.document).val(),
-            id:$('#Id').val(),
-            //account:account,
-            actived:actived,
-            type:type,
-            password:password,
-            email:email,
-            remark:remark
+            id:$('#id').val(),
+            name:name,
+            img:img,
+            description:description
         },
         beforeSend:function(){
             $('#loading').fadeIn(200);
@@ -308,7 +263,7 @@ function edit(){
 function del(id){
 
     $.ajax({
-        url : "/main/user/delete",
+        url : prefix+"/delete",
         type : "POST",
         dataType : "json",
         cache : false,
@@ -321,8 +276,10 @@ function del(id){
         },
         success : function(r) {
             if (r.code == 1) {
-                swal("系统提示",r.msg, "success");
-                refresh();
+                setTimeout(function () {
+                    swal("系统提示",r.msg, "success");
+                    refresh();
+                },100);
             }else{
                 swal("系统提示",r.msg, "error");
             }
@@ -337,8 +294,7 @@ function reset() {
     $(":input").each(function () {
         $(this).val("");
     });
-    $('#actived').val(1)
-    $('#actived').selectpicker('refresh');
+    $('#picName').html("");
     $("textarea").each(function () {
         $(this).val("");
     });
@@ -346,6 +302,13 @@ function reset() {
 
 function refresh() {
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
+}
+
+function openWindow(url,name,iWidth,iHeight) {
+    let iTop = (window.screen.availHeight-30-iHeight)/2;
+    let iLeft = (window.screen.availWidth-10-iWidth)/2;
+    let openWindow = window.open(url,name,'height='+iHeight+',innerHeight='+iHeight+',width='+iWidth+',innerWidth='+iWidth+',top='+iTop+',left='+iLeft+',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no');
+
 }
 
 function swalParent(title,msg,type) {

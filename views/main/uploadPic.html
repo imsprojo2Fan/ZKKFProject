@@ -2,8 +2,10 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/ico" href="../../static/img/logo/logoPic.png">
-    <title>即刻简历</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../static/assets/images/icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../static/assets/images/icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../static/assets/images/icon.png">
+    <title>中科科辅</title>
     <script src="https://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet" href="../../static/plugins/zyupload/skins/zyupload-1.0.0.min.css " type="text/css">
     <script type="text/javascript" src="../../static/plugins/zyupload/zyupload-1.0.0.js"></script>
@@ -42,9 +44,9 @@
                 //处理预览图只显示单张有效图片
                 allFiles.pop();
                 allFiles[0] = selectFiles[0];
-                var arr = $('.upload_append_list');
+                let arr = $('.upload_append_list');
                 if(arr.length>0){
-                    for(var i=0;i<arr.length;i++){
+                    for(let i=0;i<arr.length;i++){
                         $(arr[i]).remove();
                     }
                 }
@@ -55,7 +57,7 @@
             },
             onSuccess: function(file, response){          // 文件上传成功的回调方法
                 console.info(file.name);
-                var r = JSON.parse(response);
+                let r = JSON.parse(response);
                 window.opener.document.getElementById("uploadPic").innerText = "替换图片";
                 window.opener.document.getElementById("picName").innerText = r.data;
                 window.opener.document.getElementById("picVal").value = r.data;
@@ -69,7 +71,7 @@
             onFailure: function(file, response){          // 文件上传失败的回调方法
                 console.info("此文件上传失败：");
                 console.info(file.name);
-                var r = JSON.parse(response);
+                let r = JSON.parse(response);
                 window.opener.document.getElementById("uploadPic").innerText = "上传图片";
                 window.opener.document.getElementById("picName").innerText = "";
                 window.opener.document.getElementById("picVal").innerText = "";
