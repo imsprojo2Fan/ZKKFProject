@@ -20,9 +20,11 @@ type Device struct {
 	Feature	string `orm:"size(512)"` //设备功能
 	Range	string `orm:"size(512)"` //应用范围
 	Achievement string `orm:"size(512)"` //代表性成果
+	Disabled int //是否上线
 	Views       int     `orm:"size(16)"`
 	Reservation int     `orm:"size(16)"`//预约数
 	ReservationDone int     `orm:"size(16)"`//预约完成数
+	Remark string
 	Updated     time.Time `orm:"auto_now_add;type(datetime)"`
 	Created     time.Time `orm:"auto_now_add;Device(datetime)"`
 }
@@ -40,7 +42,7 @@ func (this *Device) Insert(Device *Device) error {
 
 func (this *Device) Update(obj *Device) error {
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "name","tid","source", "sketch", "img","parameter","feature","range","achievement","","updated")
+	_, err := o.Update(obj, "name","tid","source", "sketch", "img","parameter","feature","range","achievement","disabled","remark","updated")
 	return err
 }
 
