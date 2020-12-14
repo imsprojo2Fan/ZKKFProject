@@ -18,7 +18,7 @@ type UserController struct {
 
 func(this *UserController) ListOne() {
 	session,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uid := session.Get("id").(int64)
+	uid := session.Get("id").(int)
 	user := new(models.User)
 	user.Id = uid
 	user.Read(user)
@@ -127,7 +127,7 @@ func(this *UserController) Update() {
 
 	user := new(models.User)
 	dbUser := new(models.User)
-	dbUser.Id,_ = this.GetInt64("id")
+	dbUser.Id,_ = this.GetInt("id")
 	dbUser.Read(dbUser)//查询数据库的用户信息
 	dType:=this.GetString("type")
 	if dType==""{
@@ -137,7 +137,7 @@ func(this *UserController) Update() {
 		user.Type,_ = this.GetInt("type")
 		user.Actived,_ = this.GetInt("actived")
 	}
-	user.Id,_ = this.GetInt64("id")
+	user.Id,_ = this.GetInt("id")
 	user.Password = this.GetString("password")
 	if user.Password!=dbUser.Password{
 		key := beego.AppConfig.String("password::key")
@@ -170,7 +170,7 @@ func(this *UserController) Update() {
 
 func(this *UserController) Delete() {
 	obj := new(models.User)
-	obj.Id,_ = this.GetInt64("id")
+	obj.Id,_ = this.GetInt("id")
 	if obj.Id==0{
 		this.jsonResult(200,-1,"id不能为空！",nil)
 	}
@@ -206,8 +206,8 @@ func(this *UserController) Validate4mail() {
 		}
 	}
 	code := utils.RandomCode()
-	session.Set("email",email)
-	session.Set("code",code)
+	_ = session.Set("email", email)
+	_ = session.Set("code", code)
 	go SendMail4Validate(email,code)
 	this.jsonResult(200,1,"验证码已发送",nil)
 }
@@ -237,7 +237,7 @@ func(this *UserController) Mail4confirm() {
 		this.jsonResult(200,-1,"验证码错误!",nil)
 	}
 	user := new(models.User)
-	user.Id = session.Get("id").(int64)
+	user.Id = session.Get("id").(int)
 	user.Email = session.Get("email").(string)
 	user.Actived = 1
 	if !user.UpdateActived(user){

@@ -1,21 +1,19 @@
 package controllers
 
 import (
+	"ZkkfProject/models"
+	"ZkkfProject/utils"
+	"encoding/base64"
+	"fmt"
 	"github.com/astaxie/beego"
 	"net/http"
-	"ZkkfProject/models"
-	"fmt"
-	"ZkkfProject/utils"
-	"ZkkfProject/models/other"
 	"net/smtp"
 	"strings"
-	"encoding/base64"
 	"time"
-	"ZkkfProject/enums"
 )
 
 type LoginController struct {
-	beego.Controller
+	BaseController
 }
 
 func(this *LoginController) LoginIndex()  {
@@ -25,7 +23,7 @@ func(this *LoginController) LoginIndex()  {
 
 func(this *LoginController) Timeout()  {
 	session,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	session.Set("id",nil)
+	_ = session.Set("id", nil)
 	id:= session.Get("id")
 	fmt.Println("TimeOutId:",id)
 	if !this.IsAjax(){
@@ -51,40 +49,7 @@ func(this *LoginController) Validate()  {
 	key := beego.AppConfig.String("password::key")
 	salt := beego.AppConfig.String("password::salt")
 	if oType=="login"{
-		passKey := this.GetString("passKey")
-		if passKey!=""{//密钥登录
-			user.Account = passKey
-			if !user.Login(user){
-				this.jsonResult(http.StatusOK,-1, "登录密钥不正确!", nil)
-			}
-		}else{//普通登录
-			account := this.GetString("account")
-			password := this.GetString("password")
-			if account==""||password==""{
-				this.jsonResult(http.StatusOK,-1, "账号或密码不能为空!", nil)
-			}
-			user.Account = account
-			if !user.Login(user){
-				this.jsonResult(http.StatusOK,-1, "账号不存在!", nil)
-			}
-			result, err := utils.AesEncrypt([]byte(password+salt), []byte(key))
-			if err != nil {
-				panic(err)
-			}
-			resultStr := base64.StdEncoding.EncodeToString(result)
-			if user.Password != resultStr{
-				this.jsonResult(http.StatusOK,-1, "账号或密码不正确!", nil)
-			}
-		}
-		session.Set("user",user)
-		session.Set("account",user.Account)
-		session.Set("id",user.Id)
-		_ = session.Set("type", user.Type)
-		fmt.Println("Account:",user.Account)
-		fmt.Println("id:",session.Get("id"))
-		this.jsonResult(http.StatusOK,1, "账号验证登录成功!", user.Id)
-
-	}else if oType=="validate4made"{//已有账号使用简历模板
+		//普通登录
 		account := this.GetString("account")
 		password := this.GetString("password")
 		if account==""||password==""{
@@ -102,46 +67,16 @@ func(this *LoginController) Validate()  {
 		if user.Password != resultStr{
 			this.jsonResult(http.StatusOK,-1, "账号或密码不正确!", nil)
 		}
-		session.Set("uid4login",user.Uid)
-		session.Set("user",user)
-		session.Set("account",user.Account)
-		session.Set("id",user.Id)
-		session.Set("is2made",true)//设置登录成功即跳转到我的制作页面
+		_ = session.Set("user", user)
+		_ = session.Set("account", user.Account)
+		_ = session.Set("id", user.Id)
+		_ = session.Set("type", user.Type)
 		fmt.Println("Account:",user.Account)
-		//查询用户是否已填写过简历信息
-		info4resume := new(models.Info4Resume)
-		info4resume.Uid = user.Id
-		info4resume.ReadByUid(info4resume)
-		if info4resume.Id>0&&info4resume.Rid!=this.GetString("rid"){
-			//添加使用当前模板
-			info4resume.Id = info4resume.Id+1
-			info4resume.Rid = this.GetString("rid")
-			info4resume.Sid = utils.RandStringBytesMaskImprSrc(20)
-			info4resume.Insert(info4resume)
-			//添加当前用户操作记录
-			operate := new(models.Operate)
-			operate.Uid = user.Id
-			operate.Rid = this.GetString("rid")
-			operate.Type = 2
-			operate.Insert(operate)
-			this.jsonResult(http.StatusOK,1, "新建模板成功!", nil)
-		}else if info4resume.Rid==this.GetString("rid"){//已使用过当前模板则不再新增记录
-			this.jsonResult(http.StatusOK,2, "您已使用过当前模板!", nil)
-		}else{
-			this.jsonResult(http.StatusOK,3, "账号验证成功!", user.Id)
-		}
-
-	}else if oType=="loginByUid"{//无账号状态提交简历信息点击前往登录
-		uid := session.Get("uid4login")
-		if uid==""{
-			this.jsonResult(http.StatusOK,-1, "会话已过期!", nil)
-		}
-		session.Set("is2setting",true)//设置登录成功即跳转到个人设置页面
-		this.jsonResult(http.StatusOK,1, "验证成功!", nil)
-		//this.Ctx.Redirect(302, "/main")
+		fmt.Println("id:",session.Get("id"))
+		this.jsonResult(http.StatusOK,1, "账号验证登录成功!", user.Id)
 
 	}else if oType=="logout"{//退出登录
-		session.Set("id",nil)
+		_ = session.Set("id", nil)
 		//this.Redirect("/login",302)
 		this.jsonResult(http.StatusOK,1, "退出成功!", nil)
 	}
@@ -218,7 +153,7 @@ func(this *LoginController) Forget()  {
 		this.jsonResult(200,-1,"邮箱不存在!",nil)
 	}
 	code := utils.RandomCode()
-	session.Set(email,code)
+	_ = session.Set(email, code)
 	go SendMail4Forget(email,code)
 	this.jsonResult(200,1,"验证码已发送",nil)
 }
@@ -262,11 +197,11 @@ func SendMail4Forget(mail,code string)  {
 	nickname := "即刻简历"
 	user := "zooori@foxmail.com"
 	subject := "用户操作-重置密码"
-	content_type := "Content-Type: text/plain; charset=UTF-8"
+	contentType := "Content-Type: text/plain; charset=UTF-8"
 
 	body := "【账号邮箱】："+mail
 	msg := []byte("To: " + strings.Join(to, ",") + "\r\nFrom: " + nickname +
-		"<" + user + ">\r\nSubject: " + subject + "\r\n" + content_type + "\r\n\r\n" + body)
+		"<" + user + ">\r\nSubject: " + subject + "\r\n" + contentType + "\r\n\r\n" + body)
 	err := smtp.SendMail("smtp.qq.com:25", auth, user, to, msg)
 	if err != nil {
 		fmt.Printf("send mail error: %v", err)
@@ -276,8 +211,8 @@ func SendMail4Forget(mail,code string)  {
 		to[0] = mail
 		body = "邮箱重置密码操作-验证码:【"+code+"】\r\n验证码十分钟内有效\r\n如果非本人操作请忽略本条消息"
 		msg = []byte("To: " + strings.Join(to, ",") + "\r\nFrom: " + nickname +
-			"<" + user + ">\r\nSubject: " + subject + "\r\n" + content_type + "\r\n\r\n" + body)
-		smtp.SendMail("smtp.qq.com:25", auth, user, to, msg)
+			"<" + user + ">\r\nSubject: " + subject + "\r\n" + contentType + "\r\n\r\n" + body)
+		_ = smtp.SendMail("smtp.qq.com:25", auth, user, to, msg)
 	}
 }
 
@@ -307,11 +242,4 @@ func SendMail4Reset(mail string)  {
 	}
 }
 
-func (c *LoginController) jsonResult(status enums.JsonResultCode,code int, msg string, data interface{}) {
-	r := &other.JsonResult{status, code, msg,data}
-	c.Data["json"] = r
-	c.ServeJSON()
-	c.StopRun()
-	return
-}
 

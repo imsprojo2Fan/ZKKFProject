@@ -14,6 +14,7 @@ func init() {
 	orm.RegisterModel(new(Operate))
 	orm.RegisterModel(new(Message))
 	orm.RegisterModel(new(Type))
+	orm.RegisterModel(new(Device))
 }
 
 //下面是统一的表名管理
@@ -40,7 +41,7 @@ func Info4ResumeTBName() string {
 	return TableName("info4resume")
 }
 
-func OpetrateTBName() string {
+func OperateTBName() string {
 	return TableName("operate")
 }
 
@@ -50,4 +51,7 @@ func MessageTBName() string {
 
 func TypeTBName() string {
 	return TableName("t_type")
+}
+func DeviceTBName() string {
+	return TableName("t_device")
 }

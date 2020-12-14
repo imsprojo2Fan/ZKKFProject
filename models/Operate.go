@@ -17,7 +17,7 @@ type Operate struct {
 }
 
 func (a *Operate) TableName() string {
-	return OpetrateTBName()
+	return OperateTBName()
 }
 
 func(this *Operate) Insert(Operate *Operate) bool {

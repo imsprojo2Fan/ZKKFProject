@@ -12,10 +12,15 @@ $(function () {
 
     //菜单点击
     $(".J_menuItem").on('click',function(){
+        $('.J_menuItem').each(function () {
+            $(this).css("border-left","5px solid #2b333e");
+        });
+        $(this).css("border-left","5px solid #6195FF");
         let url = $(this).attr('href');
         $("#J_iframe").attr('src',url);
         return false;
     });
+    $('#home').click();
 
     //处理服务器重启未刷新页面
     let oldNum = 0;

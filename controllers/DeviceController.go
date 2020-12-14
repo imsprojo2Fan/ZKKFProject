@@ -7,16 +7,15 @@ import (
 	"time"
 )
 
-type TypeController struct {
+type DeviceController struct {
 	BaseController
 }
 
-func (this *TypeController) List() {
+func (this *DeviceController) List() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	uType := session.Get("type").(int)
 	GlobalDraw++
 	qMap := make(map[string]interface{})
-	var dataList []orm.Params
 	backMap := make(map[string]interface{})
 
 	pageNow, err2 := this.GetInt64("start")
@@ -47,13 +46,15 @@ func (this *TypeController) List() {
 		this.jsonResult(200, -1, "查询成功！", "无权限")
 	}
 
-	obj := new(models.Type)
+	obj := new(models.Device)
 	//获取总记录数
-	records := obj.Count(qMap)
+	var records int
+	var dataList []orm.Params
+	records,err = obj.Count(qMap)
 	backMap["draw"] = GlobalDraw
 	backMap["recordsTotal"] = records
 	backMap["recordsFiltered"] = records
-	dataList = obj.ListByPage(qMap)
+	dataList,err = obj.ListByPage(qMap)
 	backMap["data"] = dataList
 	if len(dataList) == 0 {
 		backMap["data"] = make([]int, 0)
@@ -65,7 +66,7 @@ func (this *TypeController) List() {
 	//this.jsonResult(200,0,"查询成功！",backMap)
 }
 
-func (this *TypeController) Add() {
+func (this *DeviceController) Add() {
 
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	uid := session.Get("id").(int)
@@ -88,7 +89,7 @@ func (this *TypeController) Add() {
 	}
 }
 
-func (this *TypeController) Update() {
+func (this *DeviceController) Update() {
 	id, _ := this.GetInt("id")
 	name := this.GetString("name")
 	description := this.GetString("description")
@@ -110,7 +111,7 @@ func (this *TypeController) Update() {
 	}
 }
 
-func (this *TypeController) Delete() {
+func (this *DeviceController) Delete() {
 	obj := new(models.Type)
 	obj.Id, _ = this.GetInt("id")
 	if obj.Id == 0 {
@@ -124,7 +125,7 @@ func (this *TypeController) Delete() {
 	}
 }
 
-func (this *TypeController) All() {
+func (this *DeviceController) All() {
 	obj := new(models.Type)
 	this.jsonResult(200, 1, "查询所有用户信息", obj.All())
 }

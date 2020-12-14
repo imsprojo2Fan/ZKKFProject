@@ -1,18 +1,15 @@
 package controllers
 
 import (
-	"ZkkfProject/enums"
 	"ZkkfProject/models"
-	"ZkkfProject/models/other"
 	"ZkkfProject/utils"
 	"fmt"
-	"github.com/astaxie/beego"
 	"net/http"
 	"time"
 )
 var GlobalDraw int
 type ResumeController struct {
-	beego.Controller
+	BaseController
 }
 
 func(this *ResumeController) Insert()  {
@@ -157,20 +154,4 @@ func(this *ResumeController) ListByPage4Index()  {
 	this.ServeJSON()
 	this.StopRun()*/
 	this.jsonResult(http.StatusOK,1,"查询成功",dataList)
-}
-
-func (c *ResumeController) jsonResult(status enums.JsonResultCode,code int, msg string, data interface{}) {
-	r := &other.JsonResult{status, code, msg,data}
-	c.Data["json"] = r
-	c.ServeJSON()
-	c.StopRun()
-	return
-}
-
-func (c *ResumeController) jsonDataResult(status enums.JsonResultCode,total int64, records int64, rows interface{}) {
-	r := &other.JsonDataResult{status,total, records, rows}
-	c.Data["json"] = r
-	c.ServeJSON()
-	c.StopRun()
-	return
 }

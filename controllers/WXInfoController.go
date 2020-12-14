@@ -1,14 +1,13 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
 	"ZkkfProject/models"
 	"ZkkfProject/utils"
 	"net/http"
 )
 
 type WXInfoController struct {
-	beego.Controller
+	BaseController
 }
 
 func (this *WXInfoController)Insert()  {

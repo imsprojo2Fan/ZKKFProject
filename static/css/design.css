@@ -96,7 +96,7 @@ table.dataTable thead th, table.dataTable tfoot th {
 textarea {
     padding: 10px 10px;
     min-height: 60px;
-    max-height: 60px;
+    max-height: 110px;
     resize: vertical;
 }
 

@@ -10,12 +10,12 @@ import (
 // Model Struct
 type Type struct {
 	Id          int
-	Uid         int64
+	Uid         int
 	Name        string `orm:"size(255)"`
 	Description string `orm:"size(1024)"`
 	Img         string
-	Likes       int64     `orm:"size(8)"`
-	Views       int64     `orm:"size(8)"`
+	Likes       int     `orm:"size(8)"`
+	Views       int     `orm:"size(8)"`
 	Updated     time.Time `orm:"auto_now_add;type(datetime)"`
 	Created     time.Time `orm:"auto_now_add;type(datetime)"`
 }

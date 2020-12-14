@@ -1,17 +1,14 @@
 package controllers
 
 import (
-	"ZkkfProject/enums"
-	"ZkkfProject/models/other"
 	"ZkkfProject/utils"
 	"fmt"
-	"github.com/astaxie/beego"
 	"net/smtp"
 	"strings"
 )
 
 type IndexController struct {
-	beego.Controller
+	BaseController
 }
 
 func (c *IndexController) Index() {
@@ -69,9 +66,9 @@ func SendMail(parameter1,parameter2 string)  {
 	auth := smtp.PlainAuth("", "zooori@foxmail.com", "fznqfopwakggibej", "smtp.qq.com")
 	to := []string{"imsprojo2fan@foxmail.com"}
 
-	nickname := "即刻简历"
+	nickname := "中科科辐"
 	user := "zooori@foxmail.com"
-	subject := "即刻简历-首页留言"
+	subject := "中科科辐-首页留言"
 	content_type := "Content-Type: text/plain; charset=UTF-8"
 
 	body := "联系方式:"+parameter1+"\r\n留言信息:"+parameter2
@@ -83,11 +80,4 @@ func SendMail(parameter1,parameter2 string)  {
 	}
 }
 
-func (c *IndexController) jsonResult(status enums.JsonResultCode,code int, msg string, data interface{}) {
-	r := &other.JsonResult{status, code, msg,data}
-	c.Data["json"] = r
-	c.ServeJSON()
-	c.StopRun()
-	return
-}
 
