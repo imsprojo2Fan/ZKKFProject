@@ -14,8 +14,12 @@ $(function () {
     $(".J_menuItem").on('click',function(){
         $('.J_menuItem').each(function () {
             $(this).css("border-left","5px solid #2b333e");
+            $(this).css("background","#2b333e");
+            $(this).css("color","#869fb1");
         });
         $(this).css("border-left","5px solid #6195FF");
+        $(this).css("background-color","#131e26");
+        $(this).css("color","5px solid #fff");
         let url = $(this).attr('href');
         $("#J_iframe").attr('src',url);
         return false;

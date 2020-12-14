@@ -1,5 +1,5 @@
 let myTable;
-let prefix = "/main/type";
+let prefix = "/main/device";
 window.onresize = function() {
     let bodyHeight = window.innerHeight;
     console.log("bodyHeight:"+bodyHeight);
@@ -18,7 +18,7 @@ $(document).ready(function() {
     $('#tabHref01').on("click",function () {
         let isActive = $(this).attr("class");
         if(!isActive){
-            return
+            return false;
         }else{
             $('#tabHref02').addClass("active");
             $(this).removeClass("active");
@@ -31,7 +31,7 @@ $(document).ready(function() {
     $('#tabHref02').on("click",function () {
         let isActive = $(this).attr("class");
         if(!isActive){
-            return
+            return false;
         }else{
             $('#tabHref01').addClass("active");
             $(this).removeClass("active");
@@ -57,8 +57,8 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,5 ] }],//指定哪些列不排序
-        "order": [[ 4, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,2,7 ] }],//指定哪些列不排序
+        "order": [[ 6, "desc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 30,
         ajax: {
@@ -70,7 +70,14 @@ $(document).ready(function() {
         },
         columns: [
             { data: 'name'},
-            { data: 'description',"render":function (data) {
+            { data: 'disabled',"render":function (data) {
+                    if(data==="1"){
+                        return "<span style='color:green'>上线</span>";
+                    }else{
+                        return "<span style='color:red'>下架</span>";
+                    }
+                }},
+            { data: 'sketch',"render":function (data) {
                     let temp = data;
                     if(temp.length>15){
                         temp = temp.substring(0,15)+"...";
@@ -78,9 +85,11 @@ $(document).ready(function() {
 
                     return "<span title='"+data+"'>"+temp+"</span>"
                 } },
-            { data: 'img',"render":function (data) {
-                let filePath = "/file/"+data;
-                    return "<img width='30' src='"+filePath+"'>";
+            { data: 'view',"render":function (data) {
+                    return data;
+                } },
+            { data: 'reservation',"render":function (data) {
+                    return data;
                 } },
             { data: 'updated',"render":function (data,type,row,meta) {
                     let unixTimestamp = new Date(data);
@@ -130,13 +139,46 @@ $(document).ready(function() {
     let rowData;
     $('#myTable').on("click",".btn-default",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
-        $('#detail_name').html(rowData.name);
-        $('#detail_img').html("<a target='_blank' href='/file/"+rowData.img+"'>"+rowData.img+"</a>");
-        let description = rowData.description;
-        if(!description){
-            description = "暂未填写";
+        $('#detailModal').find('.name').html(rowData.name);
+        $('#detailModal').find('.title').html(rowData.title);
+        let disabled = rowData.disabled;
+        if(disabled==="1"){
+            $('#detailModal').find('.disabled').html("<span style='color: green'>上线</span>");
+        }else{
+            $('#detailModal').find('.disabled').html("<span style='color: red'>下架</span>");
         }
-        $('#detail_description').html(description);
+        $('#detailModal').find('.source').html(rowData.source);
+        let temp = rowData.sketch;
+        if(temp.length>15){
+            temp = temp.substring(0,15)+"...";
+        }
+        $('#detailModal').find('.sketch').html("<span title='"+rowData.sketch+"'>"+temp+"</span>");
+        temp = rowData.parameter;
+        if(temp.length>15){
+            temp = temp.substring(0,15)+"...";
+        }
+        $('#detailModal').find('.parameter').html("<span title='"+rowData.parameter+"'>"+temp+"</span>");
+        temp = rowData.feature;
+        if(temp.length>15){
+            temp = temp.substring(0,15)+"...";
+        }
+        $('#detailModal').find('.feature').html("<span title='"+rowData.feature+"'>"+temp+"</span>");
+        temp = rowData.range;
+        if(temp.length>15){
+            temp = temp.substring(0,15)+"...";
+        }
+        $('#detailModal').find('.range').html("<span title='"+rowData.range+"'>"+temp+"</span>");
+        temp = rowData.achievement;
+        if(temp.length>15){
+            temp = temp.substring(0,15)+"...";
+        }
+        $('#detailModal').find('.achievement').html("<span title='"+rowData.achievement+"'>"+temp+"</span>");
+        temp = rowData.remark;
+        if(temp.length>15){
+            temp = temp.substring(0,15)+"...";
+        }
+        $('#detailModal').find('.remark').html("<span title='"+rowData.remark+"'>"+temp+"</span>");
+
         let created = rowData.created;
         let unixTimestamp = new Date(created) ;
         let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
@@ -156,10 +198,18 @@ $(document).ready(function() {
     $('#myTable').on("click",".btn-info",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#id').val(rowData.id);
-        $('#edit_name').val(rowData.name);
-        $('#edit_picName').html(rowData.img);
-        $('#edit_picVal').val(rowData.img);
-        $('#edit_description').val(rowData.description);
+        $('#editModal').find('.name').val(rowData.name);
+        $('#editModal').find('.disabled').selectpicker('val',rowData.disabled);
+        $('#editModal').find('.disabled').selectpicker('refresh');
+        $('#editModal').find('.title').val(rowData.title);
+        $('#editModal').find('.source').val(rowData.source);
+        $('#editModal').find('.sketch').val(rowData.sketch);
+        $('#editModal').find('.parameter').val(rowData.parameter);
+        $('#editModal').find('.feature').val(rowData.feature);
+        $('#editModal').find('.range').val(rowData.range);
+        $('#editModal').find('.achievement').val(rowData.achievement);
+        $('#editModal').find('.remark').val(rowData.remark);
+        //$('#edit_picVal').val(rowData.img);
         $('#tip').html("");
         $('#editModal').modal("show");
     });
@@ -186,31 +236,51 @@ $(document).ready(function() {
 } );
 
 function add(){
-    let name = $('#name').val().trim();
-    let description = $('#description').val().trim();
+    let name = $('.form1').find('.name').val().trim();
+    let disabled = $('.form1').find('.disabled').val().trim();
+    let title = $('.form1').find('.title').val().trim();
+    let source = $('.form1').find('.source').val().trim();
+    let sketch = $('.form1').find('.sketch').val().trim();
+    let parameter = $('.form1').find('.parameter').val().trim();
+    let feature = $('.form1').find('.feature').val().trim();
+    let range = $('.form1').find('.range').val().trim();
+    let achievement = $('.form1').find('.achievement').val().trim();
+    let remark = $('.form1').find('.remark').val().trim();
     let img = $('#picVal').val();
     if (!name){
-        swal("系统提示",'分组名称不能为空!',"warning");
+        swal("系统提示",'设备名称不能为空!',"warning");
         return;
     }
-
+    /*if (!img){
+        swal("系统提示",'请上传图片!',"warning");
+        return;
+    }*/
+    let obj = {};
+    let formArray = $("#form1").serializeArray();
+    $.each(formArray, function () {
+        if (obj[this.name] !== undefined) {
+            if (!obj[this.name].push) {
+                obj[this.name] = [obj[this.name]];
+            }
+            obj[this.name].push(this.value || '');
+        } else {
+            obj[this.name] = this.value || '';
+        }
+    });
+    obj["_xsrf"] = $("#token", parent.document).val();
+    console.info(obj);
     $.ajax({
         url : prefix+"/add",
         type : "POST",
         dataType : "json",
         cache : false,
-        data : {
-            _xsrf:$("#token", parent.document).val(),
-            name:name,
-            img:img,
-            description:description
-        },
+        data : obj,
         beforeSend:function(){
             $('#loading').fadeIn(200);
         },
         success : function(r) {
             let type = "error";
-            if (r.code == 1) {
+            if (r.code === 1) {
                 type = "success";
                 reset();
             }

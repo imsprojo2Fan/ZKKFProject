@@ -29,10 +29,19 @@ func (this *DeviceController) List() {
 	sortType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
+	if sortNum == "1" {
+		sortCol = "disabled"
+	}
 	if sortNum == "3" {
-		sortCol = "updated"
+		sortCol = "view"
 	}
 	if sortNum == "4" {
+		sortCol = "reservation"
+	}
+	if sortNum == "5" {
+		sortCol = "updated"
+	}
+	if sortNum == "6" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")

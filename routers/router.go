@@ -44,6 +44,13 @@ func init() {
 	beego.Router("/main/type/delete",&controllers.TypeController{},"POST:Delete")
 	beego.Router("/main/type/all",&controllers.TypeController{},"POST:All")
 
+	//设备管理
+	beego.Router("/main/device/list",&controllers.TypeController{},"POST:List")
+	beego.Router("/main/device/add",&controllers.TypeController{},"POST:Add")
+	beego.Router("/main/device/update",&controllers.TypeController{},"POST:Update")
+	beego.Router("/main/device/delete",&controllers.TypeController{},"POST:Delete")
+	beego.Router("/main/device/all",&controllers.TypeController{},"POST:All")
+
 	//消息管理
 	beego.Router("/main/message/listAll",&controllers.MessageController{},"POST:ListAll")
 	//定制错误页
