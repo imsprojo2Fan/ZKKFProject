@@ -2,16 +2,19 @@ package main
 
 import (
 	_ "ZkkfProject/routers"
+	"ZkkfProject/sysinit"
 	_ "ZkkfProject/sysinit"
 	"ZkkfProject/utils"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+	"github.com/astaxie/beego/orm"
 	"net/http"
 	"strings"
 )
 
 func init() {
-
+	//打印sql
+	orm.Debug = sysinit.SqlFlag
 	//是否开启 XSRF，默认为 false，不开启  防跨站
 	beego.BConfig.WebConfig.EnableXSRF = true
 	beego.BConfig.WebConfig.XSRFExpire = 3600 //过期时间，默认1小时
@@ -21,6 +24,7 @@ func init() {
 	beego.BConfig.EnableGzip = true
 
 	beego.SetStaticPath("/file", "./file")
+	beego.SetStaticPath("/img", "./file/img")
 
 	//透明static
 	beego.InsertFilter("/static", beego.BeforeRouter, TransparentStatic)

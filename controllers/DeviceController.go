@@ -29,19 +29,22 @@ func (this *DeviceController) List() {
 	sortType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "1" {
+	if sortNum == "0" {
+		sortCol = "tid"
+	}
+	if sortNum == "2" {
 		sortCol = "disabled"
 	}
-	if sortNum == "3" {
+	if sortNum == "4" {
 		sortCol = "view"
 	}
-	if sortNum == "4" {
+	if sortNum == "5" {
 		sortCol = "reservation"
 	}
-	if sortNum == "5" {
+	if sortNum == "6" {
 		sortCol = "updated"
 	}
-	if sortNum == "6" {
+	if sortNum == "7" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -80,16 +83,25 @@ func (this *DeviceController) Add() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	uid := session.Get("id").(int)
 	name := this.GetString("name")
-	description := this.GetString("description")
 	img := this.GetString("img")
 	if name == "" {
-		this.jsonResult(200, -1, "设备分组类目不能为空！", nil)
+		this.jsonResult(200, -1, "设备名称不能为空！", nil)
 	}
-	var obj models.Type
+	var obj models.Device
+	obj.Did = utils.RandomString(16)
 	obj.Uid = uid
+	obj.Tid,_ = this.GetInt("tid")
 	obj.Name = name
-	obj.Description = description
+	obj.Title = this.GetString("title")
+	obj.Source = this.GetString("source")
 	obj.Img = img
+	obj.Sketch = this.GetString("sketch")
+	obj.Parameter = this.GetString("parameter")
+	obj.Feature = this.GetString("feature")
+	obj.Range = this.GetString("range")
+	obj.Achievement = this.GetString("achievement")
+	obj.Disabled,_ = this.GetInt("disabled")
+	obj.Remark = this.GetString("remark")
 	err := obj.Insert(&obj)
 	if err == nil {
 		this.jsonResult(200, 1, "操作成功", nil)
@@ -99,18 +111,25 @@ func (this *DeviceController) Add() {
 }
 
 func (this *DeviceController) Update() {
-	id, _ := this.GetInt("id")
 	name := this.GetString("name")
-	description := this.GetString("description")
 	img := this.GetString("img")
 	if name == "" {
-		this.jsonResult(200, -1, "设备分组类目不能为空！", nil)
+		this.jsonResult(200, -1, "设备名称不能为空！", nil)
 	}
-	var obj models.Type
-	obj.Id = id
+	var obj models.Device
+	obj.Id,_ = this.GetInt("id")
+	obj.Tid,_ = this.GetInt("tid")
 	obj.Name = name
-	obj.Description = description
+	obj.Title = this.GetString("title")
+	obj.Source = this.GetString("source")
 	obj.Img = img
+	obj.Sketch = this.GetString("sketch")
+	obj.Parameter = this.GetString("parameter")
+	obj.Feature = this.GetString("feature")
+	obj.Range = this.GetString("range")
+	obj.Achievement = this.GetString("achievement")
+	obj.Disabled,_ = this.GetInt("disabled")
+	obj.Remark = this.GetString("remark")
 	obj.Updated = time.Now()
 	err := obj.Update(&obj)
 	if err == nil {
@@ -135,6 +154,7 @@ func (this *DeviceController) Delete() {
 }
 
 func (this *DeviceController) All() {
-	obj := new(models.Type)
-	this.jsonResult(200, 1, "查询所有用户信息", obj.All())
+	obj := new(models.Device)
+	res,_ := obj.All()
+	this.jsonResult(200, 1, "查询所有用户信息",res)
 }

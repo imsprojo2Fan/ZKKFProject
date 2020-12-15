@@ -2,13 +2,32 @@ package sysinit
 
 import (
 	"ZkkfProject/utils"
+	"github.com/astaxie/beego"
+	"runtime"
 	"time"
 )
 
 type Init struct {}
-var SysInitTime int64
+var (
+	IsDev bool
+	Host string
+	InitTime int64
+	IsLinux = false
+	SqlFlag = false
+)
+
 func init()  {
-	SysInitTime = time.Now().Unix()
+
+	IsDev,_ = beego.AppConfig.Bool("is_dev")
+	Host = beego.AppConfig.String("host")
+	SqlFlag,_ = beego.AppConfig.Bool("sql")
+
+	system := runtime.GOOS
+	if system!="windows"{
+		IsLinux = true
+	}
+
+	InitTime = time.Now().Unix()
 	//启用Session
 	//beego.BConfig.WebConfig.Session.SessionOn = true
 	utils.InitSession()

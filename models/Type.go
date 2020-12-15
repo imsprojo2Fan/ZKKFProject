@@ -62,12 +62,12 @@ func (this *Type) Read(Type *Type) bool {
 
 func (this *Type) SelectByUid(Type *Type) {
 	o := orm.NewOrm()
-	o.Read(Type, "uid")
+	_ = o.Read(Type, "uid")
 }
 
 func (this *Type) SelectByName(Type *Type) {
 	o := orm.NewOrm()
-	o.Read(Type, "name")
+	_ = o.Read(Type, "name")
 }
 
 func (this *Type) Count(qMap map[string]interface{}) int {
@@ -102,20 +102,20 @@ func (this *Type) ListByPage(qMap map[string]interface{}) []orm.Params {
 	pageSize := qMap["pageSize"].(int64)
 	pageSize_ := strconv.FormatInt(pageSize, 10)
 	sql = sql + " LIMIT " + pageNow_ + "," + pageSize_
-	o.Raw(sql).Values(&maps)
+	_, _ = o.Raw(sql).Values(&maps)
 	return maps
 }
 
 func (this *Type) ListByPage4Index(qMap map[string]interface{}, Types *[]Type) {
 	o := orm.NewOrm()
 	sql := "select * from t_type where 1=1"
-	o.Raw(sql).QueryRows(Types)
+	_, _ = o.Raw(sql).QueryRows(Types)
 }
 
 func (this *Type) All() []orm.Params {
 	var res []orm.Params
 	o := orm.NewOrm()
 	sql := "select * from t_type where 1=1"
-	o.Raw(sql).QueryRows(&res)
+	_, _ = o.Raw(sql).Values(&res)
 	return res
 }

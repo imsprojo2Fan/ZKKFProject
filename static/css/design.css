@@ -147,5 +147,13 @@ textarea {
 .bootstrap-switch .bootstrap-switch-handle-off, .bootstrap-switch .bootstrap-switch-handle-on, .bootstrap-switch .bootstrap-switch-label{
     line-height: 18px;
 }
+.submitWrap{
+    margin-top: 25px;
+}
+#tab2{
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 87vh;
+}
 
 

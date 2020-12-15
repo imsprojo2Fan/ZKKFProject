@@ -1,0 +1,31 @@
+#editor{
+    width: 100%;
+    height: 80vh;
+    border: 0px solid #eee;
+}
+.w-e-text-container{
+    height: 80vh!important;
+}
+#btnWrap{
+    width: 100%;
+    text-align: center;
+    margin-top: 50px;
+}
+.btn-group-lg > .btn, .btn-lg {
+    padding: 10px 100px;
+    background: #6195FF;
+    border: none;
+}
+.btn-group-lg > .btn, .btn-lg:hover {
+    color: #fff;
+    background: #6195FF;
+    border: none;
+    opacity: 0.75;
+}
+
+.btn-success.active.focus, .btn-success.active:focus, .btn-success.active:hover, .btn-success:active.focus, .btn-success:active:focus, .btn-success:active:hover, .open>.dropdown-toggle.btn-success.focus, .open>.dropdown-toggle.btn-success:focus, .open>.dropdown-toggle.btn-success:hover {
+    color: #fff;
+    background: #6195FF;
+    border: none;
+    opacity: 0.75;
+}

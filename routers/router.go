@@ -15,12 +15,14 @@ func init() {
 	beego.Router("/timeout", &controllers.LoginController{},"*:Timeout")
 	beego.Router("/forget", &controllers.LoginController{},"POST:Forget")
 	beego.Router("/reset", &controllers.LoginController{},"POST:Reset")
+	beego.Router("/main/upload", &controllers.FileController{},"POST:Upload")
+	//图片上传
+	beego.Router("/main/upload4pic",&controllers.FileController{},"POST:Upload4Pic")
 	//后台管理相关
     beego.Router("/main",&controllers.MainController{},"*:Index")
 	beego.Router("/main/?:redirect",&controllers.MainController{},"*:Redirect")
 	beego.Router("/main/alive",&controllers.MainController{},"*:Alive")
-	//图片上传
-	beego.Router("/main/upload4pic",&controllers.MainController{},"POST:Upload4Pic")
+
 	//模板信息管理
 	beego.Router("/main/resume/insert",&controllers.ResumeController{},"POST:Insert")
 	beego.Router("/main/resume/edit",&controllers.ResumeController{},"POST:Update")
@@ -45,11 +47,11 @@ func init() {
 	beego.Router("/main/type/all",&controllers.TypeController{},"POST:All")
 
 	//设备管理
-	beego.Router("/main/device/list",&controllers.TypeController{},"POST:List")
-	beego.Router("/main/device/add",&controllers.TypeController{},"POST:Add")
-	beego.Router("/main/device/update",&controllers.TypeController{},"POST:Update")
-	beego.Router("/main/device/delete",&controllers.TypeController{},"POST:Delete")
-	beego.Router("/main/device/all",&controllers.TypeController{},"POST:All")
+	beego.Router("/main/device/list",&controllers.DeviceController{},"POST:List")
+	beego.Router("/main/device/add",&controllers.DeviceController{},"POST:Add")
+	beego.Router("/main/device/update",&controllers.DeviceController{},"POST:Update")
+	beego.Router("/main/device/delete",&controllers.DeviceController{},"POST:Delete")
+	beego.Router("/main/device/all",&controllers.DeviceController{},"POST:All")
 
 	//消息管理
 	beego.Router("/main/message/listAll",&controllers.MessageController{},"POST:ListAll")

@@ -19,7 +19,7 @@ $(function () {
         });
         $(this).css("border-left","5px solid #6195FF");
         $(this).css("background-color","#131e26");
-        $(this).css("color","5px solid #fff");
+        $(this).css("color","#fff");
         let url = $(this).attr('href');
         $("#J_iframe").attr('src',url);
         return false;

@@ -126,5 +126,5 @@ func (this *TypeController) Delete() {
 
 func (this *TypeController) All() {
 	obj := new(models.Type)
-	this.jsonResult(200, 1, "查询所有用户信息", obj.All())
+	this.jsonResult(200, 1, "查询所有分组信息", obj.All())
 }

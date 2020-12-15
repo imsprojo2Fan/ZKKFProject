@@ -271,3 +271,33 @@ function hexToRgb(hex) {
         b: parseInt(result[3], 16)
     } : null;
 }
+
+function formUtil(formId) {
+    let obj = {};
+    let formArray = $("#"+formId).serializeArray();
+    $.each(formArray, function () {
+        if (obj[this.name] !== undefined) {
+            if (!obj[this.name].push) {
+                obj[this.name] = [obj[this.name]];
+            }
+            obj[this.name].push(this.value || '');
+        } else {
+            obj[this.name] = this.value || '';
+        }
+    });
+    return obj
+}
+
+function storageTest(storage){
+    if(!!storage){
+        try {
+            storage.setItem("key", "value");
+            storage.removeItem("key");
+            return true;
+        } catch(e){
+            return false;
+        }
+    }else{
+        return false;
+    }
+}

@@ -10,10 +10,12 @@ import (
 // Model Struct
 type Device struct {
 	Id	int
+	Did string //唯一识别
 	Uid	int //用户id
 	Tid int //分组id
 	Source string //来源
 	Name	string `orm:"size(255)"` //设备名称
+	Title string //副标题
 	Img	string //图片地址
 	Sketch 	string `orm:"size(1024)"` //设备简述
 	Parameter string `orm:"size(512)"` //设备参数
@@ -21,7 +23,7 @@ type Device struct {
 	Range	string `orm:"size(512)"` //应用范围
 	Achievement string `orm:"size(512)"` //代表性成果
 	Disabled int //是否上线
-	Views       int     `orm:"size(16)"`
+	View       int     `orm:"size(16)"`
 	Reservation int     `orm:"size(16)"`//预约数
 	ReservationDone int     `orm:"size(16)"`//预约完成数
 	Remark string
@@ -42,7 +44,7 @@ func (this *Device) Insert(Device *Device) error {
 
 func (this *Device) Update(obj *Device) error {
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "name","tid","source", "sketch", "img","parameter","feature","range","achievement","disabled","remark","updated")
+	_, err := o.Update(obj, "name","title","tid","source", "sketch", "img","parameter","feature","range","achievement","disabled","remark","updated")
 	return err
 }
 
@@ -75,10 +77,10 @@ func (this *Device) SelectByCol(col string,obj *Device) {
 func (this *Device) Count(qMap map[string]interface{}) (int,error) {
 
 	o := orm.NewOrm()
-	sql := "SELECT id from "+DeviceTBName()+" where 1=1 "
-	if qMap["searchKey"] != nil {
+	sql := "select d.*,t.name as typeName from t_device d,t_type t where d.tid=t.id "
+	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
-		sql = sql + " and (name like \"%" + key + "%\")"
+		sql += " and (d.name like \"%" + key + "%\")"
 	}
 	var arr []orm.Params
 	_, err := o.Raw(sql).Values(&arr)
@@ -88,16 +90,16 @@ func (this *Device) Count(qMap map[string]interface{}) (int,error) {
 func (this *Device) ListByPage(qMap map[string]interface{}) ([]orm.Params,error) {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	sql := "select * from "+DeviceTBName()+" where 1=1"
+	sql := "select d.*,t.name as typeName from t_device d,t_type t where d.tid=t.id "
 	if qMap["searchKey"] != "" {
-		sql = sql + " and name like '%" + qMap["searchKey"].(string) + "%'"
+		sql += " and d.name like '%" + qMap["searchKey"].(string) + "%'"
 	}
 	if qMap["sortCol"] != "" {
 		sortCol := qMap["sortCol"].(string)
 		sortType := qMap["sortType"].(string)
-		sql = sql + " order by " + sortCol + " " + sortType
+		sql += " order by d."+sortCol + " " + sortType
 	} else {
-		sql = sql + " order by id desc"
+		sql += " order by d.id desc"
 	}
 	pageNow := qMap["pageNow"].(int64)
 	pageNow_ := strconv.FormatInt(pageNow, 10)

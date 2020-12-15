@@ -41,11 +41,11 @@ $(document).ready(function() {
     });
 
     $('#uploadPic').on('click',function () {
-        openWindow("/main/uploadPic","中科科辅",1000,600);
+        openWindow("/main/uploadPic?btnId=uploadPic&domId=picName","中科科辅",1000,600);
     });
 
     $('#edit_uploadPic').on('click',function () {
-        openWindow("/main/uploadPic","中科科辅",1000,600);
+        openWindow("/main/uploadPic?btnId=edit_uploadPic&domId=edit_picName","中科科辅",1000,600);
     });
 
     //datatable setting
@@ -72,13 +72,19 @@ $(document).ready(function() {
             { data: 'name'},
             { data: 'description',"render":function (data) {
                     let temp = data;
-                    if(temp.length>15){
+                    if(!temp){
+                        temp = "-";
+                    }
+                    if(temp&&temp.length>15){
                         temp = temp.substring(0,15)+"...";
                     }
 
                     return "<span title='"+data+"'>"+temp+"</span>"
                 } },
             { data: 'img',"render":function (data) {
+                if(!data){
+                    return "-";
+                }
                 let filePath = "/file/"+data;
                     return "<img width='30' src='"+filePath+"'>";
                 } },
@@ -156,9 +162,11 @@ $(document).ready(function() {
     $('#myTable').on("click",".btn-info",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#id').val(rowData.id);
+        if(rowData.img){
+            $('#edit_uploadPic').html("替换图片");
+        }
         $('#edit_name').val(rowData.name);
         $('#edit_picName').html(rowData.img);
-        $('#edit_picVal').val(rowData.img);
         $('#edit_description').val(rowData.description);
         $('#tip').html("");
         $('#editModal').modal("show");
@@ -170,7 +178,7 @@ $(document).ready(function() {
 
         swal({
             title: "确定删除吗?",
-            text: '删除将无法恢复该信息!',
+            text: '当前分组的设备将全部被删除!',
             type: 'info',
             showCancelButton: true,
             confirmButtonColor: '#ff1200',
@@ -188,7 +196,7 @@ $(document).ready(function() {
 function add(){
     let name = $('#name').val().trim();
     let description = $('#description').val().trim();
-    let img = $('#picVal').val();
+    let img = $('#picName').html();
     if (!name){
         swal("系统提示",'分组名称不能为空!',"warning");
         return;
@@ -225,7 +233,7 @@ function add(){
 function edit(){
     let name = $('#edit_name').val().trim();
     let description = $('#edit_description').val().trim();
-    let img = $('#edit_picVal').val();
+    let img = $('#edit_picName').html();
     if (!name){
         swal("系统提示",'分组名称不能为空!',"warning");
         return;
@@ -294,6 +302,7 @@ function reset() {
     $(":input").each(function () {
         $(this).val("");
     });
+    $('#uploadPic').html("上传图片");
     $('#picName').html("");
     $("textarea").each(function () {
         $(this).val("");
