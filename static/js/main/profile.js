@@ -2,38 +2,38 @@ let parentWin = window.parent;
 let userInfo;
 $(function () {
     renderForm();
-    $('#submit').on("click",function () {
+    $('#update').on("click",function () {
         let account = $('#account').val().trim();
         let password1 = $('#password').val().trim();
         let password2 = $('#password2').val().trim();
         let email = $('#email').val().trim();
         if(!account){
-            tipTip($('#account').parent().find("span"),"请填写账号!");
+            tipTip("请填写账号!");
             return
         }
         if(!password1){
-            tipTip($('#password').parent().find("span"),"请填写密码!");
+            tipTip("密码不能为空!");
             return
         }
         if(!password2){
-            tipTip($('#password2').parent().find("span"),"请确认密码!");
+            tipTip("请确认密码!");
+            return
+        }
+        if(password1.length<6||password2.length<6){
+            tipTip("密码不能少于6个字符!");
             return
         }
         if(password1!==password2){
-            tipTip($('#password').parent().find("span"),"请确认两次密码一致!");
+            tipTip("请确认两次密码一致!");
             return
         }
-        if(password1==="********"){
-            password1 = userInfo.Password;
-        }
-
 
         /*if(!email){
             tipTip($('#email').parent().find("span"),"邮箱地址不能为空!");
             return
         }*/
         if(!email&&!checkEmail(email)){
-            tipTip($('#email').parent().find("span"),"邮箱地址格式不正确!");
+            tipTip("邮箱地址格式不正确!");
             return
         }
 
@@ -53,9 +53,9 @@ $(function () {
             success:function (r) {
                 if(r.code===1){
                     renderForm();
-                    parentWin.swalInfo("系统提示",r.msg,"success");
+                    swal("系统提示",r.msg,"success");
                 }else{
-                    parentWin.swalInfo("系统提示",r.msg,"error");
+                    swal("系统提示",r.msg,"error");
                 }
             },
             complete:function () {
@@ -163,8 +163,7 @@ function renderForm() {
         }
         let password = userInfo.Password;
         if(password){
-            $('#password').val(password);
-            $('#password2').val(password);
+            $('#dbPassword').val(password);
         }
         $('#name').val(userInfo.Name);
         let gender = userInfo.Gender;
@@ -197,6 +196,6 @@ function renderForm() {
         }*/
     });
 }
-function tipTip(dom,str) {
-    parentWin.swalInfo("系统提示",str,"error");
+function tipTip(str) {
+    swal("系统提示",str,"error");
 }

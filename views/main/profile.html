@@ -11,6 +11,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../../static/assets/images/icon.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../static/assets/images/icon.png">
     <link rel="stylesheet" href="../../static/css/root.css">
+    <link rel="stylesheet" href="../../static/css/design.css">
     <link rel="stylesheet" href="https://cdn.staticfile.org/awesome-bootstrap-checkbox/v0.2.3/awesome-bootstrap-checkbox.min.css">
 
     <style>
@@ -54,6 +55,7 @@
     </div>
 </div>
 <input type="hidden" id="token" value="{{._xsrf}}">
+<input type="hidden" id="dbPassword">
 <div id="mainContent" class="panel panel-headline">
     <div class="panel-heading">
         <h3 class="panel-title">个人设置</h3>
@@ -98,7 +100,7 @@
             <div class="col-md-12">
                 <hr style="margin-top: 60px;">
                 <div class="col-sm-12" style="text-align: center;">
-                    <button id="submit" type="button" class="btn btn-success">提交更新</button>
+                    <button id="update" class="btn btn-success">提交更新</button>
                 </div>
             </div>
         </div>

@@ -149,16 +149,17 @@ func(this *UserController) Update() {
 		}
 		user.Password = base64.StdEncoding.EncodeToString(result)
 	}
-	user.Account = dbUser.Account
-	user.Created = dbUser.Created
-	user.Updated = time.Now()
+
 	user.Email = this.GetString("email")
-	/*if user.Email!=""{
+	if user.Email!=""&&user.Email!=dbUser.Email{
 		user.SelectByCol(user,"email")//查询邮箱是否已被用
 		if user.Account!=""{
 			this.jsonResult(200,-1,"邮箱地址已存在!",nil)
 		}
-	}*/
+	}
+	user.Account = dbUser.Account
+	user.Created = dbUser.Created
+	user.Updated = time.Now()
 	user.Remark = this.GetString("remark")
 
 	if user.Update(user){
