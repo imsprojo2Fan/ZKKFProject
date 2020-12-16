@@ -50,9 +50,10 @@
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
-                                <th>账号</th>
+                                <th>登录账号</th>
                                 <th>使用状态</th>
                                 <th>账号类型</th>
+                                <th>手机号码</th>
                                 <th>邮箱地址</th>
                                 <th>更新时间</th>
                                 <th>创建时间</th>
@@ -71,17 +72,17 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label">用户性别</label>
                                     <div class="col-sm-6">
-                                        <select id="editGender" class="selectpicker" >
-                                            <option selected value="男">男</option>
-                                            <option value="女">女</option>
+                                        <select id="gender" class="selectpicker" >
                                             <option value="未知">未知</option>
+                                            <option value="男">男</option>
+                                            <option value="女">女</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label">使用状态</label>
                                     <div class="col-sm-6">
-                                        <select id="editActived" class="selectpicker" >
+                                        <select id="disabled" class="selectpicker" >
                                             <option selected value="1">可用</option>
                                             <option value="0">禁用</option>
                                         </select>
@@ -90,7 +91,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label">账号类型</label>
                                     <div class="col-sm-6">
-                                        <select id="editType" class="selectpicker" >
+                                        <select id="type" class="selectpicker" >
                                             <option selected value="0">普通用户</option>
                                             <option value="1">管理员</option>
                                             <option value="2">高级管理员</option>
@@ -101,8 +102,8 @@
                                 <div class="form-group">
                                     <label for="account_edit" class="col-sm-2 control-label form-label"><span class="red">*</span>登录账号</label>
                                     <div class="col-sm-6">
-                                        <input type="text" class="form-control"  name="account" placeholder="请输入登录账号">
-                                        <span class="help-block"></span>
+                                        <input type="text" class="form-control" oninput="value=this.value.replace(/[^\w_]/g,'');" name="account" placeholder="请输入登录账号">
+                                        {{/*<span class="help-block"></span>*/}}
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -124,7 +125,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="email" class="col-sm-2 control-label form-label">用户邮箱</label>
+                                    <label for="email" class="col-sm-2 control-label form-label">邮箱地址</label>
                                     <div class="col-sm-6">
                                         <input type="email" name="email" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="请输入邮箱地址" >
                                     </div>
@@ -170,19 +171,31 @@
                 </div>
                 <div class="modal-body">
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >登录账号：<span id="detail_account"></span></p>
+                        <p class="form-control-static" >登录账号：<span class="account"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >使用状态：<span id="detail_actived"></span></p>
+                        <p class="form-control-static" >激活状态：<span class="active"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >账号类型：<span id="detail_type"></span></p>
+                        <p class="form-control-static" >使用状态：<span class="disabled"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >邮箱地址：<span id="detail_email"></span></p>
+                        <p class="form-control-static" >账号类型：<span class="type"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >备注信息：<span id="detail_remark"></span></p>
+                        <p class="form-control-static" >用户姓名：<span class="name"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static">用户性别：<span class="gender"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >邮箱地址：<span class="email"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >手机号码：<span class="phone"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >备注信息：<span class="remark"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
                         <p class="form-control-static" >创建时间：<span id="detail_created"></span></p>
@@ -219,26 +232,35 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">用户性别</label>
                             <div class="col-sm-6">
-                                <select id="editGender" class="selectpicker" >
-                                    <option selected value="男">男</option>
-                                    <option value="女">女</option>
+                                <select id="editGender" name="gender" class="selectpicker" >
                                     <option value="未知">未知</option>
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">使用状态</label>
                             <div class="col-sm-6">
-                                <select id="editActived" class="selectpicker" >
-                                    <option selected value="1">可用</option>
-                                    <option value="0">禁用</option>
+                                <select id="editDisabled" name="disabled" class="selectpicker" >
+                                    <option selected value="0">可用</option>
+                                    <option value="1">禁用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">激活状态</label>
+                            <div class="col-sm-6">
+                                <select id="editActive" name="disabled" class="selectpicker" >
+                                    <option value="1">已激活</option>
+                                    <option value="0">未激活</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">账号类型</label>
                             <div class="col-sm-6">
-                                <select id="editType" class="selectpicker" >
+                                <select id="editType" name="type" class="selectpicker" >
                                     <option selected value="0">普通用户</option>
                                     <option value="1">管理员</option>
                                     <option value="2">高级管理员</option>
@@ -249,9 +271,8 @@
                         <div class="form-group">
                             <label for="account_edit" class="col-sm-2 control-label form-label"><span class="red">*</span>登录账号</label>
                             <div class="col-sm-6">
-                                <input type="hidden" id="id">
+                                <input type="hidden" name="id" id="id">
                                 <input type="text" class="form-control" disabled  name="account" placeholder="请输入登录账号">
-                                <span class="help-block"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -262,7 +283,7 @@
                         </div>
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label form-label">用户姓名</label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                 <input type="text" name="name" maxlength="15" onkeyup="value=value.replace(/[^/a-zA-Z\0-9\u4E00-\u9FA5]/g,'')" class="form-control" placeholder="请输入用户姓名" >
                             </div>
                         </div>
@@ -273,7 +294,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="email" class="col-sm-2 control-label form-label">用户邮箱</label>
+                            <label for="email" class="col-sm-2 control-label form-label">邮箱地址</label>
                             <div class="col-sm-6">
                                 <input type="email" name="email" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="请输入邮箱地址" >
                             </div>

@@ -5,7 +5,6 @@ let clientWidth = window.innerWidth||document.documentElement.clientWidth||docum
 let clientHeight = window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight;
 
 $(function () {
-
     bodyHeight = window.innerHeight;
     frameHeight = bodyHeight-50;
     $('#J_iframe').css("height",frameHeight+"px");
@@ -57,8 +56,10 @@ $(function () {
 
     //console.log(userInfo);
     if(userInfo.Type<3){
-        $('#userNav').remove();
-        $('#sysSetting').remove();
+        $('.fa-gg-circle').parent().parent().remove();
+        $('.fa-cubes').parent().parent().remove();
+        $('.fa-money').parent().parent().remove();
+        $('.fa-user-plus').parent().parent().remove();
     }
     //$('#account').html(userInfo.Account);
 
@@ -71,8 +72,8 @@ $(function () {
             //console.log("加载完成。。。");
             $('#loading').fadeOut(100);
         }
-
     };
+    loading("loading",false);
 
 });
 
@@ -101,26 +102,10 @@ function swalInfo(title,msg,type){
     swal(title,msg,type);
 }
 
-function loading(flag) {
+function loading(loadId,flag) {
     if(flag){
-        $('#loading').fadeIn(100);
+        $('#'+loadId).fadeIn(100);
     }else{
-        $('#loading').fadeOut(100);
-    }
-}
-
-function loading2(flag) {
-    if(flag){
-        $('#loading2').fadeIn(100);
-    }else{
-        $('#loading2').fadeOut(100);
-    }
-}
-
-function loading3(flag) {
-    if(flag){
-        $('#loading3').fadeIn(100);
-    }else{
-        $('#loading3').fadeOut(100);
+        $('#'+loadId).fadeOut(100);
     }
 }

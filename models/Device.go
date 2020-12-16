@@ -77,7 +77,7 @@ func (this *Device) SelectByCol(col string,obj *Device) {
 func (this *Device) Count(qMap map[string]interface{}) (int,error) {
 
 	o := orm.NewOrm()
-	sql := "select d.*,t.name as typeName from t_device d,t_type t where d.tid=t.id "
+	sql := "select d.*,t.name as typeName from "+DeviceTBName()+" d,type t where d.tid=t.id "
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql += " and (d.name like \"%" + key + "%\")"
@@ -90,7 +90,7 @@ func (this *Device) Count(qMap map[string]interface{}) (int,error) {
 func (this *Device) ListByPage(qMap map[string]interface{}) ([]orm.Params,error) {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	sql := "select d.*,t.name as typeName from t_device d,t_type t where d.tid=t.id "
+	sql := "select d.*,t.name as typeName from "+DeviceTBName()+" d,type t where d.tid=t.id "
 	if qMap["searchKey"] != "" {
 		sql += " and d.name like '%" + qMap["searchKey"].(string) + "%'"
 	}
@@ -113,13 +113,13 @@ func (this *Device) ListByPage(qMap map[string]interface{}) ([]orm.Params,error)
 func (this *Device) All() ([]orm.Params,error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select * from t_device where 1=1"
+	sql := "select * from "+DeviceTBName()+" where 1=1"
 	_,err := o.Raw(sql).Values(&res)
 	return res,err
 }
 
 func UpdateNum(condition,col string)  {
 	o := orm.NewOrm()
-	sql := "update t_device set "+col+"="+col+"+1 where did=\""+condition+"\""
+	sql := "update "+DeviceTBName()+" set "+col+"="+col+"+1 where did=\""+condition+"\""
 	_,_ = o.Raw(sql).Exec()
 }

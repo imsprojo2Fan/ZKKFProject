@@ -147,7 +147,7 @@ func(this *LoginController) Forget()  {
 	//查询邮箱地址是否存在
 	user := new(models.User)
 	user.Email = email
-	user.Actived = 1
+	user.Active = 1
 	user.ReadByMail(user)
 	if user.Id==0{
 		this.jsonResult(200,-1,"邮箱不存在!",nil)

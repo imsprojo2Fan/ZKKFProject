@@ -94,6 +94,22 @@ $(document).ready(function() {
         openWindow("/main/uploadPic","中科科辅",1000,600);
     });
 
+    $('#form1').find('.addItem').on("click",function () {
+        let arr = $('#form1').find('.imgItem');
+        if(arr.length>4){
+            swal("系统提示","最多只上传5张图片","warning");
+        }
+        openWindow("/main/uploadPic?domId=addImgWrap","中科科辅",1000,600);
+    });
+
+    $('#form2').find('.addItem').on("click",function () {
+        let arr = $('#form2').find('.imgItem');
+        if(arr.length>4){
+            swal("系统提示","最多只上传5张图片","warning");
+        }
+        openWindow("/main/uploadPic?domId=editImgWrap","中科科辅",1000,600);
+    });
+
     //富文本监听事件
     $('.editor').on("click",function () {
         let id = $(this).attr("id");
@@ -245,7 +261,7 @@ $(document).ready(function() {
         $('#detailModal').find('.remark').html("<span title='"+rowData.remark+"'>"+temp+"</span>");
 
         let created = rowData.created;
-        let unixTimestamp = new Date(created) ;
+        let unixTimestamp = new Date(created);
         let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
         $('#detailModal').find('.created').html(commonTime);
 
@@ -274,7 +290,18 @@ $(document).ready(function() {
         $('#editModal').find('.range').val(rowData.range);
         $('#editModal').find('.achievement').val(rowData.achievement);
         $('#editModal').find('.remark').val(rowData.remark);
-        //$('#edit_picVal').val(rowData.img);
+        if(rowData.img){
+            let imgArr = rowData.img.split(",");
+            for(let i=0;i<imgArr.length;i++){
+                $('#editImgWrap').append('' +
+                    '<div class="imgItem">\n ' +
+                    '<i title="点击删除" class="fa fa-window-close" aria-hidden="true"></i>\n' +
+                    '<img src="/img/'+imgArr[i]+'">\n' +
+                    '</div>');
+            }
+
+        }
+
         $('#tip').html("");
         $('#editModal').modal("show");
     });
@@ -306,12 +333,18 @@ function add(){
         swal("系统提示",'设备名称不能为空!',"warning");
         return;
     }
-    /*if (!img){
-        swal("系统提示",'请上传图片!',"warning");
-        return;
-    }*/
+    let imgSrc = "";
+    $('#addImgWrap').find(".imgItem").each(function () {
+        let src = $(this).find("img").attr("src");
+        imgSrc = imgSrc+","+src;
+    });
+    if(imgSrc){
+        imgSrc = imgSrc.substring(1,imgSrc.length);
+        imgSrc = imgSrc.replace("/img/","");
+    }
     let formData = formUtil('form1');
     formData["tid"] = $('#typeSel1').val();
+    formData["img"] = imgSrc;
     formData["disabled"] = $('#disabledSel1').val();
     formData["_xsrf"] = $("#token", parent.document).val();
     $.ajax({
@@ -406,7 +439,7 @@ function reset() {
     $(":input").each(function () {
         $(this).val("");
     });
-    $('#picName').html("");
+    $('.imgItem').html("");
     $("textarea").each(function () {
         $(this).val("");
     });
@@ -421,10 +454,25 @@ function openWindow(url,name,iWidth,iHeight) {
     let iLeft = (window.screen.availWidth-10-iWidth)/2;
     let openWindow = window.open(url,name,'height='+iHeight+',innerHeight='+iHeight+',width='+iWidth+',innerWidth='+iWidth+',top='+iTop+',left='+iLeft+',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no');
 }
+//富文本输入回调
 function openRes(domId,content) {
     //alert(content)
     //console.log(content);
     $('#'+domId).val(content);
+}
+//接收上传图片回调
+function openRes4Pic(isSuccess,btnId,domId,picName) {
+    if(isSuccess){
+        $('#'+domId).append('' +
+            '<div class="imgItem">\n ' +
+                '<i title="点击删除" class="fa fa-window-close" aria-hidden="true"></i>\n' +
+                '<img src="/img/'+picName+'">\n' +
+            '</div>');
+        //图片删除按钮点击事件
+        $('.fa-window-close').on('click',function () {
+            $(this).parent().remove();
+        })
+    }
 }
 
 function swalParent(title,msg,type) {

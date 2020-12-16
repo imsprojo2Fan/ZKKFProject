@@ -50,8 +50,8 @@ func MessageTBName() string {
 }
 
 func TypeTBName() string {
-	return TableName("t_type")
+	return TableName("type")
 }
 func DeviceTBName() string {
-	return TableName("t_device")
+	return TableName("device")
 }

@@ -22,10 +22,55 @@
     <link href="../../static/back/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
     <link href="../../static/back/css/animate.css" rel="stylesheet">
     <link href="../../static/back/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../static/css/loader.css" rel="stylesheet">
     <style>
 
     </style>
 </head>
+
+<div id="loading" class="loading-wrap" style="display: block;">
+    <div class="loader" >
+        <div class="la-ball-clip-rotate-multiple la-3x">
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loaderTxt">数据交互中...</div>
+    </div>
+</div>
+
+<div id="loading2" class="loading-wrap" style="display: none;">
+    <div class="loader" >
+        <div class="la-line-scale-party la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loaderTxt">数据交互中...</div>
+    </div>
+</div>
+
+<div id="loading3" class="loading-wrap fire" style="display: none;">
+    <div class="loader" >
+        <div class="la-fire la-3x">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loaderTxt">数据交互中...</div>
+    </div>
+</div>
+
+<div id="loading4" class="loading-wrap square" style="display: none;">
+    <div class="loader" >
+        <div class="la-square-loader la-3x">
+            <div></div>
+        </div>
+        <div class="loaderTxt">数据交互中...</div>
+    </div>
+</div>
+
 
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
     <input type="hidden" value="{{ ._xsrf}}" id="token">

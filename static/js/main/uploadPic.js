@@ -41,14 +41,16 @@ $(function(){
         onSuccess: function(file, response){          // 文件上传成功的回调方法
             console.info(file.name);
             let r = JSON.parse(response);
-            window.opener.document.getElementById($('#btnId').val()).innerText = "替换图片";
-            window.opener.document.getElementById($('#domId').val()).innerText = r.data;
+            //window.opener.document.getElementById($('#btnId').val()).innerText = "替换图片";
+            //window.opener.document.getElementById($('#domId').val()).innerText = r.data;
             /*window.opener.document.getElementById("uploadPic").innerText = "替换图片";
             window.opener.document.getElementById("picName").innerText = r.data;
             window.opener.document.getElementById("picVal").value = r.data;
             window.opener.document.getElementById("edit_picName").innerText = r.data;
             window.opener.document.getElementById("edit_picVal").value = r.data;*/
             $("#uploadInf").html("<p>上传成功，文件名是：" + r.data+ "</p>");
+
+            window.opener.openRes4Pic(true,$('#btnId').val(),$('#domId').val(),r.data);
             setTimeout(function () {
                 window.close();
             },200);
@@ -59,6 +61,7 @@ $(function(){
             let r = JSON.parse(response);
             window.opener.document.getElementById($('#btnId').val()).innerText = "上传图片";
             window.opener.document.getElementById($('#domId').val()).innerText = "";
+            window.opener.openRes4Pic(false,$('#btnId').val(),$('#domId').val(),"");
             $("#uploadInf").html("<p>此文件上传失败：" + r.msg + "</p>");
         },
         onComplete: function(response){           	  // 上传完成的回调方法

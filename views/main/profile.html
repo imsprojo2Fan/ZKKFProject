@@ -56,12 +56,12 @@
 </div>
 <input type="hidden" id="token" value="{{._xsrf}}">
 <input type="hidden" id="dbPassword">
-<div id="mainContent" class="panel panel-headline">
+<div id="mainContent" class="panel panel-headline" style="height: 90vh">
     <div class="panel-heading">
         <h3 class="panel-title">个人设置</h3>
         <hr>
     </div>
-    <div class="panel-body" style="padding-bottom: 6%;margin-top: -25px;">
+    <div class="panel-body" style="margin-top: -25px;">
         <div class="row" >
             <div class="col-md-12" >
                 <form class="form-horizontal" autocomplete="off">
@@ -84,6 +84,20 @@
                         <label class="col-sm-3 control-label form-label">确认密码<span class="red">*</span></label>
                         <div class="col-sm-6">
                             <input type="password" class="form-control" maxlength="30" onfocus="javascript:this.value = ''" style="ime-mode:disabled" id="password2" placeholder="至少6个字符" >
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">称呼姓名<span class="red"></span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" maxlength="20"  id="name"  >
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">手机号码<span class="red"></span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" maxlength="11"  id="phone"  >
                             <span class="help-block"></span>
                         </div>
                     </div>

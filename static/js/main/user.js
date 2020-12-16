@@ -1,5 +1,5 @@
 let myTable;
-
+let prefix = "/main/user";
 window.onresize = function() {
     let bodyHeight = window.innerHeight;
     console.log("bodyHeight:"+bodyHeight);
@@ -48,12 +48,12 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,3,6 ] }],//指定哪些列不排序
-        "order": [[ 5, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,3,4,7 ] }],//指定哪些列不排序
+        "order": [[ 6, "desc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
-        "pageLength": 30,
+        "pageLength": 50,
         ajax: {
-            url: '/main/user/list',
+            url: prefix+'/list',
             type: 'POST',
             data:{
                 _xsrf:$("#token", parent.document).val()
@@ -61,8 +61,8 @@ $(document).ready(function() {
         },
         columns: [
             { data: 'account'},
-            { data: 'actived',"render":function (data) {
-                    if(data==1){
+            { data: 'disabled',"render":function (data) {
+                    if(data==0){
                         return "<span style='color:green;'>正常</span>";
                     }else{
                         return "<span style='color:red;'>禁用</span>";
@@ -83,9 +83,17 @@ $(document).ready(function() {
                     }
                     return str;
                 } },
+            { data: 'phone',"render":function (data) {
+                    if(!data){
+                        return "<span>-</span>";
+                    }else{
+                        return data;
+                    }
+
+                } },
             { data: 'email',"render":function (data) {
                     if(!data){
-                        return "<span>暂未填写</span>";
+                        return "<span>-</span>";
                     }else{
                         return data;
                     }
@@ -139,14 +147,25 @@ $(document).ready(function() {
     let rowData;
     $('#myTable').on("click",".btn-default",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
-        $('#detail_account').html(rowData.account);
-        if(rowData.actived==1){
-            $('#detail_actived').html("<span style='color:green'>正常</span>");
+        $('#detailModal').find('.account').html(rowData.account);
+        if(rowData.active==1){
+            $('#detailModal').find('.active').html("<span style='color:green'>已激活</span>");
         }else{
-            $('#detail_actived').html("<span style='color: red'>禁用</span>");
+            $('#detailModal').find('.active').html("<span style='color: red'>未激活</span>");
+        }
+        if(rowData.disabled==0){
+            $('#detailModal').find('.disabled').html("<span style='color:green'>可用</span>");
+        }else{
+            $('#detailModal').find('.disabled').html("<span style='color: red'>禁用</span>");
+        }
+        $('#detailModal').find('.gender').html(rowData.gender);
+        if(rowData.name){
+            $('#detailModal').find('.name').html(rowData.name);
+        }else{
+            $('#detailModal').find('.name').html("暂未填写");
         }
 
-        let str = "";
+        let str;
         if(rowData.type==0){
             str = "普通用户";
         }else if(rowData.type==1){
@@ -158,18 +177,22 @@ $(document).ready(function() {
         }else{
             str = "访客";
         }
-        $('#detail_type').html(str);
+        $('#detailModal').find('.type').html(str);
+        let phone = rowData.phone;
+        if(!phone){
+            phone = "暂未填写";
+        }
+        $('#detailModal').find('.phone').html(phone);
         let email = rowData.email;
         if(!email){
             email = "暂未填写";
         }
-        $('#detail_email').html(email);
+        $('#detailModal').find('.email').html(email);
         let remark = rowData.remark;
         if(!remark){
             remark = "暂未填写";
         }
-        $('#detail_label').html(rowData.label);
-        $('#detail_remark').html(remark);
+        $('#detailModal').find('.remark').html(remark);
         let created = rowData.created;
         let unixTimestamp = new Date(created) ;
         let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
@@ -188,16 +211,21 @@ $(document).ready(function() {
     });
     $('#myTable').on("click",".btn-info",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
-        $('#Id').val(rowData.id);
-        $('#account_edit').val(rowData.account);
-        $('#actived_edit').selectpicker('val',rowData.actived);
-        $("#actived_edit").selectpicker('refresh');
-        $("#type_edit").selectpicker('val',rowData.type);
-        $("#type_edit").selectpicker('refresh');
-        $('#password_edit').val(rowData.password);
-        $('#email_edit').val(rowData.email);
-        $('#label_edit').val(rowData.label);
-        $('#remark_edit').val(rowData.remark);
+        $('#editForm').find("input[name='id']").val(rowData.id);
+        $('#editForm').find("input[name='account']").val(rowData.account);
+        $('#editActive').selectpicker('val',rowData.active);
+        $("#editActive").selectpicker('refresh');
+        $('#editDisabled').selectpicker('val',rowData.disabled);
+        $("#editDisabled").selectpicker('refresh');
+        $('#editGender').selectpicker('val',rowData.gender);
+        $("#editGender").selectpicker('refresh');
+        $("#editType").selectpicker('val',rowData.type);
+        $("#editType").selectpicker('refresh');
+        $('#editForm').find("input[name='name']").val(rowData.name);
+        $('#editForm').find("input[name='password']").val(rowData.password);
+        $('#editForm').find("input[name='phone']").val(rowData.phone);
+        $('#editForm').find("input[name='email']").val(rowData.email);
+        $('#editForm').find("textarea[name='remark']").val(rowData.remark);
         $('#tip').html("");
         $('#editModal').modal("show");
     });
@@ -224,39 +252,48 @@ $(document).ready(function() {
 } );
 
 function add(){
-    let account = $('#account').val().trim();
-    let actived = $('#actived').val();
-    let type = $('#type').val();
-    let password = $('#password').val().trim();
-    let email = $('#email').val().trim();
-    let remark = $('#remark').val().trim();
+    let account = $('#addForm').find("input[name='account']").val().trim();
+    let password = $('#addForm').find("input[name='password']").val().trim();
+    let phone = $('#addForm').find("input[name='phone']").val().trim();
+    let email = $('#addForm').find("input[name='email']").val().trim();
     if (!account){
         swal("系统提示",'账号不能为空!',"warning");
         return;
     }
-    if(email){
-        if (!checkEmail(email)){
-            swal("系统提示",'邮箱格式不正确!',"warning");
-        }
+    if (account.length<6){
+        swal("系统提示",'账号不能少于5个字符!',"warning");
+        return;
     }
     if (!password){
         swal("系统提示",'密码不能为空!',"warning");
         return;
     }
+    if(password.length<8){
+        swal("系统提示",'密码不能少于8个字符!',"warning");
+        return;
+    }
+    if(phone&&!(/^1[3456789]\d{9}$/.test(phone))){
+        swal("系统提示",'手机号格式错误!',"warning");
+        return;
+    }
+    let reg = /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/;
+    if(email&&!reg.test(email)){
+        swal("系统提示",'邮箱地址格式错误!',"warning");
+        return;
+    }
+
+    let formData = formUtil('addForm');
+    formData["type"] = $('#type').val();
+    formData["disabled"] = $('#disabled').val();
+    formData["_xsrf"] = $("#token", parent.document).val();
+    formData["active"] = 1;
+    formData["sign"] = 1;
     $.ajax({
-        url : "/main/user/add",
+        url : prefix+"/add",
         type : "POST",
         dataType : "json",
         cache : false,
-        data : {
-            _xsrf:$("#token", parent.document).val(),
-            account:account,
-            actived:actived,
-            type:type,
-            password:password,
-            email:email,
-            remark:remark
-        },
+        data : formData,
         beforeSend:function(){
             $('#loading').fadeIn(200);
         },
@@ -275,36 +312,29 @@ function add(){
 }
 
 function edit(){
-    let account = $('#account_edit').val().trim();
-    let actived = $('#actived_edit').val();
-    let type = $('#type_edit').val();
-    let password = $('#password_edit').val().trim();
-    let email = $('#email_edit').val().trim();
-    let remark = $('#remark_edit').val().trim();
+    let account = $('#editForm').find('input[name="account"]').val().trim();
+    let password = $('#editForm').find('input[name="password"]').val().trim();
+    if (!account){
+        swal("系统提示",'账号不能为空!',"warning");
+        return;
+    }
+
     if (!password){
         swal("系统提示",'密码不能为空!',"warning");
         return;
     }
-    if(email){
-        if (!checkEmail(email)){
-            swal("系统提示",'邮箱格式不正确!',"warning");
-        }
-    }
+    let formData = formUtil('editForm');
+    formData["type"] = $('#editType').val();
+    formData["disabled"] = $('#editDisabled').val();
+    formData["active"] = $('#editActive').val();
+    formData["gender"] = $('#editGender').val();
+    formData["_xsrf"] = $("#token", parent.document).val();
     $.ajax({
-        url : "/main/user/update",
+        url : prefix+"/update",
         type : "POST",
         dataType : "json",
         cache : false,
-        data : {
-            _xsrf:$("#token", parent.document).val(),
-            id:$('#Id').val(),
-            //account:account,
-            actived:actived,
-            type:type,
-            password:password,
-            email:email,
-            remark:remark
-        },
+        data : formData,
         beforeSend:function(){
             $('#loading').fadeIn(200);
         },

@@ -8,6 +8,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"net/smtp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -21,8 +22,11 @@ func(this *UserController) ListOne() {
 	uid := session.Get("id").(int)
 	user := new(models.User)
 	user.Id = uid
-	user.Read(user)
-	this.jsonResult(200,1,"用户信息",user)
+	dbUser,_ := user.Read(strconv.Itoa(uid))
+	dbUser.Type = -1
+	dbUser.Disabled = -1
+	dbUser.Remark = ""
+	this.jsonResult(200,1,"用户信息",dbUser)
 }
 
 func(this *UserController) List()  {
@@ -44,10 +48,10 @@ func(this *UserController) List()  {
 	sortType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum=="4"{
+	if sortNum=="5"{
 		sortCol = "updated"
 	}
-	if sortNum=="5"{
+	if sortNum=="6"{
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -83,13 +87,15 @@ func(this *UserController) Add()  {
 	key := beego.AppConfig.String("password::key")
 	salt := beego.AppConfig.String("password::salt")
 	user := new(models.User)
-	user.Actived,_ = this.GetInt("actived")
+	user.Disabled,_ = this.GetInt("disabled")
+	user.Active,_ = this.GetInt("active")
 	user.Account = this.GetString("account")
+	user.Phone = this.GetString("phone")
 	user.Email = this.GetString("email")
 	user.Type,_ = this.GetInt("type")
 	password := this.GetString("password")
 	if user.Account==""||password==""{
-		this.jsonResult(200,-1,"参数错误!",nil)
+		this.jsonResult(200,-1,"账号或密码不能为空!",nil)
 	}
 	//密码加密处理
 	result, err := utils.AesEncrypt([]byte(password+salt), []byte(key))
@@ -100,7 +106,7 @@ func(this *UserController) Add()  {
 	user.Remark = this.GetString("remark")
 	user.SelectByCol(user,"account")//查询账号是否已被用
 	if user.Id>0{
-		this.jsonResult(200,-1,"当前账号不可用!",nil)
+		this.jsonResult(200,-1,"账号已存在!",nil)
 	}
 	if user.Email!=""{
 		user.SelectByCol(user,"email")//查询邮箱是否已被用
@@ -126,18 +132,17 @@ func(this *UserController) Add()  {
 func(this *UserController) Update() {
 
 	user := new(models.User)
-	dbUser := new(models.User)
-	dbUser.Id,_ = this.GetInt("id")
-	dbUser.Read(dbUser)//查询数据库的用户信息
-	dType:=this.GetString("type")
-	if dType==""{
-		user.Type = dbUser.Type
-		user.Actived = dbUser.Actived
-	}else{
-		user.Type,_ = this.GetInt("type")
-		user.Actived,_ = this.GetInt("actived")
-	}
 	user.Id,_ = this.GetInt("id")
+	dbUser,err := user.Read(strconv.Itoa(user.Id))//查询数据库的用户信息
+	if err!=nil{
+		this.jsonResult(200,-1,"查询用户信息失败!",nil)
+		return
+	}
+	user.Type,_ = this.GetInt("type")
+	user.Active,_ = this.GetInt("active")
+	user.Disabled,_ = this.GetInt("disabled")
+	user.Gender = this.GetString("gender")
+	user.Name = this.GetString("name")
 	user.Password = this.GetString("password")
 	if user.Password!=dbUser.Password{
 		key := beego.AppConfig.String("password::key")
@@ -157,12 +162,68 @@ func(this *UserController) Update() {
 			this.jsonResult(200,-1,"邮箱地址已存在!",nil)
 		}
 	}
+	user.Phone = this.GetString("phone")
+	if user.Phone!=""&&user.Phone!=dbUser.Phone{
+		user.SelectByCol(user,"phone")//查询手机号是否已被用
+		if user.Account!=""{
+			this.jsonResult(200,-1,"手机号码已存在!",nil)
+		}
+	}
 	user.Account = dbUser.Account
 	user.Created = dbUser.Created
 	user.Updated = time.Now()
 	user.Remark = this.GetString("remark")
 
 	if user.Update(user){
+		this.jsonResult(200,1,"更新用户信息成功",nil)
+	}else{
+		this.jsonResult(200,-1,"更新用户信息失败,请稍后再试",nil)
+	}
+}
+
+func(this *UserController) UpdateProfile() {
+
+	user := new(models.User)
+	user.Id,_ = this.GetInt("id")
+	user.Name = this.GetString("name")
+	dbUser,err := user.Read(strconv.Itoa(user.Id))//查询数据库的用户信息
+	if err!=nil{
+		this.jsonResult(200,-1,"查询用户信息失败!",nil)
+		return
+	}
+	user.Gender = this.GetString("gender")
+	user.Name = this.GetString("name")
+	user.Password = this.GetString("password")
+	if user.Password!=dbUser.Password{
+		key := beego.AppConfig.String("password::key")
+		salt := beego.AppConfig.String("password::salt")
+		//密码加密
+		result, err := utils.AesEncrypt([]byte(user.Password+salt), []byte(key))
+		if err != nil {
+			panic(err)
+		}
+		user.Password = base64.StdEncoding.EncodeToString(result)
+	}
+
+	user.Email = this.GetString("email")
+	if user.Email!=""&&user.Email!=dbUser.Email{
+		user.SelectByCol(user,"email")//查询邮箱是否已被用
+		if user.Account!=""{
+			this.jsonResult(200,-1,"邮箱地址已存在!",nil)
+		}
+	}
+	user.Phone = this.GetString("phone")
+	if user.Phone!=""&&user.Phone!=dbUser.Phone{
+		user.SelectByCol(user,"phone")//查询手机号是否已被用
+		if user.Account!=""{
+			this.jsonResult(200,-1,"手机号码已存在!",nil)
+		}
+	}
+	user.Account = dbUser.Account
+	user.Created = dbUser.Created
+	user.Updated = time.Now()
+
+	if user.UpdateProfile(user){
 		this.jsonResult(200,1,"更新用户信息成功",nil)
 	}else{
 		this.jsonResult(200,-1,"更新用户信息失败,请稍后再试",nil)
@@ -201,7 +262,7 @@ func(this *UserController) Validate4mail() {
 	user.Email = email
 	user.SelectByEmail(email,&dataList)
 	for _,item:= range dataList{
-		if item.Actived==1{
+		if item.Active==1{
 			this.jsonResult(200,-1,"当前邮箱不可用!",nil)
 			break
 		}
@@ -240,8 +301,8 @@ func(this *UserController) Mail4confirm() {
 	user := new(models.User)
 	user.Id = session.Get("id").(int)
 	user.Email = session.Get("email").(string)
-	user.Actived = 1
-	if !user.UpdateActived(user){
+	user.Active = 1
+	if !user.UpdateActive(user){
 		this.jsonResult(200,-1,"数据库更新失败,请稍后再试!",nil)
 	}
 	this.jsonResult(200,1,"邮箱验证成功",nil)

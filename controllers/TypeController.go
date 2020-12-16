@@ -27,7 +27,7 @@ func (this *TypeController) List() {
 		pageSize = 20
 		//this.jsonResult(http.StatusOK,-1, "rows or page should be number", nil)
 	}
-	sortType := this.GetString("order[0][dir]")
+	sorType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
 	if sortNum == "3" {
@@ -41,7 +41,7 @@ func (this *TypeController) List() {
 	qMap["pageNow"] = pageNow
 	qMap["pageSize"] = pageSize
 	qMap["sortCol"] = sortCol
-	qMap["sortType"] = sortType
+	qMap["sorType"] = sorType
 	qMap["searchKey"] = searchKey
 	if uType < 2 { //账号类型小于3的用户可查看所有信息
 		this.jsonResult(200, -1, "查询成功！", "无权限")

@@ -7,6 +7,7 @@ $(function () {
         let password1 = $('#password').val().trim();
         let password2 = $('#password2').val().trim();
         let email = $('#email').val().trim();
+        let phone = $('#phone').val().trim();
         if(!account){
             tipTip("请填写账号!");
             return
@@ -19,8 +20,8 @@ $(function () {
             tipTip("请确认密码!");
             return
         }
-        if(password1.length<6||password2.length<6){
-            tipTip("密码不能少于6个字符!");
+        if(password1.length<8||password2.length<8){
+            tipTip("密码不能少于8个字符!");
             return
         }
         if(password1!==password2){
@@ -28,22 +29,24 @@ $(function () {
             return
         }
 
-        /*if(!email){
-            tipTip($('#email').parent().find("span"),"邮箱地址不能为空!");
-            return
-        }*/
+        if(phone&&!(/^1[3456789]\d{9}$/.test(phone))){
+            swal("系统提示",'手机号格式错误!',"warning");
+            return;
+        }
         if(!email&&!checkEmail(email)){
             tipTip("邮箱地址格式不正确!");
             return
         }
 
         $.ajax({
-            url:"/main/user/update",
+            url:"/main/user/updateProfile",
             type:"POST",
             data:{
                 id:userInfo.Id,
                 account:account,
                 password:password1,
+                name:$('#name').val().trim(),
+                phone:phone,
                 email:email,
                 _xsrf:$('#token').val()
             },
@@ -163,7 +166,8 @@ function renderForm() {
         }
         let password = userInfo.Password;
         if(password){
-            $('#dbPassword').val(password);
+            $('#password').val(password);
+            $('#password2').val(password);
         }
         $('#name').val(userInfo.Name);
         let gender = userInfo.Gender;
@@ -176,7 +180,7 @@ function renderForm() {
         }
         $('#birthday').val(userInfo.Birthday);
         $('#phone').val(userInfo.Phone);
-        let actived = userInfo.Actived;
+        let active = userInfo.Active;
         $('#email').val(userInfo.Email);
         /*if(actived===0&&userInfo.Email){
             let dom = $('#email').parent().find("span");
@@ -196,6 +200,7 @@ function renderForm() {
         }*/
     });
 }
+
 function tipTip(str) {
     swal("系统提示",str,"error");
 }

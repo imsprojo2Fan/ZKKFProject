@@ -33,6 +33,7 @@ func init() {
 	beego.Router("/main/user/list",&controllers.UserController{},"POST:List")
 	beego.Router("/main/user/add",&controllers.UserController{},"POST:Add")
 	beego.Router("/main/user/update",&controllers.UserController{},"POST:Update")
+	beego.Router("/main/user/updateProfile",&controllers.UserController{},"POST:UpdateProfile")
 	beego.Router("/main/user/delete",&controllers.UserController{},"POST:Delete")
 	beego.Router("/main/user/all",&controllers.UserController{},"POST:All")
 	beego.Router("/main/user/listOne",&controllers.UserController{},"POST:ListOne")

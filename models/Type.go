@@ -24,31 +24,31 @@ func (a *Type) TableName() string {
 	return TypeTBName()
 }
 
-func (this *Type) Insert(Type *Type) error {
+func (this *Type) Insert(obj *Type) error {
 
 	o := orm.NewOrm()
-	_, err := o.Insert(Type)
+	_, err := o.Insert(obj)
 	return err
 }
 
-func (this *Type) Update(Type *Type) error {
+func (this *Type) Update(obj *Type) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(Type, "name", "description", "img", "updated")
+	_, err := o.Update(obj, "name", "description", "img", "updated")
 	return err
 }
 
-func (this *Type) Delete(Type *Type) error {
+func (this *Type) Delete(obj *Type) error {
 
 	o := orm.NewOrm()
-	_, err := o.Delete(Type)
+	_, err := o.Delete(obj)
 	return err
 }
 
-func (this *Type) Read(Type *Type) bool {
+func (this *Type) Read(obj *Type) bool {
 
 	o := orm.NewOrm()
-	err := o.Read(Type)
+	err := o.Read(obj)
 	if err == orm.ErrNoRows {
 		fmt.Println("查询不到")
 		return false
@@ -60,20 +60,20 @@ func (this *Type) Read(Type *Type) bool {
 	}
 }
 
-func (this *Type) SelectByUid(Type *Type) {
+func (this *Type) SelectByUid(obj *Type) {
 	o := orm.NewOrm()
-	_ = o.Read(Type, "uid")
+	_ = o.Read(obj, "uid")
 }
 
-func (this *Type) SelectByName(Type *Type) {
+func (this *Type) SelectByName(obj *Type) {
 	o := orm.NewOrm()
-	_ = o.Read(Type, "name")
+	_ = o.Read(obj, "name")
 }
 
 func (this *Type) Count(qMap map[string]interface{}) int {
 
 	o := orm.NewOrm()
-	sql := "SELECT id from t_type where 1=1 "
+	sql := "SELECT id from "+TypeTBName()+" where 1=1 "
 	if qMap["searchKey"] != nil {
 		key := qMap["searchKey"].(string)
 		sql = sql + " and (name like \"%" + key + "%\")"
@@ -86,14 +86,14 @@ func (this *Type) Count(qMap map[string]interface{}) int {
 func (this *Type) ListByPage(qMap map[string]interface{}) []orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	sql := "select * from t_type where 1=1"
+	sql := "select * from "+TypeTBName()+" where 1=1"
 	if qMap["searchKey"] != "" {
 		sql = sql + " and name like '%" + qMap["searchKey"].(string) + "%'"
 	}
 	if qMap["sortCol"] != "" {
 		sortCol := qMap["sortCol"].(string)
-		sortType := qMap["sortType"].(string)
-		sql = sql + " order by " + sortCol + " " + sortType
+		sorType := qMap["sorType"].(string)
+		sql = sql + " order by " + sortCol + " " + sorType
 	} else {
 		sql = sql + " order by id desc"
 	}
@@ -108,14 +108,14 @@ func (this *Type) ListByPage(qMap map[string]interface{}) []orm.Params {
 
 func (this *Type) ListByPage4Index(qMap map[string]interface{}, Types *[]Type) {
 	o := orm.NewOrm()
-	sql := "select * from t_type where 1=1"
+	sql := "select * from "+TypeTBName()+" where 1=1"
 	_, _ = o.Raw(sql).QueryRows(Types)
 }
 
 func (this *Type) All() []orm.Params {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select * from t_type where 1=1"
+	sql := "select * from "+TypeTBName()+" where 1=1"
 	_, _ = o.Raw(sql).Values(&res)
 	return res
 }

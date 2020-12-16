@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"ZkkfProject/models"
 	"ZkkfProject/sysinit"
 	"ZkkfProject/utils"
 	"net/http"
@@ -14,8 +15,11 @@ type MainController struct {
 
 func (this *MainController) Index() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	userInfo := session.Get("user")
-	this.Data["userInfo"] = userInfo
+	userInfo := session.Get("user").(*models.User)
+	tMap := make(map[string]interface{})
+	tMap["Type"] = userInfo.Type
+	tMap["account"] = userInfo.Account
+	this.Data["userInfo"] = tMap
 	this.Data["account"] = session.Get("account")
 	this.Data["_xsrf"] = this.XSRFToken()
 	this.Data["random"] = time.Now().Unix()

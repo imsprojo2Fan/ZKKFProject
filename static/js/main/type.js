@@ -317,7 +317,20 @@ function openWindow(url,name,iWidth,iHeight) {
     let iTop = (window.screen.availHeight-30-iHeight)/2;
     let iLeft = (window.screen.availWidth-10-iWidth)/2;
     let openWindow = window.open(url,name,'height='+iHeight+',innerHeight='+iHeight+',width='+iWidth+',innerWidth='+iWidth+',top='+iTop+',left='+iLeft+',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no');
+}
 
+//接收上传图片回调
+function openRes4Pic(isSuccess,btnId,domId,picName) {
+    if(isSuccess){
+        $('#'+btnId).html("替换图片");
+        $('#'+domId).append('' +
+            '<div class="imgItem">\n ' +
+            '<i title="点击删除" class="fa fa-window-close" aria-hidden="true"></i>\n' +
+            '<img src="/img/'+picName+'">\n' +
+            '</div>');
+    }else{
+        $('#'+btnId).html("上传图片");
+    }
 }
 
 function swalParent(title,msg,type) {

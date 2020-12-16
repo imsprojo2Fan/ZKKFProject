@@ -11,15 +11,17 @@ type User struct {
 	Id       int
 	Uid      string
 	Type     int
+	Sign int //注册入口 0首页注册 1后台注册 2微信注册
+	Disabled int //是否禁用
 	Account  string
+	Password string
 	Name string
 	Email    string
-	Password string
 	Phone    string
 	Avatar   string `orm:"size(128)"`
-	Gender   string `orm:"size(4)"`
+	Gender   string `orm:"size(8)"`
 	Birthday string
-	Actived int
+	Active int //是否激活 0未激活 1激活
 	Remark string
 	Updated time.Time `orm:"auto_now_add;type(datetime)"`
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
@@ -29,17 +31,17 @@ func (a *User) UserTBName() string {
 	return UserTBName()
 }
 
-func(this *User) Insert(user *User) error {
+func(this *User) Insert(obj *User) error {
 
 	o := orm.NewOrm()
-	_,err := o.Insert(user)
+	_,err := o.Insert(obj)
 	return err
 }
 
-func(this *User) Update(User *User) bool {
+func(this *User) Update(obj *User) bool {
 
 	o := orm.NewOrm()
-	_,err := o.Update(User,"type","password","phone","email","gender","name","birthday","avatar","actived","remark","updated")
+	_,err := o.Update(obj,"type","disabled","password","phone","email","gender","name","birthday","avatar","active","remark","updated")
 	if err!=nil{
 		return false
 	}else{
@@ -47,10 +49,10 @@ func(this *User) Update(User *User) bool {
 	}
 }
 
-func(this *User) Delete(User *User) bool {
+func(this *User) UpdateProfile(obj *User) bool {
 
 	o := orm.NewOrm()
-	_,err := o.Delete(User)
+	_,err := o.Update(obj,"password","phone","email","name","birthday","avatar","updated")
 	if err!=nil{
 		return false
 	}else{
@@ -58,27 +60,29 @@ func(this *User) Delete(User *User) bool {
 	}
 }
 
-func(this *User) Read(User *User) bool {
+func(this *User) Delete(obj *User) bool {
 
 	o := orm.NewOrm()
-	err := o.Read(User)
-	if err == orm.ErrNoRows {
-		fmt.Println("查询不到")
+	_,err := o.Delete(obj)
+	if err!=nil{
 		return false
-	} else if err == orm.ErrMissPK {
-		fmt.Println("找不到主键")
-		return false
-	} else {
-		fmt.Println(User.Id)
+	}else{
 		return true
 	}
 }
 
-func(this *User) ReadOrCreate(user User) int64  {
+func(this *User) Read(id string)(u User,err error) {
+
+	o := orm.NewOrm()
+	err = o.Raw(" select * from "+UserTBName()+" where id="+id).QueryRow(&u)
+	return u,err
+}
+
+func(this *User) ReadOrCreate(obj User) int64  {
 	o := orm.NewOrm()
 	// 三个返回参数依次为：是否新创建的，对象 Id 值，错误
 	var ID int64
-	if created, id, err := o.ReadOrCreate(&user, "uid"); err == nil {
+	if created, id, err := o.ReadOrCreate(&obj, "uid"); err == nil {
 		ID = id
 		if created {
 			fmt.Println("New Insert an object. Id:", id)
@@ -89,10 +93,10 @@ func(this *User) ReadOrCreate(user User) int64  {
 	return ID
 }
 
-func(this *User) Login(user *User) bool{
+func(this *User) Login(obj *User) bool{
 
 	o := orm.NewOrm()
-	err := o.Raw("SELECT * FROM user WHERE account = ? OR phone = ? OR email = ? OR uid=?", user.Account,user.Account,user.Account,user.Account).QueryRow(&user)
+	err := o.Raw("SELECT * FROM "+UserTBName()+" WHERE account = ? OR phone = ? OR email = ? OR uid=?", obj.Account,obj.Account,obj.Account,obj.Account).QueryRow(&obj)
 
 	if err!=nil{
 		return false
@@ -100,12 +104,12 @@ func(this *User) Login(user *User) bool{
 	return true
 }
 
-func(this *User) ReadByMail(user *User) int {
+func(this *User) ReadByMail(obj *User) int {
 
 	o := orm.NewOrm()
-	o.Read(user,"email","actived")
+	_ = o.Read(obj, "email", "active")
 	//o.Raw("SELECT id,is_activate  FROM user WHERE email = ? AND is_activate=1", user.Mail).QueryRow(&user)
-	if user.Email==""{
+	if obj.Email==""{
 		return -1
 	}
 	// 三个返回参数依次为：是否新创建的，对象 Id 值，错误
@@ -123,7 +127,7 @@ func(this *User) ReadByMail(user *User) int {
 func(this *User) Activate(user *User) bool {
 
 	o := orm.NewOrm()
-	err := o.Raw("UPDATE user SET activated = 1 WHERE uid = ?", user.Uid)
+	err := o.Raw("UPDATE "+UserTBName()+" SET activated = 1 WHERE uid = ?", user.Uid)
 	if err!=nil{
 		return false
 	}else{
@@ -134,17 +138,17 @@ func(this *User) Activate(user *User) bool {
 func(this *User) UpdatePassword(user *User) bool {
 
 	o := orm.NewOrm()
-	_, err := o.Raw("UPDATE user SET password = ? WHERE uid =?", user.Password,user.Uid).Exec()
+	_, err := o.Raw("UPDATE "+UserTBName()+" SET password = ? WHERE uid =?", user.Password,user.Uid).Exec()
 	if err == nil {
 		return true
 	}
 	return false
 }
 
-func(this *User) UpdateActived(user *User) bool {
+func(this *User) UpdateActive(user *User) bool {
 
 	o := orm.NewOrm()
-	_, err := o.Update(user,"email","actived")
+	_, err := o.Update(user,"email","active")
 	if err == nil {
 		return true
 	}
@@ -154,7 +158,7 @@ func(this *User) UpdateActived(user *User) bool {
 func(this *User) UpdatePasswordByEmail(user *User) bool {
 
 	o := orm.NewOrm()
-	_,err := o.Raw("update user set password=? where email=?",user.Password,user.Email).Exec()
+	_,err := o.Raw("update "+UserTBName()+" set password=? where email=?",user.Password,user.Email).Exec()
 	if err!=nil{
 		return false
 	}
@@ -163,12 +167,12 @@ func(this *User) UpdatePasswordByEmail(user *User) bool {
 
 func(this *User) SelectByCol(user *User,col string) {
 	o := orm.NewOrm()
-	o.Read(user,col)
+	_ = o.Read(user, col)
 }
 
 func(this *User) SelectByEmail(email string,dataList *[]User) {
 	o := orm.NewOrm()
-	o.Raw("select * from user where email=?",email).QueryRows(dataList)
+	_, _ = o.Raw("select * from "+UserTBName()+" where email=?", email).QueryRows(dataList)
 }
 
 func(this *User) Count(qMap map[string]interface{})int{
@@ -178,10 +182,10 @@ func(this *User) Count(qMap map[string]interface{})int{
 	//cnt,_ := o.QueryTable("resume").Count()
 	//var count[] Resume
 	//o.Raw("select count(*) from resume where 1=1 and name like %?%",searchKey).QueryRows(count)
-	sql := "SELECT id from user where 1=1 and account!=\"root\""
-	if qMap["searchKey"]!=nil{
+	sql := "SELECT id from "+UserTBName()+" where 1=1 and account!=\"root\""
+	if qMap["searchKey"]!=""{
 		key:= qMap["searchKey"].(string)
-		sql = sql+" and (account like \"%"+key+"%\" or email like\"%"+key+"%\")"
+		sql = sql+" and (account like \"%"+key+"%\" or email like\"%"+key+"%\" or phone like \"%"+key+"%\")"
 	}
 	var arr []orm.Params
 	_, _ = o.Raw(sql).Values(&arr)
@@ -191,10 +195,10 @@ func(this *User) Count(qMap map[string]interface{})int{
 func(this *User) ListByPage(qMap map[string]interface{})[]orm.Params{
 	var maps []orm.Params
 	o := orm.NewOrm()
-	//qs := o.QueryTable("login_log")
-	sql := "SELECT * from user where 1=1 and account!=\"root\""
+	sql := "SELECT * from "+UserTBName()+" where 1=1 and account!=\"root\""
 	if qMap["searchKey"]!=""{
-		sql = sql+" and account like '%"+qMap["searchKey"].(string)+"%'"
+		key := qMap["searchKey"].(string)
+		sql = sql+" and (account like \"%"+key+"%\" or email like\"%"+key+"%\" or phone like \"%"+key+"%\")"
 	}
 	if qMap["sortCol"]!=""{
 		sortCol := qMap["sortCol"].(string)
@@ -214,11 +218,11 @@ func(this *User) ListByPage(qMap map[string]interface{})[]orm.Params{
 
 func(this *User) All(dataList *[]User) {
 	o := orm.NewOrm()
-	o.Raw("select * from user ").QueryRows(dataList)
+	_, _ = o.Raw("select * from " + UserTBName()).QueryRows(dataList)
 }
 
 func(this *User) ListByArr(arr string,uList *[]User) {
 	o := orm.NewOrm()
-	o.Raw("select * from user where id in("+arr+")").QueryRows(uList)
+	_, _ = o.Raw("select * from " + UserTBName() + " where id in(" + arr + ")").QueryRows(uList)
 }
 
