@@ -1,4 +1,56 @@
 
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+    width: 6px;
+}
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow:inset006pxrgba(0,0,0,0.3);
+    border-radius:0px;
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+    border-radius:0px;
+    background:rgba(0,0,0,0.1);
+    -webkit-box-shadow:inset006pxrgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(102, 102, 102, 0.4);
+}
+
+/*<!--设置滚动条及选中文字样式-->
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 5px;
+        background-color: #eee;
+        -webkit-border-radius: 0;
+    }
+::-webkit-scrollbar:hover {
+    width: 7px;
+}
+::-webkit-scrollbar-thumb {
+    background: #aeaeae;
+    -webkit-border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+    background: #bbb;
+    cursor: pointer;
+}
+::-moz-selection {
+    background: #060606;
+    color: #fff;
+}
+::selection {
+    background: #060606;
+    color: #fff;
+}
+::-moz-selection {
+    background: #060606;
+    color: #fff;
+}*/
+
+
 /*媒体查询响应式开始---------*/
 /* 2. Small devices (tablets, 767px and Down) */
 @media (max-width: 767px){
@@ -80,38 +132,6 @@
             url('../../static/fonts/Panxiang.svg') format('svg');
     font-weight: normal;
     font-style: normal;
-}
-
-<!--设置滚动条及选中文字样式-->
-::-webkit-scrollbar {
-    width: 10px;
-    height: 5px;
-    background-color: #eee;
-    -webkit-border-radius: 0;
-}
-::-webkit-scrollbar:hover {
-    width: 7px;
-}
-::-webkit-scrollbar-thumb {
-    background: #aeaeae;
-    -webkit-border-radius: 0;
-}
-::-webkit-scrollbar-thumb:hover,
-::-webkit-scrollbar-thumb:active {
-    background: #bbb;
-    cursor: pointer;
-}
-::-moz-selection {
-    background: #060606;
-    color: #fff;
-}
-::selection {
-    background: #060606;
-    color: #fff;
-}
-::-moz-selection {
-    background: #060606;
-    color: #fff;
 }
 
 .wechat {

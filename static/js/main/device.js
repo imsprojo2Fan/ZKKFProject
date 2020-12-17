@@ -106,6 +106,7 @@ $(document).ready(function() {
         let arr = $('#form2').find('.imgItem');
         if(arr.length>4){
             swal("系统提示","最多只上传5张图片","warning");
+            return
         }
         openWindow("/main/uploadPic?domId=editImgWrap","中科科辅",1000,600);
     });
@@ -290,6 +291,7 @@ $(document).ready(function() {
         $('#editModal').find('.range').val(rowData.range);
         $('#editModal').find('.achievement').val(rowData.achievement);
         $('#editModal').find('.remark').val(rowData.remark);
+        $('#editImgWrap').find(".imgItem").remove();
         if(rowData.img){
             let imgArr = rowData.img.split(",");
             for(let i=0;i<imgArr.length;i++){
@@ -299,9 +301,11 @@ $(document).ready(function() {
                     '<img src="/img/'+imgArr[i]+'">\n' +
                     '</div>');
             }
-
+            //图片删除按钮点击事件
+            $('.fa-window-close').on('click',function () {
+                $(this).parent().remove();
+            })
         }
-
         $('#tip').html("");
         $('#editModal').modal("show");
     });
@@ -340,7 +344,7 @@ function add(){
     });
     if(imgSrc){
         imgSrc = imgSrc.substring(1,imgSrc.length);
-        imgSrc = imgSrc.replace("/img/","");
+        imgSrc = imgSrc.replaceAll("/img/","");
     }
     let formData = formUtil('form1');
     formData["tid"] = $('#typeSel1').val();
@@ -377,8 +381,18 @@ function edit(){
         swal("系统提示",'分组名称不能为空!',"warning");
         return;
     }
+    let imgSrc = "";
+    $('#editImgWrap').find(".imgItem").each(function () {
+        let src = $(this).find("img").attr("src");
+        imgSrc = imgSrc+","+src;
+    });
+    if(imgSrc){
+        imgSrc = imgSrc.substring(1,imgSrc.length);
+        imgSrc = imgSrc.replaceAll("/img/","");
+    }
     let formData = formUtil('form2');
     formData["tid"] = $('#typeSel2').val();
+    formData["img"] = imgSrc;
     formData["disabled"] = $('#disabledSel2').val();
     formData["_xsrf"] = $("#token", parent.document).val();
     $.ajax({

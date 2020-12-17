@@ -85,7 +85,7 @@ $(document).ready(function() {
                 if(!data){
                     return "-";
                 }
-                let filePath = "/file/"+data;
+                let filePath = "/img/"+data;
                     return "<img width='30' src='"+filePath+"'>";
                 } },
             { data: 'updated',"render":function (data,type,row,meta) {
@@ -137,7 +137,7 @@ $(document).ready(function() {
     $('#myTable').on("click",".btn-default",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
         $('#detail_name').html(rowData.name);
-        $('#detail_img').html("<a target='_blank' href='/file/"+rowData.img+"'>"+rowData.img+"</a>");
+        $('#detail_img').html("<a target='_blank' href='/img/"+rowData.img+"'>"+rowData.img+"</a>");
         let description = rowData.description;
         if(!description){
             description = "暂未填写";
@@ -323,11 +323,7 @@ function openWindow(url,name,iWidth,iHeight) {
 function openRes4Pic(isSuccess,btnId,domId,picName) {
     if(isSuccess){
         $('#'+btnId).html("替换图片");
-        $('#'+domId).append('' +
-            '<div class="imgItem">\n ' +
-            '<i title="点击删除" class="fa fa-window-close" aria-hidden="true"></i>\n' +
-            '<img src="/img/'+picName+'">\n' +
-            '</div>');
+        $('#'+domId).html(picName);
     }else{
         $('#'+btnId).html("上传图片");
     }

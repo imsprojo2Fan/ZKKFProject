@@ -1,3 +1,36 @@
+
+<!--设置滚动条及选中文字样式-->
+#editBody::-webkit-scrollbar {
+    width: 10px;
+    height: 5px;
+    background-color: #eee;
+    -webkit-border-radius: 0;
+}
+#editBody::-webkit-scrollbar:hover {
+    width: 7px;
+}
+#editBody::-webkit-scrollbar-thumb {
+    background: #aeaeae;
+    -webkit-border-radius: 0;
+}
+#editBody::-webkit-scrollbar-thumb:hover,
+#editBody::-webkit-scrollbar-thumb:active {
+    background: #bbb;
+    cursor: pointer;
+}
+#editBody::-moz-selection {
+    background: #060606;
+    color: #fff;
+}
+#editBody::selection {
+    background: #060606;
+    color: #fff;
+}
+#editBody::-moz-selection {
+    background: #060606;
+    color: #fff;
+}
+
 .panel .panel-body {
     padding-top: 35px!important;
     padding-bottom: 35px!important;
@@ -41,4 +74,23 @@
 }
 .remark{
     margin-top: 6px;
+}
+#editModal .addItem{
+    width: 60px;
+    height: 60px;
+    line-height: 50px;
+}
+#editModal .imgItem img{
+    width: 59px;
+    height: 59px;
+}
+#editModal .imgItem i{
+    left: 70px!important;
+    top: -27px!important;
+}
+#editBody {
+    position: relative;
+    padding: 15px;
+    height: 76vh!important;
+    overflow-y: auto;
 }

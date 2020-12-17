@@ -867,11 +867,11 @@ a:focus {
 	border-right: 1px solid #e5e5e5;
 	padding: 38.25px 0;
     padding-right: 15px;
-	margin-right: 25px;
+	margin-left: -35px;
 }
 
 .main-nav-one .logo-box img{
-    width: 175px;
+    width: 225px;
 }
 
 .main-nav-one .main-nav__main-navigation {
