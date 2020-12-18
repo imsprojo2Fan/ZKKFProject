@@ -74,7 +74,7 @@ func (this *Type) Count(qMap map[string]interface{}) int {
 
 	o := orm.NewOrm()
 	sql := "SELECT id from "+TypeTBName()+" where 1=1 "
-	if qMap["searchKey"] != nil {
+	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql = sql + " and (name like \"%" + key + "%\")"
 	}

@@ -54,6 +54,20 @@ func init() {
 	beego.Router("/main/device/delete",&controllers.DeviceController{},"POST:Delete")
 	beego.Router("/main/device/all",&controllers.DeviceController{},"POST:All")
 
+	//预约管理
+	beego.Router("/main/reservation/list",&controllers.ReservationController{},"POST:List")
+	beego.Router("/main/reservation/add",&controllers.ReservationController{},"POST:Add")
+	beego.Router("/main/reservation/update",&controllers.ReservationController{},"POST:Update")
+	beego.Router("/main/reservation/delete",&controllers.ReservationController{},"POST:Delete")
+	beego.Router("/main/reservation/all",&controllers.ReservationController{},"POST:All")
+	beego.Router("/reservation/timeQuery",&controllers.ReservationController{},"POST:TimeQuery")
+
+	//系统设置相关
+	beego.Router("/main/setting/list",&controllers.SettingController{},"POST:List")
+	beego.Router("/main/setting/add",&controllers.SettingController{},"POST:Add")
+	beego.Router("/main/setting/update",&controllers.SettingController{},"POST:Update")
+	beego.Router("/main/setting/delete",&controllers.SettingController{},"POST:Delete")
+
 	//消息管理
 	beego.Router("/main/message/listAll",&controllers.MessageController{},"POST:ListAll")
 	//定制错误页

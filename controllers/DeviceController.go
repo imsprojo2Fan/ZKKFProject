@@ -156,5 +156,5 @@ func (this *DeviceController) Delete() {
 func (this *DeviceController) All() {
 	obj := new(models.Device)
 	res,_ := obj.All()
-	this.jsonResult(200, 1, "查询所有用户信息",res)
+	this.jsonResult(200, 1, "查询所有信息成功",res)
 }

@@ -55,11 +55,14 @@ $(function () {
     },5000);
 
     //console.log(userInfo);
-    if(userInfo.Type<3){
+    if(userInfo.Type<2){
         $('.fa-gg-circle').parent().parent().remove();
         $('.fa-cubes').parent().parent().remove();
         $('.fa-money').parent().parent().remove();
         $('.fa-user-plus').parent().parent().remove();
+    }
+    if(userInfo.Type<3){
+        $('.fa-cogs').parent().parent().remove();
     }
     //$('#account').html(userInfo.Account);
 
@@ -102,10 +105,13 @@ function swalInfo(title,msg,type){
     swal(title,msg,type);
 }
 
-function loading(loadId,flag) {
+function loading(flag,type) {
+    if(!type){
+        type = "1";
+    }
     if(flag){
-        $('#'+loadId).fadeIn(100);
+        $('#loading'+type).fadeIn(300);
     }else{
-        $('#'+loadId).fadeOut(100);
+        $('#loading'+type).fadeOut(300);
     }
 }

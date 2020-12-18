@@ -1,0 +1,50 @@
+#tab2 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: 15.5vw!important;
+    height: 30px;
+}
+.timeItem{
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    width: 100px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    float: left;
+    text-align: center;
+}
+.timeItem:hover{
+    background: #6195ff;
+    color: white;
+    border-color: #6195ff;
+}
+.timeItemActive{
+    background: #6195ff;
+    border: 1px solid #6195ff;
+    color: white;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    width: 100px;
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    float: left;
+    text-align: center;
+}
+.timeItemActive:hover{
+    opacity: 0.75;
+}
+.timeItem-disabled{
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    width: 100px;
+    border-radius: 4px;
+    margin-right: 5px;
+    background: #eee;
+    cursor: not-allowed;
+    float: left;
+    text-align: center;
+}

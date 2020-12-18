@@ -15,6 +15,8 @@ func init() {
 	orm.RegisterModel(new(Message))
 	orm.RegisterModel(new(Type))
 	orm.RegisterModel(new(Device))
+	orm.RegisterModel(new(Reservation))
+	orm.RegisterModel(new(Setting))
 }
 
 //下面是统一的表名管理
@@ -54,4 +56,10 @@ func TypeTBName() string {
 }
 func DeviceTBName() string {
 	return TableName("device")
+}
+func ReservationTBName() string {
+	return TableName("reservation")
+}
+func SettingTBName() string {
+	return TableName("setting")
 }

@@ -26,6 +26,7 @@ Plugin Css
 /* Bootstrap switch */
 @import url('../../static/plugins/bootstrap/bootstrap-switch/bootstrap-switch.min.css');
 @import url('../../static/plugins/bootstrap/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css');
+@import url('../../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css');
 /* Data Tables */
 @import url('../../static/plugins/datatables/datatables.css');
 
