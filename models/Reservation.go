@@ -90,7 +90,7 @@ func (this *Reservation) ListByPage(qMap map[string]interface{}) ([]orm.Params, 
 	var maps []orm.Params
 	o := orm.NewOrm()
 	//sql := "SELECT r.*,u.name,u.phone from user u,"+ReservationTBName()+" r where u.id=r.uid "
-	sql := "SELECT r.*,u.name,u.phone,d.name as deviceName,s.value as time from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id "
+	sql := "SELECT r.*,u.name,u.company,u.phone,d.name as deviceName,s.value as time from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id "
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql += " and (r.remark like \"%" + key + "%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"

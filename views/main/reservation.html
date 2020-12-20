@@ -51,8 +51,9 @@
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
-                                <th>用户姓名</th>
-                                <th>手机号码</th>
+                                <th>姓名</th>
+                                <th>单位</th>
+                                <th>手机</th>
                                 <th>设备名称</th>
                                 <th>预约日期</th>
                                 <th>预约时间</th>
@@ -141,10 +142,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >用户姓名：<span class="name"></span></p>
+                        <p class="form-control-static" >姓名：<span class="name"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >手机号码：<span class="phone"></span></p>
+                        <p class="form-control-static" >单位：<span class="company"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >手机：<span class="phone"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
                         <p class="form-control-static" >设备名称：<span class="deviceName"></span></p>
@@ -266,6 +270,7 @@
 <script type="text/javascript" src="../../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <script src="../../static/js/util/util.js"></script>
 <script src="../../static/js/util/timeUtil.js"></script>
+<script src="../../static/js/util/stringUtil.js"></script>
 <script src="../../static/plugins/datatables/datatables.min.js"></script>
 <script src="../../static/js/main/reservation.js?v={{ .random}}"></script>
 

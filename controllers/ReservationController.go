@@ -30,16 +30,16 @@ func (this *ReservationController) List() {
 	sortType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "3" {
+	if sortNum == "4" {
 		sortCol = "date"
 	}
-	if sortNum == "5" {
+	if sortNum == "6" {
 		sortCol = "status"
 	}
-	if sortNum == "6" {
+	if sortNum == "7" {
 		sortCol = "updated"
 	}
-	if sortNum == "7" {
+	if sortNum == "8" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -101,7 +101,7 @@ func (this *ReservationController) Add() {
 		device.UpdateNum("reservation", strconv.Itoa(deviceId))
 		this.jsonResult(200, 1, "操作成功", nil)
 	} else {
-		this.jsonResult(200, -1, "操作失败，请稍后再试!", err.Error())
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
 }
 
@@ -118,7 +118,7 @@ func (this *ReservationController) Update() {
 	if err == nil {
 		this.jsonResult(200, 1, "操作成功", nil)
 	} else {
-		this.jsonResult(200, -1, "操作失败，请稍后再试!", err.Error())
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
 }
 
@@ -132,7 +132,7 @@ func (this *ReservationController) Delete() {
 	if err == nil {
 		this.jsonResult(200, 1, "删除数据成功！", nil)
 	} else {
-		this.jsonResult(200, -1, "删除数据失败,请稍后再试！", err.Error())
+		this.jsonResult(200, -1, "删除数据失败,"+err.Error(), err.Error())
 	}
 }
 

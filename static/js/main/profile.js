@@ -16,8 +16,8 @@ $(function () {
             tipTip("账号不可为纯数字!");
             return
         }
-        if(account.length<6){
-            tipTip("账号长度不可少于6个字符!");
+        if(account.length<5){
+            tipTip("账号长度不可少于5个字符!");
             return
         }
         if(!password1){
@@ -45,19 +45,12 @@ $(function () {
             tipTip("邮箱地址格式不正确!");
             return
         }
-
+        let formData = formUtil('infoForm');
+        formData["_xsrf"] = $("#token", parent.document).val();
         $.ajax({
             url:"/main/user/updateProfile",
             type:"POST",
-            data:{
-                id:userInfo.Id,
-                account:account,
-                password:password1,
-                name:$('#name').val().trim(),
-                phone:phone,
-                email:email,
-                _xsrf:$('#token').val()
-            },
+            data:formData,
             beforeSend:function () {
                 $('#loading').fadeIn(200);
             },
@@ -190,6 +183,10 @@ function renderForm() {
         $('#phone').val(userInfo.Phone);
         let active = userInfo.Active;
         $('#email').val(userInfo.Email);
+        $('#infoForm').find("input[name='name']").val(userInfo.Name);
+        $('#infoForm').find("input[name='company']").val(userInfo.Company);
+        $('#infoForm').find("input[name='teacher']").val(userInfo.Teacher);
+        $('#infoForm').find("input[name='address']").val(userInfo.Address);
         /*if(actived===0&&userInfo.Email){
             let dom = $('#email').parent().find("span");
             $(dom).html("邮箱地址未验证,该地址将用于找回密码");

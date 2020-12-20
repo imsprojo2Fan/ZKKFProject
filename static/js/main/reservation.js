@@ -170,8 +170,8 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,4,8 ] }],//指定哪些列不排序
-        "order": [[ 7, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,3,5,9 ] }],//指定哪些列不排序
+        "order": [[ 8, "desc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 50,
         ajax: {
@@ -183,25 +183,16 @@ $(document).ready(function() {
         },
         columns: [
             { data: 'name',"render":function (data) {
-                    if(!data){
-                        return "-";
-                    }
-                    return data;
+                    return stringUtil.maxLength(data,3);
                 }},
+            { data: 'company',"render":function (data) {
+                    return stringUtil.maxLength(data,6);
+                } },
             { data: 'phone',"render":function (data) {
-                    if(!data){
-                        return "-";
-                    }else{
-                        return data;
-                    }
+                    return stringUtil.maxLength(data,11);
                 } },
             { data: 'deviceName',"render":function (data) {
-                    let title = data;
-                    if(data.length>15){
-                        let temp = data.substring(0,15)+"...";
-                        return "<span title='"+title+"'>"+temp+"</span>"
-                    }
-                    return title;
+                    return stringUtil.maxLength(data,15);
                 } },
             { data: 'date',"render":function (data) {
                     if(!data){
@@ -212,12 +203,7 @@ $(document).ready(function() {
 
                 } },
             { data: 'time',"render":function (data) {
-                    if(!data){
-                        return "<span>-</span>";
-                    }else{
-                        return data;
-                    }
-
+                    return stringUtil.maxLength(data);
                 } },
             { data: 'status',"render":function (data) {
                     let str;
@@ -232,7 +218,7 @@ $(document).ready(function() {
                     }
                     return str;
                 } },
-            { data: 'updated',"render":function (data,type,row,meta) {
+            { data: 'updated',"width":"12%","render":function (data,type,row,meta) {
                     if (!data){
                         return "-";
                     }
@@ -240,12 +226,12 @@ $(document).ready(function() {
                     let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
                     return commonTime;
                 }},
-            { data: 'created',"render":function (data,type,row,meta) {
+            { data: 'created',"width":"12%","render":function (data,type,row,meta) {
                     let unixTimestamp = new Date(data);
                     let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
                     return commonTime;
                 }},
-            { data: null,"render":function () {
+            { data: null,"width":"15%","render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"

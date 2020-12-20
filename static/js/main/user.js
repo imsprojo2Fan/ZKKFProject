@@ -48,9 +48,9 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,3,4,7 ] }],//指定哪些列不排序
-        "order": [[ 6, "desc" ]],//默认排序
-        "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 2,3,4,5,9] }],//指定哪些列不排序
+        "order": [[ 8, "desc" ]],//默认排序
+        "lengthMenu": [ [50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 50,
         ajax: {
             url: prefix+'/list',
@@ -60,13 +60,23 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 'account'},
-            { data: 'disabled',"render":function (data) {
-                    if(data==0){
-                        return "<span style='color:green;'>正常</span>";
-                    }else{
-                        return "<span style='color:red;'>禁用</span>";
-                    }
+            { data: 'name',"render":function (data) {
+                    return stringUtil.maxLength(data,3);
+                }},
+            { data: 'company',"render":function (data) {
+                    return stringUtil.maxLength(data,7);
+                }},
+            { data: 'phone',"render":function (data) {
+                    return stringUtil.maxLength(data,11);
+                } },
+            { data: 'email',"render":function (data) {
+                    return stringUtil.maxLength(data,11);
+                } },
+            { data: 'address',"render":function (data) {
+                    return stringUtil.maxLength(data,7);
+                }},
+            { data: 'teacher',"render":function (data) {
+                    return stringUtil.maxLength(data,3);
                 } },
             { data: 'type',"render":function (data) {
                     let str = "";
@@ -83,33 +93,19 @@ $(document).ready(function() {
                     }
                     return str;
                 } },
-            { data: 'phone',"render":function (data) {
-                    if(!data){
-                        return "<span>-</span>";
+            { data: 'disabled',"render":function (data) {
+                    if(data==0){
+                        return "<span style='color:green;'>正常</span>";
                     }else{
-                        return data;
+                        return "<span style='color:red;'>禁用</span>";
                     }
-
                 } },
-            { data: 'email',"render":function (data) {
-                    if(!data){
-                        return "<span>-</span>";
-                    }else{
-                        return data;
-                    }
-
-                } },
-            { data: 'updated',"render":function (data,type,row,meta) {
+            { data: 'created',"width":"12%","render":function (data,type,row,meta) {
                     let unixTimestamp = new Date(data);
                     let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
                     return commonTime;
                 }},
-            { data: 'created',"render":function (data,type,row,meta) {
-                    let unixTimestamp = new Date(data);
-                    let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
-                    return commonTime;
-                }},
-            { data: null,"render":function () {
+            { data: null,"width":"15%","render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
@@ -138,6 +134,7 @@ $(document).ready(function() {
             // 输出当前页的数据到浏览器控制台
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
+            $('#myTable_filter').find('input').attr("placeholder","请输入姓名/手机/邮箱");
             loading(false);
         }
     });
@@ -159,11 +156,7 @@ $(document).ready(function() {
             $('#detailModal').find('.disabled').html("<span style='color: red'>禁用</span>");
         }
         $('#detailModal').find('.gender').html(rowData.gender);
-        if(rowData.name){
-            $('#detailModal').find('.name').html(rowData.name);
-        }else{
-            $('#detailModal').find('.name').html("暂未填写");
-        }
+        $('#detailModal').find('.name').html(stringUtil.maxLength(rowData.name));
 
         let str;
         if(rowData.type==0){
@@ -178,21 +171,12 @@ $(document).ready(function() {
             str = "访客";
         }
         $('#detailModal').find('.type').html(str);
-        let phone = rowData.phone;
-        if(!phone){
-            phone = "暂未填写";
-        }
-        $('#detailModal').find('.phone').html(phone);
-        let email = rowData.email;
-        if(!email){
-            email = "暂未填写";
-        }
-        $('#detailModal').find('.email').html(email);
-        let remark = rowData.remark;
-        if(!remark){
-            remark = "暂未填写";
-        }
-        $('#detailModal').find('.remark').html(remark);
+        $('#detailModal').find('.phone').html(stringUtil.maxLength(rowData.phone));
+        $('#detailModal').find('.company').html(stringUtil.maxLength(rowData.company,10));
+        $('#detailModal').find('.teacher').html(stringUtil.maxLength(rowData.teacher,3));
+        $('#detailModal').find('.address').html(stringUtil.maxLength(rowData.address,15));
+        $('#detailModal').find('.email').html(stringUtil.maxLength(rowData.email,11));
+        $('#detailModal').find('.remark').html(stringUtil.maxLength(rowData.remark,15));
         let created = rowData.created;
         let unixTimestamp = new Date(created) ;
         let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
@@ -225,6 +209,9 @@ $(document).ready(function() {
         $('#editForm').find("input[name='password']").val(rowData.password);
         $('#editForm').find("input[name='phone']").val(rowData.phone);
         $('#editForm').find("input[name='email']").val(rowData.email);
+        $('#editForm').find("input[name='company']").val(rowData.company);
+        $('#editForm').find("input[name='teacher']").val(rowData.teacher);
+        $('#editForm').find("input[name='address']").val(rowData.address);
         $('#editForm').find("textarea[name='remark']").val(rowData.remark);
         $('#tip').html("");
         $('#editModal').modal("show");
@@ -264,8 +251,8 @@ function add(){
         swalParent("账号不可为纯数字!");
         return
     }
-    if (account.length<6){
-        swalParent("系统提示",'账号不能少于6个字符!',"warning");
+    if (account.length<5){
+        swalParent("系统提示",'账号不能少于5个字符!',"warning");
         return;
     }
     if (!password){

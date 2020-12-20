@@ -20,6 +20,9 @@ type User struct {
 	Phone    string
 	Avatar   string `orm:"size(128)"`
 	Gender   string `orm:"size(8)"`
+	Teacher  string //导师
+	Company  string //公司/单位
+	Address  string //地址
 	Birthday string
 	Active   int //是否激活 0未激活 1激活
 	Remark   string
@@ -38,21 +41,17 @@ func (this *User) Insert(obj *User) error {
 	return err
 }
 
-func (this *User) Update(obj *User) bool {
+func (this *User) Update(obj *User) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "type", "disabled", "password", "phone", "email", "gender", "name", "birthday", "avatar", "active", "remark", "updated")
-	if err != nil {
-		return false
-	} else {
-		return true
-	}
+	_, err := o.Update(obj, "type", "disabled", "password", "phone", "email", "gender", "name","teacher","company","address", "birthday", "avatar", "active", "remark", "updated")
+	return err
 }
 
 func (this *User) UpdateProfile(obj *User) bool {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "account", "password", "phone", "email", "name", "birthday", "avatar", "updated")
+	_, err := o.Update(obj, "account", "password", "phone", "email", "name","teacher","company","address", "birthday", "avatar", "updated")
 	if err != nil {
 		return false
 	} else {
@@ -60,15 +59,11 @@ func (this *User) UpdateProfile(obj *User) bool {
 	}
 }
 
-func (this *User) Delete(obj *User) bool {
+func (this *User) Delete(obj *User) error {
 
 	o := orm.NewOrm()
 	_, err := o.Delete(obj)
-	if err != nil {
-		return false
-	} else {
-		return true
-	}
+	return err
 }
 
 func (this *User) Read(id string) (u User, err error) {
@@ -186,7 +181,7 @@ func (this *User) Count(qMap map[string]interface{}) int {
 	sql := "SELECT id from " + UserTBName() + " where 1=1 and account!=\"root\""
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
-		sql = sql + " and (account like \"%" + key + "%\" or email like\"%" + key + "%\" or phone like \"%" + key + "%\")"
+		sql = sql + " and (name like \"%" + key + "%\" or email like\"%" + key + "%\" or phone like \"%" + key + "%\")"
 	}
 	var arr []orm.Params
 	_, _ = o.Raw(sql).Values(&arr)
@@ -199,7 +194,7 @@ func (this *User) ListByPage(qMap map[string]interface{}) []orm.Params {
 	sql := "SELECT * from " + UserTBName() + " where 1=1 and account!=\"root\""
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
-		sql = sql + " and (account like \"%" + key + "%\" or email like\"%" + key + "%\" or phone like \"%" + key + "%\")"
+		sql = sql + " and (name like \"%" + key + "%\" or email like\"%" + key + "%\" or phone like \"%" + key + "%\")"
 	}
 	if qMap["sortCol"] != "" {
 		sortCol := qMap["sortCol"].(string)

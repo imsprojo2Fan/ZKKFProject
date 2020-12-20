@@ -48,10 +48,19 @@ func (this *UserController) List() {
 	sortType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "5" {
-		sortCol = "updated"
+	if sortNum == "0" {
+		sortCol = "name"
+	}
+	if sortNum == "1" {
+		sortCol = "company"
 	}
 	if sortNum == "6" {
+		sortCol = "type"
+	}
+	if sortNum == "7" {
+		sortCol = "disabled"
+	}
+	if sortNum == "8" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -62,7 +71,7 @@ func (this *UserController) List() {
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
 	if uType < 2 { //账号类型小于3的用户可查看所有信息
-		this.jsonResult(200, -1, "查询成功！", "无权限")
+		this.jsonResult(200, -1, "查询成功！", "无操作权限!")
 	}
 
 	obj := new(models.User)
@@ -91,6 +100,10 @@ func (this *UserController) Add() {
 	user.Gender = this.GetString("gender")
 	user.Active, _ = this.GetInt("active")
 	user.Account = this.GetString("account")
+	user.Name = this.GetString("name")
+	user.Teacher = this.GetString("teacher")
+	user.Company = this.GetString("company")
+	user.Address = this.GetString("address")
 	user.Phone = this.GetString("phone")
 	user.Email = this.GetString("email")
 	user.Type, _ = this.GetInt("type")
@@ -126,7 +139,7 @@ func (this *UserController) Add() {
 	if err == nil {
 		this.jsonResult(200, 1, "提交成功", nil)
 	} else {
-		this.jsonResult(200, -1, "提交失败,请稍后再试!", err.Error())
+		this.jsonResult(200, -1, "提交失败,"+err.Error(), err.Error())
 	}
 }
 
@@ -144,6 +157,9 @@ func (this *UserController) Update() {
 	user.Disabled, _ = this.GetInt("disabled")
 	user.Gender = this.GetString("gender")
 	user.Name = this.GetString("name")
+	user.Teacher = this.GetString("teacher")
+	user.Company = this.GetString("company")
+	user.Address = this.GetString("address")
 	user.Password = this.GetString("password")
 	if user.Password != dbUser.Password {
 		key := beego.AppConfig.String("password::key")
@@ -174,11 +190,11 @@ func (this *UserController) Update() {
 	user.Created = dbUser.Created
 	user.Updated = time.Now()
 	user.Remark = this.GetString("remark")
-
-	if user.Update(user) {
+	err = user.Update(user)
+	if err==nil {
 		this.jsonResult(200, 1, "更新用户信息成功", nil)
 	} else {
-		this.jsonResult(200, -1, "更新用户信息失败,请稍后再试", nil)
+		this.jsonResult(200, -1, "更新用户信息失败,"+err.Error(), err.Error())
 	}
 }
 
@@ -201,12 +217,14 @@ func (this *UserController) UpdateProfile() {
 		}
 	}
 	user.Name = this.GetString("name")
+	user.Teacher = this.GetString("teacher")
+	user.Company = this.GetString("company")
+	user.Address = this.GetString("address")
 	dbUser, err := user.Read(strconv.Itoa(user.Id)) //查询数据库的用户信息
 	if err != nil {
 		this.jsonResult(200, -1, "查询用户信息失败!", nil)
 	}
 	user.Gender = this.GetString("gender")
-	user.Name = this.GetString("name")
 	user.Password = this.GetString("password")
 	if user.Password != dbUser.Password {
 		key := beego.AppConfig.String("password::key")
@@ -246,7 +264,7 @@ func (this *UserController) UpdateProfile() {
 	if user.UpdateProfile(user) {
 		this.jsonResult(200, 1, "更新用户信息成功", nil)
 	} else {
-		this.jsonResult(200, -1, "更新用户信息失败,请稍后再试", nil)
+		this.jsonResult(200, -1, "更新用户信息失败,"+err.Error(), nil)
 	}
 }
 
@@ -256,10 +274,11 @@ func (this *UserController) Delete() {
 	if obj.Id == 0 {
 		this.jsonResult(200, -1, "id不能为空！", nil)
 	}
-	if obj.Delete(obj) {
+	err := obj.Delete(obj)
+	if err==nil {
 		this.jsonResult(200, 1, "删除数据成功！", nil)
 	} else {
-		this.jsonResult(200, -1, "删除数据失败,请稍后再试！", nil)
+		this.jsonResult(200, -1, "删除数据失败,"+err.Error(), nil)
 	}
 }
 

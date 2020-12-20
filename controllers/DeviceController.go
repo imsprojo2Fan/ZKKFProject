@@ -106,7 +106,7 @@ func (this *DeviceController) Add() {
 	if err == nil {
 		this.jsonResult(200, 1, "操作成功", nil)
 	} else {
-		this.jsonResult(200, -1, "操作失败", err.Error())
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
 }
 
@@ -135,7 +135,7 @@ func (this *DeviceController) Update() {
 	if err == nil {
 		this.jsonResult(200, 1, "操作成功", nil)
 	} else {
-		this.jsonResult(200, -1, "操作失败", err.Error())
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
 }
 
@@ -149,7 +149,7 @@ func (this *DeviceController) Delete() {
 	if err == nil {
 		this.jsonResult(200, 1, "删除数据成功！", nil)
 	} else {
-		this.jsonResult(200, -1, "删除数据失败,请稍后再试！", err.Error())
+		this.jsonResult(200, -1, "删除数据失败,"+err.Error(), err.Error())
 	}
 }
 
