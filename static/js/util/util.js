@@ -301,3 +301,17 @@ function storageTest(storage){
         return false;
     }
 }
+
+function swalLocal(title,msg,type) {
+    setTimeout(function () {
+        swal(title,msg,type);
+    },200)
+}
+
+function swalParent(title,msg,type) {
+    window.parent.swalInfo(title,msg,type);
+}
+
+function loadingParent(flag,type) {
+    window.parent.loading(flag,type);
+}

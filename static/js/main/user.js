@@ -257,33 +257,38 @@ function add(){
     let phone = $('#addForm').find("input[name='phone']").val().trim();
     let email = $('#addForm').find("input[name='email']").val().trim();
     if (!account){
-        swal("系统提示",'账号不能为空!',"warning");
+        swalParent("系统提示",'账号不能为空!',"warning");
         return;
     }
+    if(!isNaN(account)){
+        swalParent("账号不可为纯数字!");
+        return
+    }
     if (account.length<6){
-        swal("系统提示",'账号不能少于5个字符!',"warning");
+        swalParent("系统提示",'账号不能少于6个字符!',"warning");
         return;
     }
     if (!password){
-        swal("系统提示",'密码不能为空!',"warning");
+        swalParent("系统提示",'密码不能为空!',"warning");
         return;
     }
     if(password.length<8){
-        swal("系统提示",'密码不能少于8个字符!',"warning");
+        swalParent("系统提示",'密码不能少于8个字符!',"warning");
         return;
     }
     if(phone&&!(/^1[3456789]\d{9}$/.test(phone))){
-        swal("系统提示",'手机号格式错误!',"warning");
+        swalParent("系统提示",'手机号格式错误!',"warning");
         return;
     }
     let reg = /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/;
     if(email&&!reg.test(email)){
-        swal("系统提示",'邮箱地址格式错误!',"warning");
+        swalParent("系统提示",'邮箱地址格式错误!',"warning");
         return;
     }
 
     let formData = formUtil('addForm');
     formData["type"] = $('#type').val();
+    formData["gender"] = $('#gender').val();
     formData["disabled"] = $('#disabled').val();
     formData["_xsrf"] = $("#token", parent.document).val();
     formData["active"] = 1;
@@ -303,7 +308,7 @@ function add(){
                 type = "success";
                 reset();
             }
-            swal("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             $('#loading').fadeOut(200);
@@ -314,13 +319,28 @@ function add(){
 function edit(){
     let account = $('#editForm').find('input[name="account"]').val().trim();
     let password = $('#editForm').find('input[name="password"]').val().trim();
+    let phone = $('#editForm').find("input[name='phone']").val().trim();
+    let email = $('#editForm').find("input[name='email']").val().trim();
     if (!account){
-        swal("系统提示",'账号不能为空!',"warning");
+        swalParent("系统提示",'账号不能为空!',"warning");
         return;
     }
 
     if (!password){
-        swal("系统提示",'密码不能为空!',"warning");
+        swalParent("系统提示",'密码不能为空!',"warning");
+        return;
+    }
+    if(password.length<8){
+        swalParent("系统提示",'密码不能少于8个字符!',"warning");
+        return;
+    }
+    if(phone&&!(/^1[3456789]\d{9}$/.test(phone))){
+        swalParent("系统提示",'手机号格式错误!',"warning");
+        return;
+    }
+    let reg = /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/;
+    if(email&&!reg.test(email)){
+        swalParent("系统提示",'邮箱地址格式错误!',"warning");
         return;
     }
     let formData = formUtil('editForm');
@@ -345,7 +365,7 @@ function edit(){
                 type = "success";
                 refresh();
             }
-            swal("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             $('#loading').fadeOut(200);
@@ -369,10 +389,10 @@ function del(id){
         },
         success : function(r) {
             if (r.code == 1) {
-                swal("系统提示",r.msg, "success");
+                swalParent("系统提示",r.msg, "success");
                 refresh();
             }else{
-                swal("系统提示",r.msg, "error");
+                swalParent("系统提示",r.msg, "error");
             }
         },
         complete:function () {
@@ -394,10 +414,6 @@ function reset() {
 
 function refresh() {
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
-}
-
-function swalParent(title,msg,type) {
-    window.parent.swalInfo(title,msg,type);
 }
 
 function loading(flag) {

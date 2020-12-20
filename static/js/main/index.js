@@ -9,6 +9,12 @@ $(function () {
     frameHeight = bodyHeight-50;
     $('#J_iframe').css("height",frameHeight+"px");
 
+    $('.nav-header').on("click",function () {
+        window.open("/","_blank");
+    })
+
+    //swalInfo("测试","ces","success");
+
     //菜单点击
     $(".J_menuItem").on('click',function(){
         $('.J_menuItem').each(function () {
@@ -55,10 +61,12 @@ $(function () {
     },5000);
 
     //console.log(userInfo);
-    if(userInfo.Type<2){
+    if(userInfo.Type<1){
         $('.fa-gg-circle').parent().parent().remove();
         $('.fa-cubes').parent().parent().remove();
         $('.fa-money').parent().parent().remove();
+    }
+    if(userInfo.Type<2){
         $('.fa-user-plus').parent().parent().remove();
     }
     if(userInfo.Type<3){
@@ -102,7 +110,9 @@ window.onresize = function() {
 };
 
 function swalInfo(title,msg,type){
-    swal(title,msg,type);
+    setTimeout(function () {
+        swal(title,msg,type);
+    },200)
 }
 
 function loading(flag,type) {

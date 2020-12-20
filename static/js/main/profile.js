@@ -12,6 +12,14 @@ $(function () {
             tipTip("请填写账号!");
             return
         }
+        if(!isNaN(account)){
+            tipTip("账号不可为纯数字!");
+            return
+        }
+        if(account.length<6){
+            tipTip("账号长度不可少于6个字符!");
+            return
+        }
         if(!password1){
             tipTip("密码不能为空!");
             return
@@ -33,7 +41,7 @@ $(function () {
             swal("系统提示",'手机号格式错误!',"warning");
             return;
         }
-        if(!email&&!checkEmail(email)){
+        if(email&&!checkEmail(email)){
             tipTip("邮箱地址格式不正确!");
             return
         }
@@ -56,9 +64,9 @@ $(function () {
             success:function (r) {
                 if(r.code===1){
                     renderForm();
-                    swal("系统提示",r.msg,"success");
+                    swalParent("系统提示",r.msg,"success");
                 }else{
-                    swal("系统提示",r.msg,"error");
+                    swalParent("系统提示",r.msg,"error");
                 }
             },
             complete:function () {
@@ -202,5 +210,5 @@ function renderForm() {
 }
 
 function tipTip(str) {
-    swal("系统提示",str,"error");
+    swalParent("系统提示",str,"error");
 }

@@ -83,8 +83,8 @@
                                     <label class="col-sm-2 control-label form-label">使用状态</label>
                                     <div class="col-sm-6">
                                         <select id="disabled" class="selectpicker" >
-                                            <option selected value="1">可用</option>
-                                            <option value="0">禁用</option>
+                                            <option selected value="0">可用</option>
+                                            <option value="1">禁用</option>
                                         </select>
                                     </div>
                                 </div>
@@ -102,7 +102,7 @@
                                 <div class="form-group">
                                     <label for="account_edit" class="col-sm-2 control-label form-label"><span class="red">*</span>登录账号</label>
                                     <div class="col-sm-6">
-                                        <input type="text" class="form-control" oninput="value=this.value.replace(/[^\w_]/g,'');" name="account" placeholder="请输入登录账号">
+                                        <input type="text" class="form-control" oninput="value=this.value.replace(/[^\w_]/g,'');" maxlength="20" name="account" placeholder="不可纯数字,至少6个字符,将不可更改">
                                         {{/*<span class="help-block"></span>*/}}
                                     </div>
                                 </div>
@@ -127,7 +127,7 @@
                                 <div class="form-group">
                                     <label for="email" class="col-sm-2 control-label form-label">邮箱地址</label>
                                     <div class="col-sm-6">
-                                        <input type="email" name="email" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="请输入邮箱地址" >
+                                        <input type="email" name="email" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="邮箱地址将用于找回密码" >
                                     </div>
                                 </div>
                                 <div class="form-group">

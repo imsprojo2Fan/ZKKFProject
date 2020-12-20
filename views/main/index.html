@@ -21,6 +21,7 @@
     <link href="../../static/back/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
     <link href="../../static/back/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
     <link href="../../static/back/css/animate.css" rel="stylesheet">
+    <link href="../../static/plugins/sweetalert/sweetalert.min.css" rel="stylesheet">
     <link href="../../static/back/css/style.css?v=4.1.0" rel="stylesheet">
     <link href="../../static/css/loader.css" rel="stylesheet">
     <style>
@@ -85,7 +86,7 @@
                         <div class="dropdown profile-element">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
-                                    <span class="block m-t-xs" style="font-size:20px;">
+                                    <span id="toIndex" class="block m-t-xs" style="font-size:20px;">
                                         <img width="25px" src="../../static/assets/images/icon.png"/>
                                         <strong class="font-bold">中科科辅</strong>
                                     </span>
@@ -94,9 +95,6 @@
                         </div>
                         <div class="logo-element">中科科辅
                         </div>
-                    </li>
-                    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
-                        <span class="ng-scope"></span>
                     </li>
                     <li>
                         <a id="home" autofocus class="J_menuItem" href="/main/home.html">

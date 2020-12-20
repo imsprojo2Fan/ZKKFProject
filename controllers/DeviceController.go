@@ -54,7 +54,7 @@ func (this *DeviceController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-	if uType < 2 { //账号类型小于3的用户可查看所有信息
+	if uType < 1 { //账号类型小于3的用户可查看所有信息
 		this.jsonResult(200, -1, "查询成功！", "无权限")
 	}
 
@@ -62,11 +62,11 @@ func (this *DeviceController) List() {
 	//获取总记录数
 	var records int
 	var dataList []orm.Params
-	records,err = obj.Count(qMap)
+	records, err = obj.Count(qMap)
 	backMap["draw"] = GlobalDraw
 	backMap["recordsTotal"] = records
 	backMap["recordsFiltered"] = records
-	dataList,err = obj.ListByPage(qMap)
+	dataList, err = obj.ListByPage(qMap)
 	backMap["data"] = dataList
 	if len(dataList) == 0 {
 		backMap["data"] = make([]int, 0)
@@ -90,7 +90,7 @@ func (this *DeviceController) Add() {
 	var obj models.Device
 	obj.Did = utils.RandomString(16)
 	obj.Uid = uid
-	obj.Tid,_ = this.GetInt("tid")
+	obj.Tid, _ = this.GetInt("tid")
 	obj.Name = name
 	obj.Title = this.GetString("title")
 	obj.Source = this.GetString("source")
@@ -100,7 +100,7 @@ func (this *DeviceController) Add() {
 	obj.Feature = this.GetString("feature")
 	obj.Range = this.GetString("range")
 	obj.Achievement = this.GetString("achievement")
-	obj.Disabled,_ = this.GetInt("disabled")
+	obj.Disabled, _ = this.GetInt("disabled")
 	obj.Remark = this.GetString("remark")
 	err := obj.Insert(&obj)
 	if err == nil {
@@ -117,8 +117,8 @@ func (this *DeviceController) Update() {
 		this.jsonResult(200, -1, "设备名称不能为空！", nil)
 	}
 	var obj models.Device
-	obj.Id,_ = this.GetInt("id")
-	obj.Tid,_ = this.GetInt("tid")
+	obj.Id, _ = this.GetInt("id")
+	obj.Tid, _ = this.GetInt("tid")
 	obj.Name = name
 	obj.Title = this.GetString("title")
 	obj.Source = this.GetString("source")
@@ -128,7 +128,7 @@ func (this *DeviceController) Update() {
 	obj.Feature = this.GetString("feature")
 	obj.Range = this.GetString("range")
 	obj.Achievement = this.GetString("achievement")
-	obj.Disabled,_ = this.GetInt("disabled")
+	obj.Disabled, _ = this.GetInt("disabled")
 	obj.Remark = this.GetString("remark")
 	obj.Updated = time.Now()
 	err := obj.Update(&obj)
@@ -155,6 +155,6 @@ func (this *DeviceController) Delete() {
 
 func (this *DeviceController) All() {
 	obj := new(models.Device)
-	res,_ := obj.All()
-	this.jsonResult(200, 1, "查询所有信息成功",res)
+	res, _ := obj.All()
+	this.jsonResult(200, 1, "查询所有信息成功", res)
 }

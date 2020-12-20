@@ -74,6 +74,9 @@
 		.auth-box .lead{
 			font-size: 13px!important;
 		}
+		.sweet-alert fieldset{
+			display: none;
+		}
 
 	</style>
 
@@ -108,7 +111,7 @@
                                 <div id="normalLogin">
                                     <div class="form-group">
                                         <label for="account" class="control-label sr-only">账号</label>
-                                        <input type="text" maxlength="20" class="form-control" id="account" value="" placeholder="账号">
+                                        <input type="text" maxlength="30" oninput="value=this.value.replace(/[^\w_]/g,'');" class="form-control" id="account" value="" placeholder="账号/邮箱/手机号">
                                     </div>
                                     <div class="form-group">
                                         <label for="password" class="control-label sr-only">密码</label>
@@ -155,6 +158,7 @@
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap-switch/4.0.0-alpha.1/js/bootstrap-switch.min.js"></script>
 	<script src="../../static/js/util/util.js"></script>
+	<script src="../../static/js/util/browserInfo.js"></script>
 	<script src="../../static/js/login.js"></script>
 	<script>
 

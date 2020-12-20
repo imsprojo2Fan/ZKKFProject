@@ -28,6 +28,9 @@
     <!-- slider JS/CSS -->
     <link href="../static/plugins/slide/settings.css" rel="stylesheet">
     <link href="../static/plugins/slide/shop.plugins.css" rel="stylesheet">
+    <!--Sweet alert-->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.css">
+    <script src="../static/plugins/sweetalert/sweetalert.min.js"></script>
     <!--login-->
     <link rel="stylesheet" type="text/css" href="../static/assets/css/login.css" />
 
@@ -57,6 +60,7 @@
 </head>
 
 <body>
+    <input type="hidden" value="{{ ._xsrf}}" id="token">
     <div class="preloader">
         <div class="lds-ripple">
             <div></div>
@@ -71,7 +75,7 @@
                     <p>——专注于定制化技术服务领域</p>
                 </div><!-- /.topbar-one__left -->
                 <div class="topbar-one__right">
-                    <a id="loginBtn">注册/登录</a>
+                    <a id="loginShowBtn">注册/登录</a>
                 </div><!-- /.topbar-one__right -->
             </div><!-- /.container -->
         </div><!-- /.topbar-one -->
@@ -91,16 +95,16 @@
                                 <a class="a_active" href="index.html">首页</a>
                             </li>
                             <li >
-                                <a href="about.html">材料测试</a>
+                                <a href="index.html">材料测试</a>
                             </li>
                             <li >
-                                <a href="about.html">生物外包</a>
+                                <a href="index.html">生物外包</a>
                             </li>
                             <li >
-                                <a href="about.html">环境检测</a>
+                                <a href="index.html">环境检测</a>
                             </li>
                             <li >
-                                <a href="about.html">科研绘图</a>
+                                <a href="index.html">科研绘图</a>
                             </li>
                             <li >
                                 <a href="contact.html">模拟计算</a>
@@ -798,7 +802,7 @@
                                 <h3 class="footer-widget__title">快速连接</h3><!-- /.footer-widget__title -->
                                 <ul class="footer-widget__links-list list-unstyled">
                                     <li>
-                                        <a href="about.html">关于我们</a>
+                                        <a href="index.html">关于我们</a>
                                     </li>
                                     <li>
                                         <a href="event.html">最新动态</a>
@@ -945,6 +949,7 @@
 
     <div id="loginalert">
         <div class="pd20 loginpd">
+            <div id="alertTip"></div>
             <h3><i class="closealert fr" style=""></i>
                 <div class="clear">
                 </div>
@@ -960,7 +965,7 @@
                     <div class="clear">
                     </div>
                 </div>
-                <h3><span class="login_warning">用户名或密码错误</span>
+                <h3><span class="login_warning">账号或密码错误</span>
                     <div class="clear">
                     </div>
                 </h3>
@@ -968,39 +973,40 @@
                 </div>
                 <div id="form1">
                     <div class="logininput">
-                        <input type="text" class="loginusername" placeholder="邮箱/用户名">
-                        <input type="password" class="loginuserpasswordt" placeholder="密码">
+                        <input type="text" style="ime-mode:disabled" maxlength="30" id="account" class="loginusername" placeholder="账号/邮箱/手机号">
+                        <input type="password" id="password" maxlength="30" class="loginuserpasswordt" placeholder="登录密码">
                     </div>
                     <div class="loginbtn">
                         <div class="logcheckbox fl">
-                            <input id="bcdl" type="checkbox">
+                            <input id="checkbox" type="checkbox">
                             <span>
                                 保持登录&nbsp;&nbsp;&nbsp;<a id="forget" href="javascript:void(0)">忘记密码?</a>
                             </span>
 
                         </div>
-                        <button class="resignBtn">登录</button>
+                        <button id="loginBtn" class="resignBtn">登录</button>
                     </div>
                 </div>
                 <div id="form2" class="logininput" style="display: none">
-                    <input type="text" class="loginusername" placeholder="邮箱/手机号">
-                    <input type="password" class="loginuserpasswordt" placeholder="密码">
+                    <input type="text" id="signInput" class="loginusername" style="ime-mode:disabled" maxlength="30" placeholder="邮箱/手机号">
+                    <input type="password" id="signPassword" class="loginuserpasswordt" placeholder="密码">
                     <div class="codeWrap">
-                        <input type="text" maxlength="6" class="loginusername code" placeholder="验证码">
-                        <button id="codeBtn">获取验证码</button>
+                        <input type="text" id="signCode" maxlength="6" class="loginusername code" placeholder="验证码">
+                        <button id="signCodeBtn">获取验证码</button>
                     </div>
                     <div class="resignWrap">
-                        <button class="resignBtn">注册</button>
+                        <button id="signBtn" class="resignBtn">注册</button>
                     </div>
                 </div>
                 <div id="form3" class="logininput" style="display: none">
-                    <input type="text" class="loginusername" placeholder="邮箱/手机号">
+                    <input type="text" style="ime-mode:disabled" maxlength="30" class="loginusername account" placeholder="邮箱/手机号">
                     <div class="codeWrap">
-                        <input type="text" maxlength="6" class="loginusername code" placeholder="验证码">
-                        <button id="codeBtn">获取验证码</button>
+                        <input type="text" id="forgetCode" maxlength="6" class="loginusername code"  placeholder="验证码">
+                        <button id="forgetCodeBtn">获取验证码</button>
                     </div>
-                    <div class="resignWrap">
-                        <button class="resignBtn">登录</button>
+                    <input type="password" style="display: none" maxlength="30" class="loginusername password" placeholder="密码长度不小于8个字符">
+                    <div class="resignWrap" style="display: none">
+                        <button id="forgetBtn" class="resignBtn">重置密码</button>
                     </div>
                 </div>
 
@@ -1047,17 +1053,17 @@
     <!-- slide js files end -->
     <!--login-->
     <script language="javascript" src="../static/assets/js/jquery.easing.min.js"></script>
-    <script language="javascript" src="../static/assets/js/index_login.js"></script>
     <!-- Custom Scripts -->
     <script src="../static/assets/js/theme.js"></script>
-    <script src="../static/assets/js/index.js"></script>
+    <script src="../static/js/util/util.js"></script>
+    <script src="../static/js/util/browserInfo.js"></script>
+    <script src="../static/js/index.js"></script>
 
     <script>
         //for slide init
         jQuery(document).ready(function() {
             RevolutionSlider.initRSfullWidth();
         });
-
     </script>
 </body>
 

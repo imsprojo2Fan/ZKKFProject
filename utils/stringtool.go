@@ -1,13 +1,16 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+)
 import "crypto/md5"
 import "math/rand"
 import "time"
 import "strconv"
 import (
-	"strings"
 	"encoding/hex"
+	"strings"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -16,6 +19,7 @@ const (
 	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
+
 //将字符串加密成 md5
 func String2md5(str string) string {
 	data := []byte(str)
@@ -47,12 +51,12 @@ func RandomString(length int) string {
 
 func RandomNumber() int32 {
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
-	return  rnd.Int31n(1000000)
+	return rnd.Int31n(1000000)
 }
 
 func RandomNumber2(num int32) int32 {
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
-	return  rnd.Int31n(num)
+	return rnd.Int31n(num)
 }
 func RandomNumber3(num int) int {
 	return rand.Intn(num)
@@ -72,8 +76,6 @@ func RandInt64(min, max int64) int64 {
 	return rand.Int63n(max-min) + min
 }
 
-
-
 func Int2String(arg int) string {
 	return strconv.Itoa(arg)
 }
@@ -83,17 +85,17 @@ func Int32toString(arg int32) string {
 }
 
 // 生成32位MD5
-func MD5(text string) string{
+func MD5(text string) string {
 	ctx := md5.New()
 	ctx.Write([]byte(text))
 	return hex.EncodeToString(ctx.Sum(nil))
 }
+
 //6位随机验证码
 func RandomCode() string {
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	return strconv.FormatInt(int64(rnd.Int31n(1000000)), 10)
 }
-
 
 var src = rand.NewSource(time.Now().UnixNano())
 
@@ -113,4 +115,9 @@ func RandStringBytesMaskImprSrc(n int) string {
 	}
 
 	return string(b)
+}
+func VerifyEmailFormat(email string) bool {
+	pattern := `\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*` //匹配电子邮箱
+	reg := regexp.MustCompile(pattern)
+	return reg.MatchString(email)
 }

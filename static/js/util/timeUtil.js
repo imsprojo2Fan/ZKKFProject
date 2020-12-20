@@ -47,6 +47,28 @@ let dateUtil = {
         let y = date.getFullYear();
         let m = addZero(date.getMonth());
         return y + "-" + m;
+    },
+    //比较日期大小
+    compareDate:function(date1, date2) {
+        let d1 = new Date(date1);
+        let d2 = new Date(date2);
+        if (d1.getTime() >= d2.getTime()) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    //与当前比较时间大小
+    compareTime:function(time) {
+        let curTime = new Date();
+        //把字符串格式转化为日期类
+        let startTime = new Date(Date.parse(time));
+        //进行比较
+        if(startTime>=curTime){
+            return true;
+        }else{
+            return false;
+        }
     }
 };
 function addZero(number) {

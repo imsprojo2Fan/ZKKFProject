@@ -1,6 +1,7 @@
 package main
 
 import (
+	"ZkkfProject/models"
 	_ "ZkkfProject/routers"
 	"ZkkfProject/sysinit"
 	_ "ZkkfProject/sysinit"
@@ -37,6 +38,16 @@ func init() {
 		if id == nil {
 			ctx.Redirect(302, "/timeout")
 		}
+		url := ctx.Input.URL()
+		if !strings.Contains(url, "alive") {
+			var operate models.Operate
+			operate.Ip = session.Get("ip").(string)
+			operate.Client = session.Get("browserInfo").(string)
+			operate.Uid = session.Get("id").(int)
+			operate.Url = url
+			operate.Insert(&operate)
+		}
+
 	}
 	beego.InsertFilter("/main/*", beego.BeforeRouter, FilterUser, false)
 }

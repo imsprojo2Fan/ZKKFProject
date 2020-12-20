@@ -97,7 +97,7 @@ $(document).ready(function() {
     $('#form1').find('.addItem').on("click",function () {
         let arr = $('#form1').find('.imgItem');
         if(arr.length>4){
-            swal("系统提示","最多只上传5张图片","warning");
+            swalParent("系统提示","最多只上传5张图片","warning");
         }
         openWindow("/main/uploadPic?domId=addImgWrap","中科科辅",1000,600);
     });
@@ -105,7 +105,7 @@ $(document).ready(function() {
     $('#form2').find('.addItem').on("click",function () {
         let arr = $('#form2').find('.imgItem');
         if(arr.length>4){
-            swal("系统提示","最多只上传5张图片","warning");
+            swalParent("系统提示","最多只上传5张图片","warning");
             return
         }
         openWindow("/main/uploadPic?domId=editImgWrap","中科科辅",1000,600);
@@ -195,7 +195,7 @@ $(document).ready(function() {
         },
         "fnInitComplete": function(oSettings, json) {
             if(!json){
-                swal("系统提示","登录超时！请刷新页面","error");
+                swalParent("系统提示","登录超时！请刷新页面","error");
                 return false;
             }
         },
@@ -334,7 +334,7 @@ $(document).ready(function() {
 function add(){
     let name = $('#form1').find('.name').val().trim();
     if (!name){
-        swal("系统提示",'设备名称不能为空!',"warning");
+        swalParent("系统提示",'设备名称不能为空!',"warning");
         return;
     }
     let imgSrc = "";
@@ -366,7 +366,7 @@ function add(){
                 type = "success";
                 reset();
             }
-            swal("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             $('#loading').fadeOut(200);
@@ -378,7 +378,7 @@ function edit(){
     let name = $('#form2').find('.name').val().trim();
     //let img = $('#edit_picVal').val();
     if (!name){
-        swal("系统提示",'分组名称不能为空!',"warning");
+        swalParent("系统提示",'分组名称不能为空!',"warning");
         return;
     }
     let imgSrc = "";
@@ -411,7 +411,7 @@ function edit(){
                 type = "success";
                 refresh();
             }
-            swal("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             $('#loading').fadeOut(200);
@@ -436,11 +436,11 @@ function del(id){
         success : function(r) {
             if (r.code == 1) {
                 setTimeout(function () {
-                    swal("系统提示",r.msg, "success");
+                    swalParent("系统提示",r.msg, "success");
                     refresh();
                 },100);
             }else{
-                swal("系统提示",r.msg, "error");
+                swalParent("系统提示",r.msg, "error");
             }
         },
         complete:function () {
@@ -487,10 +487,6 @@ function openRes4Pic(isSuccess,btnId,domId,picName) {
             $(this).parent().remove();
         })
     }
-}
-
-function swalParent(title,msg,type) {
-    window.parent.swalInfo(title,msg,type);
 }
 
 function loading(flag) {

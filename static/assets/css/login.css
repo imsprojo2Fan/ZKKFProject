@@ -118,15 +118,15 @@ body {
     transition:all .1s linear
 }
 ::selection {
-    background:#a3db18;
+    background:#474747;
     color:#fff
 }
 ::-moz-selection {
-    background:#a3db18;
+    background:#474747;
     color:#fff
 }
 ::-webkit-selection {
-    background:#a3db18;
+    background:#474747;
     color:#fff
 }
 .colorlarge .orange {
@@ -1847,7 +1847,7 @@ body {
     padding-bottom:13px
 }
 .logininput .loginusername {
-    margin-top:15px;
+    margin-top:0;
     margin-bottom:10px
 }
 .logcheckbox{
@@ -1861,8 +1861,19 @@ body {
 .logcheckbox span{
     display: inline-block;
 }
+#alertTip{
+    top: 5px;
+    left: 51px;
+    font-size: 16px;
+    display: inline-block;
+    position: absolute;
+    color: red;
+}
 .codeWrap{
     width: 100%;
+}
+#form2 .codeWrap{
+    margin-top: 10px;
 }
 .codeWrap .code{
     width: 100px!important;
@@ -1870,8 +1881,8 @@ body {
     float: left;
     text-indent: 0px!important;
 }
-#codeBtn{
-    width: 100px;
+.codeWrap button{
+    padding: 0 17px;
     height: 35px;
     line-height: 35px;
     color: #fff;
@@ -1881,13 +1892,16 @@ body {
     font-size: 14px;
     border: none;
     cursor: pointer;
-    opacity: 0.8;
+    opacity: 1;
     float: left;
-    margin-top: 15px;
+    margin-top: 0;
     margin-left: 15px;
 }
-.resignWrap{
-    padding-top: 75px;
+#form2 .resignWrap{
+    padding-top: 50px;
+}
+#form3 .resignWrap{
+    padding-top: 10px;
 }
 .resignBtn{
     width: 100%;
@@ -1900,13 +1914,13 @@ body {
     font-size: 18px;
     border: none;
     cursor: pointer;
-    opacity: 0.8;
+    opacity: 1;
 }
 .resignBtn:hover{
-    opacity: 1;
+    opacity: 0.75;
 }
-#codeBtn:hover{
-    opacity: 1;
+.codeWrap button:hover{
+    opacity: 0.75;
 }
 .loginsubmit input {
     width:120px;

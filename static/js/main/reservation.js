@@ -32,6 +32,7 @@ $(document).ready(function() {
         if(!isActive){
             return false;
         }else{
+            renderTime("add");
             $('#tabHref01').addClass("active");
             $(this).removeClass("active");
             $('#tab1').fadeOut(200);
@@ -118,7 +119,7 @@ $(document).ready(function() {
         /*console.log(this.value,
             this.options[this.selectedIndex].value,
             $(this).find("option:selected").val(),);*/
-        renderTime("edit");
+        //renderTime("edit");
     });
 
     //初始化时间选择插件
@@ -134,13 +135,14 @@ $(document).ready(function() {
     });
     $("#addForm").find(".date").val(dateUtil.getNow());
     $("#addForm").find(".date").datepicker().on('hide', function (e) {
+        debugger
         if(!$("#addForm").find(".date").val()){
             $("#addForm").find(".date").val(dateUtil.getNow());
         }
-        renderTime("add");
+        renderTime("add","");
     });
 
-    //初始化时间选择插件
+    /*//初始化时间选择插件
     $("#editForm").find(".date").datepicker({
         language: 'zh-CN', //设置语言
         autoclose: true, //选择后自动关闭
@@ -148,7 +150,7 @@ $(document).ready(function() {
         format: "yyyy-mm-dd",//日期格式
         //todayHighlight: true,
         todayBtn: 'linked',
-        defaultViewDate: dateUtil.getNow(),
+        //defaultViewDate: dateUtil.getNow(),
         startDate:dateUtil.getNow()
     });
     $("#editForm").find(".date").val(dateUtil.getNow());
@@ -157,7 +159,7 @@ $(document).ready(function() {
             $("#editForm").find(".date").val(dateUtil.getNow());
         }
         renderTime("edit");
-    });
+    });*/
 
     //datatable setting
     myTable =$('#myTable').DataTable({
@@ -169,7 +171,7 @@ $(document).ready(function() {
         serverSide: true,
         //bSort:false,//排序
         "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,4,8 ] }],//指定哪些列不排序
-        "order": [[ 6, "desc" ]],//默认排序
+        "order": [[ 7, "desc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 50,
         ajax: {
@@ -222,9 +224,9 @@ $(document).ready(function() {
                     if(data=="0"){
                         str = "<span style='color:orangered'>待确认</span>";
                     }else if(data=="1"){
-                        str = "<span style='color:green'>已确认</span>";
+                        str = "<span style='color:#6195FF'>已确认</span>";
                     }else if(data=="2"){
-                        str = "<span style='color:red'>未完成</span>";
+                        str = "<span style='color:grey'>已取消</span>";
                     }else{
                         str = "<span style='color:green'>已完成</span>";
                     }
@@ -272,6 +274,7 @@ $(document).ready(function() {
             // 输出当前页的数据到浏览器控制台
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
+            $('#myTable_filter').find('input').attr("placeholder","请输入用户名称或手机号");
             loading(false);
         }
     });
@@ -282,13 +285,13 @@ $(document).ready(function() {
     $('#myTable').on("click",".btn-default",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
         if(!rowData.name){
-            $('#detailModal').find('.name').html("-");
+            $('#detailModal').find('.name').html("暂未填写");
         }else{
             $('#detailModal').find('.name').html(rowData.name);
         }
 
         if(!rowData.phone){
-            $('#detailModal').find('.phone').html("-");
+            $('#detailModal').find('.phone').html("暂未填写");
         }else{
             $('#detailModal').find('.phone').html(rowData.phone);
         }
@@ -300,7 +303,7 @@ $(document).ready(function() {
         }else if(status=="1"){
             str = "<span style='color:green'>已确认</span>";
         }else if(status=="2"){
-            str = "<span style='color:red'>未完成</span>";
+            str = "<span style='color:red'>已取消</span>";
         }else{
             str = "<span style='color:green'>已完成</span>";
         }
@@ -338,13 +341,48 @@ $(document).ready(function() {
         $('#editForm').find("input[name='account']").val(rowData.account);
         $('#typeSel2').selectpicker('val',rowData.device_id);
         $("#typeSel2").selectpicker('refresh');
+        let date = rowData.date;
+        date = date.replace("T00:00:00+08:00","");
+        //$('#editDate').val(date).datepicker('setDate',date);
+        //初始化时间选择插件
+        $('#editDate').datepicker({
+            language: 'zh-CN', //设置语言
+            autoclose: true, //选择后自动关闭
+            clearBtn: true,//清除按钮
+            format: "yyyy-mm-dd",//日期格式
+            //todayHighlight: true,
+            todayBtn: 'linked',
+            defaultViewDate: date,
+            startDate:dateUtil.getNow()
+        });
+        $('#editDate').val(date);
+        $('#editDate').datepicker().on('hide', function (e) {
+            let val = $("#editDate").val();
+            if(!val){
+                $("#editDate").val(date);
+            }else{
+                renderTime("edit");
+            }
+        });
+        renderTime("edit",rowData.time_id);
+        let status = rowData.status;
+        $('#status').selectpicker('val',rowData.status);
+        $("#status").selectpicker('refresh');
+        if(status==2||status==3){
+            $("#status").parent().find("button").attr("disabled","true");
+            $('#editBtn').hide();
+        }else{
+            $("#status").parent().find("button").removeAttr("disabled");
+            $('#editBtn').show();
+        }
+
         $('#editForm').find("textarea[name='remark']").val(rowData.remark);
         $('#tip').html("");
         $('#editModal').modal("show");
     });
     $('#myTable').on("click",".btn-danger",function(e){//删除
         rowData = myTable.row($(this).closest('tr')).data();
-        console.log(rowData);
+        //console.log(rowData);
         let id = rowData.id;
 
         swal({
@@ -370,7 +408,7 @@ function add(){
     let timeId = $('#addForm').find(".timeItemActive").attr("mydata");
     let remark = $('#addForm').find("textarea[name='remark']").val().trim();
     if (!timeId){
-        swal("系统提示",'未选择任何时间!',"warning");
+        swalParent("系统提示",'未选择任何时间!',"warning");
         return;
     }
 
@@ -394,10 +432,10 @@ function add(){
             let type = "error";
             if (r.code == 1) {
                 type = "success";
-                renderTime("add");
-                reset();
+                renderTime("add","");
+                $('#addForm').find("textarea[name='remark']").val("");
             }
-            swal("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             $('#loading').fadeOut(200);
@@ -411,15 +449,16 @@ function edit(){
     let timeId = $('#editForm').find(".timeItemActive").attr("mydata");
     let remark = $('#editForm').find("textarea[name='remark']").val().trim();
     if (!timeId){
-        swal("系统提示",'未选择任何时间!',"warning");
+        swalParent("系统提示",'未选择任何时间!',"warning");
         return;
     }
 
     //let formData = formUtil('addForm');
     let formData = {};
-    formData["id"] = deviceId;
+    formData["id"] = $('#editForm').find("input[name='id']").val();
     formData["deviceId"] = deviceId;
     formData["date"] = date;
+    formData["status"] = $('#status').val();
     formData["_xsrf"] = $("#token", parent.document).val();
     formData["timeId"] = timeId;
     formData["remark"] = remark;
@@ -439,7 +478,7 @@ function edit(){
                 type = "success";
                 refresh();
             }
-            swal("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             $('#loading').fadeOut(200);
@@ -450,7 +489,7 @@ function edit(){
 function del(id){
 
     $.ajax({
-        url : "/main/user/delete",
+        url : prefix+"/delete",
         type : "POST",
         dataType : "json",
         cache : false,
@@ -463,10 +502,10 @@ function del(id){
         },
         success : function(r) {
             if (r.code == 1) {
-                swal("系统提示",r.msg, "success");
+                swalParent("系统提示",r.msg, "success");
                 refresh();
             }else{
-                swal("系统提示",r.msg, "error");
+                swalParent("系统提示",r.msg, "error");
             }
         },
         complete:function () {
@@ -475,7 +514,7 @@ function del(id){
     })
 }
 
-function renderTime(type) {
+function renderTime(type,timeId) {
     let deviceId;
     let date;
     let wrapObj;
@@ -491,10 +530,12 @@ function renderTime(type) {
     if(!deviceId){
         return false;
     }
-    loading(true,2);
+    let nowDate = dateUtil.getNow();
+    let useFlag = dateUtil.compareDate(date,nowDate);
+    //loading(true,2);
     $.post("/reservation/timeQuery",{_xsrf:$("#token", parent.document).val(),deviceId:deviceId,date:date},function (res) {
         if(res.code===1){
-            loading(false,2);
+            //loading(false,2);
             let tList = res.data;
             if(tList){
                 wrapObj.html('');
@@ -503,15 +544,20 @@ function renderTime(type) {
                     let isUse = item.isUse;
                     let id = item.tId;
                     let time = item.time;
-                    if(isUse===1){
+                    //判断是否该时段早于当前时间
+                    let timeFlag = dateUtil.compareTime(date+" "+time.substring(0,2)+":00:00");
+                    //当前预约日期小于当前日期时则禁用选择
+                    if(parseInt(timeId)===id){//熏染编辑状态选中
+                        wrapObj.append('<span mydata="'+id+'" class="timeItemActive">'+time+'</span>');
+                    }else if(!useFlag||!timeFlag||isUse===1){
                         wrapObj.append('<span mydata="'+id+'" class="timeItem-disabled">'+time+'</span>');
                     }else{
                         wrapObj.append('<span mydata="'+id+'" class="timeItem">'+time+'</span>');
                     }
                 }
                 $('.timeItem').on("click",function () {
-                    $('.timeItemActive').removeClass("timeItemActive");
                     $('.timeItemActive').addClass("timeItem");
+                    $('.timeItemActive').removeClass("timeItemActive");
                     $(this).addClass("timeItemActive");
                 });
             }else{
@@ -536,10 +582,6 @@ function reset() {
 
 function refresh() {
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
-}
-
-function swalParent(title,msg,type) {
-    window.parent.swalInfo(title,msg,type);
 }
 
 function loading(flag,type) {
