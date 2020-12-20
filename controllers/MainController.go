@@ -17,7 +17,7 @@ func (this *MainController) Index() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	userInfo := session.Get("user").(*models.User)
 	tMap := make(map[string]interface{})
-	tMap["Type"] = userInfo.Type
+	tMap["type"] = userInfo.Type
 	tMap["account"] = userInfo.Account
 	this.Data["userInfo"] = tMap
 	this.Data["account"] = session.Get("account")

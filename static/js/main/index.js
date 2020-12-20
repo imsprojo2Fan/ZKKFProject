@@ -5,6 +5,12 @@ let clientWidth = window.innerWidth||document.documentElement.clientWidth||docum
 let clientHeight = window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight;
 
 $(function () {
+    let account = userInfo.account;
+    if(account.length>6){
+        account = account.substring(0,3)+"...";
+    }
+    $('#account').parent().attr("title","Hi,"+userInfo.account);
+    $('#account').html(account);
     bodyHeight = window.innerHeight;
     frameHeight = bodyHeight-50;
     $('#J_iframe').css("height",frameHeight+"px");
@@ -61,15 +67,15 @@ $(function () {
     },5000);
 
     //console.log(userInfo);
-    if(userInfo.Type<1){
+    if(userInfo.type<1){
         $('.fa-gg-circle').parent().parent().remove();
         $('.fa-cubes').parent().parent().remove();
         $('.fa-money').parent().parent().remove();
     }
-    if(userInfo.Type<2){
+    if(userInfo.type<2){
         $('.fa-user-plus').parent().parent().remove();
     }
-    if(userInfo.Type<3){
+    if(userInfo.type<3){
         $('.fa-cogs').parent().parent().remove();
     }
     //$('#account').html(userInfo.Account);
