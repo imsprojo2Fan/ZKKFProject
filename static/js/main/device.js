@@ -186,6 +186,7 @@ $(document).ready(function() {
             { data: null,"render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
+                    html += "<a href='javascript:void(0);' class='preview btn btn-success btn-xs'></i>预览</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
                     return html;
                 } }
@@ -207,7 +208,7 @@ $(document).ready(function() {
         "fnPreDrawCallback": function (oSettings) {
             loading(true);
         },
-        "drawCallback": function( settings ) {
+        "drawCallback": function(settings) {
             let api = this.api();
             // 输出当前页的数据到浏览器控制台
             //console.log( api.rows( {page:'current'} ).data );
@@ -294,6 +295,7 @@ $(document).ready(function() {
         $('#editImgWrap').find(".imgItem").remove();
         if(rowData.img){
             let imgArr = rowData.img.split(",");
+            $('#editImgWrap').find(".addItem").hide();
             for(let i=0;i<imgArr.length;i++){
                 $('#editImgWrap').append('' +
                     '<div class="imgItem">\n ' +
@@ -304,6 +306,7 @@ $(document).ready(function() {
             //图片删除按钮点击事件
             $('.fa-window-close').on('click',function () {
                 $(this).parent().remove();
+                $('#editImgWrap').find(".addItem").show();
             })
         }
         $('#tip').html("");
@@ -311,7 +314,7 @@ $(document).ready(function() {
     });
     $('#myTable').on("click",".btn-danger",function(e){//删除
         rowData = myTable.row($(this).closest('tr')).data();
-        console.log(rowData);
+        //console.log(rowData);
         let id = rowData.id;
 
         swal({
@@ -328,6 +331,11 @@ $(document).ready(function() {
         });
 
     });
+    $('#myTable').on("click",".preview",function (e) {
+        rowData = myTable.row($(this).closest('tr')).data();
+        let rid = rowData.rid;
+        window.open("/detail/"+rid,"_blank");
+    })
 
 } );
 
@@ -449,6 +457,40 @@ function del(id){
     })
 }
 
+function preview(oType) {
+    let formId = "#form1";
+    let imgWrap = "addImgWrap";
+    let typeWrap = "#selWrap1";
+    if(oType==="edit"){
+        formId = "#form2";
+        imgWrap = "#editImgWrap";
+    }
+    let name = $(formId).find('.name').val().trim();
+    if (!name){
+        swalParent("系统提示",'设备名称不能为空!',"warning");
+        return false;
+    }
+    let imgSrc = "";
+    $(imgWrap).find(".imgItem").each(function () {
+        let src = $(this).find("img").attr("src");
+        imgSrc = imgSrc+","+src;
+    });
+    if(imgSrc){
+        imgSrc = imgSrc.substring(1,imgSrc.length);
+        imgSrc = imgSrc.replaceAll("/img/","");
+    }
+    let type = $(typeWrap).find("button").attr("title");
+    localStorage.setItem("t-type",type);
+    localStorage.setItem("t-name",name);
+    localStorage.setItem("t-imgSrc",imgSrc);
+    localStorage.setItem("t-sketch",$(formId).find('.sketch').val().trim());
+    localStorage.setItem("t-parameter",$(formId).find('.parameter').val().trim());
+    localStorage.setItem("t-feature",$(formId).find('.feature').val().trim());
+    localStorage.setItem("t-range",$(formId).find('.range').val().trim());
+    localStorage.setItem("t-achievement",$(formId).find('.achievement').val().trim());
+    window.open("/template","_blank");
+}
+
 function reset() {
     $(":input").each(function () {
         $(this).val("");
@@ -477,6 +519,7 @@ function openRes(domId,content) {
 //接收上传图片回调
 function openRes4Pic(isSuccess,btnId,domId,picName) {
     if(isSuccess){
+        $('#'+domId).find(".addItem").hide();
         $('#'+domId).append('' +
             '<div class="imgItem">\n ' +
                 '<i title="点击删除" class="fa fa-window-close" aria-hidden="true"></i>\n' +
@@ -485,6 +528,7 @@ function openRes4Pic(isSuccess,btnId,domId,picName) {
         //图片删除按钮点击事件
         $('.fa-window-close').on('click',function () {
             $(this).parent().remove();
+            $('#'+domId).find(".addItem").show();
         })
     }
 }

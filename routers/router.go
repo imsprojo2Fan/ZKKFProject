@@ -7,8 +7,12 @@ import (
 
 func init() {
 	//网站首页相关
-	beego.Router("/?:url", &controllers.IndexController{}, "*:Redirect")
+	beego.Router("/?:url", &controllers.IndexController{}, "*:Index")
+	beego.Router("/detail/?:rid", &controllers.DeviceController{}, "*:Detail")
+	beego.Router("/reservation/add", &controllers.ReservationController{}, "*:IndexAdd")
+	beego.Router("/other/?:url", &controllers.IndexController{}, "*:Other")
 	beego.Router("/index/mail4index", &controllers.IndexController{}, "*:Mail4Index")
+
 	//登录相关
 	beego.Router("/login", &controllers.LoginController{}, "*:LoginIndex")
 	beego.Router("/validate", &controllers.LoginController{}, "*:Validate")
@@ -38,6 +42,7 @@ func init() {
 	beego.Router("/main/user/updateProfile", &controllers.UserController{}, "POST:UpdateProfile")
 	beego.Router("/main/user/delete", &controllers.UserController{}, "POST:Delete")
 	beego.Router("/main/user/all", &controllers.UserController{}, "POST:All")
+	beego.Router("/main/user/customer", &controllers.UserController{}, "POST:AllCustomer")
 	beego.Router("/main/user/listOne", &controllers.UserController{}, "POST:ListOne")
 	beego.Router("/main/user/validate4mail", &controllers.UserController{}, "POST:Validate4mail")
 	beego.Router("/main/user/mail4confirm", &controllers.UserController{}, "POST:Mail4confirm")

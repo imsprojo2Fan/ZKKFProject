@@ -11,12 +11,11 @@ type IndexController struct {
 	BaseController
 }
 
-func (c *IndexController) Index() {
+func (c *IndexController) Index0() {
 
 	//跳转页面及传递数据
 	c.Data["Website"] = "beego.me"
 	c.Data["Email"] = "astaxie@gmail.com"
-
 	//设置token
 	token := c.XSRFToken()
 	c.Data["_xsrf"] = token
@@ -24,19 +23,42 @@ func (c *IndexController) Index() {
 
 }
 
-func (this *IndexController) Redirect() {
+func (this *IndexController) Index() {
+	urlTxt := this.Ctx.Input.Param(":url")
+	//设置token
+	this.Data["_xsrf"] = this.XSRFToken()
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	id := session.Get("id")
+	//首页判断是否已登录过
+	if id==nil{
+		this.Data["login"] = 0
+	}else{
+		this.Data["login"] = 1
+	}
+
+	if urlTxt==""{
+		urlTxt = "index.html"
+	}
+
+	//读取本地html文档并解析，动态更改节点信息
+	filePath := "./views/"+urlTxt
+	if !strings.HasSuffix(filePath,"html"){
+		filePath += ".html"
+		urlTxt += ".html"
+	}
+	isExit := utils.CheckFileIsExist(filePath)
+	if !isExit{
+		urlTxt = "tip/404.html"
+	}
+	this.TplName = urlTxt
+
+}
+
+func (this *IndexController) Other() {
 
 	urlTxt := this.Ctx.Input.Param(":url")
 	//设置token
 	this.Data["_xsrf"] = this.XSRFToken()
-	if urlTxt==""||urlTxt=="index.html"{
-		this.TplName = "index.html"
-		return
-	}
-	if urlTxt=="login.html"{
-		this.TplName = "login.html"
-		return
-	}
 
 	var backUrl string
 	//读取本地html文档并解析，动态更改节点信息

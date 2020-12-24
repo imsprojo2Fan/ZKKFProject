@@ -176,6 +176,7 @@
                                 <div class="form-group submitWrap">
                                     <div class="col-sm-offset-5">
                                         <a href="javascript:add()" class="btn btn-default">提交</a>&nbsp;&nbsp;
+                                        <a id="reset" href="javascript:preview('add')" class="btn btn-success">本地预览</a>&nbsp;&nbsp;
                                         <a id="reset" href="javascript:reset()" class="btn btn-danger">重置</a>
                                     </div>
                                 </div>
@@ -380,6 +381,10 @@
             <div class="modal-footer">
                 <button type="button" onclick="edit()" class="btn btn-default">
                     提交更新
+                </button>
+                &nbsp;&nbsp;
+                <button type="button" onclick="preview('edit')" class="btn btn-success">
+                    本地预览
                 </button>
             </div>
         </div><!-- /.modal-content -->

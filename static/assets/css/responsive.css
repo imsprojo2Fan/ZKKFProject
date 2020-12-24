@@ -476,7 +476,7 @@
     }
 
     .main-nav-one .logo-box {
-        padding-left: 0;
+        padding-left: 20px;
         padding-right: 0;
         justify-content: space-between;
         width: 100%;

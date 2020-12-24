@@ -217,6 +217,11 @@ func (this *User) All(dataList *[]User) {
 	_, _ = o.Raw("select * from " + UserTBName()).QueryRows(dataList)
 }
 
+func (this *User) AllCustomer(dataList *[]User) {
+	o := orm.NewOrm()
+	_, _ = o.Raw("select * from " + UserTBName() +" where type=0").QueryRows(dataList)
+}
+
 func (this *User) ListByArr(arr string, uList *[]User) {
 	o := orm.NewOrm()
 	_, _ = o.Raw("select * from " + UserTBName() + " where id in(" + arr + ")").QueryRows(uList)

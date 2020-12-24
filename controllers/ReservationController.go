@@ -86,6 +86,12 @@ func (this *ReservationController) Add() {
 	date := this.GetString("date")
 	remark := this.GetString("remark")
 	var obj models.Reservation
+	//查询当前用户当天是否已预约过该设备
+	var res []models.Reservation
+	res,err = obj.ListByUidAndDate(strconv.Itoa(uid),strconv.Itoa(deviceId),date)
+	if len(res)>0{
+		this.jsonResult(200, -1, "当前日期您已预约过,如需更换时间可联系管理员!", nil)
+	}
 	obj.Rid = utils.RandomString(16)
 	obj.Uid = uid
 	obj.Uuid = uuid
@@ -167,4 +173,40 @@ func (this *ReservationController) TimeQuery() {
 		resArr = append(resArr, tMap)
 	}
 	this.jsonResult(200, 1, "查询信息成功", resArr)
+}
+
+func (this *ReservationController) IndexAdd() {
+
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	if session.Get("id")==nil{
+		this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
+	}
+	uid := session.Get("id").(int)
+	deviceId, _ := this.GetInt("deviceId")
+	timeId, _ := this.GetInt("timeId")
+	date := this.GetString("date")
+	message := this.GetString("message")
+	var obj models.Reservation
+	//查询当前用户当天是否已预约过该设备
+	res,err := obj.ListByUidAndDate(strconv.Itoa(uid),strconv.Itoa(deviceId),date)
+	if len(res)>0{
+		this.jsonResult(200, -1, "当前日期您已预约过,如需更换时间请联系客服!", nil)
+	}
+	obj.Rid = utils.RandomString(16)
+	obj.Uid = uid
+	obj.Uuid = uid
+	obj.Date = utils.StrToDate(date)
+	obj.TimeId = timeId
+	obj.DeviceId = deviceId
+	obj.Status = 0
+	obj.Message = message
+	err = obj.Insert(&obj)
+	if err == nil {
+		//更新预约数
+		var device models.Device
+		device.UpdateNum("reservation", strconv.Itoa(deviceId))
+		this.jsonResult(200, 1, "预约成功", nil)
+	} else {
+		this.jsonResult(200, -1, "预约失败,"+err.Error(), err.Error())
+	}
 }

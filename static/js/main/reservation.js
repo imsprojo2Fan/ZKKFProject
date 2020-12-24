@@ -39,6 +39,44 @@ $(document).ready(function() {
             $("#tab2").fadeIn(200);
         }
     });
+
+    // 中文重写select 查询为空提示信息
+    $('#userSel1').selectpicker({
+        noneSelectedText: '下拉选择用户',
+        noneResultsText: '无匹配选项',
+        maxOptionsText: function (numAll, numGroup) {
+            let arr = [];
+            arr[0] = (numAll == 1) ? '最多可选中数为{n}' : '最多可选中数为{n}';
+            arr[1] = (numGroup == 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)';
+            return arr;
+        },
+        liveSearch: true,
+        size:10   //设置select高度，同时显示5个值
+    });
+    $("#userSel1").selectpicker('refresh');
+    //初始化设备数据
+    $.post("/main/user/customer",{_xsrf:$("#token", parent.document).val()},function (res) {
+        if(res.code===1){
+            //loading(false,2);
+            let tList = res.data;
+            if(tList){
+                $('#userSel1').html('');
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i];
+                    let name = item.Name;
+                    if(!name){
+                        name = "未填写名字";
+                    }
+                    $('#userSel1').append('<option value="'+item.Id+'">'+name+'</option>');
+                }
+            }else{
+                $('#userWrap1').html('');
+                $('#userWrap1').append('<span style="color: red;display: block;margin-top: -24px">暂无用户，请先添加!</span>');
+            }
+            $('#userSel1').selectpicker('refresh');
+        }
+    });
+
     // 中文重写select 查询为空提示信息
     $('#typeSel1').selectpicker({
         noneSelectedText: '下拉选择设备',
@@ -135,31 +173,11 @@ $(document).ready(function() {
     });
     $("#addForm").find(".date").val(dateUtil.getNow());
     $("#addForm").find(".date").datepicker().on('hide', function (e) {
-        debugger
         if(!$("#addForm").find(".date").val()){
             $("#addForm").find(".date").val(dateUtil.getNow());
         }
         renderTime("add","");
     });
-
-    /*//初始化时间选择插件
-    $("#editForm").find(".date").datepicker({
-        language: 'zh-CN', //设置语言
-        autoclose: true, //选择后自动关闭
-        clearBtn: true,//清除按钮
-        format: "yyyy-mm-dd",//日期格式
-        //todayHighlight: true,
-        todayBtn: 'linked',
-        //defaultViewDate: dateUtil.getNow(),
-        startDate:dateUtil.getNow()
-    });
-    $("#editForm").find(".date").val(dateUtil.getNow());
-    $("#editForm").find(".date").datepicker().on('hide', function (e) {
-        if(!$("#editForm").find(".date").val()){
-            $("#editForm").find(".date").val(dateUtil.getNow());
-        }
-        renderTime("edit");
-    });*/
 
     //datatable setting
     myTable =$('#myTable').DataTable({
@@ -270,17 +288,9 @@ $(document).ready(function() {
     let rowData;
     $('#myTable').on("click",".btn-default",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
-        if(!rowData.name){
-            $('#detailModal').find('.name').html("暂未填写");
-        }else{
-            $('#detailModal').find('.name').html(rowData.name);
-        }
-
-        if(!rowData.phone){
-            $('#detailModal').find('.phone').html("暂未填写");
-        }else{
-            $('#detailModal').find('.phone').html(rowData.phone);
-        }
+        $('#detailModal').find('.name').html(stringUtil.maxLength(rowData.name));
+        $('#detailModal').find('.company').html(stringUtil.maxLength(rowData.company));
+        $('#detailModal').find('.phone').html(stringUtil.maxLength(rowData.phone));
 
         let str;
         let status = rowData.status;
@@ -390,6 +400,7 @@ $(document).ready(function() {
 
 function add(){
     let deviceId = $('#typeSel1').val();
+    let userId = $('#userSel1').val();
     let date = $('#addForm').find("input[name='date']").val().trim();
     let timeId = $('#addForm').find(".timeItemActive").attr("mydata");
     let remark = $('#addForm').find("textarea[name='remark']").val().trim();
@@ -400,6 +411,7 @@ function add(){
 
     //let formData = formUtil('addForm');
     let formData = {};
+    formData["uuid"] = userId;
     formData["deviceId"] = deviceId;
     formData["date"] = date;
     formData["_xsrf"] = $("#token", parent.document).val();

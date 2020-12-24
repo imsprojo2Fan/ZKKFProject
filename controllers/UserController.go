@@ -289,6 +289,13 @@ func (this *UserController) All() {
 	this.jsonResult(200, 1, "查询所有用户信息", dataList)
 }
 
+func (this *UserController) AllCustomer() {
+	user := new(models.User)
+	var dataList []models.User
+	user.AllCustomer(&dataList)
+	this.jsonResult(200, 1, "查询所有用户信息", dataList)
+}
+
 func (this *UserController) Validate4mail() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 

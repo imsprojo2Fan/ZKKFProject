@@ -61,12 +61,14 @@
 
 <body>
     <input type="hidden" value="{{ ._xsrf}}" id="token">
+    <input type="hidden" value="{{ .login}}" id="loginFlag">
     <div class="preloader">
         <div class="lds-ripple">
             <div></div>
             <div></div>
         </div>
     </div><!-- /.preloader -->
+
     <div class="page-wrapper">
 
         <div class="topbar-one">
@@ -376,7 +378,6 @@
         </div>
         <!-- banner end -->
 
-
         <section class="exhibition-one">
             <div class="container">
                 <div class="block-title-two text-center">
@@ -421,7 +422,6 @@
                 </div><!-- /.row -->
             </div><!-- /.container -->
         </section><!-- /.exhibition-one -->
-
 
         <section class="collection-one" style="background-image: url(../static/assets/images/shapes/collection-bg-1-1.jpg);">
             <div class="container">
@@ -1057,7 +1057,8 @@
     <script src="../static/assets/js/theme.js"></script>
     <script src="../static/js/util/util.js"></script>
     <script src="../static/js/util/browserInfo.js"></script>
-    <script src="../static/js/index.js"></script>
+    <script src="../static/js/index/login.js"></script>
+    <script src="../static/js/index/index.js"></script>
 
     <script>
         //for slide init

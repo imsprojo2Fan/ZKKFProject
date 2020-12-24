@@ -444,7 +444,7 @@ body {
 .show {
     display:block
 }
-.date {
+/*.date {
     border:1px solid #ced8db;
     padding:0 11px 6px;
     color:#8f8f8f
@@ -462,7 +462,7 @@ body {
     -webkit-text-size-adjust:none;
     display:block;
     text-align:center
-}
+}*/
 .commend {
     padding-top:7px;
     margin-left:15px
@@ -4022,4 +4022,7 @@ body {
 }
 #pofile {
     margin-top:50px
+}
+#loginShowBtn:hover{
+    color: white;
 }

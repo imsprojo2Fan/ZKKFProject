@@ -88,7 +88,7 @@ func (this *DeviceController) Add() {
 		this.jsonResult(200, -1, "设备名称不能为空！", nil)
 	}
 	var obj models.Device
-	obj.Did = utils.RandomString(16)
+	obj.Rid = utils.RandomString(16)
 	obj.Uid = uid
 	obj.Tid, _ = this.GetInt("tid")
 	obj.Name = name
@@ -157,4 +157,36 @@ func (this *DeviceController) All() {
 	obj := new(models.Device)
 	res, _ := obj.All()
 	this.jsonResult(200, 1, "查询所有信息成功", res)
+}
+
+func (this *DeviceController)Detail() {
+	rid := this.Ctx.Input.Param(":rid")
+	if rid==""{
+		this.TplName = "tip/404.html"
+		return
+	}
+	obj := new(models.Device)
+	res, err := obj.DetailByRid(rid)
+	if err!=nil{
+		this.Data["err"] = err.Error()
+	}
+	if len(res)==0{
+		this.TplName = "tip/404.html"
+		return
+	}
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	id := session.Get("id")
+	//首页判断是否已登录过
+	if id==nil{
+		this.Data["login"] = 0
+	}else{
+		this.Data["login"] = 1
+	}
+	if err==nil{
+		obj.UpdateNum("view",rid)
+	}
+	this.Data["_xsrf"] = this.XSRFToken()
+	this.Data["info"] = res[0]
+	this.TplName = "detail.html"
+
 }

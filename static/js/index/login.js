@@ -1,5 +1,9 @@
 let t =0;
 $(function () {
+    let loginFlag = $('#loginFlag').val();
+    if(loginFlag==="1"){
+        $('#loginShowBtn').html("前往个人中心");
+    }
 
     //获取本地存储信息
     let account = getCookieValue("account");
@@ -188,11 +192,21 @@ $(function () {
     $("#loginShowBtn").click(function () {
         let txt = $(this).html();
         if(txt==="前往个人中心"){
+            $('#loginFlag').val("1");
             window.open("/main","_blank");
         }else{
             $(".loginmask").fadeIn(300);
             $("#loginalert").fadeIn(300);
         }
+    });
+    $('.cta-one__btn-block').find("a").on("click",function () {
+        if($('#loginShowBtn').html()==="前往个人中心"){
+            swal("系统提示","您已注册过账号！","info");
+            return
+        }
+        $('#frTip').html("还没账号?<a href=\"javascript:void(0)\">立即注册</a>");
+        $('#frTip').click();
+        $("#loginShowBtn").click();
     });
     $(".loginmask,.closealert").click(function () {
         $(".loginmask").fadeOut(300);
@@ -299,7 +313,6 @@ $(function () {
             }
         });
     });
-
 
     let flag = isMobile.any();
     if(flag){

@@ -1,9 +1,10 @@
 let editor;
+let domId;
 let receive;
 $(document).ready(function() {
-
-    receive = localStorage.getItem($('#domId').val());
-    localStorage.setItem($('#domId').val(),"");
+    domId = $('#domId').val();
+    //receive = $('#'+domId,window.opener).val();
+    receive = window.opener.document.getElementById(domId).value;
     //初始化富文本编辑器
     let E = window.wangEditor;
     editor = new E('#editor');
@@ -91,7 +92,7 @@ $(document).ready(function() {
         let html = editor.txt.html();
         // 获取编辑器纯文本内容
         let text = editor.txt.text();
-        let domId = $('#domId').val();
+        //let domId = $('#domId').val();
         window.opener.openRes(domId,html);
         window.close();
     })

@@ -5,6 +5,14 @@ html{
 body{
     font-size: 14px;
 }
+button:focus,
+button:active{
+    outline: none;
+}
+a:focus,
+a:active{
+    outline: none;
+}
 .page-header {
     padding-bottom: 0px;
     margin: 40px 0 20px;

@@ -10,7 +10,7 @@ import (
 // Model Struct
 type Device struct {
 	Id              int
-	Did             string //唯一识别
+	Rid             string //唯一识别
 	Uid             int    //用户id
 	Tid             int    //分组id
 	Source          string //来源
@@ -29,6 +29,7 @@ type Device struct {
 	Remark          string
 	Updated         time.Time `orm:"auto_now_add;type(datetime)"`
 	Created         time.Time `orm:"auto_now_add;Device(datetime)"`
+	TypeName		string `orm:"-"` //设备
 }
 
 func (a *Device) TableName() string {
@@ -120,6 +121,14 @@ func (this *Device) All() ([]orm.Params, error) {
 
 func (this *Device) UpdateNum(col, condition string) {
 	o := orm.NewOrm()
-	sql := "update " + DeviceTBName() + " set " + col + "=" + col + "+1 where did=\"" + condition + "\" or id=" + condition
-	_, _ = o.Raw(sql).Exec()
+	sql := "update " + DeviceTBName() + " set " + col + "=" + col + "+1 where rid=? or id=?"
+	_, _ = o.Raw(sql,condition,condition).Exec()
+}
+
+func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
+	var res []orm.Params
+	o := orm.NewOrm()
+	sql := "select d.id,d.rid,d.name,d.title,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,t.name as typeName from "+DeviceTBName()+" d,type t where d.tid=t.id and rid=?"
+	_,err := o.Raw(sql,rid).Values(&res)
+	return res, err
 }

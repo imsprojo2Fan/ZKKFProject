@@ -18,6 +18,7 @@ type Reservation struct {
 	TimeId   int       //系统设置表id，时间段选择
 	Status   int       //预约状态，0待确认，1已确认，2已取消，3已完成
 	Remark   string    `orm:"size(255)"`
+	Message string //留言信息
 	Updated  time.Time //`orm:"auto_now_add;type(datetime)"`
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
 }
@@ -130,4 +131,12 @@ func (this *Reservation) TimeQuery(deviceId, date string) ([]Reservation, error)
 	sql := "select * from " + ReservationTBName() + " where device_id=" + deviceId + " and date=\"" + date + "\" and status!=2"
 	_, err := o.Raw(sql).QueryRows(&res)
 	return res, err
+}
+
+func (this *Reservation) ListByUidAndDate(uid,deviceId, date string) ([]Reservation, error) {
+	var res []Reservation
+	o := orm.NewOrm()
+	sql := "select * from " + ReservationTBName() + " where uid="+uid+" and device_id=" + deviceId + " and date=\"" + date + "\" and status!=2"
+	_, err := o.Raw(sql).QueryRows(&res)
+	return res,err
 }

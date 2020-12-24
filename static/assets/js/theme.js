@@ -369,9 +369,9 @@
                 $(this).css('top', '+=' + count + 'px');
             });
         }
-        if ($('.preloader').length) {
+        /*if ($('.preloader').length) {
             $('.preloader').fadeOut('slow');
-        }
+        }*/
 
         if ($('.side-menu__block-inner').length) {
             $('.side-menu__block-inner').mCustomScrollbar({
