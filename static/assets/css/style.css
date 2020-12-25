@@ -575,10 +575,10 @@ a:focus {
 	color: var(--thm-base);
 	text-transform: uppercase;
 	letter-spacing: 0.15em;
-	display: -webkit-box;
+	/*display: -webkit-box;
 	display: flex;
 	-webkit-box-align: center;
-	        align-items: center;
+	align-items: center;*/
 }
 
 .block-title p::before {
@@ -586,7 +586,7 @@ a:focus {
 	width: 60px;
 	height: 2px;
 	background-color: var(--thm-base);
-	display: block;
+	display: none;
 	-webkit-transform: translateX(-50%);
 	        transform: translateX(-50%);
 }
@@ -755,6 +755,7 @@ a:focus {
 	font-size: 16px;
 	color: #cccccc;
 	margin: 0;
+	margin-left: 38px;
 }
 
 .topbar-one__right {

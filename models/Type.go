@@ -14,8 +14,6 @@ type Type struct {
 	Name        string `orm:"size(255)"`
 	Description string `orm:"size(1024)"`
 	Img         string
-	Likes       int     `orm:"size(8)"`
-	Views       int     `orm:"size(8)"`
 	Updated     time.Time `orm:"auto_now_add;type(datetime)"`
 	Created     time.Time `orm:"auto_now_add;type(datetime)"`
 }

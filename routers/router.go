@@ -9,6 +9,8 @@ func init() {
 	//网站首页相关
 	beego.Router("/?:url", &controllers.IndexController{}, "*:Index")
 	beego.Router("/detail/?:rid", &controllers.DeviceController{}, "*:Detail")
+	beego.Router("/type/all", &controllers.TypeController{}, "*:All")
+	beego.Router("/type/device", &controllers.DeviceController{}, "*:ListByType")
 	beego.Router("/reservation/add", &controllers.ReservationController{}, "*:IndexAdd")
 	beego.Router("/other/?:url", &controllers.IndexController{}, "*:Other")
 	beego.Router("/index/mail4index", &controllers.IndexController{}, "*:Mail4Index")

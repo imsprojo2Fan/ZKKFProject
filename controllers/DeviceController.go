@@ -190,3 +190,10 @@ func (this *DeviceController)Detail() {
 	this.TplName = "detail.html"
 
 }
+
+func (this *DeviceController) ListByType() {
+	typeId := this.GetString("typeId")
+	obj := new(models.Device)
+	res, _ := obj.ListByType(typeId)
+	this.jsonResult(200, 1, "查询信息成功", res)
+}

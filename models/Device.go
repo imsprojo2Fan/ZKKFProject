@@ -132,3 +132,14 @@ func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }
+
+func (this *Device) ListByType(tid string) ([]orm.Params, error) {
+	var res []orm.Params
+	o := orm.NewOrm()
+	sql := "select * from " + DeviceTBName()
+	if tid!=""{
+		sql = "select * from " + DeviceTBName() + " where tid="+tid
+	}
+	_, err := o.Raw(sql).Values(&res)
+	return res, err
+}

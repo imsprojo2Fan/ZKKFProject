@@ -1,0 +1,18 @@
+.collection-two{
+    padding-top: 5px;
+    padding-bottom: 25px;
+}
+.block-title-two{
+    padding-top: 0;
+}
+.block-title{
+    padding-bottom: 25px;
+}
+.headLine{
+    width: 20vw;
+    height: 2px;
+    margin: 0 auto;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    background: var(--thm-blue);
+}

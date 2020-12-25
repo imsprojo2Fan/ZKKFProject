@@ -133,6 +133,7 @@
     .main-nav-one .logo-box {
         padding-top: 17.5px;
         padding-bottom: 17.5px;
+        margin-left: 0;
     }
 
     .main-nav-one .main-nav__right {
@@ -466,6 +467,9 @@
         justify-content: center;
         align-items: center;
     }
+    .cta-one h3{
+        font-size: 28px!important;
+    }
 
     .cta-one__btn-two {
         margin-top: 20px;
@@ -476,10 +480,9 @@
     }
 
     .main-nav-one .logo-box {
-        padding-left: 20px;
-        padding-right: 0;
         justify-content: space-between;
         width: 100%;
+        margin-left: 0;
     }
 
     .about-two__sclupture,

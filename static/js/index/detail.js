@@ -55,7 +55,7 @@ $(function () {
     $('#submitBtn').on("click",function () {
         let loginFlag = $('#loginFlag').val();
         if(loginFlag==="0"){
-            swal("系统提示","该操作需登录，请先登录！","warning");
+            swal("系统提示","该操作需用户登录，请先登录！","warning");
             return false
         }
         add();
@@ -66,7 +66,6 @@ $(function () {
 });
 
 function add(){
-    debugger
     let date = $('#dateInput').val().trim();
     let timeId = $('#dateWrap').find(".timeItemActive").attr("mydata");
     let message = $('#message').val().trim();
