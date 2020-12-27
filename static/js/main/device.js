@@ -142,12 +142,7 @@ $(document).ready(function() {
         columns: [
             { data: 'typeName'},
             { data: 'name',"render":function (data) {
-                    let temp = data;
-                    if(temp&&temp.length>15){
-                        temp = temp.substring(0,15)+"...";
-                    }
-
-                    return "<span title='"+data+"'>"+temp+"</span>"
+                    return stringUtil.maxLength(data,8);
                 } },
             { data: 'disabled',"render":function (data) {
                     if(data==="0"){
@@ -157,15 +152,7 @@ $(document).ready(function() {
                     }
                 }},
             { data: 'sketch',"render":function (data) {
-                    let temp = data;
-                    if(!temp){
-                        return "-";
-                    }
-                    if(temp&&temp.length>15){
-                        temp = temp.substring(0,15)+"...";
-                    }
-
-                    return "<span title='"+data+"'>"+temp+"</span>"
+                    return stringUtil.maxLength(data,8);
                 } },
             { data: 'view',"render":function (data) {
                     return data;

@@ -25,6 +25,7 @@ $(function () {
         $('#view').html(1);
         $('.btnWrap').hide();
         $('#dateWrap').hide();
+        $('#messageWrap').hide();
     }else{
         //熏染信息
         $('.parameter').html(info.parameter);

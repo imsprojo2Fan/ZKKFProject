@@ -103,7 +103,7 @@
                             </p>
                             <hr style="margin: 0 0">
                             <div class="itemHead">设备简述</div>
-                            <p>{{.info.sketch}}</p>
+                            <p class="sketch">{{.info.sketch}}</p>
                             <hr>
                             <div class="btnWrap">
                                 <button class="thm-btn contact-one__btn thm-btnActive myBtn" type="button">预约设备</button>
@@ -115,9 +115,10 @@
                                 <div class="itemHead">预约时间</div>
                                 <div class="timeWrap"></div>
                             </div>
-                            <div class="itemHead">备注留言</div>
-                            <textarea id="message"></textarea>
-                            <hr>
+                            <div id="messageWrap">
+                                <div class="itemHead">备注留言</div>
+                                <textarea id="message"></textarea>
+                            </div>
                             <div class="itemHead">仪器参数</div>
                             <div class="itemContent parameter">
                                 {{.info.Parameter}}
