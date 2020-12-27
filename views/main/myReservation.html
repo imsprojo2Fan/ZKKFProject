@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的预约</title>
+    <!-- ========== Css Files ========== -->
+    <link href="../../static/css/root.css" rel="stylesheet">
+    <link href="../../static/css/design.css?v={{ .random}}" rel="stylesheet">
+    <link href="../../static/css/main/reservation.css?v={{ .random}}" rel="stylesheet">
+    <style>
+
+    </style>
+</head>
+<body>
+<input type="hidden" value="{{ ._xsrf}}" id="token">
+<div id="loading" class="loading-wrap">
+    <div class="loader" >
+        <div class="la-ball-clip-rotate-multiple la-3x">
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loaderTxt">数据交互中...</div>
+    </div>
+</div>
+
+<div class="mHead">
+    <!-- Start Page Header -->
+    <div>
+        <ol class="breadcrumb">
+            <li><span id="tabHref01" href="javascript:void(0)">数据列表</span></li>
+        </ol>
+    </div>
+
+</div>
+
+<!-- START CONTENT -->
+<div class="content">
+
+    <!-- START CONTAINER -->
+    <div class="container-padding" >
+
+        <!-- Start Row -->
+        <div class="row">
+
+            <!-- Start Panel -->
+            <div id="panel" class="col-sm-12">
+                <div class="panel panel-default">
+                    <div id="tab1" class="panel-body table-responsive">
+                        <table id="myTable" class="table display">
+                            <thead>
+                            <tr>
+                                <th>设备名称</th>
+                                <th>预约日期</th>
+                                <th>预约时间</th>
+                                <th>预约状态</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- End Panel -->
+
+        </div>
+        <!-- End Row -->
+
+    </div>
+    <!-- END CONTAINER -->
+
+    <!-- 模态框-detail（Modal） -->
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        查看详情
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >设备名称：<span class="deviceName"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >预约日期：<span class="date"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >预约时间：<span class="time"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static">预约状态：<span class="status"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >创建时间：<span id="detail_created"></span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>
+<!-- End Content -->
+
+<script src="../../static/js/jquery.min.js"></script>
+<script src="../../static/plugins/bootstrap/bootstrap.min.js"></script>
+<script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="../../static/plugins/bootstrap/bootstrap-select/bootstrap-select.min.js"></script>
+<script src="../../static/plugins/icheck/icheck.min.js"></script>
+<script type="text/javascript" src="../../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="../../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script src="../../static/js/util/util.js"></script>
+<script src="../../static/js/util/timeUtil.js"></script>
+<script src="../../static/js/util/stringUtil.js"></script>
+<script src="../../static/plugins/datatables/datatables.min.js"></script>
+<script src="../../static/js/main/myReservation.js?v={{ .random}}"></script>
+
+</body>
+</html>

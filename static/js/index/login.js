@@ -19,19 +19,27 @@ $(function () {
         account = $('#account').val().trim();
         password = $('#password').val().trim();
         if(!account){
-            sweetAlert(
+            /*sweetAlert(
                 '系统提示',
                 '账号不能为空！',
                 'warning'
-            )
+            )*/
+            $('#alertTip').html("账号不能为空!");
+            setTimeout(function () {
+                $('#alertTip').html("");
+            },3000);
             return
         }
         if(!password){
-            sweetAlert(
+            /*sweetAlert(
                 '系统提示',
                 '请填写密码！',
                 'warning'
-            )
+            )*/
+            $('#alertTip').html("请填写密码!");
+            setTimeout(function () {
+                $('#alertTip').html("");
+            },3000);
             return
         }
 
@@ -70,7 +78,11 @@ $(function () {
                     $(".loginmask,.closealert").click();
                     //swal("登录成功!",' ',"success");
                 } else {
-                    sweetAlert("系统提示",r.msg,"error");
+                    $('#alertTip').html(r.msg);
+                    setTimeout(function () {
+                        $('#alertTip').html("");
+                    },3000);
+                    //sweetAlert("系统提示",r.msg,"error");
                     $(".swal2-confirm").trigger("blur");
                 }
             },

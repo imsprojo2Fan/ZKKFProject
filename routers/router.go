@@ -8,8 +8,11 @@ import (
 func init() {
 	//网站首页相关
 	beego.Router("/?:url", &controllers.IndexController{}, "*:Index")
+	beego.Router("/template/?:url", &controllers.IndexController{}, "*:Template")
 	beego.Router("/detail/?:rid", &controllers.DeviceController{}, "*:Detail")
 	beego.Router("/type/all", &controllers.TypeController{}, "*:All")
+	beego.Router("/news/all", &controllers.NewsController{}, "*:All")
+	beego.Router("/news/?:rid", &controllers.NewsController{}, "*:Detail")
 	beego.Router("/type/device", &controllers.DeviceController{}, "*:ListByType")
 	beego.Router("/reservation/add", &controllers.ReservationController{}, "*:IndexAdd")
 	beego.Router("/other/?:url", &controllers.IndexController{}, "*:Other")
@@ -31,12 +34,12 @@ func init() {
 	beego.Router("/main/?:redirect", &controllers.MainController{}, "*:Redirect")
 	beego.Router("/main/alive", &controllers.MainController{}, "*:Alive")
 
-	//模板信息管理
-	beego.Router("/main/resume/insert", &controllers.ResumeController{}, "POST:Insert")
-	beego.Router("/main/resume/edit", &controllers.ResumeController{}, "POST:Update")
-	beego.Router("/main/resume/delete", &controllers.ResumeController{}, "POST:Delete")
-	beego.Router("/main/resume/list", &controllers.ResumeController{}, "POST:ListByPage")
-	beego.Router("/index/resume/list", &controllers.ResumeController{}, "POST:ListByPage4Index")
+	//新闻管理
+	beego.Router("/main/news/add", &controllers.NewsController{}, "POST:Add")
+	beego.Router("/main/news/update", &controllers.NewsController{}, "POST:Update")
+	beego.Router("/main/news/delete", &controllers.NewsController{}, "POST:Delete")
+	beego.Router("/main/news/list", &controllers.NewsController{}, "POST:List")
+	beego.Router("/index/news/all", &controllers.NewsController{}, "POST:All")
 	//用户信息管理
 	beego.Router("/main/user/list", &controllers.UserController{}, "POST:List")
 	beego.Router("/main/user/add", &controllers.UserController{}, "POST:Add")
@@ -65,6 +68,7 @@ func init() {
 
 	//预约管理
 	beego.Router("/main/reservation/list", &controllers.ReservationController{}, "POST:List")
+	beego.Router("/main/reservation/list4person", &controllers.ReservationController{}, "POST:ListForPerson")
 	beego.Router("/main/reservation/add", &controllers.ReservationController{}, "POST:Add")
 	beego.Router("/main/reservation/update", &controllers.ReservationController{}, "POST:Update")
 	beego.Router("/main/reservation/delete", &controllers.ReservationController{}, "POST:Delete")

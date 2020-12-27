@@ -54,6 +54,32 @@ func (this *IndexController) Index() {
 
 }
 
+func (this *IndexController) Template()  {
+	urlTxt := this.Ctx.Input.Param(":url")
+	//设置token
+	this.Data["_xsrf"] = this.XSRFToken()
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	id := session.Get("id")
+	//首页判断是否已登录过
+	if id==nil{
+		this.Data["login"] = 0
+	}else{
+		this.Data["login"] = 1
+	}
+
+	//读取本地html文档并解析，动态更改节点信息
+	filePath := "./views/"+urlTxt
+	if !strings.HasSuffix(filePath,"html"){
+		filePath += ".html"
+		urlTxt += ".html"
+	}
+	isExit := utils.CheckFileIsExist(filePath)
+	if !isExit{
+		urlTxt = "tip/404.html"
+	}
+	this.TplName = urlTxt
+}
+
 func (this *IndexController) Other() {
 
 	urlTxt := this.Ctx.Input.Param(":url")

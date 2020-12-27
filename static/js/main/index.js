@@ -71,6 +71,7 @@ $(function () {
         $('.fa-gg-circle').parent().parent().remove();
         $('.fa-cubes').parent().parent().remove();
         $('.fa-money').parent().parent().remove();
+        $('.fa-newspaper-o').parent().parent().remove();
     }
     if(userInfo.type<2){
         $('.fa-user-plus').parent().parent().remove();

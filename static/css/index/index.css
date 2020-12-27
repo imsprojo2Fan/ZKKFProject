@@ -1,6 +1,6 @@
 .collection-two{
-    padding-top: 5px;
-    padding-bottom: 25px;
+    padding-top: 40px;
+    padding-bottom: 40px;
 }
 .block-title-two{
     padding-top: 0;
@@ -15,4 +15,56 @@
     margin-top: 6px;
     margin-bottom: 6px;
     background: var(--thm-blue);
+}
+.blog-one{
+    padding-top: 40px;
+}
+.navLine{
+    margin: 0;
+    background: transparent;
+    height: 0;
+    width: 100%;
+    border: none;
+}
+.connect{
+    text-align: center;
+}
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="date"], input[type="url"], input[type="tel"], textarea {
+    height: 40px;
+    width: 100%;
+    border: none;
+    background: #F4F4F4;
+    border-bottom: 2px solid #EEE;
+    color: #354052;
+    padding: 0 10px;
+    opacity: 0.5;
+    -webkit-transition: 0.2s border-color, 0.2s opacity;
+    transition: 0.2s border-color, 0.2s opacity;
+    margin-bottom: 8px;
+}
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="number"]:focus, input[type="date"]:focus, input[type="url"]:focus, input[type="tel"]:focus, textarea:focus {
+    border-color: #6195FF;
+    opacity: 1;
+}
+.main-btn {
+    background: #6195FF;
+    color: #FFF;
+    font-size: 18px;
+    display: inline-block;
+    padding: 10px 0;
+    width: 100%;
+    border-radius: 0;
+    border: none;
+    -webkit-transition: 0.2s opacity;
+    transition: 0.2s opacity;
+}
+.main-btn:hover, .white-btn:hover, .outline-btn:hover {
+    opacity: 0.75;
+    outline: none !important;
+}
+textarea{
+    height: 125px;
+}
+.formWrap{
+    margin: 0 auto;
 }

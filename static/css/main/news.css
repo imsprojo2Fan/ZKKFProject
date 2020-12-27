@@ -1,0 +1,96 @@
+
+<!--设置滚动条及选中文字样式-->
+#editBody::-webkit-scrollbar {
+    width: 10px;
+    height: 5px;
+    background-color: #eee;
+    -webkit-border-radius: 0;
+}
+#editBody::-webkit-scrollbar:hover {
+    width: 7px;
+}
+#editBody::-webkit-scrollbar-thumb {
+    background: #aeaeae;
+    -webkit-border-radius: 0;
+}
+#editBody::-webkit-scrollbar-thumb:hover,
+#editBody::-webkit-scrollbar-thumb:active {
+    background: #bbb;
+    cursor: pointer;
+}
+#editBody::-moz-selection {
+    background: #060606;
+    color: #fff;
+}
+#editBody::selection {
+    background: #060606;
+    color: #fff;
+}
+#editBody::-moz-selection {
+    background: #060606;
+    color: #fff;
+}
+
+.panel .panel-body {
+    padding-top: 35px!important;
+    padding-bottom: 35px!important;
+}
+.editor{
+    cursor: pointer;
+}
+.imgItem {
+    display: inline-block;
+    margin-left: -6px;
+    float: left;
+    margin-top: 1px;
+}
+.imgItem img{
+    width: 89px;
+    height: 89px;
+}
+.imgItem i{
+    display: inline-block;
+    position: relative;
+    left: 98px;
+    top: -42px;
+    color: red;
+    background: #fff;
+    font-size: 18px;
+    cursor: pointer;
+}
+.addItem{
+    width: 90px;
+    height: 90px;
+    text-align: center;
+    line-height: 80px;
+    display: inline-block;
+    float: left;
+    border: 1px solid #EEE;
+    cursor: pointer;
+}
+.addItem img{
+    width: 30px;
+    height: 30px;
+}
+.remark{
+    margin-top: 6px;
+}
+#editModal .addItem{
+    width: 60px;
+    height: 60px;
+    line-height: 50px;
+}
+#editModal .imgItem img{
+    width: 59px;
+    height: 59px;
+}
+#editModal .imgItem i{
+    left: 70px!important;
+    top: -27px!important;
+}
+#editBody {
+    position: relative;
+    padding: 15px;
+    height: 76vh!important;
+    overflow-y: auto;
+}

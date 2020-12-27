@@ -1,20 +1,47 @@
 $(function () {
 
-    //熏染信息
-    $('.parameter').html(info.parameter);
-    $('.feature').html(info.feature);
-    $('.range').html(info.range);
-    $('.achievement').html(info.achievement);
-    let imgSrc = info.img;
-    if(imgSrc){
-        imgSrc = imgSrc.split(",")[0];
-        $('.blog-details__image').find("img").attr("src","/img/"+imgSrc);
+    //判断是否支持localstorage
+    if(window.Storage && window.localStorage && window.localStorage instanceof Storage){
+        // ....
+    }else{
+        alert("您的浏览器版本太旧，请更换谷歌或火狐!");
+        return
     }
-    $('#type').html(info.typeName);
-    let time = info.created.substring(0,19);
-    time = time.replace("T"," ");
-    $('#created').html(time);
-    $('#view').html(info.view);
+    if(!info){
+        //熏染信息
+        let imgSrc = localStorage.getItem("t-imgSrc");
+        if(imgSrc){
+            imgSrc = imgSrc.split(",")[0];
+            $('.blog-details__image').find("img").attr("src","/img/"+imgSrc);
+        }
+        $('#type').html(localStorage.getItem("t-type"));
+        $('.name').html(localStorage.getItem("t-name"));
+        $('.sketch').html(localStorage.getItem("t-sketch"));
+        $('.parameter').html(localStorage.getItem("t-parameter"));
+        $('.feature').html(localStorage.getItem("t-feature"));
+        $('.range').html(localStorage.getItem("t-range"));
+        $('.achievement').html(localStorage.getItem("t-achievement"));
+        $('#created').html(dateUtil.getNow());
+        $('#view').html(1);
+        $('.btnWrap').hide();
+        $('#dateWrap').hide();
+    }else{
+        //熏染信息
+        $('.parameter').html(info.parameter);
+        $('.feature').html(info.feature);
+        $('.range').html(info.range);
+        $('.achievement').html(info.achievement);
+        let imgSrc = info.img;
+        if(imgSrc){
+            imgSrc = imgSrc.split(",")[0];
+            $('.blog-details__image').find("img").attr("src","/img/"+imgSrc);
+        }
+        $('#type').html(info.typeName);
+        let time = info.created.substring(0,19);
+        time = time.replace("T"," ");
+        $('#created').html(time);
+        $('#view').html(info.view);
+    }
 
     //初始化时间选择插件
     $("#dateInput").datepicker({

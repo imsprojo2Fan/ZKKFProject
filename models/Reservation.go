@@ -78,6 +78,10 @@ func (this *Reservation) Count(qMap map[string]interface{}) (int, error) {
 	o := orm.NewOrm()
 	//sql := "SELECT id from "+ReservationTBName()+" r where 1=1 "
 	sql := "SELECT r.id from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id "
+	if qMap["uid"] !=nil{
+		uid := qMap["uid"].(int)
+		sql += " and r.uuid="+strconv.Itoa(uid)
+	}
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql += " and (r.remark like \"%" + key + "%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"
@@ -92,6 +96,10 @@ func (this *Reservation) ListByPage(qMap map[string]interface{}) ([]orm.Params, 
 	o := orm.NewOrm()
 	//sql := "SELECT r.*,u.name,u.phone from user u,"+ReservationTBName()+" r where u.id=r.uid "
 	sql := "SELECT r.*,u.name,u.company,u.phone,d.name as deviceName,s.value as time from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id "
+	if qMap["uid"] !=nil{
+		uid := qMap["uid"].(int)
+		sql += " and r.uuid="+strconv.Itoa(uid)
+	}
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql += " and (r.remark like \"%" + key + "%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"

@@ -1,5 +1,5 @@
 let myTable;
-let prefix = "/main/device";
+let prefix = "/main/news";
 window.onresize = function() {
     let bodyHeight = window.innerHeight;
     console.log("bodyHeight:"+bodyHeight);
@@ -44,48 +44,6 @@ $(document).ready(function() {
         }
     });
 
-    // 中文重写select 查询为空提示信息
-    $('.tid').selectpicker({
-        noneSelectedText: '下拉选择分组',
-        noneResultsText: '无匹配选项',
-        maxOptionsText: function (numAll, numGroup) {
-            let arr = [];
-            arr[0] = (numAll == 1) ? '最多可选中数为{n}' : '最多可选中数为{n}';
-            arr[1] = (numGroup == 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)';
-            return arr;
-        },
-        liveSearch: true,
-        size:10   //设置select高度，同时显示5个值
-    });
-    $(".tid").selectpicker('refresh');
-    //渲染分组下拉框
-    $('.selWrap').find("button").on("click",function () {
-        loading(true,2);
-    });
-    //初始化分组数据
-    $.post("/main/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
-        if(res.code===1){
-            loading(false,2);
-            let tList = res.data;
-            if(tList){
-                $('#typeSel1').html('');
-                $('#typeSel2').html('');
-                for(let i=0;i<tList.length;i++){
-                    let item = tList[i];
-                    $('#typeSel1').append('<option value="'+item.id+'">'+item.name+'</option>');
-                    $('#typeSel2').append('<option value="'+item.id+'">'+item.name+'</option>');
-                }
-            }else{
-                $('#selWrap1').html('');
-                $('#selWrap2').html('');
-                $('#selWrap1').append('<span style="color: red;display: block;margin-top: -24px">暂无分组，请先添加!</span>');
-                $('#selWrap2').append('<span style="color: red;display: block;margin-top: -24px">暂无分组，请先添加!</span>');
-            }
-            $('#typeSel1').selectpicker('refresh');
-            $('#typeSel2').selectpicker('refresh');
-        }
-    });
-
     $('#uploadPic').on('click',function () {
         openWindow("/main/uploadPic","中科科辅",1000,600);
     });
@@ -114,8 +72,6 @@ $(document).ready(function() {
     //富文本监听事件
     $('.editor').on("click",function () {
         let id = $(this).attr("id");
-        let val = $(this).val();
-        localStorage.setItem(id,val);
         openWindow("/main/editor?domId="+id,"中科科辅",1000,600);
     });
 
@@ -128,8 +84,8 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 1,3,8 ] }],//指定哪些列不排序
-        "order": [[ 7, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 1,5] }],//指定哪些列不排序
+        "order": [[ 4, "desc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 50,
         ajax: {
@@ -140,37 +96,17 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 'typeName'},
-            { data: 'name',"render":function (data) {
-                    let temp = data;
-                    if(temp&&temp.length>15){
-                        temp = temp.substring(0,15)+"...";
-                    }
-
-                    return "<span title='"+data+"'>"+temp+"</span>"
+            { data: 'title',"render":function (data) {
+                    return stringUtil.maxLength(data,15);
                 } },
-            { data: 'disabled',"render":function (data) {
-                    if(data==="0"){
-                        return "<span style='color:green'>上线</span>";
+            { data: 'img',"render":function (data) {
+                    if(data){
+                        return "<img width='30' src=/img/"+data+"/>";
                     }else{
-                        return "<span style='color:red'>下架</span>";
-                    }
-                }},
-            { data: 'sketch',"render":function (data) {
-                    let temp = data;
-                    if(!temp){
                         return "-";
                     }
-                    if(temp&&temp.length>15){
-                        temp = temp.substring(0,15)+"...";
-                    }
-
-                    return "<span title='"+data+"'>"+temp+"</span>"
-                } },
+                }},
             { data: 'view',"render":function (data) {
-                    return data;
-                } },
-            { data: 'reservation',"render":function (data) {
                     return data;
                 } },
             { data: 'updated',"render":function (data,type,row,meta) {
@@ -184,8 +120,8 @@ $(document).ready(function() {
                     return commonTime;
                 }},
             { data: null,"render":function () {
-                    let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
-                    html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
+                    //let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
+                    let html = "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='preview btn btn-success btn-xs'></i>预览</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
                     return html;
@@ -213,7 +149,7 @@ $(document).ready(function() {
             // 输出当前页的数据到浏览器控制台
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
-            $('#myTable_filter').find('input').attr("placeholder","请输入设备名称");
+            $('#myTable_filter').find('input').attr("placeholder","请输入标题");
             loading(false);
         }
     });
@@ -281,17 +217,9 @@ $(document).ready(function() {
     $('#myTable').on("click",".btn-info",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#id').val(rowData.id);
-        $('#editModal').find('.name').val(rowData.name);
-        $('#editModal').find('.disabled').selectpicker('val',rowData.disabled);
-        $('#editModal').find('.disabled').selectpicker('refresh');
-        $('#editModal').find('.title').val(rowData.title);
-        $('#editModal').find('.source').val(rowData.source);
-        $('#editModal').find('.sketch').val(rowData.sketch);
-        $('#editModal').find('.parameter').val(rowData.parameter);
-        $('#editModal').find('.feature').val(rowData.feature);
-        $('#editModal').find('.range').val(rowData.range);
-        $('#editModal').find('.achievement').val(rowData.achievement);
-        $('#editModal').find('.remark').val(rowData.remark);
+        $('#editModal').find('input[name="title"]').val(rowData.title);
+        $('#editModal').find('input[name="source"]').val(rowData.source);
+        $('#editModal').find('input[name="content"]').val(rowData.content);
         $('#editImgWrap').find(".imgItem").remove();
         if(rowData.img){
             let imgArr = rowData.img.split(",");
@@ -334,15 +262,15 @@ $(document).ready(function() {
     $('#myTable').on("click",".preview",function (e) {
         rowData = myTable.row($(this).closest('tr')).data();
         let rid = rowData.rid;
-        window.open("/detail/"+rid,"_blank");
+        window.open("/news/"+rid,"_blank");
     })
 
 } );
 
 function add(){
-    let name = $('#form1').find('.name').val().trim();
-    if (!name){
-        swalParent("系统提示",'设备名称不能为空!',"warning");
+    let title = $('#form1').find('input[name="title"]').val().trim();
+    if (!title){
+        swalParent("系统提示",'新闻标题不能为空!',"warning");
         return;
     }
     let imgSrc = "";
@@ -355,9 +283,7 @@ function add(){
         imgSrc = imgSrc.replaceAll("/img/","");
     }
     let formData = formUtil('form1');
-    formData["tid"] = $('#typeSel1').val();
     formData["img"] = imgSrc;
-    formData["disabled"] = $('#disabledSel1').val();
     formData["_xsrf"] = $("#token", parent.document).val();
     $.ajax({
         url : prefix+"/add",
@@ -383,10 +309,10 @@ function add(){
 }
 
 function edit(){
-    let name = $('#form2').find('.name').val().trim();
+    let title = $('#form2').find('input[name="title"]').val().trim();
     //let img = $('#edit_picVal').val();
-    if (!name){
-        swalParent("系统提示",'分组名称不能为空!',"warning");
+    if (!title){
+        swalParent("系统提示",'新闻标题不能为空!',"warning");
         return;
     }
     let imgSrc = "";
@@ -399,9 +325,7 @@ function edit(){
         imgSrc = imgSrc.replaceAll("/img/","");
     }
     let formData = formUtil('form2');
-    formData["tid"] = $('#typeSel2').val();
     formData["img"] = imgSrc;
-    formData["disabled"] = $('#disabledSel2').val();
     formData["_xsrf"] = $("#token", parent.document).val();
     $.ajax({
         url : prefix+"/update",
@@ -465,9 +389,9 @@ function preview(oType) {
         formId = "#form2";
         imgWrap = "#editImgWrap";
     }
-    let name = $(formId).find('.name').val().trim();
-    if (!name){
-        swalParent("系统提示",'设备名称不能为空!',"warning");
+    let title = $(formId).find('input[name="title"]').val().trim();
+    if (!title){
+        swalParent("系统提示",'新闻标题不能为空!',"warning");
         return false;
     }
     let imgSrc = "";
@@ -479,16 +403,10 @@ function preview(oType) {
         imgSrc = imgSrc.substring(1,imgSrc.length);
         imgSrc = imgSrc.replaceAll("/img/","");
     }
-    let type = $(typeWrap).find("button").attr("title");
-    localStorage.setItem("t-type",type);
-    localStorage.setItem("t-name",name);
-    localStorage.setItem("t-imgSrc",imgSrc);
-    localStorage.setItem("t-sketch",$(formId).find('.sketch').val().trim());
-    localStorage.setItem("t-parameter",$(formId).find('.parameter').val().trim());
-    localStorage.setItem("t-feature",$(formId).find('.feature').val().trim());
-    localStorage.setItem("t-range",$(formId).find('.range').val().trim());
-    localStorage.setItem("t-achievement",$(formId).find('.achievement').val().trim());
-    window.open("/template/detail","_blank");
+    localStorage.setItem("news-title",title);
+    localStorage.setItem("news-imgSrc",imgSrc);
+    localStorage.setItem("news-content",$(formId).find('input[name="content"]').val().trim());
+    window.open("/template/news","_blank");
 }
 
 function reset() {

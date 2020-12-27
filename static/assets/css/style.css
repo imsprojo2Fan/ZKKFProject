@@ -597,7 +597,7 @@ a:focus {
 	color: var(--thm-black);
 	font-size: 44px;
 	margin: 0;
-	margin-top: 25px;
+	margin-top: 15px;
 }
 
 .block-title-two {
@@ -2072,8 +2072,8 @@ a:focus {
 }
 
 .collection-two__content {
+	cursor: pointer;
 	padding-top: 32.5px;
-	padding-bottom: 32.5px;
 	position: absolute;
 	bottom: 0;
 	left: 50%;
@@ -2116,13 +2116,13 @@ a:focus {
 
 .collection-two__content p {
 	margin: 0;
-	text-transform: uppercase;
 	font-size: 16px;
-	color: var(--thm-base);
+	color: #848484;
 	line-height: 1em;
-	margin-top: 20px;
+	margin-top: 10px;
 	-webkit-transition: 500ms;
 	transition: 500ms;
+	padding: 0 15px;
 }
 
 .collection-two__content:hover p {
@@ -2139,22 +2139,22 @@ a:focus {
 }
 
 .collection-two__carousel.owl-theme .owl-nav {
-	margin-top: 160px;
+	margin-top: 100px;
 }
 
 .collection-two__carousel.owl-theme .owl-nav [class*=owl-] {
-	width: 60px;
+	width: 155px;
 	height: 45px;
 	border: 1px solid var(--thm-base);
-	opacity: 50%;
+	opacity: 75%;
 	display: -webkit-box;
 	display: flex;
 	-webkit-box-align: center;
 	        align-items: center;
 	-webkit-box-pack: center;
 	        justify-content: center;
-	-webkit-transition: 500ms;
-	transition: 500ms;
+	-webkit-transition: 200ms;
+	transition: 200ms;
 	position: relative;
 	outline: none;
 	margin: 0;
@@ -2163,7 +2163,8 @@ a:focus {
 
 .collection-two__carousel.owl-theme .owl-nav [class*=owl-]:hover {
 	border-color: var(--thm-base);
-	background-color: transparent;
+	background-color: #fff;
+	color: var(--thm-base);
 	opacity: 100%;
 }
 
@@ -2193,7 +2194,7 @@ a:focus {
 .collection-two__carousel.owl-theme .owl-nav [class*=owl-] span::before {
 	content: '\f30a';
 	color: var(--thm-base);
-	font-size: 17px;
+	font-size: 28px;
 	font-family: "Font Awesome 5 Free";
 	font-weight: 900;
 	position: absolute;
@@ -2561,8 +2562,8 @@ a:focus {
 --------------------------------------------------------------*/
 
 .blog-one {
-	padding-top: 150px;
-	padding-bottom: 120px;
+	padding-top: 40px;
+	padding-bottom: 40px;
 }
 
 .blog-one__top {
@@ -2572,7 +2573,7 @@ a:focus {
 	        align-items: center;
 	-webkit-box-pack: justify;
 	        justify-content: space-between;
-	margin-bottom: 55px;
+	margin-bottom: 15px;
 }
 
 .blog-one__single {
@@ -2581,7 +2582,6 @@ a:focus {
 
 .blog-one__image {
 	overflow: hidden;
-	background-color: var(--thm-black);
 }
 
 .blog-one__image>img {
@@ -3241,7 +3241,7 @@ a:focus {
 /* event two */
 
 .event-two {
-	padding-bottom: 150px;
+	padding-bottom: 40px;
 	position: relative;
 }
 
@@ -3283,7 +3283,7 @@ a:focus {
 	content: '';
 	width: 250px;
 	height: 202px;
-	background-image: url(../images/shapes/event-2-dot-1.png);
+	/*background-image: url(../images/shapes/event-2-dot-1.png);*/
 	background-repeat: no-repeat;
 	background-position: left top;
 	position: absolute;
@@ -3710,8 +3710,8 @@ a:focus {
 --------------------------------------------------------------*/
 
 .cta-one {
-	padding-top: 117px;
-	padding-bottom: 127px;
+	padding-top: 100px;
+	padding-bottom: 100px;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center center;
@@ -4032,19 +4032,20 @@ a:focus {
 --------------------------------------------------------------*/
 
 .brand-one {
-	background-color: #181a1e;
-	padding-top: 66px;
-	padding-bottom: 66px;
+	background-color: #fff;
+	padding-top: 10px;
+	padding-bottom: 50px;
+	box-shadow: 0px 6px 13px 8px rgba(0, 0, 0, 0.06);
 }
 
 .brand-one__carousel img {
-	opacity: 0.6;
+	opacity: 1;
 	-webkit-transition: all 500ms ease;
 	transition: all 500ms ease;
 }
 
 .brand-one__carousel img:hover {
-	opacity: 1;
+	opacity: 0.75;
 }
 
 /*-------------------------------------------------------------- 
@@ -4052,9 +4053,8 @@ a:focus {
 --------------------------------------------------------------*/
 
 .site-footer__upper {
-	padding-bottom: 80px;
-	padding-top: 130px;
-    border-bottom: 1px solid #e5e5e5;
+	padding-bottom: 45px;
+	padding-top: 80px;
 }
 
 .footer-widget {
@@ -4155,7 +4155,8 @@ a:focus {
 }
 
 .site-footer__bottom {
-	padding-top: 30px;
+	background: #0b0b0b;
+	color: #f0dfd8;
 }
 
 .site-footer__bottom .inner-container {
@@ -4173,7 +4174,8 @@ a:focus {
     margin-bottom: 6px;
 }
 .site-footer__bottom-logo img{
-    width: 95px;
+    margin-bottom: -15px;
+	width: 13%;
 }
 
 .site-footer__bottom p {

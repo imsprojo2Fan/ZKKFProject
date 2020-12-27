@@ -302,6 +302,7 @@ function reset() {
     $(":input").each(function () {
         $(this).val("");
     });
+    $('.addItem').show();
     $('#uploadPic').html("上传图片");
     $('#picName').html("");
     $("textarea").each(function () {

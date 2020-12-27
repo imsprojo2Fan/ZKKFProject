@@ -62,7 +62,7 @@
 
 
     if ($('.mc-form').length) {
-        var mcURL = $('.mc-form').data('url');
+        let mcURL = $('.mc-form').data('url');
         $('.mc-form').ajaxChimp({
             url: mcURL,
             callback: function (resp) {
@@ -93,18 +93,14 @@
 
     }
 
-
-
-
     if ($('.datepicker').length) {
         $('.datepicker').datepicker();
     }
 
-
     if ($('.plan-visit__tab-links').length) {
-        var planVisitLink = $('.plan-visit__tab-links').find('.nav-link');
+        let planVisitLink = $('.plan-visit__tab-links').find('.nav-link');
         planVisitLink.on('click', function (e) {
-            var target = $(this).attr('data-target');
+            let target = $(this).attr('data-target');
             // animate
             $('html, body').animate({
                 scrollTop: $(target).offset().top - 50
@@ -163,9 +159,9 @@
         });
     }
     if ($('.img-popup').length) {
-        var groups = {};
+        let groups = {};
         $('.img-popup').each(function () {
-            var id = parseInt($(this).attr('data-group'), 10);
+            let id = parseInt($(this).attr('data-group'), 10);
 
             if (!groups[id]) {
                 groups[id] = [];
@@ -190,10 +186,9 @@
 
     };
     if ($('.wow').length) {
-        var wow = new WOW({
+        let wow = new WOW({
             boxClass: 'wow', // animated element css class (default is wow)
             animateClass: 'animated', // animation css class (default is animated)
-
             mobile: true, // trigger animations on mobile devices (default is true)
             live: true // act on asynchronously loaded content (default is true)
         });
@@ -219,7 +214,7 @@
     }
     if ($('.scroll-to-target').length) {
         $(".scroll-to-target").on('click', function () {
-            var target = $(this).attr('data-target');
+            let target = $(this).attr('data-target');
             // animate
             $('html, body').animate({
                 scrollTop: $(target).offset().top
@@ -257,8 +252,7 @@
             e.preventDefault();
         });
     }
-
-
+    
     if ($('.search-popup__toggler').length) {
         $('.search-popup__toggler').on('click', function (e) {
             $('.search-popup').addClass('active');
@@ -274,7 +268,7 @@
     }
     $(window).on('scroll', function () {
         if ($('.scroll-to-top').length) {
-            var strickyScrollPos = 100;
+            let strickyScrollPos = 100;
             if ($(window).scrollTop() > strickyScrollPos) {
                 $('.scroll-to-top').fadeIn(500);
                 $('#qrCode').fadeIn(500);
@@ -285,8 +279,8 @@
             }
         }
         if ($('.stricked-menu').length) {
-            var headerScrollPos = 100;
-            var stricky = $('.stricked-menu');
+            let headerScrollPos = 100;
+            let stricky = $('.stricked-menu');
             if ($(window).scrollTop() > headerScrollPos) {
                 stricky.addClass('stricky-fixed');
             } else if ($(this).scrollTop() <= headerScrollPos) {
@@ -295,11 +289,11 @@
         }
     });
     if ($('.accrodion-grp').length) {
-        var accrodionGrp = $('.accrodion-grp');
+        let accrodionGrp = $('.accrodion-grp');
         accrodionGrp.each(function () {
-            var accrodionName = $(this).data('grp-name');
-            var Self = $(this);
-            var accordion = Self.find('.accrodion');
+            let accrodionName = $(this).data('grp-name');
+            let Self = $(this);
+            let accordion = Self.find('.accrodion');
             Self.addClass(accrodionName);
             Self.find('.accrodion .accrodion-content').hide();
             Self.find('.accrodion.active').find('.accrodion-content').show();
@@ -323,15 +317,14 @@
 
     $(window).on('load', function () {
 
-
-        if ($('.thm__owl-carousel').length) {
+        /*if ($('.thm__owl-carousel').length) {
             $('.thm__owl-carousel').each(function () {
 
-                var Self = $(this);
-                var carouselOptions = Self.data('options');
-                var carouselPrevSelector = Self.data('carousel-prev-btn');
-                var carouselNextSelector = Self.data('carousel-next-btn');
-                var thmCarousel = Self.owlCarousel(carouselOptions);
+                let Self = $(this);
+                let carouselOptions = Self.data('options');
+                let carouselPrevSelector = Self.data('carousel-prev-btn');
+                let carouselNextSelector = Self.data('carousel-next-btn');
+                let thmCarousel = Self.owlCarousel(carouselOptions);
                 if (carouselPrevSelector !== undefined) {
                     $(carouselPrevSelector).on('click', function () {
                         thmCarousel.trigger('prev.owl.carousel', [1000]);
@@ -346,29 +339,28 @@
                 }
             });
         }
-
         // owl dots margin increment
         if ($('.thm__owl-dot-1').length) {
-            var count = 10;
+            let count = 10;
             $('.thm__owl-dot-1').find('.owl-dot span').each(function () {
                 count += 10;
                 $(this).css('left', '+=' + count + 'px');
             });
         }
         if ($('.thm__owl-dot-rtl-1').length) {
-            var count = 10;
+            let count = 10;
             $('.thm__owl-dot-rtl-1').find('.owl-dot span').each(function () {
                 count += 10;
                 $(this).css('right', '+=' + count + 'px');
             });
         }
         if ($('.thm__owl-dot-2').length) {
-            var count = 10;
+            let count = 10;
             $('.thm__owl-dot-2').find('.owl-dot span').each(function () {
                 count += 10;
                 $(this).css('top', '+=' + count + 'px');
             });
-        }
+        }*/
         /*if ($('.preloader').length) {
             $('.preloader').fadeOut('slow');
         }*/
@@ -379,7 +371,6 @@
                 theme: 'dark'
             });
         }
-        
 
         if ($('.side-content__block-inner').length) {
             $('.side-content__block-inner').mCustomScrollbar({
@@ -391,13 +382,13 @@
         if ($('.custom-cursor__overlay').length) {
 
             // / cursor /
-            var cursor = $(".custom-cursor__overlay .cursor"),
+            let cursor = $(".custom-cursor__overlay .cursor"),
                 follower = $(".custom-cursor__overlay .cursor-follower");
 
-            var posX = 0,
+            let posX = 0,
                 posY = 0;
 
-            var mouseX = 0,
+            let mouseX = 0,
                 mouseY = 0;
 
             TweenMax.to({}, 0.016, {
@@ -424,7 +415,7 @@
             });
 
             $(document).on("mousemove", function (e) {
-                var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 mouseX = e.pageX;
                 mouseY = e.pageY - scrollTop;
             });
@@ -446,7 +437,6 @@
             });
         }
 
-
         if ($('.masonary-layout').length) {
             $('.masonary-layout').isotope({
                 layoutMode: 'masonry',
@@ -455,7 +445,7 @@
         }
 
         if ($('.post-filter').length) {
-            var postFilterList = $('.post-filter li');
+            let postFilterList = $('.post-filter li');
             // for first init
             $('.filter-layout').isotope({
                 filter: '.filter-item',
@@ -467,8 +457,8 @@
             });
             // on click filter links
             postFilterList.children('span').on('click', function () {
-                var Self = $(this);
-                var selector = Self.parent().attr('data-filter');
+                let Self = $(this);
+                let selector = Self.parent().attr('data-filter');
                 postFilterList.children('span').parent().removeClass('active');
                 Self.parent().addClass('active');
 
@@ -486,13 +476,13 @@
         }
 
         if ($('.post-filter.has-dynamic-filter-counter').length) {
-            // var allItem = $('.single-filter-item').length;
+            // let allItem = $('.single-filter-item').length;
 
-            var activeFilterItem = $('.post-filter.has-dynamic-filter-counter').find('li');
+            let activeFilterItem = $('.post-filter.has-dynamic-filter-counter').find('li');
 
             activeFilterItem.each(function () {
-                var filterElement = $(this).data('filter');
-                var count = $('.gallery-content').find(filterElement).length;
+                let filterElement = $(this).data('filter');
+                let count = $('.gallery-content').find(filterElement).length;
                 $(this).children('span').append('<span class="count"><b>' + count + '</b></span>');
             });
         }
