@@ -50,7 +50,7 @@ function renderDevice(){
                     '   <div class="blog-one__single">\n' +
                     '       <div class="blog-one__image">\n' +
                     '           <a target="_blank" href="/detail/'+rid+'">\n' +
-                    '               <img src="/img/'+img+'" onerror="this.src= \'../../static/img/default2.png\'; this.onerror = null;this.style.marginTop=\'18px\';this.style.marginLeft=\'45px\'" alt="">\n' +
+                    '               <img src="/img/'+img+'" onerror="this.src= \'../../static/img/default2.png\'; this.onerror = null;this.style.marginTop=\'0px\';this.style.marginLeft=\'0px\'" alt="">\n' +
                     '           </a>\n' +
                     '       </div>\n' +
                     '       <div class="blog-one__content">\n' +

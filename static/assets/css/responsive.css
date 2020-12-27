@@ -467,6 +467,8 @@
     }
     .devImg{
         width: 19vw!important;
+        margin: 0 auto;
+        height: 255px;
     }
     .newsImg{
         /*width: 125px!important;*/
@@ -488,6 +490,8 @@
 
     .devImg{
         width: 76vw!important;
+        margin: 0 auto;
+        height: 255px;
     }
     .uItem{
         width: 40vw!important;

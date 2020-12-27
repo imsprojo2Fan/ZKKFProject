@@ -53,7 +53,7 @@ function renderDevice(){
                     '   <a target="_blank" href="/detail/'+rid+'">\n' +
                     '   <div class="collection-two__single">\n' +
                     '       <div class="collection-two__image">\n' +
-                    '           <img class="devImg" src="/img/'+img+'" onerror="this.src= \'../../static/img/default2.png\'; this.onerror = null;this.style.marginTop=\'18px\';this.style.marginLeft=\'45px\'" alt="">\n' +
+                    '           <img class="devImg" src="/img/'+img+'" onerror="this.src= \'../../static/img/default2.png\'; this.onerror = null;this.style.marginTop=\'0px\';this.style.marginLeft=\'45px\'" alt="">\n' +
                     '       </div>\n' +
                     '       <div class="collection-two__content">\n' +
                     '           <h3><a target="_blank" href="/detail/'+rid+'">'+head+'</a></h3>\n' +
