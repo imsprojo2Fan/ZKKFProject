@@ -383,7 +383,7 @@ function del(id){
 
 function preview(oType) {
     let formId = "#form1";
-    let imgWrap = "addImgWrap";
+    let imgWrap = "#addImgWrap";
     let typeWrap = "#selWrap1";
     if(oType==="edit"){
         formId = "#form2";
