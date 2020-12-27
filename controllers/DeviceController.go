@@ -140,7 +140,7 @@ func (this *DeviceController) Update() {
 }
 
 func (this *DeviceController) Delete() {
-	obj := new(models.Type)
+	obj := new(models.Device)
 	obj.Id, _ = this.GetInt("id")
 	if obj.Id == 0 {
 		this.jsonResult(200, -1, "id不能为空！", nil)
