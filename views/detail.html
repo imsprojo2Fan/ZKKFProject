@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=0.95, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0" />
     <title>项目详情-中科科辅_中国科研辅助第一站,价格实惠,免费复测,海量仪器,免费试样,上门取样,速度保障</title>
     <meta name="keywords" content="仪器共享,实验服务,研发,检测,互联网+,化学,化工,材料,科研,化学化工,实验外包,仪器租用,第三方检测,仪器租赁,金属材料,FEI Talos F200X，FEI Tecnai G2 F20，FEI Tiatan Themis，TEM，球差，FEI Scios，SEM，FIB，力学，拉伸，EBSD"/>
     <meta name="description" content="中科科辅（北京）科技有限公司（简称中科科辅）,公司着眼于科学研究与技术发展的前沿问题,基于国内外科研水平不对称、资源配置不均衡的现状,具有完善的科研服务平台,致力于打造国内领先,国际知名的科研服务平台,建设一个平等、开放、高水平的个性化科研辅助平台。"/>
@@ -14,7 +14,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="../static/assets/images/icon.png">
 
     <!-- Plugins CSS -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/plugins/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/assets/css/bootstrap-datepicker.min.css">
     <link rel="stylesheet" href="../static/assets/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="../static/css/font-awesome.min.css">
@@ -298,9 +298,61 @@
         </footer><!-- /.site-footer -->
     </div><!-- /.page-wrapper -->
 
-    <div id="lib">
+    <div id="lib" title="点击查看已选实验计划">
         <span>0</span>
         <img src="../static/img/lib.png">
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="libModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">已选实验项目列表</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    <div class="typeItem">
+                        <div class="typeName">TEM微观结构</div>
+                        <hr>
+                        <div class="dWrap">
+                            <div class="dItem">
+                                <i class="fa fa-files-o" aria-hidden="true"></i>
+                                <span class="dName">扫描电子显微镜</span>
+                                <div class="countWrap">
+                                    <span class="cac cac1">-</span>&nbsp;&nbsp;<span class="count">10</span>&nbsp;&nbsp;<span class="cac cac2">+</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="typeItem">
+                        <div class="typeName">TEM微观结构</div>
+                        <hr>
+                        <div class="dWrap">
+                            <div class="dItem">
+                                <i class="fa fa-files-o" aria-hidden="true"></i>
+                                <span class="dName">扫描电子显微镜</span>
+                                <div class="countWrap">
+                                    <span class="cac cac1">-</span>&nbsp;&nbsp;<span class="count">10</span>&nbsp;&nbsp;<span class="cac cac2">+</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary">提交订单</button>
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <div class="search-popup">
@@ -477,7 +529,7 @@
 
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="../static/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="../static/plugins/bootstrap/bootstrap.min.js"></script>
+    <script src="../static/plugins/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="../static/assets/js/bootstrap-datepicker.min.js"></script>
     <script src="../static/assets/js/bootstrap-select.min.js"></script>
     <script src="../static/assets/js/isotope.js"></script>

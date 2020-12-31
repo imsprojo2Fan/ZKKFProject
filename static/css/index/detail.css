@@ -209,3 +209,67 @@ hr{
     border-radius: 50%;
     display: inline-block;
 }
+.modal-content{
+    margin-top: 18vh;
+}
+.modal-header .close:focus,
+.modal-header .close:active{
+    outline: none;
+}
+.modal-body{
+    max-height: 45vh;
+    overflow-y: auto;
+}
+.modal-footer{
+    padding: 25px 0;
+}
+.modal-footer button{
+    width: 75%;
+    margin: 0 auto;
+    height: 45px;
+    line-height: 30px;
+}
+.modal-footer button:hover{
+    background: var(--thm-base);
+    border-color: var(--thm-base);
+}
+.typeName{
+    font-size: 18px;
+    font-weight: bold;
+}
+.modal-body hr{
+    margin: 1px 0;
+}
+.modal-body .dWrap{
+    padding: 2% 8%;
+}
+.modal-body .dWrap i{
+    font-size: 18px;
+}
+.modal-body .dItem{
+    padding: 6px 0;
+}
+.modal-body .fa-files-o{
+    color: var(--thm-base);
+}
+.modal-body .fa-trash-o{
+    float: right;
+    margin-top: 6px;
+    margin-right: 8%;
+    color: red;
+    cursor: pointer;
+}
+.cac{
+    font-size: 20px;
+    cursor: pointer;
+}
+.count{
+    font-size: 16px;
+}
+.countWrap{
+    display: inline-block;
+    float: right;
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none;
+}

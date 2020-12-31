@@ -49,6 +49,23 @@ $(function () {
         time = time.replace("T"," ");
         $('#created').html(time);
         $('#view').html(info.view);
+        //获取本地存储
+        let localLibTemp = localStorage.getItem("lib");
+        if(localLibTemp){
+            debugger
+            let localLib = JSON.parse(localLibTemp);
+            let count = 0;
+            for (let [key, value] of localLib) {
+                console.log(key + ' = ' + value);
+                let localArr = value;
+                for(let i=0;i<localArr.length;i++){
+                    let localCount = localArr[i].Count;
+                    count += localCount;
+                }
+            }
+            $('#lib').find("span").html(count);
+            $('#lib').show();
+        }
     }
 
     //初始化时间选择插件
@@ -99,6 +116,29 @@ $(function () {
             addOrder();
         }
 
+    });
+
+    $('#lib').on("click",function () {
+
+        $('#libModal').modal("show");
+    });
+
+    $('.cac').on("click",function () {
+        let count = $(this).parent().find(".count").html();
+        count = parseInt(count);
+        if($(this).hasClass("cac1")){
+            if(count===0){
+                return
+            }
+            count = count-1;
+        }else{
+            count = count+1;
+        }
+        let countTxt = count;
+        if(count<10){
+            countTxt = "0"+count;
+        }
+        $(this).parent().find(".count").html(countTxt);
     });
 
     $('.preloader').fadeOut(200);
@@ -190,9 +230,66 @@ function renderTime(){
 
 }
 
+//[{"count":10,"data":[{"Name":"测试"}]}]
 function addOrder() {
     let num = $('#lib').find("span").html();
     $('#lib').find("span").html(parseInt(num)+1);
     $('#lib').show();
-    swal("已成功加入实验计划","需提交订单方可确认","success");
+    debugger
+    //获取本地存储
+    let localLibTemp = localStorage.getItem("lib");
+    let localOutArr = [];
+    let localInnerArr = [];
+    if(localLibTemp){
+        localOutArr = JSON.parse(localLibTemp);
+        localInnerArr = findByType(info.type,localOutArr);
+    }
+    let id = info.id;
+    let item = findById(id,localInnerArr);
+    if(!item){
+        item = {};
+        item.Name = info.name;
+        item.Id = info.id;
+        item.Type = info.typeName;
+        item.Count = 1;
+        localInnerArr.push(item);
+    }else{
+        item.Count = item.Count+1;
+        localInnerArr.splice(1,1,item);
+    }
+    localLibMap[item.Type] = localInnerArr;
+    localStorage.setItem("lib",JSON.stringify(localLibMap));
+    swal("本地已成功加入实验计划","提示:需提交订单方可确认","success");
+}
+
+function findByType(type,localLibMap) {
+    if(!localArr||localArr.length===0){
+        return false
+    }
+    let backItem = "";
+    for(let i=0;i<localArr.length;i++){
+        let item = localArr[i];
+        let localId = item.Id;
+        if(id===localId){
+            backItem = item;
+            break
+        }
+    }
+    return backItem;
+}
+
+function findById(id,localArr) {
+    if(!localArr||localArr.length===0){
+        return false
+    }
+    let backItem = "";
+    for(let i=0;i<localArr.length;i++){
+        let item = localArr[i];
+        let localId = item.Id;
+        if(id===localId){
+            backItem = item;
+            break
+        }
+    }
+    return backItem;
 }
