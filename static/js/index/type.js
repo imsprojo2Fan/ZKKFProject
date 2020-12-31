@@ -6,7 +6,7 @@ $(function () {
             let arr = res.data;
             for(let i=0;i<arr.length;i++){
                 let item = arr[i];
-                $('#typeWrap').append('<a data-filter="'+item.id+'">'+item.name+'</a>');
+                $('#typeWrap').append('<a class="myBtn" data-filter="'+item.id+'">'+item.name+'</a>');
             }
             $('#typeWrap').find("a").each(function () {
                 $(this).on("click",function () {
@@ -15,7 +15,14 @@ $(function () {
                     }
                     $('#typeWrap').find("a").removeClass("filterActive");
                     $(this).addClass("filterActive");
-                    renderDevice();
+                    if(!$('#typeWrap').find(".filterActive").attr("data-filter")){
+                        //全部设备时自动熏染设备
+                        $('#typeChildWrap').html("");
+                        renderDevice();
+                    }else{
+                        renderChildType();
+                    }
+
                 });
             })
         }
@@ -26,9 +33,46 @@ $(function () {
     $('.preloader').fadeOut(200);
 })
 
+function renderChildType(){
+    let typeId = $('#typeWrap').find(".filterActive").attr("data-filter");
+    $('.preloader').show(200);
+    $.post("/typeChild/queryByTid",{_xsrf:$("#token", parent.document).val(),tid:typeId},function (res) {
+        $('#typeChildWrap').html("");
+        if(res.data){
+            let arr = res.data;
+            for(let i=0;i<arr.length;i++){
+                let item = arr[i];
+                if(i===0){
+                    $('#typeChildWrap').append('<a class="myBtn filterActive" data-filter="'+item.id+'">'+item.name+'</a>');
+                }else{
+                    $('#typeChildWrap').append('<a class="myBtn" data-filter="'+item.id+'">'+item.name+'</a>');
+                }
+            }
+            $('#typeChildWrap').find("a").each(function () {
+                $(this).on("click",function () {
+                    if($(this).hasClass("filterActive")){
+                        return
+                    }
+                    $('#typeChildWrap').find("a").removeClass("filterActive");
+                    $(this).addClass("filterActive");
+                    renderDevice();
+                });
+            })
+            renderDevice();
+        }else{
+            $('#deviceWrap').html("<span class='dataTip'>无匹配项!</span>");
+        }
+        $('.preloader').hide(200);
+    });
+}
+
 function renderDevice(){
     let typeId = $('#typeWrap').find(".filterActive").attr("data-filter");
-    $('.preloader').show("slow");
+    if(typeId!=0){
+        typeId = $('#typeChildWrap').find(".filterActive").attr("data-filter");
+    }
+
+    $('.preloader').show(200);
     $.post("/type/device",{_xsrf:$("#token", parent.document).val(),typeId:typeId},function (res) {
         if(res.data){
             $('#deviceWrap').html("");
@@ -62,8 +106,8 @@ function renderDevice(){
                     '</div>');
             }
         }else{
-            $('#deviceWrap').html("<span class='dataTip'>无匹配设备!</span>");
+            $('#deviceWrap').html("<span class='dataTip'>无匹配项!</span>");
         }
-        $('.preloader').hide("slow");
+        $('.preloader').hide(200);
     });
 }

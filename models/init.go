@@ -18,6 +18,7 @@ func init() {
 	orm.RegisterModel(new(Reservation))
 	orm.RegisterModel(new(Setting))
 	orm.RegisterModel(new(News))
+	orm.RegisterModel(new(TypeChild))
 }
 
 //下面是统一的表名管理
@@ -66,4 +67,7 @@ func SettingTBName() string {
 }
 func NewsTBName() string {
 	return TableName("news")
+}
+func TypeChildTBName() string {
+	return TableName("type_child")
 }

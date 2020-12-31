@@ -68,3 +68,18 @@ textarea{
 .formWrap{
     margin: 0 auto;
 }
+.myBtn{
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-top: 115px;
+    background: var(--thm-blue);
+    border-color: var(--thm-blue);
+    color: white;
+}
+.myBtn:hover{
+    opacity: 0.75;
+}

@@ -23,6 +23,7 @@ type Device struct {
 	Range           string `orm:"size(512)"`  //应用范围
 	Achievement     string `orm:"size(512)"`  //代表性成果
 	Disabled        int    //是否上线
+	IsOrder			int //是否为可预约设备 0否 1是
 	View            int    `orm:"size(16)"`
 	Reservation     int    `orm:"size(16)"` //预约数
 	ReservationDone int    `orm:"size(16)"` //预约完成数
@@ -45,7 +46,7 @@ func (this *Device) Insert(Device *Device) error {
 
 func (this *Device) Update(obj *Device) error {
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "name", "title", "tid", "source", "sketch", "img", "parameter", "feature", "range", "achievement", "disabled", "remark", "updated")
+	_, err := o.Update(obj, "name", "title","is_order", "tid", "source", "sketch", "img", "parameter", "feature", "range", "achievement", "disabled", "remark", "updated")
 	return err
 }
 
@@ -78,7 +79,7 @@ func (this *Device) SelectByCol(col string, obj *Device) {
 func (this *Device) Count(qMap map[string]interface{}) (int, error) {
 
 	o := orm.NewOrm()
-	sql := "select d.*,t.name as typeName from " + DeviceTBName() + " d,type t where d.tid=t.id "
+	sql := "select d.*,t.name as typeName,c.name as childName from " + DeviceTBName() + " d,type t,type_child c where d.tid=c.id and t.id=c.tid "
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql += " and (d.name like \"%" + key + "%\")"
@@ -91,7 +92,7 @@ func (this *Device) Count(qMap map[string]interface{}) (int, error) {
 func (this *Device) ListByPage(qMap map[string]interface{}) ([]orm.Params, error) {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	sql := "select d.*,t.name as typeName from " + DeviceTBName() + " d,type t where d.tid=t.id "
+	sql := "select d.*,t.name as typeName,c.name as childName from " + DeviceTBName() + " d,type t,type_child c where d.tid=c.id and t.id=c.tid "
 	if qMap["searchKey"] != "" {
 		sql += " and d.name like '%" + qMap["searchKey"].(string) + "%'"
 	}
@@ -128,7 +129,7 @@ func (this *Device) UpdateNum(col, condition string) {
 func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select d.id,d.rid,d.name,d.title,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,t.name as typeName from "+DeviceTBName()+" d,type t where d.tid=t.id and rid=?"
+	sql := "select d.id,d.rid,d.name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,t.name as typeName,c.name as childName from "+DeviceTBName()+" d,type t,type_child c where d.tid=c.id and c.tid=t.id and d.rid=?"
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }

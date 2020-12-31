@@ -52,9 +52,9 @@
                             <thead>
                             <tr>
                                 <th>所属分组</th>
-                                <th>设备名称</th>
+                                <th>项目名称</th>
                                 <th>是否上线</th>
-                                <th>设备简述</th>
+                                <th>简述</th>
                                 <th>查看数</th>
                                 <th>预约数</th>
                                 <th>更新时间</th>
@@ -72,10 +72,19 @@
                             <form id="form1" class="form-horizontal" autocomplete="off">
 
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label">所属分组</label>
-                                    <div class="col-sm-3 selWrap" id="selWrap1">
-                                        <select id="typeSel1" class="selectpicker" >
+                                    <label class="col-sm-2 control-label form-label">父类分组</label>
+                                    <div class="col-sm-3 " id="selWrap1">
+                                        <select id="typeSel1" class="selectpicker pSelWrap" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label form-label">子类分组</label>
+                                    <div class="col-sm-3 selWrap" id="selWrap3">
+                                        <select class="selectpicker" id="typeSel3" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                        </select>
+                                        <span class="help-block"></span>
                                     </div>
                                 </div>
 
@@ -86,13 +95,25 @@
                                             <option selected value="0">上线</option>
                                             <option value="1">下线</option>
                                         </select>
+                                        <span class="help-block"></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>设备名称</label>
+                                    <label class="col-sm-2 control-label form-label">订单项目</label>
                                     <div class="col-sm-3">
-                                        <input type="text" name="name" class="form-control name" maxlength="255" placeholder="请输入设备名称">
+                                        <select id="isOrder" class="selectpicker isOrder" >
+                                            <option selected value="1">是</option>
+                                            <option value="0">否</option>
+                                        </select>
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>项目名称</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="name" class="form-control name" maxlength="255" placeholder="请输入项目名称">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -114,9 +135,9 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>设备简述</label>
+                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>简述</label>
                                     <div class="col-sm-3">
-                                        <input type="text" name="sketch" class="form-control sketch" maxlength="255"  placeholder="请输入设备简述">
+                                        <input type="text" name="sketch" class="form-control sketch" maxlength="255"  placeholder="请输入简述">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -212,10 +233,10 @@
                     <p class="form-control-static" >所属分组：<span class="type"></span></p>
                 </div>
                 <div class="col-sm-offset-1">
-                    <p class="form-control-static" >设备名称：<span class="name"></span></p>
+                    <p class="form-control-static" >项目名称：<span class="name"></span></p>
                 </div>
                 <div class="col-sm-offset-1">
-                    <p class="form-control-static" >设备标题：<span class="title"></span></p>
+                    <p class="form-control-static" >项目标题：<span class="title"></span></p>
                 </div>
                 <div class="col-sm-offset-1">
                     <p class="form-control-static" >是否上线：<span class="disabled"></span></p>
@@ -224,7 +245,7 @@
                     <p class="form-control-static" >来源：<span class="source"></span></p>
                 </div>
                 <div class="col-sm-offset-1">
-                    <p class="form-control-static" >设备简述：<span class="sketch"></span></p>
+                    <p class="form-control-static" >简述：<span class="sketch"></span></p>
                 </div>
                 <div class="col-sm-offset-1">
                     <p class="form-control-static" >仪器参数：<span class="parameter"></span></p>
@@ -275,10 +296,20 @@
                     <input type="hidden" name="id" id="id">
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label form-label">所属分组</label>
-                        <div class="col-sm-5 selWrap" id="selWrap2">
-                            <select class="selectpicker" id="typeSel2" >
+                        <label class="col-sm-2 control-label form-label">父类分组</label>
+                        <div class="col-sm-5 " id="selWrap2">
+                            <select class="selectpicker pSelWrap" id="typeSel2" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
                             </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label form-label">子类分组</label>
+                        <div class="col-sm-5 selWrap" id="selWrap4">
+                            <select class="selectpicker" id="typeSel4" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                            </select>
+                            <span class="help-block"></span>
                         </div>
                     </div>
 
@@ -289,13 +320,25 @@
                                 <option selected value="0">上线</option>
                                 <option value="1">下架</option>
                             </select>
+                            <span class="help-block"></span>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>设备名称</label>
+                        <label class="col-sm-2 control-label form-label">订单项目</label>
+                        <div class="col-sm-3">
+                            <select id="isOrder2" class="selectpicker isOrder" >
+                                <option selected value="1">是</option>
+                                <option value="0">否</option>
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>项目名称</label>
                         <div class="col-sm-9">
-                            <input type="text" name="name" class="form-control name" maxlength="255" placeholder="请输入设备名称">
+                            <input type="text" name="name" class="form-control name" maxlength="255" placeholder="请输入项目名称">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -317,9 +360,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>设备简述</label>
+                        <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>简述</label>
                         <div class="col-sm-9">
-                            <input type="text" name="sketch" class="form-control sketch" maxlength="255"  placeholder="请输入设备简述">
+                            <input type="text" name="sketch" class="form-control sketch" maxlength="255"  placeholder="请输入简述">
                             <span class="help-block"></span>
                         </div>
                     </div>

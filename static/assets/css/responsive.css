@@ -473,9 +473,16 @@
     .newsImg{
         /*width: 125px!important;*/
     }
+    #cooperate .owl-item{
+        margin-left: 60px!important;
+    }
 }
 
 @media(max-width: 425px) {
+
+    .site-footer__bottom-logo img{
+        width: 75%;
+    }
 
     #loginalert{
         width: 100%;

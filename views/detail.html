@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=0.95, user-scalable=no" />
-    <title>设备详情-中科科辅_中国科研辅助第一站,价格实惠,免费复测,海量仪器,免费试样,上门取样,速度保障</title>
+    <title>项目详情-中科科辅_中国科研辅助第一站,价格实惠,免费复测,海量仪器,免费试样,上门取样,速度保障</title>
     <meta name="keywords" content="仪器共享,实验服务,研发,检测,互联网+,化学,化工,材料,科研,化学化工,实验外包,仪器租用,第三方检测,仪器租赁,金属材料,FEI Talos F200X，FEI Tecnai G2 F20，FEI Tiatan Themis，TEM，球差，FEI Scios，SEM，FIB，力学，拉伸，EBSD"/>
     <meta name="description" content="中科科辅（北京）科技有限公司（简称中科科辅）,公司着眼于科学研究与技术发展的前沿问题,基于国内外科研水平不对称、资源配置不均衡的现状,具有完善的科研服务平台,致力于打造国内领先,国际知名的科研服务平台,建设一个平等、开放、高水平的个性化科研辅助平台。"/>
 
@@ -13,11 +13,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../static/assets/images/icon.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../static/assets/images/icon.png">
 
-    <!-- Fonts URL -->
-    <link href="https://fonts.googleapis.com/css?family=Karla:400,700%7CPlayfair+Display:400,500,600,700,800,900%7CWork+Sans:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
-
     <!-- Plugins CSS -->
-    <link rel="stylesheet" href="https://www.jq22.com/jquery/bootstrap-4.2.1.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../static/assets/css/bootstrap-datepicker.min.css">
     <link rel="stylesheet" href="../static/assets/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="../static/css/font-awesome.min.css">
@@ -87,6 +84,18 @@
             </div><!-- /.container -->
         </nav><!-- /.main-nav-one -->
 
+        <div class="container">
+            <div class="collection-grid__top col-lg-8" style="margin-left: -15px;">
+                <div class="block-title text-left">
+                    <h3>项目详情</h3>
+                </div>
+                <div id="typeWrap" class="collection-filter">
+                    <a href="/type" class="filterActive myHref">返回分类</a>
+                </div>
+            </div>
+        </div><!-- /.container -->
+        <hr>
+
         <section class="blog-one blog-details-page">
             <div class="container">
                 <div class="row">
@@ -97,18 +106,18 @@
                             </div><!-- /.blog-details__image -->
                             <div class="itemHead"><h4>{{.info.name}}</h4></div>
                             <p class="createTime">
-                                <i class="fa fa-bookmark" aria-hidden="true" title="设备类型"></i>&nbsp;<span id="type"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-bookmark" aria-hidden="true" title="项目类型"></i>&nbsp;<span id="type"></span>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <i class="fa fa-clock-o" aria-hidden="true" title="创建时间"></i>&nbsp;<span id="created"></span>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <i class="fa fa-eye" aria-hidden="true" title="查看数"></i>&nbsp;<span id="view"></span>
                             </p>
                             <hr style="margin: 0 0">
-                            <div class="itemHead">设备简述</div>
+                            <div class="itemHead">项目简述</div>
                             <p class="sketch">{{.info.sketch}}</p>
                             <hr>
                             <div class="btnWrap">
-                                <button class="thm-btn contact-one__btn thm-btnActive myBtn" type="button">预约设备</button>
-                                <button style="margin-left: -5px" class="thm-btn contact-one__btn myBtn" type="button">预订设备</button>
-                                <button id="submitBtn" class="thm-btn contact-one__btn" type="button">提交预约</button>
+                                <button class="thm-btn contact-one__btn thm-btnActive myBtn" id="btnHead" type="button">在线下单</button>
+                                <button style="margin-left: -5px;display: none" class="thm-btn contact-one__btn myBtn" type="button">预订设备</button>
+                                <button id="submitBtn" class="thm-btn contact-one__btn" type="button"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;&nbsp;加入实验计划</button>
                             </div>
                             <div id="dateWrap">
                                 <div class="itemHead">日期选择<input id="dateInput" type="text" readonly="readonly" name="date" autocomplete="off"  placeholder="请选择日期"></div>
@@ -147,7 +156,7 @@
                                 </form>
                             </div><!-- /.sidebar__single -->
                             <div class="sidebar__single">
-                                <h3 class="sidebar__title">最近动态</h3>
+                                <h3 class="sidebar__title">最新动态</h3>
                                 <div class="sidebar__post">
                                     <div class="sidebar__post-single">
                                         <div class="sidebar__post-image">
@@ -288,6 +297,11 @@
             </div><!-- /.site-footer__bottom -->
         </footer><!-- /.site-footer -->
     </div><!-- /.page-wrapper -->
+
+    <div id="lib">
+        <span>0</span>
+        <img src="../static/img/lib.png">
+    </div>
 
     <div class="search-popup">
         <div class="search-popup__overlay custom-cursor__overlay">

@@ -92,6 +92,7 @@ func (this *DeviceController) Add() {
 	obj.Uid = uid
 	obj.Tid, _ = this.GetInt("tid")
 	obj.Name = name
+	obj.IsOrder,_ = this.GetInt("isOrder")
 	obj.Title = this.GetString("title")
 	obj.Source = this.GetString("source")
 	obj.Img = img
@@ -120,6 +121,7 @@ func (this *DeviceController) Update() {
 	obj.Id, _ = this.GetInt("id")
 	obj.Tid, _ = this.GetInt("tid")
 	obj.Name = name
+	obj.IsOrder,_ = this.GetInt("isOrder")
 	obj.Title = this.GetString("title")
 	obj.Source = this.GetString("source")
 	obj.Img = img

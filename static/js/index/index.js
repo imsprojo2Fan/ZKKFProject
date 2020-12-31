@@ -82,8 +82,8 @@ function renderNews(){
                     head = head.substring(0,22)+"...";
                 }
                 let content = item.content;
-                if(content.length>45){
-                    content = content.substring(0,42)+"...";
+                if(content.length>15){
+                    content = content.substring(0,12)+"...";
                 }
                 let rid = item.rid;
                 let img = item.img;
@@ -94,13 +94,13 @@ function renderNews(){
                     '<div class="col-lg-4">\n'+
                     '   <a target="_blank" href="/news/'+rid+'"><div class="blog-one__single">\n'+
                     '       <div class="blog-one__image">\n'+
-                    '           <img src="/img/'+img+'" onerror="this.src= \'../../static/img/default2.png\'; this.onerror = null;this.style.marginTop=\'18px\';this.style.marginLeft=\'45px\'" alt="">\n' +
+                    '           <img src="/img/'+img+'" onerror="this.src= \'../../static/img/default2.png\'; this.onerror = null;this.style.marginTop=\'18px\';this.style.marginLeft=\'45px\'" alt=""/>\n' +
                     '           <div class="blog-one__date">\n'+
                     '               <i class="far fa-calendar-alt"></i>'+date+'\n' +
                     '           </div>\n' +
                     '       </div>\n' +
                     '       <div class="blog-one__content">\n' +
-                    '            <h3><a href="/news/'+rid+'">'+head+'</a></h3>\n' +
+                    '            <h3 title="'+item.title+'"><a href="/news/'+rid+'">'+head+'</a></h3>\n' +
                     '            <p>'+content+'</p>\n' +
                     '            <a target="_blank" href="/news/'+rid+'" class="blog-one__link">查看详情</a>\n' +
                     '       </div>\n' +

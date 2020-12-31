@@ -2140,6 +2140,7 @@ a:focus {
 
 .collection-two__carousel.owl-theme .owl-nav {
 	margin-top: 100px;
+	display: none;
 }
 
 .collection-two__carousel.owl-theme .owl-nav [class*=owl-] {
@@ -4034,8 +4035,8 @@ a:focus {
 .brand-one {
 	background-color: #fff;
 	padding-top: 10px;
-	padding-bottom: 50px;
-	box-shadow: 0px 6px 13px 8px rgba(0, 0, 0, 0.06);
+	padding-bottom: 0;
+	box-shadow: 0 6px 13px 8px rgba(0, 0, 0, 0.06);
 }
 
 .brand-one__carousel img {

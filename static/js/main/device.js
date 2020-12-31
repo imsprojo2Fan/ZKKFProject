@@ -45,7 +45,7 @@ $(document).ready(function() {
     });
 
     // 中文重写select 查询为空提示信息
-    $('.tid').selectpicker({
+    $('.selectpicker').selectpicker({
         noneSelectedText: '下拉选择分组',
         noneResultsText: '无匹配选项',
         maxOptionsText: function (numAll, numGroup) {
@@ -54,15 +54,20 @@ $(document).ready(function() {
             arr[1] = (numGroup == 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)';
             return arr;
         },
-        liveSearch: true,
-        size:10   //设置select高度，同时显示5个值
+        //liveSearch: true,
+        //size:10   //设置select高度，同时显示5个值
     });
-    $(".tid").selectpicker('refresh');
+    $(".selectpicker").selectpicker('refresh');
     //渲染分组下拉框
-    $('.selWrap').find("button").on("click",function () {
-        loading(true,2);
+    /*$('.pSelWrap').find("button").on("change",function () {
+        let tid = $(this).parent().find("select").val();
+        renderChildType(tid);
+    });*/
+    $('.pSelWrap').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+        let selected = $(e.currentTarget).val();
+        renderChildType(selected);
     });
-    //初始化分组数据
+    //初始化子类分组数据
     $.post("/main/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
         if(res.code===1){
             loading(false,2);
@@ -78,13 +83,16 @@ $(document).ready(function() {
             }else{
                 $('#selWrap1').html('');
                 $('#selWrap2').html('');
-                $('#selWrap1').append('<span style="color: red;display: block;margin-top: -24px">暂无分组，请先添加!</span>');
-                $('#selWrap2').append('<span style="color: red;display: block;margin-top: -24px">暂无分组，请先添加!</span>');
+                $('#selWrap1').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
+                $('#selWrap2').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
             }
             $('#typeSel1').selectpicker('refresh');
             $('#typeSel2').selectpicker('refresh');
+            let tid = $('#typeSel1').val();
+            renderChildType(tid);
         }
     });
+
 
     $('#uploadPic').on('click',function () {
         openWindow("/main/uploadPic","中科科辅",1000,600);
@@ -271,6 +279,8 @@ $(document).ready(function() {
         $('#editModal').find('.name').val(rowData.name);
         $('#editModal').find('.disabled').selectpicker('val',rowData.disabled);
         $('#editModal').find('.disabled').selectpicker('refresh');
+        $('#editModal').find('.isOrder').selectpicker('val',rowData.is_order);
+        $('#editModal').find('.isOrder').selectpicker('refresh');
         $('#editModal').find('.title').val(rowData.title);
         $('#editModal').find('.source').val(rowData.source);
         $('#editModal').find('.sketch').val(rowData.sketch);
@@ -341,8 +351,14 @@ function add(){
         imgSrc = imgSrc.substring(1,imgSrc.length);
         imgSrc = imgSrc.replaceAll("/img/","");
     }
+    let tid = $('#typeSel3').val();
+    if(!tid){
+        swalParent("系统提示",'未选择子类分组!',"warning");
+        return;
+    }
     let formData = formUtil('form1');
-    formData["tid"] = $('#typeSel1').val();
+    formData["isOrder"] = $('#isOrder').val();
+    formData["tid"] = tid;
     formData["img"] = imgSrc;
     formData["disabled"] = $('#disabledSel1').val();
     formData["_xsrf"] = $("#token", parent.document).val();
@@ -385,8 +401,14 @@ function edit(){
         imgSrc = imgSrc.substring(1,imgSrc.length);
         imgSrc = imgSrc.replaceAll("/img/","");
     }
+    let tid = $('#typeSel4').val();
+    if(!tid){
+        swalParent("系统提示",'未选择子类分组!',"warning");
+        return;
+    }
     let formData = formUtil('form2');
-    formData["tid"] = $('#typeSel2').val();
+    formData["isOrder"] = $('#isOrder2').val();
+    formData["tid"] = tid;
     formData["img"] = imgSrc;
     formData["disabled"] = $('#disabledSel2').val();
     formData["_xsrf"] = $("#token", parent.document).val();
@@ -528,4 +550,32 @@ window.onresize = function() {
     let height = window.innerHeight-200;
     $('.dataTables_scrollBody').css("height",height+"px");
 };
+
+function renderChildType(tid) {
+    if(!tid){
+        return
+    }
+    //初始化子类分组数据
+    $.post("/main/typeChild/queryByTid",{_xsrf:$("#token",parent.document).val(),tid:tid},function (res) {
+        if(res.code===1){
+            let tList = res.data;
+            $('#selWrap3').html('');
+            $('#selWrap4').html('');
+            if(tList){
+                $('#selWrap3').html('<select id="typeSel3" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default"></select>');
+                $('#selWrap4').html('<select id="typeSel4" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default"></select>');
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i];
+                    $('#typeSel3').append('<option value="'+item.id+'">'+item.name+'</option>');
+                    $('#typeSel4').append('<option value="'+item.id+'">'+item.name+'</option>');
+                }
+            }else{
+                $('#selWrap3').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
+                $('#selWrap4').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
+            }
+            $('#typeSel3').selectpicker('refresh');
+            $('#typeSel4').selectpicker('refresh');
+        }
+    });
+}
 

@@ -5,3 +5,7 @@
 textarea{
     height: 110px;
 }
+.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: 175px;
+    height: 30px;
+}

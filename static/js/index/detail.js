@@ -8,7 +8,7 @@ $(function () {
         return
     }
     if(!info){
-        //熏染信息
+        //熏染本地信息
         let imgSrc = localStorage.getItem("t-imgSrc");
         if(imgSrc){
             imgSrc = imgSrc.split(",")[0];
@@ -27,11 +27,18 @@ $(function () {
         $('#dateWrap').hide();
         $('#messageWrap').hide();
     }else{
-        //熏染信息
+        //熏染线上信息
         $('.parameter').html(info.parameter);
         $('.feature').html(info.feature);
         $('.range').html(info.range);
         $('.achievement').html(info.achievement);
+        if(info.is_order==="0"){
+            $('#btnHead').html("预约设备");
+            $('#submitBtn').html("提交预约");
+            $('#dateWrap').show();
+        }else{
+            $('#lib').hide();
+        }
         let imgSrc = info.img;
         if(imgSrc){
             imgSrc = imgSrc.split(",")[0];
@@ -86,7 +93,12 @@ $(function () {
             swal("系统提示","该操作需用户登录，请先登录！","warning");
             return false
         }
-        add();
+        if($(this).html()==="提交预约"){
+            add();
+        }else{
+            addOrder();
+        }
+
     });
 
     $('.preloader').fadeOut(200);
@@ -176,4 +188,11 @@ function renderTime(){
         }
     });
 
+}
+
+function addOrder() {
+    let num = $('#lib').find("span").html();
+    $('#lib').find("span").html(parseInt(num)+1);
+    $('#lib').show();
+    swal("已成功加入实验计划","需提交订单方可确认","success");
 }

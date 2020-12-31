@@ -21,6 +21,7 @@ hr{
     align-items: center;
     margin-top: 30px;
     flex-wrap: wrap;
+    margin-bottom: 0;
 }
 .blog-one {
     padding-top: 0;
@@ -55,6 +56,7 @@ hr{
 }
 .blog-details__image {
     margin-bottom: 12px;
+    overflow: hidden;
 }
 #dateInput{
     margin-left: 15px;
@@ -91,19 +93,17 @@ hr{
     text-align: center;
     -webkit-transition: all 100ms ease;
     transition: all 100ms ease;
-    cursor: pointer;
 }
 .thm-btn:hover,
 .thm-btn:active,
 .thm-btn:focus{
-    background-color: var(--thm-blue);
+    background-color: var(--thm-base);
     color: white;
     outline: none;
 }
 .thm-btnActive{
-    background-color: var(--thm-blue);
+    background-color: var(--thm-base);
     color: white;
-    cursor: not-allowed;
 }
 .cta-one__btn-block a{
     padding: 10px 10vw;
@@ -174,4 +174,38 @@ hr{
     border: 1px solid #eee;
     padding: 10px;
     width: 100%;
+}
+.myHref{
+    color: #6195ff;
+    cursor: pointer;
+}
+.myHref:hover{
+    opacity: 0.75;
+}
+#dateWrap{
+    display: none;
+}
+#messageWrap{
+    display: none;
+}
+#lib{
+    position: fixed;
+    top: 45%;
+    right: 15px;
+    cursor: pointer;
+    display: none;
+}
+#lib span{
+    position: relative;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    right: -130px;
+    top: -50px;
+    color: white;
+    font-size: 20px;
+    background: red;
+    border-radius: 50%;
+    display: inline-block;
 }

@@ -73,6 +73,7 @@ $(function () {
             },
             success : function(r,status) {
                 if (r.code == 1) {
+                    $('#loginFlag').val(1);
                     window.open("/main","_blank");
                     $('#loginShowBtn').html("前往个人中心");
                     $(".loginmask,.closealert").click();
@@ -205,6 +206,7 @@ $(function () {
         let txt = $(this).html();
         if(txt==="前往个人中心"){
             $('#loginFlag').val("1");
+            $(this).data("loginFlag",1);
             window.open("/main","_blank");
         }else{
             $(".loginmask").fadeIn(300);

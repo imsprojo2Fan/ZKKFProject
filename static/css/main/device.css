@@ -94,3 +94,11 @@
     height: 76vh!important;
     overflow-y: auto;
 }
+.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: 175px;
+    height: 30px;
+}
+.help-block{
+    margin-bottom: 0;
+    margin-top: 0;
+}
