@@ -247,7 +247,7 @@ hr{
     font-size: 18px;
 }
 .modal-body .dItem{
-    padding: 6px 0;
+    padding: 6px 35px;
 }
 .modal-body .fa-files-o{
     color: var(--thm-base);

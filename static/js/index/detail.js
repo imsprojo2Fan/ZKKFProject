@@ -1,3 +1,5 @@
+
+let localOutArr;
 $(function () {
 
     //判断是否支持localstorage
@@ -49,23 +51,8 @@ $(function () {
         time = time.replace("T"," ");
         $('#created').html(time);
         $('#view').html(info.view);
-        //获取本地存储
-        let localLibTemp = localStorage.getItem("lib");
-        if(localLibTemp){
-            debugger
-            let localLib = JSON.parse(localLibTemp);
-            let count = 0;
-            for (let [key, value] of localLib) {
-                console.log(key + ' = ' + value);
-                let localArr = value;
-                for(let i=0;i<localArr.length;i++){
-                    let localCount = localArr[i].Count;
-                    count += localCount;
-                }
-            }
-            $('#lib').find("span").html(count);
-            $('#lib').show();
-        }
+        //熏染本地存储
+        renderModalLib();
     }
 
     //初始化时间选择插件
@@ -121,24 +108,6 @@ $(function () {
     $('#lib').on("click",function () {
 
         $('#libModal').modal("show");
-    });
-
-    $('.cac').on("click",function () {
-        let count = $(this).parent().find(".count").html();
-        count = parseInt(count);
-        if($(this).hasClass("cac1")){
-            if(count===0){
-                return
-            }
-            count = count-1;
-        }else{
-            count = count+1;
-        }
-        let countTxt = count;
-        if(count<10){
-            countTxt = "0"+count;
-        }
-        $(this).parent().find(".count").html(countTxt);
     });
 
     $('.preloader').fadeOut(200);
@@ -230,47 +199,140 @@ function renderTime(){
 
 }
 
-//[{"count":10,"data":[{"Name":"测试"}]}]
+//[{"type":"test1","count":10,"data":[{"Name":"测试"}]}]
 function addOrder() {
     let num = $('#lib').find("span").html();
     $('#lib').find("span").html(parseInt(num)+1);
     $('#lib').show();
-    debugger
     //获取本地存储
     let localLibTemp = localStorage.getItem("lib");
     let localOutArr = [];
     let localInnerArr = [];
+    let outItem = {};
+    debugger
     if(localLibTemp){
         localOutArr = JSON.parse(localLibTemp);
-        localInnerArr = findByType(info.type,localOutArr);
+        outItem = findByType(info.typeName,localOutArr);
+        localInnerArr = outItem.Data;
+    }
+    if(!localOutArr){
+        localOutArr = [];
+    }
+    if(!outItem){
+        outItem = {};
+    }
+    if(!localInnerArr){
+        localInnerArr = [];
     }
     let id = info.id;
-    let item = findById(id,localInnerArr);
-    if(!item){
-        item = {};
-        item.Name = info.name;
-        item.Id = info.id;
-        item.Type = info.typeName;
-        item.Count = 1;
-        localInnerArr.push(item);
+    let innerItem = findById(id,localInnerArr);
+    if(!innerItem){
+        innerItem = {};
+        innerItem.Name = info.name;
+        innerItem.Id = info.id;
+        innerItem.Type = info.typeName;
+        innerItem.Count = 1;
+        localInnerArr.push(innerItem);
     }else{
-        item.Count = item.Count+1;
-        localInnerArr.splice(1,1,item);
+        innerItem.Count = innerItem.Count+1;
+        //localInnerArr.splice(1,1,innerItem);
+        localInnerArr = replaceItemById(innerItem,localInnerArr);
     }
-    localLibMap[item.Type] = localInnerArr;
-    localStorage.setItem("lib",JSON.stringify(localLibMap));
+
+    if(outItem.Type){
+        outItem.Count = outItem.Count+1;
+        outItem.Data = localInnerArr;
+        //localOutArr.splice(1,1,outItem);
+        localOutArr = replaceItemByType(outItem,localOutArr);
+    }else{
+        outItem.Tid = info.tid;
+        outItem.Type = info.typeName;
+        outItem.Count = 1;
+        outItem.Data = localInnerArr;
+        localOutArr.push(outItem);
+    }
+
+    localStorage.setItem("lib",JSON.stringify(localOutArr));
     swal("本地已成功加入实验计划","提示:需提交订单方可确认","success");
+    renderModalLib();
 }
 
-function findByType(type,localLibMap) {
+function renderModalLib() {
+    let localLibTemp = localStorage.getItem("lib");
+    if(localLibTemp){
+        localOutArr = JSON.parse(localLibTemp);
+        let count = 0;
+        for(let i=0;i<localOutArr.length;i++){
+            let localCount = localOutArr[i].Count;
+            count += localCount;
+        }
+        $('#lib').find("span").html(count);
+        $('#lib').show();
+        //熏染modal
+        $('.libItemWrap').html("");
+        for(let i=0;i<localOutArr.length;i++){
+            let outItem = localOutArr[i];
+            let tid = outItem.Tid;
+            let typeName = outItem.Type;
+            let innerArr = outItem.Data;
+            $('.libItemWrap').append('' +
+                '<div class="typeItem">\n' +
+                '   <div class="typeName">'+typeName+'</div>\n' +
+                '   <hr>\n' +
+                '<div class="dWrap'+tid+'"></div>'+
+                '</div>');
+            for(let j=0;j<innerArr.length;j++){
+                let dName = innerArr[j].Name;
+                let title = dName;
+                dName = stringUtil.maxLength(dName,20);
+                let dId = innerArr[j].Id;
+                let count = innerArr[j].Count;
+                if(count<10){
+                    count = "0"+count;
+                }
+                $('.dWrap'+tid).append('<div class="dItem">\n<input type="hidden" value="'+dId+'" class="id">\n<i class="fa fa-files-o" aria-hidden="true"></i>\n<span class="dName" title="'+title+'">'+dName+'</span>\n<div class="countWrap" my-data="'+typeName+'" my-id="'+dId+'">\n<span class="cac cac1">-</span>&nbsp;&nbsp;<span class="count">'+count+'</span>&nbsp;&nbsp;<span class="cac cac2">+</span>\n</div>\n</div>');
+            }
+        }
+    }
+    $('.cac').on("click",function () {
+        let count = $(this).parent().find(".count").html();
+        count = parseInt(count);
+        if($(this).hasClass("cac1")){
+            if(count===0){
+                return
+            }
+            count = count-1;
+        }else{
+            count = count+1;
+        }
+        let countTxt = count;
+        if(count<10){
+            countTxt = "0"+count;
+        }
+        let type = $(this).parent().attr("my-data");
+        let id = $(this).parent().attr("my-id");
+        let outItem = findByType(type,localOutArr);
+        let innerItem = findById(id,outItem.Data);
+        innerItem.Count = count;
+        let innerArr = replaceItemById(innerItem,outItem.Data);
+        outItem.Data = innerArr;
+        outItem.Count = count;
+        let outArr = replaceItemByType(outItem,localOutArr);
+        localStorage.setItem("lib",JSON.stringify(outArr));
+        $(this).parent().find(".count").html(countTxt);
+        $('#lib').find("span").html(count);
+    });
+}
+
+function findByType(type,localArr) {
     if(!localArr||localArr.length===0){
         return false
     }
     let backItem = "";
     for(let i=0;i<localArr.length;i++){
         let item = localArr[i];
-        let localId = item.Id;
-        if(id===localId){
+        let localType = item.Type;
+        if(type===localType){
             backItem = item;
             break
         }
@@ -292,4 +354,24 @@ function findById(id,localArr) {
         }
     }
     return backItem;
+}
+
+function replaceItemById(item,arr) {
+    for(let i=0;i<arr.length;i++){
+        if(item.Id==arr[i].Id){
+            arr[i] = item;
+            break
+        }
+    }
+    return arr;
+}
+
+function replaceItemByType(item,arr) {
+    for(let i=0;i<arr.length;i++){
+        if(item.Type==arr[i].Type){
+            arr[i] = item;
+            break
+        }
+    }
+    return arr;
 }
