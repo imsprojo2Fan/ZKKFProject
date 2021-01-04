@@ -19,6 +19,9 @@ func init() {
 	orm.RegisterModel(new(Setting))
 	orm.RegisterModel(new(News))
 	orm.RegisterModel(new(TypeChild))
+	orm.RegisterModel(new(Order))
+	orm.RegisterModel(new(OrderType))
+	orm.RegisterModel(new(OrderDevice))
 }
 
 //下面是统一的表名管理
@@ -70,4 +73,7 @@ func NewsTBName() string {
 }
 func TypeChildTBName() string {
 	return TableName("type_child")
+}
+func OrderTBName() string {
+	return TableName("order")
 }

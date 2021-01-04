@@ -16,6 +16,7 @@ func init() {
 	beego.Router("/type/device", &controllers.DeviceController{}, "*:ListByType")
 	beego.Router("/typeChild/queryByTid", &controllers.TypeChildController{}, "POST:QueryByTid")
 	beego.Router("/reservation/add", &controllers.ReservationController{}, "*:IndexAdd")
+	beego.Router("/order/add", &controllers.OrderController{}, "*:IndexAdd")
 	beego.Router("/other/?:url", &controllers.IndexController{}, "*:Other")
 	beego.Router("/index/mail4index", &controllers.IndexController{}, "*:Mail4Index")
 
@@ -82,6 +83,14 @@ func init() {
 	beego.Router("/main/reservation/all", &controllers.ReservationController{}, "POST:All")
 	beego.Router("/reservation/timeQuery", &controllers.ReservationController{}, "POST:TimeQuery")
 
+	//订单管理
+	beego.Router("/main/order/list", &controllers.OrderController{}, "POST:List")
+	beego.Router("/main/order/list4person", &controllers.OrderController{}, "POST:ListForPerson")
+	beego.Router("/main/order/add", &controllers.OrderController{}, "POST:Add")
+	beego.Router("/main/order/update", &controllers.OrderController{}, "POST:Update")
+	beego.Router("/main/order/delete", &controllers.OrderController{}, "POST:Delete")
+	beego.Router("/main/order/all", &controllers.OrderController{}, "POST:All")
+	beego.Router("/main/order/detail", &controllers.OrderController{}, "POST:Detail")
 	//系统设置相关
 	beego.Router("/main/setting/list", &controllers.SettingController{}, "POST:List")
 	beego.Router("/main/setting/add", &controllers.SettingController{}, "POST:Add")

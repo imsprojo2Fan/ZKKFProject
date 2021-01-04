@@ -80,12 +80,15 @@ function renderDevice(){
             for(let i=0;i<arr.length;i++){
                 let item = arr[i];
                 let head = item.name;
-                if(head.length>25){
-                    head = head.substring(0,22)+"...";
+                head = head.replace(" ","");
+                head = head.replace("\n","");
+                head = head.replace("\r","");
+                if(head.length>15){
+                    head = head.substring(0,12)+"...";
                 }
                 let sketch = item.sketch;
-                if(sketch.length>45){
-                    sketch = sketch.substring(0,42)+"...";
+                if(sketch.length>35){
+                    sketch = sketch.substring(0,32)+"...";
                 }
                 let rid = item.rid;
                 let img = item.img;

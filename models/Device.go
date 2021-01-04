@@ -27,6 +27,8 @@ type Device struct {
 	View            int    `orm:"size(16)"`
 	Reservation     int    `orm:"size(16)"` //预约数
 	ReservationDone int    `orm:"size(16)"` //预约完成数
+	Order     int    `orm:"size(16)"` //订单数
+	OrderDone int    `orm:"size(16)"` //订单完成数
 	Remark          string
 	Updated         time.Time `orm:"auto_now_add;type(datetime)"`
 	Created         time.Time `orm:"auto_now_add;Device(datetime)"`
@@ -126,10 +128,16 @@ func (this *Device) UpdateNum(col, condition string) {
 	_, _ = o.Raw(sql,condition,condition).Exec()
 }
 
+func (this *Device) UpdateOrderNum(ids string) {
+	o := orm.NewOrm()
+	sql := "update " + DeviceTBName() + " set `order`=`order`+1 where id IN ("+ids+")"
+	_, _ = o.Raw(sql).Exec()
+}
+
 func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select d.id,d.rid,d.tid,d.name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,t.name as typeName,c.name as childName from "+DeviceTBName()+" d,type t,type_child c where d.tid=c.id and c.tid=t.id and d.rid=?"
+	sql := "select d.id,d.rid,d.tid,d.name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,t.name as typeName,t.id as tid,c.id as ttid,c.name as childName from "+DeviceTBName()+" d,type t,type_child c where d.tid=c.id and c.tid=t.id and d.rid=?"
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }

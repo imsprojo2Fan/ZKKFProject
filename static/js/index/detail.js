@@ -106,8 +106,11 @@ $(function () {
     });
 
     $('#lib').on("click",function () {
-
         $('#libModal').modal("show");
+    });
+
+    $('#orderBtn').on("click",function () {
+        submitOrder();
     });
 
     $('.preloader').fadeOut(200);
@@ -115,6 +118,11 @@ $(function () {
 });
 
 function add(){
+    let loginFlag = $('#loginFlag').val();
+    if(loginFlag==="0"){
+        swal("系统提示","该操作需用户登录，请先登录！","warning");
+        return false
+    }
     let date = $('#dateInput').val().trim();
     let timeId = $('#dateWrap').find(".timeItemActive").attr("mydata");
     let message = $('#message').val().trim();
@@ -143,7 +151,7 @@ function add(){
             if (r.code == 1) {
                 renderTime();
                 $('#message').val("");
-                swal("系统提示",r.msg+",客服将尽快与您联系！","success");
+                swal("系统提示",r.msg+",客服将尽快确认！","success");
             }else{
                 swal("系统提示",r.msg,"error");
             }
@@ -209,7 +217,6 @@ function addOrder() {
     let localOutArr = [];
     let localInnerArr = [];
     let outItem = {};
-    debugger
     if(localLibTemp){
         localOutArr = JSON.parse(localLibTemp);
         outItem = findByType(info.typeName,localOutArr);
@@ -229,7 +236,7 @@ function addOrder() {
     if(!innerItem){
         innerItem = {};
         innerItem.Name = info.name;
-        innerItem.Id = info.id;
+        innerItem.DeviceId = info.id;
         innerItem.Type = info.typeName;
         innerItem.Count = 1;
         localInnerArr.push(innerItem);
@@ -253,8 +260,53 @@ function addOrder() {
     }
 
     localStorage.setItem("lib",JSON.stringify(localOutArr));
-    swal("本地已成功加入实验计划","提示:需提交订单方可确认","success");
+    swal("本地已成功加入实验计划","提示：需提交订单方可确认","success");
     renderModalLib();
+}
+
+function submitOrder() {
+    let loginFlag = $('#loginFlag').val();
+    if(loginFlag==="0"){
+        swal("系统提示","该操作需用户登录，请先登录！","warning");
+        return false
+    }
+    let localLibTemp = localStorage.getItem("lib");
+    if(localLibTemp){
+        localOutArr = JSON.parse(localLibTemp);
+        if(localOutArr.length===0){
+            swal("系统提示","当前未选中任何项目！","warning");
+            return
+        }
+        let formData = {};
+        formData["data"] = localLibTemp;
+        formData["_xsrf"] = $("#token", parent.document).val();
+        $.ajax({
+            url : "/order/add",
+            type : "POST",
+            dataType : "json",
+            cache : false,
+            data : formData,
+            beforeSend:function(){
+                $('.preloader').fadeIn(200);
+            },
+            success : function(r) {
+                if (r.code == 1) {
+                    localStorage.setItem("lib","");
+                    $('#libModal').modal('hide');
+                    $('#lib').find("span").html(0);
+                    $('#lib').hide();
+                    swal("系统提示",r.msg+",客服将尽快确认！","success");
+                }else{
+                    swal("系统提示",r.msg,"error");
+                }
+
+            },
+            complete:function () {
+                $('.preloader').fadeOut(200);
+            }
+        });
+    }
+
 }
 
 function renderModalLib() {
@@ -347,7 +399,7 @@ function findById(id,localArr) {
     let backItem = "";
     for(let i=0;i<localArr.length;i++){
         let item = localArr[i];
-        let localId = item.Id;
+        let localId = item.DeviceId;
         if(id===localId){
             backItem = item;
             break

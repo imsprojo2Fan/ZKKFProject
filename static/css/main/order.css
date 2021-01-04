@@ -1,0 +1,106 @@
+#tab2 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: 15.5vw!important;
+    height: 30px;
+}
+.timeItem{
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    width: 100px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    float: left;
+    text-align: center;
+}
+.timeItem:hover{
+    background: #6195ff;
+    color: white;
+    border-color: #6195ff;
+}
+.timeItemActive{
+    background: #6195ff;
+    border: 1px solid #6195ff;
+    color: white;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    width: 100px;
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    float: left;
+    text-align: center;
+}
+.timeItemActive:hover{
+    opacity: 0.75;
+}
+.timeItem-disabled{
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    width: 100px;
+    border-radius: 4px;
+    margin-right: 5px;
+    background: #eee;
+    cursor: not-allowed;
+    float: left;
+    text-align: center;
+}
+
+.modal-header .close:focus,
+.modal-header .close:active{
+    outline: none;
+}
+#detailModal .modal-body{
+    max-height: 45vh;
+    overflow-y: auto;
+}
+
+.libItemWrap .typeName{
+    font-size: 18px;
+    font-weight: bold;
+}
+.libItemWrap hr{
+    margin: 1px 0;
+}
+.libItemWrap .dWrap{
+    padding: 2% 8%;
+}
+.libItemWrap .dWrap i{
+    font-size: 18px;
+}
+.libItemWrap .dItem{
+    padding: 6px 35px;
+}
+.libItemWrap .fa-files-o{
+    color: var(--thm-base);
+}
+.libItemWrap .fa-trash-o{
+    float: right;
+    margin-top: 6px;
+    margin-right: 8%;
+    color: red;
+    cursor: pointer;
+}
+.cac{
+    font-size: 20px;
+    cursor: pointer;
+}
+.count{
+    font-size: 16px;
+}
+.countWrap{
+    display: inline-block;
+    float: right;
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none;
+}
+.form-control-static {
+    min-height: 27px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0;
+}
