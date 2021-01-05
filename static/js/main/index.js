@@ -69,8 +69,10 @@ $(function () {
     //console.log(userInfo);
     if(userInfo.type<1){
         $('.fa-gg-circle').parent().parent().remove();
+        $('.fa-tags').parent().parent().remove();
         $('.fa-cubes').parent().parent().remove();
         $('.fa-money').parent().parent().remove();
+        $('.fa-tasks').parent().parent().remove();
         $('.fa-newspaper-o').parent().parent().remove();
     }
     if(userInfo.type<2){

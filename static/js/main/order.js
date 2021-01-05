@@ -49,8 +49,8 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 7 ] }],//指定哪些列不排序
-        "order": [[ 6, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [0,8 ] }],//指定哪些列不排序
+        "order": [[ 7, "desc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 50,
         ajax: {
@@ -61,6 +61,9 @@ $(document).ready(function() {
             }
         },
         columns: [
+            {"data": "id","width":"5%","render": function (data, type, row) {
+                    return "<span class='tid'>"+row.id+"</span>";
+                }},
             { data: 'name',"render":function (data) {
                     return stringUtil.maxLength(data,3);
                 }},
@@ -119,9 +122,16 @@ $(document).ready(function() {
             /*if(!data.name){
                 $('td', row).eq(2).html("暂未填写");
             }*/
+            let pageObj = myTable.page.info();
+            let num = index+1;
+            num = num+ pageObj.page*(pageObj.length);
+            if(num<10){
+                num = "0"+num;
+            }
+            $('td', row).eq(0).find(".tid").html(num);
         },
         "fnPreDrawCallback": function (oSettings) {
-            loading(true);
+            loadingParent(true,2);
         },
         "drawCallback": function( settings ) {
             let api = this.api();
@@ -129,7 +139,7 @@ $(document).ready(function() {
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
             $('#myTable_filter').find('input').attr("placeholder","请输入名称、手机号或订单号");
-            loading(false);
+            loadingParent(false,2);
         }
     });
 
@@ -216,6 +226,30 @@ function detail(rid) {
     $.post(prefix+"/detail",{rid:rid,_xsrf:$("#token", parent.document).val()},function (res) {
         loadingParent(false,2);
         console.log(res);
+        let localOutArr = res.data;
+        $('.libItemWrap').html("");
+        for(let i=0;i<localOutArr.length;i++){
+            let outItem = localOutArr[i];
+            let tid = outItem.tid;
+            let typeName = outItem.name;
+            let innerArr = outItem.data;
+            $('.libItemWrap').append('' +
+                '<div class="typeItem">\n' +
+                '   <div class="typeName">'+typeName+'</div>\n' +
+                '   <hr>\n' +
+                '<div class="dWrap'+tid+'"></div>'+
+                '</div>');
+            for(let j=0;j<innerArr.length;j++){
+                let dName = innerArr[j].name;
+                let title = dName;
+                dName = stringUtil.maxLength(dName,20);
+                let dId = innerArr[j].id;
+                let count = innerArr[j].count;
+                $('.dWrap'+tid).append('<div class="dItem">\n<input type="hidden" value="'+dId+'" class="id">\n<i class="fa fa-files-o" aria-hidden="true"></i>\n<span class="dName" title="'+title+'">'+dName+'</span>\n<div class="countWrap" my-data="'+typeName+'" my-id="'+dId+'">&nbsp;&nbsp;<span class="count">x'+count+'</span>&nbsp;&nbsp;</div>\n</div>');
+            }
+        }
+
+
         $('#detailModal').modal("show");
     });
 }

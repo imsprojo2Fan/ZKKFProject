@@ -104,6 +104,7 @@ hr{
 .thm-btnActive{
     background-color: var(--thm-base);
     color: white;
+    cursor: unset!important;
 }
 .cta-one__btn-block a{
     padding: 10px 10vw;
@@ -112,6 +113,7 @@ hr{
 }
 .createTime{
     text-align: right;
+    margin-top: 8px!important;
 }
 #submitBtn{
     float: right;

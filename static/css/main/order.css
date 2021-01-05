@@ -58,9 +58,15 @@
     overflow-y: auto;
 }
 
+.libItemWrap{
+    padding: 6px 48px;
+}
+
 .libItemWrap .typeName{
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
+    padding-left: 3px;
+    border-left: 3px solid #6195ff;
 }
 .libItemWrap hr{
     margin: 1px 0;
@@ -72,7 +78,7 @@
     font-size: 18px;
 }
 .libItemWrap .dItem{
-    padding: 6px 35px;
+    padding: 6px 35px 6px 15px;
 }
 .libItemWrap .fa-files-o{
     color: var(--thm-base);

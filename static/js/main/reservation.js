@@ -188,8 +188,8 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,3,5,9 ] }],//指定哪些列不排序
-        "order": [[ 8, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,3,4,6,10 ] }],//指定哪些列不排序
+        "order": [[ 9, "desc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 50,
         ajax: {
@@ -200,6 +200,9 @@ $(document).ready(function() {
             }
         },
         columns: [
+            {"data": "id","width":"5%","render": function (data, type, row) {
+                    return "<span class='tid'>"+row.id+"</span>";
+                }},
             { data: 'name',"render":function (data) {
                     return stringUtil.maxLength(data,3);
                 }},
@@ -269,9 +272,16 @@ $(document).ready(function() {
             /*if(!data.name){
                 $('td', row).eq(2).html("暂未填写");
             }*/
+            let pageObj = myTable.page.info();
+            let num = index+1;
+            num = num+ pageObj.page*(pageObj.length);
+            if(num<10){
+                num = "0"+num;
+            }
+            $('td', row).eq(0).find(".tid").html(num);
         },
         "fnPreDrawCallback": function (oSettings) {
-            loading(true);
+            loadingParent(true,2);
         },
         "drawCallback": function( settings ) {
             let api = this.api();
@@ -279,7 +289,7 @@ $(document).ready(function() {
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
             $('#myTable_filter').find('input').attr("placeholder","请输入用户名称或手机号");
-            loading(false);
+            loadingParent(false,2);
         }
     });
 

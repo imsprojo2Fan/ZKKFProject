@@ -30,16 +30,16 @@ func (this *ReservationController) List() {
 	sortType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "4" {
+	if sortNum == "5" {
 		sortCol = "date"
 	}
-	if sortNum == "6" {
+	if sortNum == "7" {
 		sortCol = "status"
 	}
-	if sortNum == "7" {
+	if sortNum == "8" {
 		sortCol = "updated"
 	}
-	if sortNum == "8" {
+	if sortNum == "9" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -75,7 +75,7 @@ func (this *ReservationController) List() {
 
 func (this *ReservationController) ListForPerson() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uType := session.Get("type").(int)
+	//uType := session.Get("type").(int)
 	uid := session.Get("id").(int)
 	GlobalDraw++
 	qMap := make(map[string]interface{})
@@ -92,10 +92,10 @@ func (this *ReservationController) ListForPerson() {
 	sortType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "3" {
+	if sortNum == "4" {
 		sortCol = "status"
 	}
-	if sortNum == "4" {
+	if sortNum == "5" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -106,9 +106,6 @@ func (this *ReservationController) ListForPerson() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-	if uType < 1 { //账号类型小于3的用户不可查看所有信息
-		this.jsonResult(200, -1, "查询成功！", "无权限")
-	}
 
 	obj := new(models.Reservation)
 	//获取总记录数

@@ -18,7 +18,7 @@ $(document).ready(function() {
     $('#tabHref01').on("click",function () {
         let isActive = $(this).attr("class");
         if(!isActive){
-            return
+            return false
         }else{
             $('#tabHref02').addClass("active");
             $(this).removeClass("active");
@@ -30,7 +30,7 @@ $(document).ready(function() {
     $('#tabHref02').on("click",function () {
         let isActive = $(this).attr("class");
         if(!isActive){
-            return
+            return false
         }else{
             $('#tabHref01').addClass("active");
             $(this).removeClass("active");
@@ -127,7 +127,7 @@ $(document).ready(function() {
             }*/
         },
         "fnPreDrawCallback": function (oSettings) {
-            loading(true);
+            loadingParent(true,2);
         },
         "drawCallback": function( settings ) {
             let api = this.api();
@@ -135,7 +135,7 @@ $(document).ready(function() {
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
             $('#myTable_filter').find('input').attr("placeholder","请输入姓名/手机/邮箱");
-            loading(false);
+            loadingParent(false,2);
         }
     });
 

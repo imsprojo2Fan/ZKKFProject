@@ -30,10 +30,10 @@ func (this *TypeController) List() {
 	sorType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "3" {
+	if sortNum == "4" {
 		sortCol = "updated"
 	}
-	if sortNum == "4" {
+	if sortNum == "5" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")

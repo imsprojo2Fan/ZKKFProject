@@ -32,25 +32,25 @@ func (this *OrderController) List() {
 	sortType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "0" {
+	if sortNum == "1" {
 		sortCol = "name"
 	}
-	if sortNum == "1" {
+	if sortNum == "2" {
 		sortCol = "company"
 	}
-	if sortNum == "2" {
+	if sortNum == "3" {
 		sortCol = "phone"
 	}
-	if sortNum == "3" {
+	if sortNum == "4" {
 		sortCol = "status"
 	}
-	if sortNum == "4" {
+	if sortNum == "5" {
 		sortCol = "remark"
 	}
-	if sortNum == "5" {
+	if sortNum == "6" {
 		sortCol = "updated"
 	}
-	if sortNum == "6" {
+	if sortNum == "7" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -86,7 +86,6 @@ func (this *OrderController) List() {
 
 func (this *OrderController) ListForPerson() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uType := session.Get("type").(int)
 	uid := session.Get("id").(int)
 	GlobalDraw++
 	qMap := make(map[string]interface{})
@@ -103,10 +102,13 @@ func (this *OrderController) ListForPerson() {
 	sortType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "3" {
+	if sortNum == "1" {
+		sortCol = "rid"
+	}
+	if sortNum == "2" {
 		sortCol = "status"
 	}
-	if sortNum == "4" {
+	if sortNum == "3" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -117,9 +119,6 @@ func (this *OrderController) ListForPerson() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-	if uType < 1 { //账号类型小于3的用户不可查看所有信息
-		this.jsonResult(200, -1, "查询成功！", "无权限")
-	}
 
 	obj := new(models.Order)
 	//获取总记录数

@@ -198,7 +198,7 @@ func (this *Order) ListByRid(rid string) (error,[]map[string]interface{}) {
 		return err,nil
 	}
 	var dArr []orm.Params
-	_,err = o.Raw("select d.name,t.id as tid from order_device o,device d,type t,type_child c where o.device_id=d.id and d.tid=c.id and c.tid=t.id and o.rid=\""+rid+"\"").Values(&dArr)
+	_,err = o.Raw("select d.name,d.id,o.count,t.id as tid from order_device o,device d,type t,type_child c where o.device_id=d.id and d.tid=c.id and c.tid=t.id and o.rid=\""+rid+"\"").Values(&dArr)
 	if err!=nil{
 		return err,nil
 	}

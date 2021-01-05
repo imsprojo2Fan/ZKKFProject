@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>用户信息管理</title>
+    <title>项目信息管理</title>
     <!-- ========== Css Files ========== -->
     <link href="../../static/css/root.css" rel="stylesheet">
     <link href="../../static/css/design.css?v={{ .random}}" rel="stylesheet">
@@ -30,6 +30,7 @@
         <ol class="breadcrumb">
             <li><span id="tabHref01" href="javascript:void(0)">数据列表</span></li>
             <li><span id="tabHref02" class="active" href="javascript:void(0)">新增数据</span></li>
+            <li><span class="active" onclick="refresh()">刷新数据</span></li>
         </ol>
     </div>
 
@@ -51,11 +52,13 @@
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
+                                <th>序号</th>
                                 <th>所属分组</th>
                                 <th>项目名称</th>
                                 <th>是否上线</th>
                                 <th>简述</th>
                                 <th>查看数</th>
+                                <th>订单数</th>
                                 <th>预约数</th>
                                 <th>更新时间</th>
                                 <th>创建时间</th>

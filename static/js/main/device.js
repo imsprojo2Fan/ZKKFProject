@@ -136,8 +136,8 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 1,3,8 ] }],//指定哪些列不排序
-        "order": [[ 7, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [0,4,10] }],//指定哪些列不排序
+        "order": [[ 9, "desc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 50,
         ajax: {
@@ -148,6 +148,9 @@ $(document).ready(function() {
             }
         },
         columns: [
+            {"data": "id","width":"5%","render": function (data, type, row) {
+                    return "<span class='tid'>"+row.id+"</span>";
+                }},
             { data: 'typeName'},
             { data: 'name',"render":function (data) {
                     return stringUtil.maxLength(data,8);
@@ -163,6 +166,9 @@ $(document).ready(function() {
                     return stringUtil.maxLength(data,8);
                 } },
             { data: 'view',"render":function (data) {
+                    return data;
+                } },
+            { data: 'order',"render":function (data) {
                     return data;
                 } },
             { data: 'reservation',"render":function (data) {
@@ -199,9 +205,16 @@ $(document).ready(function() {
             /*if(!data.name){
                 $('td', row).eq(2).html("暂未填写");
             }*/
+            let pageObj = myTable.page.info();
+            let num = index+1;
+            num = num+ pageObj.page*(pageObj.length);
+            if(num<10){
+                num = "0"+num;
+            }
+            $('td', row).eq(0).find(".tid").html(num);
         },
         "fnPreDrawCallback": function (oSettings) {
-            loading(true);
+            loadingParent(true,2);
         },
         "drawCallback": function(settings) {
             let api = this.api();
@@ -209,7 +222,7 @@ $(document).ready(function() {
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
             $('#myTable_filter').find('input').attr("placeholder","请输入设备名称");
-            loading(false);
+            loadingParent(false,2);
         }
     });
     $('.dataTables_wrapper .dataTables_filter input').css("background","blue");

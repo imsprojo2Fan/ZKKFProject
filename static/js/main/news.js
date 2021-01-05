@@ -142,7 +142,7 @@ $(document).ready(function() {
             }*/
         },
         "fnPreDrawCallback": function (oSettings) {
-            loading(true);
+            loadingParent(true,2);
         },
         "drawCallback": function(settings) {
             let api = this.api();
@@ -150,7 +150,7 @@ $(document).ready(function() {
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
             $('#myTable_filter').find('input').attr("placeholder","请输入标题");
-            loading(false);
+            loadingParent(false,2);
         }
     });
     $('.dataTables_wrapper .dataTables_filter input').css("background","blue");
