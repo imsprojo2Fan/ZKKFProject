@@ -223,10 +223,10 @@ hr{
     overflow-y: auto;
 }
 .modal-footer{
-    padding: 25px 0;
+    padding: 40px 0;
 }
 .modal-footer button{
-    width: 75%;
+    width: 50%;
     margin: 0 auto;
     height: 45px;
     line-height: 30px;
@@ -234,6 +234,17 @@ hr{
 .modal-footer button:hover{
     background: var(--thm-base);
     border-color: var(--thm-base);
+}
+.modal-footer button:focus,
+.modal-footer button:active {
+    outline: none;
+}
+.btn-secondary.focus, .btn-secondary:focus {
+    box-shadow: 0 0 0 0.2rem transparent;
+}
+.btn.focus, .btn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0);
 }
 .typeName{
     font-size: 18px;
@@ -275,3 +286,27 @@ hr{
     -webkit-user-select:none;
     user-select:none;
 }
+@media (min-width: 576px){
+    .modal-dialog {
+        max-width: 45vw;
+        margin: 1rem auto!important;
+    }
+}
+.modal-title{
+    color: var(--thm-base);
+}
+#modalTip{
+    font-size: 16px;
+    color: red;
+}
+.back{
+    z-index: 999;
+    position: absolute;
+    left: 30px;
+    width: 80px!important;
+    display: none;
+}
+.serviceWrap{
+    display: none;
+}
+

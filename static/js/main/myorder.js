@@ -80,12 +80,12 @@ $(document).ready(function() {
                     }
                     return str;
                 } },
-            { data: 'created',"width":"12%","render":function (data,type,row,meta) {
+            { data: 'created',"render":function (data,type,row,meta) {
                     let unixTimestamp = new Date(data);
                     let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
                     return commonTime;
                 }},
-            { data: null,"width":"15%","render":function () {
+            { data: null,"render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看详情</a>&nbsp;"
                     return html;
                 } }

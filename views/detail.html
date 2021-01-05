@@ -99,7 +99,8 @@
         <section class="blog-one blog-details-page">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div id="serviceInfo" class="col-lg-8"></div>
+                    <div id="deviceInfo" class="col-lg-8">
                         <div class="blog-details__main">
                             <div class="blog-details__image">
                                 <img src="../static/img/default1.png" onerror="this.src= '../../static/img/default2.png'; this.onerror = null;this.style.marginTop='18px';this.style.marginLeft='45px'" class="img-fluid" alt="">
@@ -304,38 +305,43 @@
     </div>
 
     <!-- 模态框 -->
-    <div class="modal fade" id="libModal" tabindex="-1">
+    <div class="modal fade col-lg" id="libModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
 
                 <!-- 模态框头部 -->
                 <div class="modal-header">
-                    <h4 class="modal-title">已选实验项目列表</h4>
+                    <h4 class="modal-title"><span id="modalTitle">已选实验项目列表</span>&nbsp;&nbsp;<span id="modalTip"></span></h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
                 <!-- 模态框主体 -->
-                <div class="modal-body libItemWrap">
-                    <div class="typeItem">
-                        <div class="typeName">TEM微观结构</div>
-                        <hr>
-                        <div class="dWrap">
-                            <div class="dItem">
-                                <input type="hidden" class="id">
-                                <i class="fa fa-files-o" aria-hidden="true"></i>
-                                <span class="dName">扫描电子显微镜</span>
-                                <div class="countWrap">
-                                    <span class="cac cac1">-</span>&nbsp;&nbsp;<span class="count">10</span>&nbsp;&nbsp;<span class="cac cac2">+</span>
+                <div class="modal-body">
+                    <div class="libItemWrap">
+                        <div class="typeItem">
+                            <div class="typeName">TEM微观结构</div>
+                            <hr>
+                            <div class="dWrap">
+                                <div class="dItem">
+                                    <input type="hidden" class="id">
+                                    <i class="fa fa-files-o" aria-hidden="true"></i>
+                                    <span class="dName">扫描电子显微镜</span>
+                                    <div class="countWrap">
+                                        <span class="cac cac1">-</span>&nbsp;&nbsp;<span class="count">10</span>&nbsp;&nbsp;<span class="cac cac2">+</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    <div class="serviceWrap">
+                        服务协议
+                    </div>
                 </div>
 
                 <!-- 模态框底部 -->
                 <div class="modal-footer">
-                    <button id="orderBtn" type="button" class="btn btn-secondary">提交订单</button>
+                    <button type="button" class="btn btn-secondary back"><i class="fa fa-angle-left" aria-hidden="true"></i>&nbsp;返回列表</button>
+                    <button id="orderBtn" type="button" class="btn btn-secondary">服务协议&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></button>
                 </div>
 
             </div>

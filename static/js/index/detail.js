@@ -106,6 +106,8 @@ $(function () {
     });
 
     $('#lib').on("click",function () {
+        $('#deviceInfo').show();
+        $('#serviceInfo').hide();
         $('#libModal').modal("show");
     });
 
@@ -151,7 +153,7 @@ function add(){
             if (r.code == 1) {
                 renderTime();
                 $('#message').val("");
-                swal("系统提示",r.msg+",客服将尽快确认！","success");
+                swal("系统提示",r.msg+"，客服将尽快确认！","success");
             }else{
                 swal("系统提示",r.msg,"error");
             }
@@ -268,15 +270,25 @@ function submitOrder() {
     let loginFlag = $('#loginFlag').val();
     if(loginFlag==="0"){
         swal("系统提示","该操作需用户登录，请先登录！","warning");
-        return false
+        return false;
     }
     let localLibTemp = localStorage.getItem("lib");
-    if(localLibTemp){
-        localOutArr = JSON.parse(localLibTemp);
-        if(localOutArr.length===0){
-            swal("系统提示","当前未选中任何项目！","warning");
-            return
-        }
+    if(!localLibTemp){
+        showTip("当前未选中任何项目！")
+        return false;
+    }
+    localOutArr = JSON.parse(localLibTemp);
+    if(localOutArr.length===0){
+        showTip("当前未选中任何项目！")
+        return false;
+    }
+
+    let htmlTxt = $('#orderBtn').html();
+    if(htmlTxt.indexOf("服务协议")!==-1){
+        $('#deviceInfo').hide();
+        $('#serviceInfo').show();
+        $('#libModal').modal("hide");
+    }else{
         let formData = {};
         formData["data"] = localLibTemp;
         formData["_xsrf"] = $("#token", parent.document).val();
@@ -295,6 +307,7 @@ function submitOrder() {
                     $('#libModal').modal('hide');
                     $('#lib').find("span").html(0);
                     $('#lib').hide();
+                    $('.back').click();
                     swal("系统提示",r.msg+",客服将尽快确认！","success");
                 }else{
                     swal("系统提示",r.msg,"error");
@@ -314,9 +327,30 @@ function renderModalLib() {
     if(localLibTemp){
         localOutArr = JSON.parse(localLibTemp);
         let count = 0;
+        let errData = false;
         for(let i=0;i<localOutArr.length;i++){
-            let localCount = localOutArr[i].Count;
-            count += localCount;
+            let outItem = localOutArr[i];
+            let localCount = outItem.Count;
+            let innerArr = outItem.Data;
+            let continueFlag = false;
+            //防止项目数据为空
+            for(let j=0;j<innerArr.length;j++){
+                if(!innerArr[j].Name){
+                    localOutArr.pop(outItem);
+                    continueFlag = true;
+                    errData = true;
+                    break
+                }
+            }
+            if(!continueFlag){
+                count += localCount;
+            }
+        }
+        if(errData){
+            localStorage.setItem("lib",JSON.stringify(localOutArr));
+        }
+        if(localOutArr&&localOutArr.length===0){
+            return false;
         }
         $('#lib').find("span").html(count);
         $('#lib').show();
@@ -336,7 +370,7 @@ function renderModalLib() {
             for(let j=0;j<innerArr.length;j++){
                 let dName = innerArr[j].Name;
                 let title = dName;
-                dName = stringUtil.maxLength(dName,20);
+                dName = stringUtil.maxLength(dName,40);
                 let dId = innerArr[j].Id;
                 let count = innerArr[j].Count;
                 if(count<10){
@@ -426,4 +460,11 @@ function replaceItemByType(item,arr) {
         }
     }
     return arr;
+}
+
+function showTip(txt) {
+    $('#modalTip').html(txt);
+    setTimeout(function () {
+        $('#modalTip').html("");
+    },5000);
 }
