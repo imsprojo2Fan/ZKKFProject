@@ -213,7 +213,7 @@ $(function () {
             $("#loginalert").fadeIn(300);
         }
     });
-    $('.cta-one__btn-block').find("a").on("click",function () {
+    $('.thm-btn').on("click",function () {
         if($('#loginShowBtn').html()==="前往个人中心"){
             swal("系统提示","您已注册过账号！","info");
             return
