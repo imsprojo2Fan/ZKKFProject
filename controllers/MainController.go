@@ -12,13 +12,23 @@ import (
 type MainController struct {
 	BaseController
 }
-
+var userObj models.User
 func (this *MainController) Index() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	userInfo := session.Get("user").(*models.User)
+	uid := session.Get("id").(int)
+	userInfo := userObj.SelectById(uid)
+	//userInfo := session.Get("user").(*models.User)
 	tMap := make(map[string]interface{})
+	tMap["id"] = userInfo.Id
 	tMap["type"] = userInfo.Type
 	tMap["account"] = userInfo.Account
+	tMap["name"] = userInfo.Name
+	tMap["email"] = userInfo.Email
+	tMap["phone"] = userInfo.Phone
+	tMap["company"] = userInfo.Company
+	tMap["address"] = userInfo.Address
+	tMap["invoice"] = userInfo.Invoice
+	tMap["invoice_code"] = userInfo.InvoiceCode
 	this.Data["userInfo"] = tMap
 	this.Data["account"] = session.Get("account")
 	this.Data["_xsrf"] = this.XSRFToken()

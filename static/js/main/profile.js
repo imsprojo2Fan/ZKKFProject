@@ -6,14 +6,19 @@ $(function () {
         let account = $('#account').val().trim();
         let password1 = $('#password').val().trim();
         let password2 = $('#password2').val().trim();
-        let email = $('#email').val().trim();
-        let phone = $('#phone').val().trim();
+        let name = $('#infoForm').find("input[name='name']").val().trim();
+        let company = $('#infoForm').find("input[name='company']").val().trim();
+        let address = $('#infoForm').find("input[name='address']").val().trim();
+        let phone = $('#infoForm').find("input[name='phone']").val().trim();
+        let email = $('#infoForm').find("input[name='email']").val().trim();
+        let invoice = $('#infoForm').find("input[name='invoice']").val().trim();
+        let invoiceCode = $('#infoForm').find("input[name='invoice_code']").val().trim();
         if(!account){
             tipTip("请填写账号!");
             return
         }
         if(!isNaN(account)){
-            tipTip("账号不可为纯数字!");
+            tipTip("账号需包含数字和字母!");
             return
         }
         if(account.length<5){
@@ -36,14 +41,43 @@ $(function () {
             tipTip("请确认两次密码一致!");
             return
         }
-
-        if(phone&&!(/^1[3456789]\d{9}$/.test(phone))){
-            swal("系统提示",'手机号格式错误!',"warning");
+        if(!phone){
+            tipTip('手机号不能为空!');
             return;
         }
-        if(email&&!checkEmail(email)){
+        if(!(/^1[3456789]\d{9}$/.test(phone))){
+            tipTip('手机号格式错误!');
+            return;
+        }
+        if(!email){
+            tipTip("邮箱地址不能空!");
+            return
+        }
+        if(!checkEmail(email)){
             tipTip("邮箱地址格式不正确!");
             return
+        }
+        if(!name){
+            tipTip("姓名不能为空!");
+            return
+        }
+        if(userInfo.Type===0){
+            if(!company){
+                tipTip("单位/公司不能为空!");
+                return
+            }
+            if(!address){
+                tipTip("邮寄地址不能为空!");
+                return
+            }
+            if(!invoice){
+                tipTip("发票抬头不能为空!");
+                return
+            }
+            if(!invoiceCode){
+                tipTip("纳税人识别码不能为空!");
+                return
+            }
         }
         let formData = formUtil('infoForm');
         formData["_xsrf"] = $("#token", parent.document).val();
@@ -185,8 +219,12 @@ function renderForm() {
         $('#email').val(userInfo.Email);
         $('#infoForm').find("input[name='name']").val(userInfo.Name);
         $('#infoForm').find("input[name='company']").val(userInfo.Company);
-        $('#infoForm').find("input[name='teacher']").val(userInfo.Teacher);
         $('#infoForm').find("input[name='address']").val(userInfo.Address);
+        $('#infoForm').find("input[name='teacher']").val(userInfo.Teacher);
+        $('#infoForm').find("input[name='teacher_phone']").val(userInfo.TeacherPhone);
+        $('#infoForm').find("input[name='teacher_mail']").val(userInfo.TeacherMail);
+        $('#infoForm').find("input[name='invoice']").val(userInfo.Invoice);
+        $('#infoForm').find("input[name='invoice_code']").val(userInfo.InvoiceCode);
         /*if(actived===0&&userInfo.Email){
             let dom = $('#email').parent().find("span");
             $(dom).html("邮箱地址未验证,该地址将用于找回密码");
@@ -203,6 +241,7 @@ function renderForm() {
             let dom2 = $('#email').parent().find("button");
             $(dom2).remove();
         }*/
+        loadingParent(false,2);
     });
 }
 

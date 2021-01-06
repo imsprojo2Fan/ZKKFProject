@@ -21,8 +21,12 @@ type User struct {
 	Avatar   string `orm:"size(128)"`
 	Gender   string `orm:"size(8)"`
 	Teacher  string //导师
+	TeacherPhone string //导师/负责人电话
+	TeacherMail string //导师/负责人邮箱
 	Company  string //公司/单位
-	Address  string //地址
+	Address  string //邮寄地址
+	Invoice string //发票抬头
+	InvoiceCode string //纳税人识别码
 	Birthday string
 	Active   int //是否激活 0未激活 1激活
 	Remark   string
@@ -44,19 +48,22 @@ func (this *User) Insert(obj *User) error {
 func (this *User) Update(obj *User) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "type", "disabled", "password", "phone", "email", "gender", "name","teacher","company","address", "birthday", "avatar", "active", "remark", "updated")
+	_, err := o.Update(obj, "type", "disabled", "password", "phone", "email", "gender", "name","teacher","teacher_phone","teacher_mail","invoice","invoice_code","company","address", "birthday", "avatar", "active", "remark", "updated")
 	return err
 }
 
-func (this *User) UpdateProfile(obj *User) bool {
+func (this *User) UpdateProfile(obj *User) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "account", "password", "phone", "email", "name","teacher","company","address", "birthday", "avatar", "updated")
-	if err != nil {
-		return false
-	} else {
-		return true
-	}
+	_, err := o.Update(obj, "account", "password", "phone", "email", "name","teacher","teacher_phone","teacher_mail","invoice","invoice_code","company","address", "birthday", "avatar", "updated")
+	return err
+}
+
+func (this *User) UpdateInfo(obj *User) error {
+
+	o := orm.NewOrm()
+	_, err := o.Update(obj, "account", "phone", "email", "name","teacher","teacher_phone","teacher_mail","invoice","invoice_code","company","address","updated")
+	return err
 }
 
 func (this *User) Delete(obj *User) error {
@@ -178,7 +185,7 @@ func (this *User) Count(qMap map[string]interface{}) int {
 	//cnt,_ := o.QueryTable("resume").Count()
 	//var count[] Resume
 	//o.Raw("select count(*) from resume where 1=1 and name like %?%",searchKey).QueryRows(count)
-	sql := "SELECT id from " + UserTBName() + " where 1=1 and account!=\"root\""
+	sql := "SELECT id from " + UserTBName() + " where 1=1 and id!=1 "
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql = sql + " and (name like \"%" + key + "%\" or email like\"%" + key + "%\" or phone like \"%" + key + "%\")"
@@ -191,7 +198,7 @@ func (this *User) Count(qMap map[string]interface{}) int {
 func (this *User) ListByPage(qMap map[string]interface{}) []orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	sql := "SELECT * from " + UserTBName() + " where 1=1 and account!=\"root\""
+	sql := "SELECT * from " + UserTBName() + " where 1=1 and id!=1 "
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql = sql + " and (name like \"%" + key + "%\" or email like\"%" + key + "%\" or phone like \"%" + key + "%\")"
@@ -225,4 +232,10 @@ func (this *User) AllCustomer(dataList *[]User) {
 func (this *User) ListByArr(arr string, uList *[]User) {
 	o := orm.NewOrm()
 	_, _ = o.Raw("select * from " + UserTBName() + " where id in(" + arr + ")").QueryRows(uList)
+}
+func (this *User) SelectById(id int)User {
+	o := orm.NewOrm()
+	var u User
+	_ = o.Raw("select * from " + UserTBName()+" where id="+strconv.Itoa(id)).QueryRow(&u)
+	return  u
 }

@@ -39,26 +39,13 @@
     </div>
 </div>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="../../static/js/util/util.js"></script>
+<script src="../../static/js/main/home.js"></script>
 <script>
 
     $(function () {
         $("#token", parent.document).val({{._xsrf}});
     });
-
-    function useModel(uid,rid,obj) {
-        $.post("/main/resume/use",{_xsrf:{{._xsrf}},uid:uid,rid:rid},function (r) {
-            if(r.code===1){
-                window.parent.swalInfo("即刻提示","操作成功","success");
-                $(obj).parent().next().css("display","block");
-            }else{
-                window.parent.swalInfo("即刻提示",r.msg,"error");
-            }
-        });
-    }
-    function previewModel(rid) {
-        var url = "/resume?v="+rid;
-        window.open(url,"_blank");
-    }
 
 </script>
 

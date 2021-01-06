@@ -94,7 +94,6 @@ $(document).ready(function() {
     //初始化设备数据
     $.post("/main/device/all",{_xsrf:$("#token", parent.document).val()},function (res) {
         if(res.code===1){
-            loading(false,2);
             let tList = res.data;
             if(tList){
                 $('#typeSel1').html('');

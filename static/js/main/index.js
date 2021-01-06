@@ -11,6 +11,107 @@ $(function () {
     }
     $('#account').parent().attr("title","Hi,"+userInfo.account);
     $('#account').html(account);
+
+    if(userInfo.account){
+        $('#infoForm').find("input[name='account']").val(userInfo.account);
+        $('#infoForm').find("input[name='account']").attr("readonly","true");
+    }
+    $('#infoForm').find("input[name='id']").val(userInfo.id);
+    $('#infoForm').find("input[name='name']").val(userInfo.name);
+    $('#infoForm').find("input[name='company']").val(userInfo.company);
+    $('#infoForm').find("input[name='address']").val(userInfo.address);
+    $('#infoForm').find("input[name='phone']").val(userInfo.phone);
+    $('#infoForm').find("input[name='email']").val(userInfo.email);
+    $('#infoForm').find("input[name='address']").val(userInfo.address);
+    $('#infoForm').find("input[name='invoice']").val(userInfo.invoice);
+    $('#infoForm').find("input[name='invoice_code']").val(userInfo.invoice_code);
+    $('#infoBtn').on("click",function () {
+        let account = $('#infoForm').find("input[name='account']").val().trim();
+        let name = $('#infoForm').find("input[name='name']").val().trim();
+        let company = $('#infoForm').find("input[name='company']").val().trim();
+        let address = $('#infoForm').find("input[name='address']").val().trim();
+        let phone = $('#infoForm').find("input[name='phone']").val().trim();
+        let email = $('#infoForm').find("input[name='email']").val().trim();
+        let invoice = $('#infoForm').find("input[name='invoice']").val().trim();
+        let invoiceCode = $('#infoForm').find("input[name='invoice_code']").val().trim();
+        if(!account){
+            showTip("请填写账号!");
+            return
+        }
+        if(!isNaN(account)){
+            showTip("账号需包含数字和字母!");
+            return false;
+        }
+        if(account.length<5){
+            showTip("账号长度不可少于5个字符!");
+            return false;
+        }
+        if(!name){
+            showTip("modalTip","姓名不能为空!");
+            return false;
+        }
+        if(!company){
+            showTip("modalTip","单位不能为空!");
+            return false;
+        }
+        if(!address){
+            showTip("modalTip","邮寄地址不能为空!");
+            return false;
+        }
+        if(!phone){
+            showTip("modalTip","手机号不能为空!");
+            return false;
+        }
+        if(!(/^1[3456789]\d{9}$/.test(phone))){
+            showTip("modalTip","手机号格式错误!");
+            return false;
+        }
+        if(!email){
+            showTip("modalTip","邮箱不能为空!");
+            return false;
+        }
+        if(email&&!checkEmail(email)){
+            showTip("邮箱地址格式不正确!");
+            return false;
+        }
+        if(!invoice){
+            showTip("modalTip","发票抬头不能为空!");
+            return false;
+        }
+        if(!invoiceCode){
+            showTip("modalTip","纳税人识别号不能为空!");
+            return false;
+        }
+
+        let formData = formUtil('infoForm');
+        userInfo = formData;
+        formData["_xsrf"] = $("#token").val();
+        $.ajax({
+            url:"/main/user/updateInfo",
+            type:"POST",
+            data:formData,
+            beforeSend:function () {
+                loading(true,2);
+            },
+            success:function (r) {
+                if(r.code===1){
+                    $('#infoModal').modal("hide");
+                    swalParent("系统提示",r.msg,"success");
+                }else{
+                    swalParent("系统提示",r.msg,"error");
+                }
+            },
+            complete:function () {
+                loading(false,2);
+            }
+        });
+
+    });
+    $('#outBtn').on("click",function () {
+        window.location.href = "/timeout"
+    });
+
+
     bodyHeight = window.innerHeight;
     frameHeight = bodyHeight-50;
     $('#J_iframe').css("height",frameHeight+"px");
@@ -23,6 +124,7 @@ $(function () {
 
     //菜单点击
     $(".J_menuItem").on('click',function(){
+        loading(true,2);
         $('.J_menuItem').each(function () {
             $(this).css("border-left","5px solid #2b333e");
             $(this).css("background","#2b333e");
@@ -75,12 +177,19 @@ $(function () {
         $('.fa-tasks').parent().parent().remove();
         $('.fa-newspaper-o').parent().parent().remove();
     }
+
     if(userInfo.type<2){
         $('.fa-user-plus').parent().parent().remove();
     }
     if(userInfo.type<3){
         $('.fa-cogs').parent().parent().remove();
     }
+    if(userInfo.type<1){
+        if(!userInfo.account||!userInfo.name||!userInfo.phone||!userInfo.email||!userInfo.address||!userInfo.company||!userInfo.invoice||!userInfo.invoice_code){
+            $('#infoModal').modal("show");
+        }
+    }
+
     //$('#account').html(userInfo.Account);
 
     let myFrame = document.getElementById('J_iframe');
@@ -90,10 +199,10 @@ $(function () {
         }
         else {
             //console.log("加载完成。。。");
-            $('#loading').fadeOut(100);
+            //$('#loading').fadeOut(100);
         }
     };
-    loading("loading",false);
+    //loading(false,2);
 
 });
 

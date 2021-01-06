@@ -24,12 +24,15 @@
     <link href="../../static/plugins/sweetalert/sweetalert.min.css" rel="stylesheet">
     <link href="../../static/back/css/style.css?v=4.1.0" rel="stylesheet">
     <link href="../../static/css/loader.css" rel="stylesheet">
+    <link href="../../static/css/main/index.css" rel="stylesheet">
     <style>
-
+        .col-sm-3,.col-sm-7{
+            padding-right: 0;
+        }
     </style>
 </head>
 
-<div id="loading" class="loading-wrap" style="display: block;">
+<div id="loading" class="loading-wrap" style="display: none;">
     <div class="loader" >
         <div class="la-ball-clip-rotate-multiple la-3x">
             <div></div>
@@ -284,6 +287,106 @@
         <!--右侧部分结束-->
     </div>
 
+    <!-- 模态框-info（Modal） -->
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    {{/*<button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>*/}}
+                    <h3 class="modal-title">
+                        个人信息&nbsp;&nbsp;<span id="modalTip"></span>
+                    </h3>
+                    <p style="margin-top: 6px">为了更好的提供服务及与您取得联系请务必完善以下信息<span class="tipRed">*</span>为必填</p>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="infoForm" autocomplete="off">
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label form-label"><span class="tipRed">*</span>账号</label>
+                            <div class="col-sm-7">
+                                <input type="hidden" name="id" id="id">
+                                <input type="text" class="form-control" name="account" oninput="value=this.value.replace(/[^\w_]/g,'');" maxlength="20" style="ime-mode:disabled" id="account" placeholder="不可纯数字,至少5个字符,将不可更改" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name" class="col-sm-3 control-label form-label"><span class="tipRed">*</span>姓名</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="name" maxlength="15" onkeyup="value=value.replace(/[^/a-zA-Z\0-9\u4E00-\u9FA5]/g,'')" class="form-control" placeholder="请输入姓名" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="col-sm-3 control-label form-label"><span class="tipRed">*</span>手机</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="phone" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" maxlength="11" placeholder="请输入手机" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-sm-3 control-label form-label"><span class="tipRed">*</span>邮箱</label>
+                            <div class="col-sm-7">
+                                <input type="email" name="email" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="请输入邮箱" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="company" class="col-sm-3 control-label form-label"><span class="tipRed">*</span>公司/单位</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="company" maxlength="30" class="form-control" placeholder="请输入公司/单位" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="company" class="col-sm-3 control-label form-label"><span class="tipRed">*</span>邮寄地址</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="address" maxlength="60" class="form-control" placeholder="请输入邮寄地址" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-3 control-label form-label"><span class="tipRed">*</span>发票抬头</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="invoice" maxlength="60" class="form-control" placeholder="请输入发票抬头" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-3 control-label form-label"><span class="tipRed">*</span>纳税人识别码</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="invoice_code" maxlength="60" class="form-control" placeholder="请输入纳税人识别码" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-3 control-label form-label">导师/负责人</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="teacher" maxlength="30" class="form-control" placeholder="请输入导师/负责人" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-3 control-label form-label">导师电话</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="teacher_phone" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" maxlength="11" placeholder="请输入导师电话" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-sm-3 control-label form-label">导师邮箱</label>
+                            <div class="col-sm-7">
+                                <input type="email" name="teacher_mail" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="请输入导师邮箱" >
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer" style="text-align: center">
+                    <button type="button" id="infoBtn" class="btn btn-default">
+                        提交信息
+                    </button>
+                    &nbsp;&nbsp;
+                    <button type="button" id="outBtn" class="btn btn-danger">
+                        退出系统
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <!-- 全局js -->
     <script src="../../static/back/js/jquery.min.js?v=2.1.4"></script>
     <script src="../../static/back/js/bootstrap.min.js?v=3.3.6"></script>
@@ -293,9 +396,10 @@
     <script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>
     <!-- 第三方插件 -->
     <script src="../../static/back/js/plugins/pace/pace.min.js"></script>
-    <script>let userInfo = {{.userInfo}};</script>
     <!-- 自定义js -->
     <script src="../../static/back/js/hAdmin.js?v=4.1.0"></script>
+    <script src="../../static/js/util/util.js"></script>
+    <script>let userInfo = {{.userInfo}};</script>
     <script type="text/javascript" src="../../static/js/main/index.js"></script>
 
 </body>

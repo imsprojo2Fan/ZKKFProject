@@ -76,7 +76,7 @@ $(document).ready(function() {
                     return stringUtil.maxLength(data,7);
                 }},
             { data: 'teacher',"render":function (data) {
-                    return stringUtil.maxLength(data,3);
+                    return stringUtil.maxLength(data,5);
                 } },
             { data: 'type',"render":function (data) {
                     let str = "";
@@ -173,9 +173,13 @@ $(document).ready(function() {
         $('#detailModal').find('.type').html(str);
         $('#detailModal').find('.phone').html(stringUtil.maxLength(rowData.phone));
         $('#detailModal').find('.company').html(stringUtil.maxLength(rowData.company,10));
-        $('#detailModal').find('.teacher').html(stringUtil.maxLength(rowData.teacher,3));
         $('#detailModal').find('.address').html(stringUtil.maxLength(rowData.address,15));
         $('#detailModal').find('.email').html(stringUtil.maxLength(rowData.email,11));
+        $('#detailModal').find('.teacher').html(stringUtil.maxLength(rowData.teacher,3));
+        $('#detailModal').find('.teacher_phone').html(stringUtil.maxLength(rowData.teacher_phone,11));
+        $('#detailModal').find('.teacher_mail').html(stringUtil.maxLength(rowData.teacher_mail,20));
+        $('#detailModal').find('.invoice').html(stringUtil.maxLength(rowData.invoice,20));
+        $('#detailModal').find('.invoice_code').html(stringUtil.maxLength(rowData.invoice_code,20));
         $('#detailModal').find('.remark').html(stringUtil.maxLength(rowData.remark,15));
         let created = rowData.created;
         let unixTimestamp = new Date(created) ;
@@ -210,8 +214,12 @@ $(document).ready(function() {
         $('#editForm').find("input[name='phone']").val(rowData.phone);
         $('#editForm').find("input[name='email']").val(rowData.email);
         $('#editForm').find("input[name='company']").val(rowData.company);
-        $('#editForm').find("input[name='teacher']").val(rowData.teacher);
         $('#editForm').find("input[name='address']").val(rowData.address);
+        $('#editForm').find("input[name='teacher']").val(rowData.teacher);
+        $('#editForm').find("input[name='teacher_phone']").val(rowData.teacher_phone);
+        $('#editForm').find("input[name='teacher_mail']").val(rowData.teacher_mail);
+        $('#editForm').find("input[name='invoice']").val(rowData.invoice);
+        $('#editForm').find("input[name='invoice_code']").val(rowData.invoice_code);
         $('#editForm').find("textarea[name='remark']").val(rowData.remark);
         $('#tip').html("");
         $('#editModal').modal("show");

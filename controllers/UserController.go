@@ -23,7 +23,6 @@ func (this *UserController) ListOne() {
 	user := new(models.User)
 	user.Id = uid
 	dbUser, _ := user.Read(strconv.Itoa(uid))
-	dbUser.Type = -1
 	dbUser.Disabled = -1
 	dbUser.Remark = ""
 	this.jsonResult(200, 1, "用户信息", dbUser)
@@ -102,6 +101,10 @@ func (this *UserController) Add() {
 	user.Account = this.GetString("account")
 	user.Name = this.GetString("name")
 	user.Teacher = this.GetString("teacher")
+	user.TeacherPhone = this.GetString("teacher_phone")
+	user.TeacherMail = this.GetString("teacher_mail")
+	user.Invoice = this.GetString("invoice")
+	user.InvoiceCode = this.GetString("invoice_code")
 	user.Company = this.GetString("company")
 	user.Address = this.GetString("address")
 	user.Phone = this.GetString("phone")
@@ -158,6 +161,10 @@ func (this *UserController) Update() {
 	user.Gender = this.GetString("gender")
 	user.Name = this.GetString("name")
 	user.Teacher = this.GetString("teacher")
+	user.TeacherPhone = this.GetString("teacher_phone")
+	user.TeacherMail = this.GetString("teacher_mail")
+	user.Invoice = this.GetString("invoice")
+	user.InvoiceCode = this.GetString("invoice_code")
 	user.Company = this.GetString("company")
 	user.Address = this.GetString("address")
 	user.Password = this.GetString("password")
@@ -201,7 +208,6 @@ func (this *UserController) Update() {
 func (this *UserController) UpdateProfile() {
 
 	user := new(models.User)
-
 	user.Id, _ = this.GetInt("id")
 	//查询数据库判断当前用户是否已设置账号
 	user.SelectByCol(user, "id")
@@ -218,6 +224,10 @@ func (this *UserController) UpdateProfile() {
 	}
 	user.Name = this.GetString("name")
 	user.Teacher = this.GetString("teacher")
+	user.TeacherPhone = this.GetString("teacher_phone")
+	user.TeacherMail = this.GetString("teacher_mail")
+	user.Invoice = this.GetString("invoice")
+	user.InvoiceCode = this.GetString("invoice_code")
 	user.Company = this.GetString("company")
 	user.Address = this.GetString("address")
 	dbUser, err := user.Read(strconv.Itoa(user.Id)) //查询数据库的用户信息
@@ -260,11 +270,70 @@ func (this *UserController) UpdateProfile() {
 	}
 	user.Created = dbUser.Created
 	user.Updated = time.Now()
-
-	if user.UpdateProfile(user) {
-		this.jsonResult(200, 1, "更新用户信息成功", nil)
+	err = user.UpdateProfile(user)
+	if err==nil {
+		this.jsonResult(200, 1, "更新个人信息成功", nil)
 	} else {
-		this.jsonResult(200, -1, "更新用户信息失败,"+err.Error(), nil)
+		this.jsonResult(200, -1, "更新个人信息失败,"+err.Error(), nil)
+	}
+}
+
+func (this *UserController) UpdateInfo()()  {
+	user := new(models.User)
+	user.Id, _ = this.GetInt("id")
+	//查询数据库判断当前用户是否已设置账号
+	user.SelectByCol(user, "id")
+	if user.Account == "" {
+		account := this.GetString("account")
+		if account == "" {
+			this.jsonResult(200, -1, "账号不能为空!", nil)
+		}
+		user.Account = account
+		user.SelectByCol(user, "account")
+		if user.Id != 0 {
+			this.jsonResult(200, -1, "当前账号不可用!", nil)
+		}
+	}
+	user.Name = this.GetString("name")
+	user.Teacher = this.GetString("teacher")
+	user.TeacherPhone = this.GetString("teacher_phone")
+	user.TeacherMail = this.GetString("teacher_mail")
+	user.Invoice = this.GetString("invoice")
+	user.InvoiceCode = this.GetString("invoice_code")
+	user.Company = this.GetString("company")
+	user.Address = this.GetString("address")
+	dbUser, err := user.Read(strconv.Itoa(user.Id)) //查询数据库的用户信息
+	if err != nil {
+		this.jsonResult(200, -1, "查询用户信息失败!", nil)
+	}
+	user.Email = this.GetString("email")
+	if user.Email != "" && user.Email != dbUser.Email {
+		var queryObj models.User
+		queryObj.Email = user.Email
+		user.SelectByCol(&queryObj, "email") //查询邮箱是否已被用
+		if queryObj.Account != "" {
+			this.jsonResult(200, -1, "邮箱地址已存在!", nil)
+		}
+	}
+	user.Phone = this.GetString("phone")
+	if user.Phone != "" && user.Phone != dbUser.Phone {
+		var queryObj models.User
+		queryObj.Phone = user.Phone
+		user.SelectByCol(&queryObj, "phone") //查询手机号是否已被用
+		if queryObj.Account != "" {
+			this.jsonResult(200, -1, "手机号码已存在!", nil)
+		}
+	}
+	if dbUser.Account != "" {
+		user.Account = dbUser.Account
+	}
+	user.Created = dbUser.Created
+	user.Updated = time.Now()
+	err = user.UpdateInfo(user)
+	if err==nil {
+		this.jsonResult(200, 1, "更新个人信息成功", nil)
+	} else {
+		this.jsonResult(200, -1, "更新个人信息失败,"+err.Error(), nil)
 	}
 }
 

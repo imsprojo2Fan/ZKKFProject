@@ -66,64 +66,88 @@
             <div class="col-md-12" >
                 <form id="infoForm" class="form-horizontal" autocomplete="off">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label form-label">账号<span class="red">*</span></label>
+                        <label class="col-sm-3 control-label form-label"><span class="red">*</span>账号</label>
                         <div class="col-sm-6">
                             <input type="hidden" name="id" id="id">
-                            <input type="text" class="form-control" name="account" maxlength="20" style="ime-mode:disabled" id="account" placeholder="不可纯数字,至少5个字符,将不可更改" >
+                            <input type="text" class="form-control" name="account" oninput="value=this.value.replace(/[^\w_]/g,'');" maxlength="20" style="ime-mode:disabled" id="account" placeholder="不可纯数字,至少5个字符,将不可更改" >
                             <span class="help-block text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label form-label">密码<span class="red">*</span></label>
+                        <label class="col-sm-3 control-label form-label"><span class="red">*</span>密码</label>
                         <div class="col-sm-6">
                             <input type="password" class="form-control" onfocus="javascript:this.value = ''" maxlength="30" style="ime-mode:disabled" id="password" name="password" placeholder="至少8个字符" >
                             <span class="help-block text-success"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label form-label">确认密码<span class="red">*</span></label>
+                        <label class="col-sm-3 control-label form-label"><span class="red">*</span>确认密码</label>
                         <div class="col-sm-6">
                             <input type="password" class="form-control" maxlength="30" onfocus="javascript:this.value = ''" style="ime-mode:disabled" id="password2" placeholder="至少8个字符" >
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label form-label">姓名<span class="red"></span></label>
+                        <label class="col-sm-3 control-label form-label"><span class="red">*</span>姓名</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control" maxlength="20"  name="name"  >
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label form-label">单位</label>
+                        <label for="name" class="col-sm-3 control-label form-label"><span class="red">*</span>单位/公司</label>
                         <div class="col-sm-6">
-                            <input type="text" name="company" maxlength="30" class="form-control" placeholder="请输入单位" >
+                            <input type="text" name="company" maxlength="30" class="form-control" placeholder="请输入单位/公司" >
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label form-label">导师</label>
-                        <div class="col-sm-6">
-                            <input type="text" name="teacher" maxlength="30" class="form-control" placeholder="请输入导师" >
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label form-label">手机<span class="red"></span></label>
+                        <label class="col-sm-3 control-label form-label"><span class="red">*</span>手机<span class="red"></span></label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control" name="phone" onkeyup="this.value=this.value.replace(/\D/g,'')" maxlength="11"  id="phone"  >
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label form-label">邮箱<span class="red"></span></label>
+                        <label class="col-sm-3 control-label form-label"><span class="red">*</span>邮箱</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control" name="email" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')" maxlength="40"  id="email"  placeholder="邮箱将用于找回密码">
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label form-label">地址</label>
+                        <label for="name" class="col-sm-3 control-label form-label"><span class="red">*</span>邮寄地址</label>
                         <div class="col-sm-6">
-                            <input type="text" name="address" maxlength="50" class="form-control" placeholder="请输入地址" >
+                            <input type="text" name="address" maxlength="50" class="form-control" placeholder="请输入邮寄地址" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label form-label"><span class="red">*</span>发票抬头</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="invoice" maxlength="60" class="form-control" placeholder="请输入发票抬头" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label form-label"><span class="red">*</span>纳税人识别码</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="invoice_code" maxlength="60" class="form-control" placeholder="请输入纳税人识别码" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label form-label">导师/负责人</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="teacher" maxlength="30" class="form-control" placeholder="请输入导师" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label form-label">导师电话</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="teacher_phone" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" maxlength="11" placeholder="请输入导师电话" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-3 control-label form-label">导师邮箱</label>
+                        <div class="col-sm-6">
+                            <input type="email" name="teacher_mail" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="请输入导师邮箱" >
                         </div>
                     </div>
 

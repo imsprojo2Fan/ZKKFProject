@@ -22,6 +22,7 @@ func init() {
 	orm.RegisterModel(new(Order))
 	orm.RegisterModel(new(OrderType))
 	orm.RegisterModel(new(OrderDevice))
+	orm.RegisterModel(new(Protocol))
 }
 
 //下面是统一的表名管理
@@ -76,4 +77,7 @@ func TypeChildTBName() string {
 }
 func OrderTBName() string {
 	return TableName("order")
+}
+func ProtocolTBName() string {
+	return TableName("protocol")
 }

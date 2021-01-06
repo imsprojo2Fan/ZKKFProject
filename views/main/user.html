@@ -56,7 +56,7 @@
                                 <th>手机</th>
                                 <th>邮箱</th>
                                 <th>地址</th>
-                                <th>导师</th>
+                                <th>导师/负责人</th>
                                 <th>账号类型</th>
                                 <th>使用状态</th>
                                 <th>创建时间</th>
@@ -127,12 +127,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="name" class="col-sm-2 control-label form-label">导师</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" name="teacher" maxlength="30" class="form-control" placeholder="请输入导师" >
-                                    </div>
-                                </div>
-                                <div class="form-group">
                                     <label for="phone" class="col-sm-2 control-label form-label">手机</label>
                                     <div class="col-sm-6">
                                         <input type="text" name="phone" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" maxlength="11" placeholder="请输入手机" >
@@ -148,6 +142,36 @@
                                     <label for="name" class="col-sm-2 control-label form-label">地址</label>
                                     <div class="col-sm-6">
                                         <input type="text" name="address" maxlength="60" class="form-control" placeholder="请输入地址" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name" class="col-sm-2 control-label form-label">导师</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="teacher" maxlength="30" class="form-control" placeholder="请输入导师" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name" class="col-sm-2 control-label form-label">导师电话</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="teacher_phone" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" maxlength="11" placeholder="请输入导师电话" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="col-sm-2 control-label form-label">导师邮箱</label>
+                                    <div class="col-sm-6">
+                                        <input type="email" name="teacher_mail" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="请输入导师邮箱" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name" class="col-sm-2 control-label form-label">发票抬头</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="invoice" maxlength="60" class="form-control" placeholder="请输入发票抬头" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name" class="col-sm-2 control-label form-label">纳税人识别码</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="invoice_code" maxlength="60" class="form-control" placeholder="请输入纳税人识别码" >
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -212,9 +236,6 @@
                         <p class="form-control-static">单位：<span class="company"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static">导师：<span class="teacher"></span></p>
-                    </div>
-                    <div class="col-sm-offset-1">
                         <p class="form-control-static" >邮箱：<span class="email"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
@@ -222,6 +243,21 @@
                     </div>
                     <div class="col-sm-offset-1">
                         <p class="form-control-static">地址：<span class="address"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static">导师：<span class="teacher"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static">导师电话：<span class="teacher_phone"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static">导师邮箱：<span class="teacher_mail"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static">发票抬头：<span class="invoice"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static">纳税人识别码：<span class="invoice_code"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
                         <p class="form-control-static" >备注信息：<span class="remark"></span></p>
@@ -322,12 +358,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="teacher" class="col-sm-2 control-label form-label">导师</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="teacher" maxlength="30" class="form-control" placeholder="请输入导师" >
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label for="phone" class="col-sm-2 control-label form-label">手机</label>
                             <div class="col-sm-6">
                                 <input type="text" name="phone" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" maxlength="11" placeholder="请输入手机" >
@@ -337,6 +367,36 @@
                             <label for="email" class="col-sm-2 control-label form-label">邮箱</label>
                             <div class="col-sm-6">
                                 <input type="email" name="email" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="请输入邮箱" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label form-label">导师</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="teacher" maxlength="30" class="form-control" placeholder="请输入导师" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label form-label">导师电话</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="teacher_phone" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" maxlength="11" placeholder="请输入导师电话" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-sm-2 control-label form-label">导师邮箱</label>
+                            <div class="col-sm-6">
+                                <input type="email" name="teacher_mail" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="请输入导师邮箱" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label form-label">发票抬头</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="invoice" maxlength="60" class="form-control" placeholder="请输入发票抬头" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label form-label">纳税人识别码</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="invoice_code" maxlength="60" class="form-control" placeholder="请输入纳税人识别码" >
                             </div>
                         </div>
                         <div class="form-group">

@@ -107,6 +107,7 @@ $(function () {
 
     $('#lib').on("click",function () {
         $('#deviceInfo').show();
+        $('.col-lg-4').show();
         $('#serviceInfo').hide();
         $('#libModal').modal("show");
     });
@@ -286,6 +287,7 @@ function submitOrder() {
     let htmlTxt = $('#orderBtn').html();
     if(htmlTxt.indexOf("服务协议")!==-1){
         $('#deviceInfo').hide();
+        $('.col-lg-4').hide();
         $('#serviceInfo').show();
         $('#libModal').modal("hide");
     }else{

@@ -315,3 +315,10 @@ function swalParent(title,msg,type) {
 function loadingParent(flag,type) {
     window.parent.loading(flag,type);
 }
+
+function showTip(domId,msg) {
+    $('#'+domId).html("<span style='color:red;font-size: 14px;'>"+msg+"</span>");
+    setTimeout(function () {
+        $('#'+domId).html("");
+    },5000);
+}

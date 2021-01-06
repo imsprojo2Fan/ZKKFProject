@@ -1,7 +1,7 @@
 let myTable;
 let prefix = "/main/setting";
 $(function () {
-
+    loadingParent(false,2);
     $('#email').val(localStorage.getItem("test-email"));
     $('#d-token').val(localStorage.getItem("test-token"));
     $('#secret').val(localStorage.getItem("test-secret"));
