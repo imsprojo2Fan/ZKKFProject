@@ -106,9 +106,10 @@ $(function () {
     });
 
     $('#lib').on("click",function () {
-        $('#deviceInfo').show();
-        $('.col-lg-4').show();
-        $('#protocolInfo').hide();
+        $('#protocolInfo').hide(200);
+        $('.submitBtn').hide(200);
+        $('#deviceInfo').show(200);
+        $('#searchWrap').show(200);
         $('#libModal').modal("show");
     });
 
@@ -118,7 +119,7 @@ $(function () {
 
     //富文本监听事件
     $('.editor').on("click",function () {
-        let id = $(this).attr("id");
+        let id = $(this).attr("id")+"Content";
         let val = $(this).val();
         openWindow("/main/editor?domId="+id,"中科科辅",1000,600);
     });
@@ -293,9 +294,10 @@ function submitOrder() {
 
     let htmlTxt = $('#orderBtn').html();
     if(htmlTxt.indexOf("服务协议")!==-1){
-        $('#deviceInfo').hide();
-        $('.col-lg-4').hide();
-        $('#protocolInfo').show();
+        $('#deviceInfo').hide(200);
+        $('#searchWrap').hide(200);
+        $('#protocolInfo').show(200);
+        $('.submitBtn').show(200);
         $('#libModal').modal("hide");
     }else{
         let formData = {};
@@ -479,5 +481,12 @@ function showTip(txt) {
 }
 
 function openRes(domId,content) {
-    $('#')
+    $('#'+domId).val(content);
+    domId = domId.replace("Content","");
+    $('#'+domId).html(content);
+}
+function openWindow(url,name,iWidth,iHeight) {
+    let iTop = (window.screen.availHeight-30-iHeight)/2;
+    let iLeft = (window.screen.availWidth-10-iWidth)/2;
+    window.open(url,name,'height='+iHeight+',innerHeight='+iHeight+',width='+iWidth+',innerWidth='+iWidth+',top='+iTop+',left='+iLeft+',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no');
 }

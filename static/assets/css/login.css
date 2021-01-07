@@ -3911,7 +3911,7 @@ body {
     -webkit-border-radius:100px
 }
 ::-webkit-scrollbar-thumb:active {
-    background:#6bc30d
+    background: #272525
 }
 .reg_form_check {
     position:relative

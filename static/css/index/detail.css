@@ -377,7 +377,31 @@ input[type='radio'] {
     box-shadow:none;
 }
 textarea{
-    min-height: 255px;
-    margin-bottom: 8px;
+    display: none!important;
 }
+.editor{
+    min-height: 255px;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+.submitBtn{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    height: 125px;
+    line-height: 125px;
+    background: var(--thm-base);
+    font-size: 36px;
+    cursor: pointer;
+    color: #fff!important;
+    display: none;
+}
+.submitBtn:hover{
+    background: #4caf50;
+}
+
 

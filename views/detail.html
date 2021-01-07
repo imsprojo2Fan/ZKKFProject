@@ -277,19 +277,22 @@
                                 <tr>
                                     <td height="175" class="tabtxt2">实验参数要求</td>
                                     <td colspan="5">
-                                        <textarea class="form-control editor" id="parameter" readonly name="parameter" placeholder="可插入文字图片"></textarea>
+                                        <textarea class="form-control" id="parameterContent" name="parameter" ></textarea>
+                                        <div class="editor" id="parameter">可插入文字图片</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td height="175" class="tabtxt2">其他特殊要求</td>
                                     <td colspan="5">
-                                        <textarea class="form-control editor" id="about" readonly name="about" placeholder="可插入文字图片"></textarea>
+                                        <textarea class="form-control" id="aboutContent" name="about" placeholder="可插入文字图片"></textarea>
+                                        <div class="editor" id="about">可插入文字图片</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td height="175" class="tabtxt2">参考结果图片</td>
                                     <td colspan="5">
-                                        <textarea class="form-control editor" id="result" readonly name="result" placeholder="可插入文字图片"></textarea>
+                                        <textarea class="form-control" id="resultContent" name="result" placeholder="可插入文字图片"></textarea>
+                                        <div class="editor" id="result">可插入文字图片</div>
                                     </td>
                                 </tr>
                             </table>
@@ -342,7 +345,7 @@
                         </div><!-- /.blog-details__main -->
 
                     </div><!-- /.col-lg-8 -->
-                    <div class="col-lg-4">
+                    <div id="searchWrap" class="col-lg-4">
                         <div class="sidebar">
                             <div class="sidebar__single">
                                 <h3 class="sidebar__title">搜索</h3>
@@ -528,9 +531,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="serviceWrap">
-                        服务协议
-                    </div>
                 </div>
 
                 <!-- 模态框底部 -->
@@ -621,6 +621,8 @@
             </div>
         </div><!-- /.side-menu__block-inner -->
     </div><!-- /.side-menu__block -->
+
+    <div class="submitBtn">提交实验计划</div>
 
     <a id="qrCode" ><i class="fa fa-qrcode"></i></a>
     <div class="wechat-alert" id="wechat-alert" style="display: none;">
