@@ -147,6 +147,7 @@ $(document).ready(function() {
     $('#myTable').on("click",".btn-default",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
         $('#detail_name').html(rowData.name);
+        $('#detail_detection_cycle').html(rowData.detection_cycle);
         $('#detail_img').html("<a target='_blank' href='/img/"+rowData.img+"'>"+rowData.img+"</a>");
         let description = rowData.description;
         if(!description){
@@ -176,6 +177,7 @@ $(document).ready(function() {
             $('#edit_uploadPic').html("替换图片");
         }
         $('#edit_name').val(rowData.name);
+        $('#edit_detection_cycle').val(rowData.detection_cycle);
         $('#edit_picName').html(rowData.img);
         $('#edit_description').val(rowData.description);
         $('#tip').html("");
@@ -205,10 +207,15 @@ $(document).ready(function() {
 
 function add(){
     let name = $('#name').val().trim();
+    let range = $('#detection_cycle').val().trim();
     let description = $('#description').val().trim();
     let img = $('#picName').html();
     if (!name){
         swal("系统提示",'分组名称不能为空!',"warning");
+        return;
+    }
+    if (!range){
+        swal("系统提示",'检测周期不能为空!',"warning");
         return;
     }
 
@@ -220,6 +227,7 @@ function add(){
         data : {
             _xsrf:$("#token", parent.document).val(),
             name:name,
+            detection_cycle:$('#detection_cycle').val().trim(),
             img:img,
             description:description
         },
@@ -243,9 +251,14 @@ function add(){
 function edit(){
     let name = $('#edit_name').val().trim();
     let description = $('#edit_description').val().trim();
+    let range = $('#edit_detection_cycle').val().trim();
     let img = $('#edit_picName').html();
     if (!name){
         swal("系统提示",'分组名称不能为空!',"warning");
+        return;
+    }
+    if (!range){
+        swal("系统提示",'检测周期不能为空!',"warning");
         return;
     }
     $.ajax({
@@ -257,6 +270,7 @@ function edit(){
             _xsrf:$("#token", parent.document).val(),
             id:$('#id').val(),
             name:name,
+            detection_cycle:range,
             img:img,
             description:description
         },

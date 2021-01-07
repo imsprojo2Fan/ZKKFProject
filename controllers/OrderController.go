@@ -143,8 +143,10 @@ func (this *OrderController) ListForPerson() {
 func (this *OrderController) Add() {
 
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	if session.Get("id")==nil{
+		this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
+	}
 	uid := session.Get("id").(int)
-	remark := this.GetString("remark")
 	dataStr := this.GetString("data")
 	if dataStr == "" {
 		this.jsonResult(http.StatusOK, -1, "参数不能为空!", nil)
@@ -158,32 +160,44 @@ func (this *OrderController) Add() {
 	if len(tArr) == 0 {
 		this.jsonResult(http.StatusOK, -1, "无订单数据!", nil)
 	}
-
-	var obj models.Order
-	obj.Rid = "A"+strconv.FormatInt(time.Now().UnixNano(),10)
-	obj.Uid = uid
-	obj.Status = 0
-	obj.Remark = remark
+	Rid := "A"+strconv.FormatInt(time.Now().UnixNano(),10)
 	o := orm.NewOrm()
 	_ = o.Begin()
-	err = obj.Insert(o,&obj)
-	if err != nil {
-		_ = o.Rollback()
-		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
-	}
-	_,err = obj.MultiInsert4Type(o,tArr)
-	if err != nil {
-		_ = o.Rollback()
-		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
-	}
+	var obj models.Order
+	var orderArr []models.Order
+	var tAddArr []models.OrderType
 	var deviceArr []models.OrderDevice
 	for _,item := range tArr{
+		//处理订单
+		var obj models.Order
+		obj.Rid = Rid
+		obj.Uid = uid
+		obj.Status = 0
+		obj.Count = item.Count
+		orderArr = append(orderArr,obj)
+		//处理订单分类
+		item.Rid = Rid
+		tAddArr = append(tAddArr,item)
 		dataArr := item.Data
+		//处理设备分类
 		for _,item1 := range dataArr{
+			item1.Rid = Rid
 			deviceArr = append(deviceArr,item1)
 		}
 	}
+	_,err = obj.MultiInsert4Type(o,tAddArr)
+	if err != nil {
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+	}
+
 	_,err = obj.MultiInsert4Device(o,deviceArr)
+	if err != nil {
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+	}
+
+	_,err = obj.MultiInsert4Order(o,orderArr)
 	if err != nil {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
@@ -192,7 +206,7 @@ func (this *OrderController) Add() {
 	var device models.Device
 	var ids string
 	for _,item := range deviceArr{
-		ids += strconv.Itoa(item.Id)+","
+		ids += item.DeviceId+","
 	}
 	device.UpdateOrderNum(ids[0:len(ids)-1])
 	_ = o.Commit()
@@ -264,15 +278,22 @@ func (this *OrderController) IndexAdd() {
 	o := orm.NewOrm()
 	_ = o.Begin()
 	var obj models.Order
-	var allCount int
-
+	var orderArr []models.Order
 	var tAddArr []models.OrderType
 	var deviceArr []models.OrderDevice
 	for _,item := range tArr{
-		allCount += item.Count
+		//处理订单
+		var obj models.Order
+		obj.Rid = Rid
+		obj.Uid = uid
+		obj.Status = 0
+		obj.Count = item.Count
+		orderArr = append(orderArr,obj)
+		//处理订单分类
 		item.Rid = Rid
 		tAddArr = append(tAddArr,item)
 		dataArr := item.Data
+		//处理设备分类
 		for _,item1 := range dataArr{
 			item1.Rid = Rid
 			deviceArr = append(deviceArr,item1)
@@ -290,11 +311,7 @@ func (this *OrderController) IndexAdd() {
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
 
-	obj.Rid = Rid
-	obj.Uid = uid
-	obj.Status = 0
-	obj.Count = allCount
-	err = obj.Insert(o,&obj)
+	_,err = obj.MultiInsert4Order(o,orderArr)
 	if err != nil {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())

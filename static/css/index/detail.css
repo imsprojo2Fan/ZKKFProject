@@ -306,7 +306,78 @@ hr{
     width: 80px!important;
     display: none;
 }
-.serviceWrap{
+#protocolInfo{
     display: none;
+}
+
+/*表格样式*/
+/* CSS Document */
+table{
+    width: 100%;
+}
+tr{
+    height: 55px;
+}
+input[type='radio'] {
+    cursor: pointer;
+}
+
+.tabtop13 {
+    margin-top: 13px;
+}
+.tabtop13 td{
+    background-color:#ffffff;
+    height:25px;
+    line-height:150%;
+}
+.font-left{ text-align:left}
+.font-center{ text-align:center}
+.btbg{background:#b5b9bf  !important;}
+.btbg1{background:#f2fbfe !important;}
+.btbg2{background:#f3f3f3 !important;}
+.biaoti{
+    font-family: "微软雅黑";
+    font-size: 30px;
+    font-weight: bold;
+    border-bottom:1px dashed #CCCCCC;
+    color: var(--thm-base);
+    padding: 6px 0;
+}
+.titfont {
+    font-family: 微软雅黑;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #e9faff;
+}
+.tabtxt2 {
+    font-family: 微软雅黑;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    color: #646567;
+}
+.tabtxt3 {
+    font-family: 微软雅黑;
+    font-size: 14px;
+    padding-left: 15px;
+    color: #000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    line-height: 20px;
+}
+.myTip{
+    font-size: 13px;
+    margin-top: -18px;
+}
+.tipRed{
+    color: red;
+}
+.form-control:focus{
+    box-shadow:none;
+}
+textarea{
+    min-height: 255px;
+    margin-bottom: 8px;
 }
 

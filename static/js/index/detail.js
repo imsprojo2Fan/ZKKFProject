@@ -108,12 +108,19 @@ $(function () {
     $('#lib').on("click",function () {
         $('#deviceInfo').show();
         $('.col-lg-4').show();
-        $('#serviceInfo').hide();
+        $('#protocolInfo').hide();
         $('#libModal').modal("show");
     });
 
     $('#orderBtn').on("click",function () {
         submitOrder();
+    });
+
+    //富文本监听事件
+    $('.editor').on("click",function () {
+        let id = $(this).attr("id");
+        let val = $(this).val();
+        openWindow("/main/editor?domId="+id,"中科科辅",1000,600);
     });
 
     $('.preloader').fadeOut(200);
@@ -288,7 +295,7 @@ function submitOrder() {
     if(htmlTxt.indexOf("服务协议")!==-1){
         $('#deviceInfo').hide();
         $('.col-lg-4').hide();
-        $('#serviceInfo').show();
+        $('#protocolInfo').show();
         $('#libModal').modal("hide");
     }else{
         let formData = {};
@@ -469,4 +476,8 @@ function showTip(txt) {
     setTimeout(function () {
         $('#modalTip').html("");
     },5000);
+}
+
+function openRes(domId,content) {
+    $('#')
 }

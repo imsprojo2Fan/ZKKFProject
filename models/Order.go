@@ -44,6 +44,17 @@ func(this *Order) MultiInsert(arr []*Order)(int64,error){
 	}
 	return count,err
 }
+func(this *Order) MultiInsert4Order(o orm.Ormer,arr []Order)(int64,error){
+	var count int64
+	var err error
+	if num, err := o.InsertMulti(len(arr), arr); err != nil {
+		fmt.Println(err)
+	} else {
+		count = num
+		fmt.Printf("Insert %d order' data!\r\n", num)
+	}
+	return count,err
+}
 
 func(this *Order) MultiInsert4Type(o orm.Ormer,arr []OrderType)(int64,error){
 	var count int64

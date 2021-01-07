@@ -6,6 +6,10 @@ $(window).on('load', function () {
         offset: $(window).height() / 2
     });
 
+    $('.moreDevice').on("click",function () {
+        window.open("/type","_blank");
+    });
+
     ///////////////////////////
     // Smooth scroll
     $(".main-nav__navigation-box a[href^='#']").on('click', function(e) {
