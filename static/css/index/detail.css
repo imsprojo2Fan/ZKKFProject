@@ -403,5 +403,17 @@ textarea{
 .submitBtn:hover{
     background: #4caf50;
 }
+.typeMore i{
+    font-size: 26px;
+    color: #9E9E9E;
+    float: right;
+    cursor: pointer;
+}
+.home{
+    color: #6195ff;
+}
+.sign{
+    cursor: pointer;
+}
 
 

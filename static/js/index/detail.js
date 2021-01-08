@@ -124,6 +124,26 @@ $(function () {
         openWindow("/main/editor?domId="+id,"中科科辅",1000,600);
     });
 
+    //协议隐藏显示
+    $('.typeMore i').on("click",function () {
+        if($(this).hasClass("fa-angle-down")){
+            $(this).removeClass("fa-angle-down");
+            $(this).addClass("fa-angle-left");
+            $(this).attr("title","显示更多");
+            $(this).parent().parent().siblings().hide(200);
+        }else{
+            $(this).addClass("fa-angle-down");
+            $(this).removeClass("fa-angle-left");
+            $(this).attr("title","隐藏更多");
+            $(this).parent().parent().siblings().show(200);
+        }
+    });
+
+    $('.sign').on("click",function () {
+
+    })
+
+
     $('.preloader').fadeOut(200);
 
 });
@@ -271,7 +291,7 @@ function addOrder() {
     }
 
     localStorage.setItem("lib",JSON.stringify(localOutArr));
-    swal("本地已成功加入实验计划","提示：需提交订单方可确认","success");
+    swal("本地已成功加入实验计划","提示：需提交实验计划方可确认","success");
     renderModalLib();
 }
 
