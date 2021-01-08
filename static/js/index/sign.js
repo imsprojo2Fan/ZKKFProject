@@ -5,7 +5,7 @@ $(function () {
 
     let isPhone = isMobile.any();
     if(!isPhone){
-        clientHeight = 300;
+        clientHeight = clientHeight/2-120;
     }else{
         clientHeight = clientHeight+12
     }
@@ -13,7 +13,7 @@ $(function () {
     sign = new Draw( {
         // canvas:document.getElementById('canvas'),
         lineWidth: 5, // 线条宽度
-        width: 400, // canvas 宽
+        width: clientWidth/2, // canvas 宽
         height: clientHeight, //canvas 高
         strokeStyle: '#333333' // 线条颜色
     } );
