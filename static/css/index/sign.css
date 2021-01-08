@@ -11,6 +11,12 @@ body {
     overflow: hidden;
 }
 .imgWrap{
+    display: block;
+    position: fixed;
+    top:0;
+    left: 0;
+}
+#tempC{
     display: none;
 }
 @media(min-width: 425px){

@@ -50,7 +50,7 @@
                 width = _state.width,
                 height = _state.height,
                 lineWidth = _state.lineWidth;
-
+            this.el.id = "myCanvas";
             this.el.width = width * 2;
             this.el.height = height * 2;
             document.body.appendChild( this.el );
@@ -130,7 +130,7 @@
                 };
             }
         }, {
-            key: 'ouput',
+            key: 'output',
             value: function ouput () {
                 // 输出图片
                 return this.el.toDataURL();
