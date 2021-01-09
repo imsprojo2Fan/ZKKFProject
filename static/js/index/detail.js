@@ -540,7 +540,7 @@ function signTimer() {
             beforeSend:function(){
                 //$('#loading').fadeIn(200);
             },
-            success : function(r) {
+            success : function(res) {
                 let imgSrc = res.data;
                 if(!imgSrc){
                     return false;
