@@ -14,4 +14,5 @@ type OrderType struct {
 	Type string `orm:"-"`
 	Count int
 	Data []OrderDevice `orm:"-"`
+	Protocol Protocol `orm:"-"`
 }

@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"ZkkfProject/sysinit"
 	"ZkkfProject/utils"
 	"fmt"
+	"net/http"
 	"net/smtp"
 	"strings"
 )
@@ -114,9 +116,9 @@ func SendMail(parameter1,parameter2 string)  {
 	auth := smtp.PlainAuth("", "zooori@foxmail.com", "fznqfopwakggibej", "smtp.qq.com")
 	to := []string{"imsprojo2fan@foxmail.com"}
 
-	nickname := "中科科辐"
+	nickname := "中科科辅"
 	user := "zooori@foxmail.com"
-	subject := "中科科辐-首页留言"
+	subject := "中科科辅-首页留言"
 	content_type := "Content-Type: text/plain; charset=UTF-8"
 
 	body := "联系方式:"+parameter1+"\r\n留言信息:"+parameter2
@@ -126,6 +128,19 @@ func SendMail(parameter1,parameter2 string)  {
 	if err != nil {
 		fmt.Printf("send mail error: %v", err)
 	}
+}
+
+func (this *IndexController) SignData() {
+	code := this.GetString("code")
+	if code==""{
+		this.jsonResult(http.StatusOK, -1, "参数错误",nil)
+	}
+	signName := this.GetString("data")
+	if signName!=""{
+		sysinit.SignMap.Store(code,signName)
+	}
+	res,_ := sysinit.SignMap.Load(code)
+	this.jsonResult(http.StatusOK, 1, "签名",res)
 }
 
 

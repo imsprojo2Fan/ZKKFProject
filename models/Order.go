@@ -78,6 +78,17 @@ func(this *Order) MultiInsert4Device(o orm.Ormer,arr []OrderDevice)(int64,error)
 	}
 	return count,err
 }
+func(this *Order) MultiInsert4Protocol(o orm.Ormer,arr []Protocol)(int64,error){
+	var count int64
+	var err error
+	if num, err := o.InsertMulti(len(arr), arr); err != nil {
+		fmt.Println(err)
+	} else {
+		count = num
+		fmt.Printf("Insert %d protocol' data!\r\n", num)
+	}
+	return count,err
+}
 
 func (this *Order) Update(obj *Order) error {
 

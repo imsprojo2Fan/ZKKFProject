@@ -274,14 +274,15 @@ func (this *OrderController) IndexAdd() {
 	if len(tArr) == 0 {
 		this.jsonResult(http.StatusOK, -1, "无订单数据!", nil)
 	}
-	Rid := "A"+strconv.FormatInt(time.Now().UnixNano(),10)
 	o := orm.NewOrm()
 	_ = o.Begin()
 	var obj models.Order
 	var orderArr []models.Order
 	var tAddArr []models.OrderType
 	var deviceArr []models.OrderDevice
+	var protocolArr []models.Protocol
 	for _,item := range tArr{
+		Rid := "A"+strconv.FormatInt(time.Now().UnixNano(),10)
 		//处理订单
 		var obj models.Order
 		obj.Rid = Rid
@@ -294,10 +295,36 @@ func (this *OrderController) IndexAdd() {
 		tAddArr = append(tAddArr,item)
 		dataArr := item.Data
 		//处理设备分类
+		var ids string
 		for _,item1 := range dataArr{
 			item1.Rid = Rid
 			deviceArr = append(deviceArr,item1)
+			ids += item1.DeviceId+","
 		}
+		//处理协议
+		var protocol models.Protocol
+		protocol.Rid = "A"+strconv.FormatInt(time.Now().UnixNano()-10,10)
+		protocol.OrderRid = Rid
+		protocol.Tid,_ = strconv.Atoi(item.Tid)
+		protocol.DeviceId = ids[0:len(ids)-1]
+		protocol.Uid = uid
+		protocol.Sign = item.Protocol.Sign
+		protocol.Date = item.Protocol.Date
+		protocol.Pay = item.Protocol.Pay
+		protocol.TestResult = item.Protocol.TestResult
+		protocol.City = item.Protocol.City
+		protocol.SampleName = item.Protocol.SampleName
+		protocol.SampleCount = item.Protocol.SampleCount
+		protocol.SampleCode = item.Protocol.SampleCode
+		protocol.DetectionCycle = item.Protocol.DetectionCycle
+		protocol.DetectionReport = item.Protocol.DetectionReport
+		protocol.SampleProcessing = item.Protocol.SampleProcessing
+		protocol.About = item.Protocol.About
+		protocol.Parameter = item.Protocol.Parameter
+		protocol.Other = item.Protocol.Other
+		protocol.Result = item.Protocol.Result
+		protocol.Remark = item.Protocol.Remark
+		protocolArr = append(protocolArr,protocol)
 	}
 	_,err = obj.MultiInsert4Type(o,tAddArr)
 	if err != nil {
@@ -310,7 +337,12 @@ func (this *OrderController) IndexAdd() {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
-
+	//处理协议
+	_,err = obj.MultiInsert4Protocol(o,protocolArr)
+	if err != nil {
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+	}
 	_,err = obj.MultiInsert4Order(o,orderArr)
 	if err != nil {
 		_ = o.Rollback()
@@ -322,7 +354,8 @@ func (this *OrderController) IndexAdd() {
 	for _,item := range deviceArr{
 		ids += item.DeviceId+","
 	}
-	device.UpdateOrderNum(ids[0:len(ids)-1])
+	ids = ids[0:len(ids)-1]
+	device.UpdateOrderNum(ids)
 	_ = o.Commit()
 	this.jsonResult(200, 1, "操作成功", nil)
 }

@@ -19,6 +19,8 @@ func init() {
 	beego.Router("/order/add", &controllers.OrderController{}, "*:IndexAdd")
 	beego.Router("/other/?:url", &controllers.IndexController{}, "*:Other")
 	beego.Router("/index/mail4index", &controllers.IndexController{}, "*:Mail4Index")
+	//签名数据
+	beego.Router("/signData", &controllers.IndexController{}, "POST:SignData")
 
 	//登录相关
 	beego.Router("/login", &controllers.LoginController{}, "*:LoginIndex")

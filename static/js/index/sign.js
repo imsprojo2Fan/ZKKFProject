@@ -2,18 +2,18 @@ let clientWidth = window.innerWidth||document.documentElement.clientWidth||docum
 let clientHeight = window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight;
 let sign;
 $(function () {
-
     let isPhone = isMobile.any();
     if(!isPhone){
         clientHeight = clientHeight/2-120;
+        clientWidth = clientWidth/2;
     }else{
-        clientHeight = clientHeight+12
+        //clientHeight = clientHeight;
     }
 
     sign = new Draw( {
         // canvas:document.getElementById('canvas'),
         lineWidth: 5, // 线条宽度
-        width: clientWidth/2, // canvas 宽
+        width: clientWidth, // canvas 宽
         height: clientHeight, //canvas 高
         strokeStyle: '#333333' // 线条颜色
     } );
@@ -21,12 +21,38 @@ $(function () {
     $('.submit').on("click",function () {
         let canvas = document.getElementById('myCanvas');
         if(isCanvasBlank(canvas)){
-            alert("无任何签名!");
+            swal("无任何签字！","","error");
             return false;
         }
-        let res = cropSignatureCanvas(canvas);
-        $('.imgWrap').attr("src",res);
-        rotation();
+        let res1 = cropSignatureCanvas(canvas);
+        $('.imgWrap').attr("src",res1);
+        if(isPhone){
+            rotation(270);
+        }
+        setTimeout(function () {
+            let res2 = $('.imgWrap').attr("src");
+            let signCode = stringUtil.getQueryVariable("code");
+            $.post("/signData",{data:res2,_xsrf:$("#token").val(),code:signCode},function (res) {
+                if(res.code===1){
+                    if(!isPhone){
+                        swal("签字已发送！","","success");
+                        setTimeout(function () {
+                            window.close();
+                        },3000);
+                    }else{
+                        $('.tip').html("签字已发送!");
+                        $('.tip').show();
+                        setTimeout(function () {
+                            $('.tip').hide();
+                        },3000);
+
+                    }
+                }else{
+                    swal(res.msg,"","error");
+                }
+            });
+        },500)
+
     });
 
 
@@ -104,12 +130,13 @@ function isCanvasBlank(canvas) {
     return canvas.toDataURL() == blank.toDataURL();//比较值相等则为空
 }
 
-async function rotation() {
-    let degree = 0;
+async function rotation(degree) {
+    debugger
+    //let degree = 0;
     const sourceImg = document.getElementById('imgWrap');
     const targetImg = document.getElementById('imgWrap');
     const rotationCanvas = document.getElementById('tempC');
-    degree += 90;
+    //degree += 90;
     let d = (degree * Math.PI) / 180;
     let image = sourceImg;
     let size = await getSize(sourceImg.src);
@@ -136,6 +163,7 @@ async function rotation() {
     surfaceContext.restore();
     // surfaceContext.scale(.5, .5)
     targetImg.src = rotationCanvas.toDataURL();
+    return rotationCanvas.toDataURL();
 }
 
 function getSize(url) {

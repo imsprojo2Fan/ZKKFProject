@@ -322,3 +322,14 @@ function showTip(domId,msg) {
         $('#'+domId).html("");
     },5000);
 }
+
+function makeCode(domId,url,width,height) {
+    let qrcode = new QRCode(domId, {
+        text: url,
+        width: width,
+        height: height,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+}

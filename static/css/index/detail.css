@@ -415,5 +415,14 @@ textarea{
 .sign{
     cursor: pointer;
 }
+.sign img{
+    width: 40%;
+}
+#signCode{
+    position: fixed;
+    left: 20px;
+    top: 45%;
+    display: none;
+}
 
 

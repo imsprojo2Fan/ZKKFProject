@@ -189,6 +189,12 @@ func (this *DeviceController)Detail() {
 		this.Data["login"] = 0
 	}else{
 		this.Data["login"] = 1
+		uid := session.Get("id").(int)
+		user := userObj.SelectById(uid)
+		//user := session.Get("user").(*models.User)
+		user.Remark = ""
+		user.Type = -1
+		this.Data["user"] = user
 	}
 	if err==nil{
 		obj.UpdateNum("view",rid)

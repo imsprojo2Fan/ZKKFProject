@@ -4,6 +4,7 @@ import (
 	"ZkkfProject/utils"
 	"github.com/astaxie/beego"
 	"runtime"
+	"sync"
 	"time"
 )
 
@@ -14,6 +15,7 @@ var (
 	InitTime int64
 	IsLinux = false
 	SqlFlag = false
+	SignMap sync.Map
 )
 
 func init()  {

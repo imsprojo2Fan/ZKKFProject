@@ -215,7 +215,7 @@
                                     <td colspan="3" class="tabtxt2" style="border-bottom: 1px solid #eee;">乙方代表签字</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" style="height: 215px;line-height: 215px;width: 50%;text-align: center;" class="sign">点击此处完成签名</td>
+                                    <td colspan="3" style="height: 215px;line-height: 215px;width: 50%;text-align: center;" class="sign">扫码或点击此处完成签名</td>
                                     <td colspan="3" style="line-height: 215px;text-align: center;border-left: 1px solid #eee;" class="mySign">郑学豪（盖章）</td>
                                 </tr>
                                 <tr style="height: 35px!important;line-height: 35px;">
@@ -503,6 +503,8 @@
         <img src="../static/img/lib.png">
     </div>
 
+    <div id="signCode"></div>
+
     <!-- 模态框 -->
     <div class="modal fade col-lg" id="libModal" tabindex="-1">
         <div class="modal-dialog">
@@ -739,6 +741,7 @@
     <script type="text/javascript" src="../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
 
     <!-- Custom Scripts -->
+    <script src="../static/plugins/qrcode/qrcode.min.js"></script>
     <script src="../static/assets/js/theme.js"></script>
     <script src="../static/js/util/util.js"></script>
     <script src="../static/js/util/timeUtil.js"></script>
@@ -747,6 +750,8 @@
     <script src="../static/js/index/login.js"></script>
     <script src="../static/js/index/detail.js"></script>
     <script>let info = {{.info}}</script>
+    <script>let user = {{.user}}</script>
+    <script>let lInfo = {{.lInfo}}</script>
 </body>
 
 </html>

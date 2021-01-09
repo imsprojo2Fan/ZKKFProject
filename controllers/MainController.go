@@ -61,3 +61,4 @@ func (this *MainController) Alive() {
 	this.jsonResult(http.StatusOK, 1, "alive!", sysinit.InitTime)
 }
 
+

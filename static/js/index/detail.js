@@ -1,12 +1,15 @@
 
 let localOutArr;
+let url = "http://"+window.location.host;
+let signTimerIndex = 0;
+let signCode = stringUtil.randomString(6);
+let loginFlag = $('#loginFlag').val();
 $(function () {
-
     //判断是否支持localstorage
     if(window.Storage && window.localStorage && window.localStorage instanceof Storage){
         // ....
     }else{
-        alert("您的浏览器版本太旧，请更换谷歌或火狐!");
+        alert("您的浏览器版本太低，请更换谷歌或火狐!");
         return
     }
     if(!info){
@@ -38,6 +41,8 @@ $(function () {
             $('#btnHead').html("预约设备");
             $('#submitBtn').html("提交预约");
             $('#dateWrap').show();
+            //熏染可预约时间
+            renderTime();
         }else{
             $('#lib').hide();
         }
@@ -53,6 +58,9 @@ $(function () {
         $('#view').html(info.view);
         //熏染本地存储
         renderModalLib();
+        if(loginFlag==="1"){
+            renderInfo();
+        }
     }
 
     //初始化时间选择插件
@@ -73,9 +81,6 @@ $(function () {
         }
         renderTime();
     });
-
-    //熏染可预约时间
-    renderTime();
 
     $('.myBtn').on("click",function () {
 
@@ -108,10 +113,13 @@ $(function () {
     $('#lib').on("click",function () {
         $('#protocolInfo').hide(200);
         $('.submitBtn').hide(200);
+        $('#signCode').hide(200);
         $('#deviceInfo').show(200);
         $('#searchWrap').show(200);
         $('#libModal').modal("show");
     });
+
+    makeCode("signCode",url+"/sign?code="+signCode,128,128);
 
     $('#orderBtn').on("click",function () {
         submitOrder();
@@ -139,8 +147,9 @@ $(function () {
         }
     });
 
-    $('.sign').on("click",function () {
 
+    $('.sign').on("click",function () {
+        openWindow("/sign?code="+signCode,"签字板",1000,600);
     })
 
 
@@ -314,10 +323,13 @@ function submitOrder() {
 
     let htmlTxt = $('#orderBtn').html();
     if(htmlTxt.indexOf("服务协议")!==-1){
+        window.clearInterval(signTimerIndex);
+        signTimer();
         $('#deviceInfo').hide(200);
         $('#searchWrap').hide(200);
         $('#protocolInfo').show(200);
         $('.submitBtn').show(200);
+        $('#signCode').show(200);
         $('#libModal').modal("hide");
     }else{
         let formData = {};
@@ -505,8 +517,79 @@ function openRes(domId,content) {
     domId = domId.replace("Content","");
     $('#'+domId).html(content);
 }
+
 function openWindow(url,name,iWidth,iHeight) {
     let iTop = (window.screen.availHeight-30-iHeight)/2;
     let iLeft = (window.screen.availWidth-10-iWidth)/2;
     window.open(url,name,'height='+iHeight+',innerHeight='+iHeight+',width='+iWidth+',innerWidth='+iWidth+',top='+iTop+',left='+iLeft+',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no');
+}
+
+function signTimer() {
+    signTimerIndex = setInterval(function () {
+        if($('#loginFlag').val()==="0"){
+            return false;
+        }
+        $.ajax({
+            url : "/signData",
+            type : "POST",
+            dataType : "json",
+            cache : false,
+            data : {
+                _xsrf:$('#token').val(),code:signCode
+            },
+            beforeSend:function(){
+                //$('#loading').fadeIn(200);
+            },
+            success : function(r) {
+                let imgSrc = res.data;
+                if(!imgSrc){
+                    return false;
+                }
+                let localSrc = $('.sign img').attr("src");
+                if(localSrc===imgSrc){
+                    return  false;
+                }
+                $('.sign').html("<img src='"+imgSrc+"'>");
+            },
+            err:function(){
+                window.clearInterval(signTimerIndex);
+            },
+            complete:function () {
+                //$('#loading').fadeOut(200);
+            }
+        });
+
+        /*$.post("/signData",{_xsrf:$('#token').val(),code:signCode},function (res) {
+            let imgSrc = res.data;
+            if(!imgSrc){
+                return false;
+            }
+            let localSrc = $('.sign img').attr("src");
+            if(localSrc===imgSrc){
+                return  false;
+            }
+            $('.sign').html("<img src='"+imgSrc+"'>");
+        })*/
+    },3000);
+}
+
+function renderInfo() {
+    $('.company').html(user.Company);
+    $('.invoice').html(user.Company);
+    $('.invoice_code').html(user.InvoiceCode);
+    $('.name').html(user.Name);
+    $('.phone').html(user.Phone);
+    $('.email').html(user.Email);
+    $('.address').html(user.Address);
+    $('.teacher').html(user.Teacher);
+    $('.teacher_phone').html(user.TeacherPhone);
+    $('.teacher_mail').html(user.TeacherMail);
+    $('.myCompany').html(lInfo.company);
+    $('.myCompanyPhone').html(lInfo.phone);
+    $('.home').html(lInfo.home);
+    $('.myEmail').html(lInfo.email);
+    $('.myWechat').html(lInfo.wechat);
+    $('.myAddress').html(lInfo.address);
+    $('.city').html(lInfo.city);
+    $('.mySign').html(lInfo.sign);
 }

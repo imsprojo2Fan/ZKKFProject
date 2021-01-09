@@ -11,10 +11,10 @@ body {
     overflow: hidden;
 }
 .imgWrap{
-    display: block;
     position: fixed;
     top:0;
     left: 0;
+    display: none;
 }
 #tempC{
     display: none;
@@ -56,5 +56,19 @@ body {
     }
     .submit{
         display: inline-block;
+    }
+    .tip{
+        -moz-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        transform: rotate(90deg);
+        position: fixed;
+        font-size: 18px;
+        left: 0;
+        bottom: 50%;
+        color: #fff;
+        padding: 9px 15px;
+        display: none;
+        background: #4caf50;
     }
 }

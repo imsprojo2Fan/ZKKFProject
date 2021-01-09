@@ -11,12 +11,26 @@ import (
 // Model Struct
 type Protocol struct {
 	Id       int
-	Uid      int       //创建人id/user表id
-	Uuid     int       //处理人id
-	Rid      string    //订单编号
-	Count    int //订单项目数量
-	Price    float32 //订单金额
-	Status   int    //订单状态，0待确认，1已确认，2已取消，3已完成
+	Rid      string    //协议编号
+	OrderRid string    //订单编号
+	Tid int //type表id
+	DeviceId string //设备id可选多项
+	Uid      int       //user表id
+	Sign     string    //签名
+	Date    time.Time //协议日期
+	Pay string //付费方式
+	TestResult string //是否接受测试结果
+	City    string //协议签订城市
+	SampleName string //样品名称
+	SampleCount string //样品数量
+	SampleCode string //样品编号
+	DetectionCycle string //检测周期
+	DetectionReport string //检测报告
+	SampleProcessing string //样品处理
+	About string //关于样品
+	Parameter string //实验参数要求
+	Other string //其他特殊要求
+	Result string //参考结果图片
 	Remark   string    `orm:"size(255)"`
 	Updated  time.Time //`orm:"auto_now_add;type(datetime)"`
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
@@ -119,6 +133,14 @@ func (this *Protocol) All() ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
 	sql := "select * from " + ProtocolTBName() + " where 1=1"
+	_, err := o.Raw(sql).Values(&res)
+	return res, err
+}
+
+func (this *Protocol) ListByUidAndTid(uid,tid string) ([]orm.Params, error) {
+	var res []orm.Params
+	o := orm.NewOrm()
+	sql := "select * from " + ProtocolTBName() + " where uid="+uid+" and tid="+tid
 	_, err := o.Raw(sql).Values(&res)
 	return res, err
 }
