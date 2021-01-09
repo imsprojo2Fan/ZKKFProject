@@ -38,13 +38,13 @@ $(function () {
                         swal("签字已发送！","","success");
                         setTimeout(function () {
                             window.close();
-                        },3000);
+                        },1000);
                     }else{
                         $('.tip').html("签字已发送!");
                         $('.tip').show();
                         setTimeout(function () {
                             $('.tip').hide();
-                        },3000);
+                        },2000);
 
                     }
                 }else{

@@ -125,28 +125,6 @@ $(function () {
         submitOrder();
     });
 
-    //富文本监听事件
-    $('.editor').on("click",function () {
-        let id = $(this).attr("id")+"Content";
-        let val = $(this).val();
-        openWindow("/main/editor?domId="+id,"中科科辅",1000,600);
-    });
-
-    //协议隐藏显示
-    $('.typeMore i').on("click",function () {
-        if($(this).hasClass("fa-angle-down")){
-            $(this).removeClass("fa-angle-down");
-            $(this).addClass("fa-angle-left");
-            $(this).attr("title","显示更多");
-            $(this).parent().parent().siblings().hide(200);
-        }else{
-            $(this).addClass("fa-angle-down");
-            $(this).removeClass("fa-angle-left");
-            $(this).attr("title","隐藏更多");
-            $(this).parent().parent().siblings().show(200);
-        }
-    });
-
 
     $('.sign').on("click",function () {
         openWindow("/sign?code="+signCode,"签字板",1000,600);
@@ -294,6 +272,7 @@ function addOrder() {
     }else{
         outItem.Tid = info.tid;
         outItem.Type = info.typeName;
+        outItem.DetectionCycle = info.detectionCycle;
         outItem.Count = 1;
         outItem.Data = localInnerArr;
         localOutArr.push(outItem);
@@ -330,6 +309,7 @@ function submitOrder() {
         $('#protocolInfo').show(200);
         $('.submitBtn').show(200);
         $('#signCode').show(200);
+        renderProtocol();
         $('#libModal').modal("hide");
     }else{
         let formData = {};
@@ -451,6 +431,121 @@ function renderModalLib() {
         $(this).parent().find(".count").html(countTxt);
         $('#lib').find("span").html(count);
     });
+}
+
+function renderProtocol() {
+    if(loginFlag==="0"){
+        return false;
+    }
+    let localLibTemp = localStorage.getItem("lib");
+    if(localLibTemp){
+        localOutArr = JSON.parse(localLibTemp);
+    }
+    let errData = false;
+    for(let i=0;i<localOutArr.length;i++){
+        let outItem = localOutArr[i];
+        let innerArr = outItem.Data;
+        let continueFlag = false;
+        //防止项目数据为空
+        for(let j=0;j<innerArr.length;j++){
+            if(!innerArr[j].Name){
+                localOutArr.pop(outItem);
+                continueFlag = true;
+                errData = true;
+                break
+            }
+        }
+    }
+    if(localOutArr&&localOutArr.length===0){
+        return false;
+    }
+    $('#tableWrap').html("");
+    for(let i=0;i<localOutArr.length;i++){
+        let outItem = localOutArr[i];
+        let tid = outItem.Tid;
+        let typeName = outItem.Type;
+        let detectionCycle = outItem.DetectionCycle;
+        let innerArr = outItem.Data;
+        let devices = "";
+        for(let j=0;j<innerArr.length;j++){
+            devices += innerArr[j].Name+",";
+        }
+        devices = devices.substring(0,devices.length-1);
+        $('#tableWrap').append('' +
+            '<table id="'+tid+'">\n' +
+            '<tr style="color: #6195ff;font-size: 20px;">\n' +
+            '   <td class="tabtxt2" style="width: 7%;">所属分类</td>\n' +
+            '   <td colspan="4" class="type">'+typeName+'</td>\n' +
+            '   <td class="typeMore"><i title="隐藏更多" class="fa fa-angle-down" aria-hidden="true"></i></td>\n' +
+            '</tr>\n' +
+            '<tr style="color: #6195ff;font-size: 20px;">\n' +
+            '   <td class="tabtxt2">已选项目</td>\n' +
+            '  <td colspan="5" height="75" class="allDevice">'+devices+'</td>\n' +
+            '</tr>\n                                ' +
+            '<tr>\n                                    ' +
+            '   <td class="tabtxt2">检测周期</td>\n                                    ' +
+            '   <td colspan="5" class="detection_cycle">'+detectionCycle+'个工作日</td>\n                                ' +
+            '</tr>\n                                ' +
+            '<tr>\n                                    ' +
+            '   <td class="tabtxt2">检测报告</td>\n                                    ' +
+            '   <td colspan="5">\n                                        ' +
+            '       <input type="radio" checked value="无需检测报告（默认）" name="detection_report"/>&nbsp;无需检测报告（默认）\n                                        ' +
+            '       <input type="radio" value="中文检测报告（加收200元）" name="detection_report"/>&nbsp;中文检测报告（加收200元）\n                                    ' +
+            '   </td>\n                                ' +
+            '</tr>\n                                ' +
+            '<tr>\n                                    ' +
+            '   <td class="tabtxt2">样品编号</td>\n                                    ' +
+            '   <td colspan="5">\n                                        ' +
+            '       <input type="text" class="form-control"  maxlength="255" name="sample_code" placeholder="请输入样品编号">\n                                    ' +
+            '   </td>\n                                ' +
+            '</tr>\n                                ' +
+            '<tr>\n                                    ' +
+            '   <td class="tabtxt2">样品名称</td>\n                                    ' +
+            '   <td colspan="2">\n                                        ' +
+            '       <input type="text" class="form-control"  maxlength="255" name="sample_name" placeholder="请输入样品名称">\n   ' +
+            '   </td>\n                                    ' +
+            '   <td class="tabtxt2" style="text-align: right;padding-right: 15px;">样品数量</td>\n                                    ' +
+            '   <td colspan="2">\n                                        ' +
+            '       <input type="text" class="form-control" oninput = "value=value.replace(/[^\d]/g,\'\')" maxlength="2" name="sample_count" placeholder="请输入样品数量">\n                                    ' +
+            '   </td>\n                                ' +
+            '</tr>\n                                ' +
+            '<tr>\n                                    ' +
+            '   <td class="tabtxt2">样品处理</td>\n                                    ' +
+            '   <td colspan="5">\n                                        ' +
+            '       <input type="radio" value="一般样品回收（50元）" checked="true" name="sample_processing"/>&nbsp;一般样品回收（50元）\n                                        ' +
+            '       <input type="radio" value="样品不回收" name="sample_processing"/>&nbsp;样品不回收\n                                    ' +
+            '   </td>\n                                ' +
+            '</tr>\n                                ' +
+            '<tr>\n                                    ' +
+            '   <td class="tabtxt2">关于样品</td>\n                                    ' +
+            '   <td colspan="5">\n                                        ' +
+            '       <input type="text" class="form-control" name="about" placeholder="样品信息">\n                                    ' +
+            '   </td>\n                                ' +
+            '</tr>\n                                ' +
+            '<tr>\n                                    ' +
+            '   <td height="175" class="tabtxt2">实验参数要求</td>\n                                    ' +
+            '   <td colspan="5">\n                                        ' +
+            '       <textarea class="form-control" id="parameter'+tid+'Content" name="parameter" ></textarea>\n                                        ' +
+            '       <div class="editor" id="parameter'+tid+'">可插入文字图片</div>\n                                    ' +
+            '   </td>\n                                ' +
+            '</tr>\n                                ' +
+            '<tr>\n                                    ' +
+            '   <td height="175" class="tabtxt2">其他特殊要求</td>\n                                    ' +
+            '   <td colspan="5">\n                                        ' +
+            '       <textarea class="form-control" id="about'+tid+'Content" name="about" placeholder="可插入文字图片"></textarea>\n                                        ' +
+            '       <div class="editor" id="about'+tid+'">可插入文字图片</div>\n                                    ' +
+            '   </td>\n                                ' +
+            '</tr>\n                                ' +
+            '<tr>\n                                    ' +
+            '   <td height="175" class="tabtxt2">参考结果图片</td>\n                                    ' +
+            '   <td colspan="5">\n                                        ' +
+            '       <textarea class="form-control" id="result'+tid+'Content" name="result" placeholder="可插入文字图片"></textarea>\n                                        ' +
+            '       <div class="editor" id="result'+tid+'">可插入文字图片</div>\n                                    ' +
+            '   </td>\n                                ' +
+            '</tr>\n                            ' +
+            '</table>');
+    }
+    renderClick();
 }
 
 function findByType(type,localArr) {
@@ -592,4 +687,29 @@ function renderInfo() {
     $('.myAddress').html(lInfo.address);
     $('.city').html(lInfo.city);
     $('.mySign').html(lInfo.sign);
+    $('.date').html(dateUtil.NowDate())
+}
+
+function renderClick() {
+    //富文本监听事件
+    $('.editor').on("click",function () {
+        let id = $(this).attr("id")+"Content";
+        let val = $(this).val();
+        openWindow("/main/editor?domId="+id,"中科科辅",1000,600);
+    });
+
+    //协议隐藏显示
+    $('.typeMore i').on("click",function () {
+        if($(this).hasClass("fa-angle-down")){
+            $(this).removeClass("fa-angle-down");
+            $(this).addClass("fa-angle-left");
+            $(this).attr("title","显示更多");
+            $(this).parent().parent().siblings().hide(200);
+        }else{
+            $(this).addClass("fa-angle-down");
+            $(this).removeClass("fa-angle-left");
+            $(this).attr("title","隐藏更多");
+            $(this).parent().parent().siblings().show(200);
+        }
+    });
 }

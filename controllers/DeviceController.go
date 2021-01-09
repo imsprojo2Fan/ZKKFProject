@@ -167,13 +167,15 @@ func (this *DeviceController) All() {
 	this.jsonResult(200, 1, "查询所有信息成功", res)
 }
 
+var obj models.Device
+var settingObj models.Setting
+var bMap = make(map[string]interface{})
 func (this *DeviceController)Detail() {
 	rid := this.Ctx.Input.Param(":rid")
 	if rid==""{
 		this.TplName = "tip/404.html"
 		return
 	}
-	obj := new(models.Device)
 	res, err := obj.DetailByRid(rid)
 	if err!=nil{
 		this.Data["err"] = err.Error()
@@ -195,6 +197,16 @@ func (this *DeviceController)Detail() {
 		user.Remark = ""
 		user.Type = -1
 		this.Data["user"] = user
+		res := settingObj.SelectByGroup("LocalInfo")
+		bMap["company"] = models.RangeValue(res,"company")
+		bMap["phone"] = models.RangeValue(res,"phone")
+		bMap["home"] = models.RangeValue(res,"home")
+		bMap["email"] = models.RangeValue(res,"email")
+		bMap["wechat"] = models.RangeValue(res,"wechat")
+		bMap["address"] = models.RangeValue(res,"address")
+		bMap["city"] = models.RangeValue(res,"city")
+		bMap["sign"] = models.RangeValue(res,"sign")
+		this.Data["lInfo"] = bMap
 	}
 	if err==nil{
 		obj.UpdateNum("view",rid)

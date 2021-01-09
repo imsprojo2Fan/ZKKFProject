@@ -7,6 +7,13 @@ let dateUtil = {
         let d = addZero(date.getDate());
         return y + "-" + m + "-" + d;
     },
+    NowDate: function() {
+        let date = new Date();
+        let y = date.getFullYear();
+        let m = addZero(date.getMonth() + 1); // 获取当前月份的日期
+        let d = addZero(date.getDate());
+        return y+"年"+m+"月"+d+"日";
+    },
     // 获得当前日期前X天的日期,格式:yyyy-MM-dd
     getBeforeDate: function(dayCount) {
         let date = new Date();

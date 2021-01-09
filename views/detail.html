@@ -225,78 +225,8 @@
                                 </tr>
                             </table>
 
-                            <table>
-                                <tr style="color: #6195ff;font-size: 20px;">
-                                    <td class="tabtxt2" style="width: 7%;">所属分类</td>
-                                    <td colspan="4" class="type">TEM微观结构</td>
-                                    <td class="typeMore"><i title="隐藏更多" class="fa fa-angle-down" aria-hidden="true"></i></td>
-                                </tr>
-                                <tr style="color: #6195ff;font-size: 20px;">
-                                    <td class="tabtxt2">已选项目</td>
-                                    <td colspan="5" height="75" class="allDevice"></td>
-                                </tr>
-                                <tr>
-                                    <td class="tabtxt2">检测周期</td>
-                                    <td colspan="5" class="detection_cycle">7个工作日</td>
-                                </tr>
-                                <tr>
-                                    <td class="tabtxt2">检测报告</td>
-                                    <td colspan="5">
-                                        <input type="radio" checked value="无需检测报告（默认）" name="detection_report"/>&nbsp;无需检测报告（默认）
-                                        <input type="radio" value="中文检测报告（加收200元）" name="detection_report"/>&nbsp;中文检测报告（加收200元）
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tabtxt2">样品编号</td>
-                                    <td colspan="5">
-                                        <input type="text" class="form-control"  maxlength="255" name="sample_code" placeholder="请输入样品编号">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tabtxt2">样品名称</td>
-                                    <td colspan="2">
-                                        <input type="text" class="form-control"  maxlength="255" name="sample_name" placeholder="请输入样品名称">
-                                    </td>
-                                    <td class="tabtxt2" style="text-align: right;padding-right: 15px;">样品数量</td>
-                                    <td colspan="2">
-                                        <input type="text" class="form-control" oninput = "value=value.replace(/[^\d]/g,'')" maxlength="2" name="sample_count" placeholder="请输入样品数量">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tabtxt2">样品处理</td>
-                                    <td colspan="5">
-                                        <input type="radio" value="一般样品回收（50元）" checked="true" name="sample_processing"/>&nbsp;一般样品回收（50元）
-                                        <input type="radio" value="样品不回收" name="sample_processing"/>&nbsp;样品不回收
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tabtxt2">关于样品</td>
-                                    <td colspan="5">
-                                        <input type="text" class="form-control" name="about" placeholder="样品信息">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td height="175" class="tabtxt2">实验参数要求</td>
-                                    <td colspan="5">
-                                        <textarea class="form-control" id="parameterContent" name="parameter" ></textarea>
-                                        <div class="editor" id="parameter">可插入文字图片</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td height="175" class="tabtxt2">其他特殊要求</td>
-                                    <td colspan="5">
-                                        <textarea class="form-control" id="aboutContent" name="about" placeholder="可插入文字图片"></textarea>
-                                        <div class="editor" id="about">可插入文字图片</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td height="175" class="tabtxt2">参考结果图片</td>
-                                    <td colspan="5">
-                                        <textarea class="form-control" id="resultContent" name="result" placeholder="可插入文字图片"></textarea>
-                                        <div class="editor" id="result">可插入文字图片</div>
-                                    </td>
-                                </tr>
-                            </table>
+                            <div id="tableWrap"></div>
+
                         </form>
                     </div>
                     <div id="deviceInfo" class="col-lg-8">

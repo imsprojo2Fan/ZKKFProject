@@ -137,7 +137,7 @@ func (this *Device) UpdateOrderNum(ids string) {
 func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select d.id,d.rid,d.tid,d.name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,t.name as typeName,t.id as tid,c.id as ttid,c.name as childName from "+DeviceTBName()+" d,type t,type_child c where d.tid=c.id and c.tid=t.id and d.rid=?"
+	sql := "select d.id,d.rid,d.tid,d.name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,t.name as typeName,t.id as tid,t.detection_cycle as detectionCycle,c.id as ttid,c.name as childName from "+DeviceTBName()+" d,type t,type_child c where d.tid=c.id and c.tid=t.id and d.rid=?"
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }

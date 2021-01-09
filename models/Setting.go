@@ -120,11 +120,11 @@ func(this *Setting) MultiInsert(arr []*Setting)int64{
 	return count
 }
 
-func RangeValue(param []orm.Params,key string)string{
+func RangeValue(param []Setting,key string)string{
 	var val string
 	for _,item := range param{
-		if item["key"]==key{
-			val = item["value"].(string)
+		if item.Key==key{
+			val = item.Value
 			break
 		}
 	}
