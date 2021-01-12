@@ -9,8 +9,6 @@ let imgUtil = {
             allowTaint:true,
             height: $("#"+domId).outerHeight() + 20
         }).then(function(canvas) {
-            //添加水印
-            //canvas = imgUtil.addWatermark(canvas,"中科科辅");
             func(canvas,fileName);
         });
     },
