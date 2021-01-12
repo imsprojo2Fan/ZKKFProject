@@ -99,12 +99,12 @@
         <section class="blog-one blog-details-page">
             <div class="container">
                 <div class="row">
+                    <div id="protocolInfoTip">
+                        <p class="myTip">tip:部分信息已通过个人信息自动填充，如需更改请前往会员中心更改</p>
+                    </div>
                     <div id="protocolInfo" class="col-lg-12">
                         <form class="form-horizontal" autocomplete="off">
-                            <div>
-                                <p class="myTip">tip:部分信息已通过个人信息自动填充，如需更改请前往会员中心更改</p>
-                            </div>
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+                            <table style="margin-top: 60px" id="table1" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
                                 <tr>
                                     <td align="center" class="biaoti" height="60">中科科辅技术服务协议</td>
                                 </tr>
@@ -117,7 +117,7 @@
                                     <td align="left" >
                                         <div>
                                             <span class="tabtxt2">甲方：</span>
-                                            <span style="color:red;" class="company">钢铁研究总院</span>
+                                            <span style="color:red;" class="company"></span>
                                         </div>
                                         <div>
                                             <span class="tabtxt2">乙方：</span>
@@ -127,31 +127,31 @@
                                 </tr>
                             </table>
 
-                            <table width="100%" border="0" cellspacing="1" cellpadding="4" bgcolor="#cccccc" class="tabtop13" align="center">
+                            <table width="100%" border="0" cellspacing="1" cellpadding="4" class="tabtop13" align="center">
                                 <tr style="height: 35px!important;line-height: 35px;">
                                     <td class="btbg font-center titfont" colspan="6">甲方信息</td>
                                 </tr>
                                 <tr colspan="6">
                                     <td class="tabtxt2">发票抬头</td>
-                                    <td class="invoice">钢铁研究总院</td>
+                                    <td class="invoice"></td>
                                     <td class="tabtxt2">纳税人识别号</td>
-                                    <td colspan="3" class="invoice_code">911101081020293063</td>
+                                    <td colspan="3" class="invoice_code"></td>
                                 </tr>
                                 <tr>
                                     <td class="tabtxt2">委托人姓名</td>
-                                    <td class="name">吴志伟</td>
+                                    <td class="name"></td>
                                     <td class="tabtxt2">电话</td>
-                                    <td class="phone">17713754846</td>
+                                    <td class="phone"></td>
                                     <td class="tabtxt2">邮箱</td>
-                                    <td class="email">826644384@qq.com</td>
+                                    <td class="email"></td>
                                 </tr>
                                 <tr>
                                     <td class="tabtxt2">收货地址</td>
-                                    <td colspan="5" class="address">北京市海淀区北下关街道钢铁研究总院南院，吴志伟，17713754846</td>
+                                    <td colspan="5" class="address"></td>
                                 </tr>
                                 <tr>
                                     <td class="tabtxt2">导师/负责人姓名</td>
-                                    <td colspan="2" class="teacher">杨卯生</td>
+                                    <td colspan="2" class="teacher"></td>
                                     <td class="tabtxt2">电话</td>
                                     <td colspan="2" class="teacher_phone">-</td>
                                 </tr>
@@ -174,11 +174,11 @@
                                     <td class="tabtxt2">公司邮箱</td>
                                     <td class="myEmail">zheng@zkkefu.cn</td>
                                     <td class="tabtxt2">业务微信</td>
-                                    <td colspan="myWechat">18610885057</td>
+                                    <td class="myWechat"></td>
                                 </tr>
                                 <tr>
                                     <td class="tabtxt2">邮寄地址</td>
-                                    <td colspan="5" class="myAddress">北京市昌平区西环路和平家园6号楼底商6-3室 郑学豪收 18610885057</td>
+                                    <td colspan="5" class="myAddress"></td>
                                 </tr>
                                 <tr>
                                     <td class="tabtxt2">付费方式</td>
@@ -206,7 +206,7 @@
                                 </tr>
                                 <tr>
                                     <td class="tabtxt2">协议签署日期</td>
-                                    <td colspan="2" class="date">2020年9月16日</td>
+                                    <td colspan="2" class="date"></td>
                                     <td class="tabtxt2">协议签署地点</td>
                                     <td colspan="2" class="city">北京</td>
                                 </tr>
@@ -216,7 +216,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="height: 215px;line-height: 215px;width: 50%;text-align: center;" class="sign">扫码或点击此处完成签名</td>
-                                    <td colspan="3" style="line-height: 215px;text-align: center;border-left: 1px solid #eee;" class="mySign">郑学豪（盖章）</td>
+                                    <td colspan="3" style="line-height: 215px;text-align: center;border-left: 1px solid #eee;" class="mySign"></td>
                                 </tr>
                                 <tr style="height: 35px!important;line-height: 35px;">
                                     <td class="btbg font-center titfont" colspan="6">
@@ -234,7 +234,7 @@
                             <div class="blog-details__image">
                                 <img src="../static/img/default1.png" onerror="this.src= '../../static/img/default2.png'; this.onerror = null;this.style.marginTop='18px';this.style.marginLeft='45px'" class="img-fluid" alt="">
                             </div><!-- /.blog-details__image -->
-                            <div class="itemHead"><h4>{{.info.name}}</h4></div>
+                            <div class="itemHead"><h4 class="deviceName">{{.info.name}}</h4></div>
                             <p class="createTime">
                                 <i class="fa fa-bookmark" aria-hidden="true" title="项目类型"></i>&nbsp;<span id="type"></span>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <i class="fa fa-clock-o" aria-hidden="true" title="创建时间"></i>&nbsp;<span id="created"></span>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -428,9 +428,17 @@
         </footer><!-- /.site-footer -->
     </div><!-- /.page-wrapper -->
 
+    <div id="pdfBtn" title="下载服务协议">
+        <img src="../static/img/pdf.png">
+    </div>
+
     <div id="lib" title="点击查看已选实验计划">
         <span>0</span>
         <img src="../static/img/lib.png">
+    </div>
+
+    <div id="pdfWrap">
+        <img id="tempPdf">
     </div>
 
     <div id="signCode"></div>
@@ -672,10 +680,15 @@
 
     <!-- Custom Scripts -->
     <script src="../static/plugins/qrcode/qrcode.min.js"></script>
+    <script src="../static/plugins/pdf/html2canvas.min.js"></script>
+    <script type="module" src="../static/plugins/pdf/canvas2image.js"></script>
+    <script src="../static/plugins/pdf/jspdf.min.js"></script>
+    <script src="../static/plugins/pdf/watermark.js"></script>
     <script src="../static/assets/js/theme.js"></script>
     <script src="../static/js/util/util.js"></script>
     <script src="../static/js/util/timeUtil.js"></script>
     <script src="../static/js/util/stringUtil.js"></script>
+    <script src="../static/js/util/imgUtil.js"></script>
     <script src="../static/js/util/browserInfo.js"></script>
     <script src="../static/js/index/login.js"></script>
     <script src="../static/js/index/detail.js"></script>

@@ -17,7 +17,7 @@ type Protocol struct {
 	DeviceId string //设备id可选多项
 	Uid      int       //user表id
 	Sign     string    //签名
-	Date    time.Time //协议日期
+	Date    string //协议日期
 	Pay string //付费方式
 	TestResult string //是否接受测试结果
 	City    string //协议签订城市
@@ -48,15 +48,14 @@ func (this *Protocol) Insert(o orm.Ormer,obj *Protocol) error {
 }
 
 func(this *Protocol) MultiInsert(arr []*Protocol)(int64,error){
-	var count int64
-	var err error
-	if num, err := orm.NewOrm().InsertMulti(len(arr), arr); err != nil {
+
+	num, err := orm.NewOrm().InsertMulti(len(arr), arr)
+	if err != nil {
 		fmt.Println(err)
 	} else {
-		count = num
 		fmt.Printf("Insert %d Protocol' data!\r\n", num)
 	}
-	return count,err
+	return num,err
 }
 
 func (this *Protocol) Update(obj *Protocol) error {

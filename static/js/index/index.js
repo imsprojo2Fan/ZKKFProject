@@ -29,11 +29,50 @@ $(window).on('load', function () {
     });
 
     //熏染数据
-    renderDevice();
+    renderType();
     renderNews();
 
     $('.preloader').fadeOut(200);
 });
+
+function renderType(){
+    $.post("/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
+        if(res.data){
+            $('#deviceWrap').html("");
+            let arr = res.data;
+            for(let i=0;i<arr.length;i++){
+                let item = arr[i];
+                let head = item.name;
+                if(head.length>25){
+                    head = head.substring(0,22)+"...";
+                }
+                let sketch = item.description;
+                if(sketch.length>45){
+                    sketch = sketch.substring(0,42)+"...";
+                }
+                let id = item.id;
+                let img = item.img;
+                $('#deviceWrap').append('' +
+                    '<div class="item">' +
+                    '   <a target="_blank" href="/type/'+id+'">\n' +
+                    '   <div class="collection-two__single">\n' +
+                    '       <div class="collection-two__image">\n' +
+                    '           <img class="devImg" src="/img/'+img+'" onerror="this.src= \'../../static/img/default2.png\'; this.onerror = null;this.style.marginTop=\'0px\';this.style.marginLeft=\'45px\'" alt="">\n' +
+                    '       </div>\n' +
+                    '       <div class="collection-two__content">\n' +
+                    '           <h3><a target="_blank" href="/type/'+id+'">'+head+'</a></h3>\n' +
+                    '           <p>'+sketch+'</p>\n' +
+                    '       </div>\n' +
+                    '   </div>\n' +
+                    '   </a>' +
+                    '</div>');
+            }
+            initOwl();
+        }else{
+            $('#deviceWrap').html("<span class='dataTip'>无任何分组!</span>");
+        }
+    });
+}
 
 function renderDevice(){
     $.post("/type/device",{_xsrf:$("#token", parent.document).val()},function (res) {

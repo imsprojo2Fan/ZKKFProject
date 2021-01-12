@@ -105,10 +105,10 @@ func (this *OrderController) ListForPerson() {
 	if sortNum == "1" {
 		sortCol = "rid"
 	}
-	if sortNum == "2" {
+	if sortNum == "3" {
 		sortCol = "status"
 	}
-	if sortNum == "3" {
+	if sortNum == "4" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -129,7 +129,14 @@ func (this *OrderController) ListForPerson() {
 	backMap["recordsTotal"] = records
 	backMap["recordsFiltered"] = records
 	dataList, err = obj.ListByPage(qMap)
-	backMap["data"] = dataList
+	var tempList []orm.Params
+	for _,item:=range dataList{
+		rid := item["rid"].(string)
+		res,_ := obj.ListByRid4Type(rid)
+		item["typeName"] = res
+		tempList = append(tempList,item)
+	}
+	backMap["data"] = tempList
 	if len(dataList) == 0 {
 		backMap["data"] = make([]int, 0)
 	}
@@ -301,12 +308,13 @@ func (this *OrderController) IndexAdd() {
 			deviceArr = append(deviceArr,item1)
 			ids += item1.DeviceId+","
 		}
+		ids = ids[0:len(ids)-1]
 		//处理协议
 		var protocol models.Protocol
 		protocol.Rid = "A"+strconv.FormatInt(time.Now().UnixNano()-10,10)
 		protocol.OrderRid = Rid
 		protocol.Tid,_ = strconv.Atoi(item.Tid)
-		protocol.DeviceId = ids[0:len(ids)-1]
+		protocol.DeviceId = ids
 		protocol.Uid = uid
 		protocol.Sign = item.Protocol.Sign
 		protocol.Date = item.Protocol.Date

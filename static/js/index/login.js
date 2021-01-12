@@ -74,9 +74,15 @@ $(function () {
             success : function(r,status) {
                 if (r.code == 1) {
                     $('#loginFlag').val(1);
+                    //防止缓存已被删除的数据
+                    localStorage.setItem("lib","");
                     window.open("/main","_blank");
                     $('#loginShowBtn').html("前往个人中心");
                     $(".loginmask,.closealert").click();
+                    //如果是设备详情页则刷新页面
+                    if(window.location.href.indexOf("detail")!==-1){
+                        location.reload();
+                    }
                     //swal("登录成功!",' ',"success");
                 } else {
                     $('#alertTip').html(r.msg);
@@ -213,6 +219,7 @@ $(function () {
             $("#loginalert").fadeIn(300);
         }
     });
+
     $('.cta-one__btn-block').find("a").on("click",function () {
         if($(this).html()==="查看更多"){
             return;
@@ -225,6 +232,7 @@ $(function () {
         $('#frTip').click();
         $("#loginShowBtn").click();
     });
+
     $(".loginmask,.closealert").click(function () {
         $(".loginmask").fadeOut(300);
         $("#loginalert").fadeOut(500);

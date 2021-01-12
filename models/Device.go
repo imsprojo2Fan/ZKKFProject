@@ -12,7 +12,8 @@ type Device struct {
 	Id              int
 	Rid             string //唯一识别
 	Uid             int    //用户id
-	Tid             int    //分组id
+	Tid             int    //type表id
+	Ttid            int    //type_child表id
 	Source          string //来源
 	Name            string `orm:"size(255)"` //设备名称
 	Title           string //副标题
@@ -29,6 +30,8 @@ type Device struct {
 	ReservationDone int    `orm:"size(16)"` //预约完成数
 	Order     int    `orm:"size(16)"` //订单数
 	OrderDone int    `orm:"size(16)"` //订单完成数
+	Standard string //实验标准，file表id
+	Drawing string //图纸，file表id
 	Remark          string
 	Updated         time.Time `orm:"auto_now_add;type(datetime)"`
 	Created         time.Time `orm:"auto_now_add;Device(datetime)"`
@@ -48,13 +51,21 @@ func (this *Device) Insert(Device *Device) error {
 
 func (this *Device) Update(obj *Device) error {
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "name", "title","is_order", "tid", "source", "sketch", "img", "parameter", "feature", "range", "achievement", "disabled", "remark", "updated")
+	_, err := o.Update(obj, "name", "title","is_order", "tid","ttid", "source", "sketch", "img", "parameter", "feature", "range", "achievement", "disabled","standard","drawing", "remark", "updated")
 	return err
 }
 
 func (this *Device) Delete(obj *Device) error {
 	o := orm.NewOrm()
 	_, err := o.Delete(obj)
+	return err
+}
+func (this *Device) DeleteByTid(o orm.Ormer,tid string) error {
+	_, err := o.Raw("delete from device where tid="+tid).Exec()
+	return err
+}
+func (this *Device) DeleteByTtid(o orm.Ormer,ttid string) error {
+	_, err := o.Raw("delete from device where ttid="+ttid).Exec()
 	return err
 }
 
@@ -81,7 +92,7 @@ func (this *Device) SelectByCol(col string, obj *Device) {
 func (this *Device) Count(qMap map[string]interface{}) (int, error) {
 
 	o := orm.NewOrm()
-	sql := "select d.*,t.name as typeName,c.name as childName from " + DeviceTBName() + " d,type t,type_child c where d.tid=c.id and t.id=c.tid "
+	sql := "select d.*,t.name as typeName,c.name as childName from " + DeviceTBName() + " d,type t,type_child c where d.ttid=c.id and t.id=c.tid "
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql += " and (d.name like \"%" + key + "%\")"
@@ -94,7 +105,7 @@ func (this *Device) Count(qMap map[string]interface{}) (int, error) {
 func (this *Device) ListByPage(qMap map[string]interface{}) ([]orm.Params, error) {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	sql := "select d.*,t.name as typeName,c.name as childName from " + DeviceTBName() + " d,type t,type_child c where d.tid=c.id and t.id=c.tid "
+	sql := "select d.*,t.name as typeName,c.name as childName from " + DeviceTBName() + " d,type t,type_child c where d.ttid=c.id and t.id=c.tid "
 	if qMap["searchKey"] != "" {
 		sql += " and d.name like '%" + qMap["searchKey"].(string) + "%'"
 	}
@@ -137,17 +148,17 @@ func (this *Device) UpdateOrderNum(ids string) {
 func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select d.id,d.rid,d.tid,d.name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,t.name as typeName,t.id as tid,t.detection_cycle as detectionCycle,c.id as ttid,c.name as childName from "+DeviceTBName()+" d,type t,type_child c where d.tid=c.id and c.tid=t.id and d.rid=?"
+	sql := "select d.id,d.rid,d.tid,d.name as name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,t.name as typeName,t.id as tid,t.detection_cycle as detectionCycle,c.id as ttid,c.name as childName from "+DeviceTBName()+" d,type t,type_child c where d.ttid=c.id and c.tid=t.id and d.rid=?"
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }
 
-func (this *Device) ListByType(tid string) ([]orm.Params, error) {
+func (this *Device) ListByType(tid,ttid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
 	sql := "select * from " + DeviceTBName()
-	if tid!=""{
-		sql = "select * from " + DeviceTBName() + " where tid="+tid
+	if tid!="0"{
+		sql = "select * from " + DeviceTBName() + " where tid="+tid+" and ttid="+ttid
 	}
 	_, err := o.Raw(sql).Values(&res)
 	return res, err

@@ -20,7 +20,8 @@ $(function () {
             $('.blog-details__image').find("img").attr("src","/img/"+imgSrc);
         }
         $('#type').html(localStorage.getItem("t-type"));
-        $('.name').html(localStorage.getItem("t-name"));
+        let name = localStorage.getItem("t-name");
+        $('.deviceName').html("<h4>"+name+"</h4>");
         $('.sketch').html(localStorage.getItem("t-sketch"));
         $('.parameter').html(localStorage.getItem("t-parameter"));
         $('.feature').html(localStorage.getItem("t-feature"));
@@ -97,7 +98,7 @@ $(function () {
     });
 
     $('#submitBtn').on("click",function () {
-        let loginFlag = $('#loginFlag').val();
+        loginFlag = $('#loginFlag').val();
         if(loginFlag==="0"){
             swal("系统提示","该操作需用户登录，请先登录！","warning");
             return false
@@ -111,6 +112,8 @@ $(function () {
     });
 
     $('#lib').on("click",function () {
+        $('#protocolInfoTip').hide();
+        //$('#pdfBtn').hide(200);
         $('#protocolInfo').hide(200);
         $('.submitBtn').hide(200);
         $('#signCode').hide(200);
@@ -119,10 +122,10 @@ $(function () {
         $('#libModal').modal("show");
     });
 
-    makeCode("signCode",url+"/sign?code="+signCode,128,128);
+    makeCode("signCode",url+"/sign?code="+signCode,108,108);
 
     $('#orderBtn').on("click",function () {
-        submitOrder();
+        showProtocol();
     });
 
 
@@ -130,13 +133,58 @@ $(function () {
         openWindow("/sign?code="+signCode,"签字板",1000,600);
     })
 
+    $('.submitBtn').on("click",function () {
+        let signImg = $('.sign img').attr("src");
+        if(!signImg){
+            swal("系统提示","请在甲方代表签字处签字","error");
+            return false;
+        }
+        swal({
+            title: "是否已确认提交信息?",
+            text: '提交信息后将不可更改，请务必保存协议文件！',
+            type: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#ff1200',
+            cancelButtonColor: '#ff1200',
+            confirmButtonText: '是',
+            cancelButtonText:'否'
+        },function(){
+            submitOrder();
+        });
+    });
+
+    $('#pdfBtn').on("click",function () {
+        imgUtil.addWatermark("protocolInfo","中科科辅");
+        imgUtil.domShot("protocolInfo",imgUtil.pagePdf,"中科科辅服务协议/"+dateUtil.nowTime());
+    });
+
 
     $('.preloader').fadeOut(200);
 
 });
 
+/*初始化水印*/
+window.onload = function(){
+    /*imgUtil.addWatermark("protocolInfo","中科科辅");
+    let eHeight = $('.watword').outerHeight(true);
+    console.log(eHeight);*/
+}
+
+/*function watermark() {
+    watermark.load({
+        watermark_id: 'protocolInfo',          //水印总体的id
+        watermark_txt:"中科科辅",  //水印的内容
+        watermark_color:'#262627',            //水印字体颜色
+        watermark_fontsize:'24px',          //水印字体大小
+        watermark_alpha:0.5,               //水印透明度，要求设置在大于等于0.005
+        watermark_angle:135,                 //水印倾斜度数
+        watermark_width:200,                //水印宽度
+        watermark_height:200,               //水印长度
+    });
+}*/
+
 function add(){
-    let loginFlag = $('#loginFlag').val();
+    loginFlag = $('#loginFlag').val();
     if(loginFlag==="0"){
         swal("系统提示","该操作需用户登录，请先登录！","warning");
         return false
@@ -279,12 +327,12 @@ function addOrder() {
     }
 
     localStorage.setItem("lib",JSON.stringify(localOutArr));
-    swal("本地已成功加入实验计划","提示：需提交实验计划方可确认","success");
+    swal("已成功加入本地实验计划","提示：需提交实验计划方可系统确认","success");
     renderModalLib();
 }
 
-function submitOrder() {
-    let loginFlag = $('#loginFlag').val();
+function showProtocol() {
+    loginFlag = $('#loginFlag').val();
     if(loginFlag==="0"){
         swal("系统提示","该操作需用户登录，请先登录！","warning");
         return false;
@@ -299,49 +347,17 @@ function submitOrder() {
         showTip("当前未选中任何项目！")
         return false;
     }
-
-    let htmlTxt = $('#orderBtn').html();
-    if(htmlTxt.indexOf("服务协议")!==-1){
-        window.clearInterval(signTimerIndex);
-        signTimer();
-        $('#deviceInfo').hide(200);
-        $('#searchWrap').hide(200);
-        $('#protocolInfo').show(200);
-        $('.submitBtn').show(200);
-        $('#signCode').show(200);
-        renderProtocol();
-        $('#libModal').modal("hide");
-    }else{
-        let formData = {};
-        formData["data"] = localLibTemp;
-        formData["_xsrf"] = $("#token", parent.document).val();
-        $.ajax({
-            url : "/order/add",
-            type : "POST",
-            dataType : "json",
-            cache : false,
-            data : formData,
-            beforeSend:function(){
-                $('.preloader').fadeIn(200);
-            },
-            success : function(r) {
-                if (r.code == 1) {
-                    localStorage.setItem("lib","");
-                    $('#libModal').modal('hide');
-                    $('#lib').find("span").html(0);
-                    $('#lib').hide();
-                    $('.back').click();
-                    swal("系统提示",r.msg+",客服将尽快确认！","success");
-                }else{
-                    swal("系统提示",r.msg,"error");
-                }
-
-            },
-            complete:function () {
-                $('.preloader').fadeOut(200);
-            }
-        });
-    }
+    window.clearInterval(signTimerIndex);
+    signTimer();
+    $('#deviceInfo').hide(200);
+    $('#searchWrap').hide(200);
+    $('#protocolInfoTip').show(200);
+    //$('#pdfBtn').show(200);
+    $('#protocolInfo').show(200);
+    $('.submitBtn').show(200);
+    $('#signCode').show(200);
+    renderProtocol();
+    $('#libModal').modal("hide");
 
 }
 
@@ -353,7 +369,6 @@ function renderModalLib() {
         let errData = false;
         for(let i=0;i<localOutArr.length;i++){
             let outItem = localOutArr[i];
-            let localCount = outItem.Count;
             let innerArr = outItem.Data;
             let continueFlag = false;
             //防止项目数据为空
@@ -365,9 +380,6 @@ function renderModalLib() {
                     break
                 }
             }
-            if(!continueFlag){
-                count += localCount;
-            }
         }
         if(errData){
             localStorage.setItem("lib",JSON.stringify(localOutArr));
@@ -375,7 +387,8 @@ function renderModalLib() {
         if(localOutArr&&localOutArr.length===0){
             return false;
         }
-        $('#lib').find("span").html(count);
+        let cNum = cacAllNum(localOutArr);
+        $('#lib').find("span").html(cNum);
         $('#lib').show();
         //熏染modal
         $('.libItemWrap').html("");
@@ -394,7 +407,7 @@ function renderModalLib() {
                 let dName = innerArr[j].Name;
                 let title = dName;
                 dName = stringUtil.maxLength(dName,40);
-                let dId = innerArr[j].Id;
+                let dId = innerArr[j].DeviceId;
                 let count = innerArr[j].Count;
                 if(count<10){
                     count = "0"+count;
@@ -425,15 +438,17 @@ function renderModalLib() {
         innerItem.Count = count;
         let innerArr = replaceItemById(innerItem,outItem.Data);
         outItem.Data = innerArr;
-        outItem.Count = count;
+        let cNum = cacAllNum(localOutArr);
+        outItem.Count = cNum;
         let outArr = replaceItemByType(outItem,localOutArr);
         localStorage.setItem("lib",JSON.stringify(outArr));
         $(this).parent().find(".count").html(countTxt);
-        $('#lib').find("span").html(count);
+        $('#lib').find("span").html(cNum);
     });
 }
 
 function renderProtocol() {
+    loginFlag = $('#loginFlag').val();
     if(loginFlag==="0"){
         return false;
     }
@@ -468,9 +483,12 @@ function renderProtocol() {
         let innerArr = outItem.Data;
         let devices = "";
         for(let j=0;j<innerArr.length;j++){
-            devices += innerArr[j].Name+",";
+            let item = innerArr[j];
+            let count = item.Count;
+            let name = item.Name;
+            devices += "<i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>&nbsp;"+name+"*"+count+"<br/>";
         }
-        devices = devices.substring(0,devices.length-1);
+
         $('#tableWrap').append('' +
             '<table id="'+tid+'">\n' +
             '<tr style="color: #6195ff;font-size: 20px;">\n' +
@@ -478,7 +496,7 @@ function renderProtocol() {
             '   <td colspan="4" class="type">'+typeName+'</td>\n' +
             '   <td class="typeMore"><i title="隐藏更多" class="fa fa-angle-down" aria-hidden="true"></i></td>\n' +
             '</tr>\n' +
-            '<tr style="color: #6195ff;font-size: 20px;">\n' +
+            '<tr >\n' +
             '   <td class="tabtxt2">已选项目</td>\n' +
             '  <td colspan="5" height="75" class="allDevice">'+devices+'</td>\n' +
             '</tr>\n                                ' +
@@ -506,7 +524,7 @@ function renderProtocol() {
             '   </td>\n                                    ' +
             '   <td class="tabtxt2" style="text-align: right;padding-right: 15px;">样品数量</td>\n                                    ' +
             '   <td colspan="2">\n                                        ' +
-            '       <input type="text" class="form-control" oninput = "value=value.replace(/[^\d]/g,\'\')" maxlength="2" name="sample_count" placeholder="请输入样品数量">\n                                    ' +
+            '       <input type="text" class="form-control" oninput=\'this.value=this.value.replace(/\\D/gi,"")\' maxlength="2" name="sample_count" placeholder="请输入样品数量">\n                                    ' +
             '   </td>\n                                ' +
             '</tr>\n                                ' +
             '<tr>\n                                    ' +
@@ -582,7 +600,7 @@ function findById(id,localArr) {
 
 function replaceItemById(item,arr) {
     for(let i=0;i<arr.length;i++){
-        if(item.Id==arr[i].Id){
+        if(item.Id==arr[i].DeviceId){
             arr[i] = item;
             break
         }
@@ -598,6 +616,17 @@ function replaceItemByType(item,arr) {
         }
     }
     return arr;
+}
+
+function cacAllNum(arr) {
+    let count = 0;
+    for(let i=0;i<arr.length;i++){
+        let innerArr = arr[i].Data;
+        for(let j=0;j<innerArr.length;j++){
+            count += innerArr[j].Count;
+        }
+    }
+    return count;
 }
 
 function showTip(txt) {
@@ -635,7 +664,11 @@ function signTimer() {
             beforeSend:function(){
                 //$('#loading').fadeIn(200);
             },
-            success : function(res) {
+            success : function(res,status,xhr) {
+                console.log(xhr.status+" "+dateUtil.nowTime());
+                if(xhr.status=="403"){
+                    window.clearInterval(signTimerIndex);
+                }
                 let imgSrc = res.data;
                 if(!imgSrc){
                     return false;
@@ -710,6 +743,80 @@ function renderClick() {
             $(this).removeClass("fa-angle-left");
             $(this).attr("title","隐藏更多");
             $(this).parent().parent().siblings().show(200);
+        }
+    });
+}
+
+function submitOrder() {
+    let localLibTemp = localStorage.getItem("lib");
+    if(!localLibTemp){
+        showTip("当前未选中任何项目！")
+        return false;
+    }
+    let localOutArr = JSON.parse(localLibTemp);
+    let dataArr = [];
+    for(let i=0;i<localOutArr.length;i++){
+        let item = localOutArr[i];
+        let tid = item.Tid;
+        let Protocol = {};
+        Protocol.Sign = $('.sign img').attr("src");
+        Protocol.Date = $('.date').html();
+        Protocol.Pay = $("input[name='pay']:checked").val();
+        Protocol.TestResult = $("input[name='test_result']:checked").val();
+        Protocol.City = $('.city').html();
+        Protocol.SampleName = $('#'+tid).find("input[name='sample_name']").val().trim();
+        Protocol.SampleCount = $('#'+tid).find("input[name='sample_count']").val();
+        Protocol.SampleCode = $('#'+tid).find("input[name='sample_code']").val().trim();
+        Protocol.DetectionCycle = $('#'+tid).find('.detection_cycle').html();
+        Protocol.DetectionReport = $('#'+tid).find("input[name='detection_report']:checked").val();
+        Protocol.SampleProcessing = $('#'+tid).find("input[name='sample_processing']:checked").val();
+        Protocol.About = $('#'+tid).find("input[name='about']").val().trim();
+        Protocol.Parameter = $('#parameter'+tid+"Content").val();
+        Protocol.Other = $('#about'+tid+"Content").val();
+        Protocol.Result = $('#result'+tid+"Content").val();
+        item.Protocol = Protocol;
+        dataArr.push(item);
+    }
+    let formData = {};
+    formData["data"] = JSON.stringify(dataArr);
+    formData["_xsrf"] = $("#token", parent.document).val();
+    $.ajax({
+        url : "/order/add",
+        type : "POST",
+        dataType : "json",
+        cache : false,
+        data : formData,
+        beforeSend:function(){
+            $('.preloader').fadeIn(200);
+        },
+        success : function(r) {
+            if (r.code == 1) {
+                imgUtil.addWatermark("protocolInfo","中科科辅");
+                imgUtil.domShot("protocolInfo",imgUtil.pagePdf,"中科科辅服务协议/"+dateUtil.nowTime());
+                localStorage.setItem("lib","");
+                $('#libModal').modal('hide');
+                $('#lib').find("span").html(0);
+                $('#lib').hide();
+                $('.back').click();
+                $('.sign').html("扫码或点击此处完成签字");
+                $('#tableWrap').html("");
+                $('#protocolInfoTip').hide();
+                //$('#pdfBtn').hide(200);
+                $('#protocolInfo').hide();
+                $('#signCode').hide();
+                $('.wat').remove();
+                window.clearInterval(signTimerIndex);
+                $('.submitBtn').hide(200);
+                $('#deviceInfo').show();
+                $('#searchWrap').show();
+                swal("系统提示",r.msg+",客服将尽快确认！","success");
+            }else{
+                swal("系统提示",r.msg,"error");
+            }
+
+        },
+        complete:function () {
+            $('.preloader').fadeOut(200);
         }
     });
 }

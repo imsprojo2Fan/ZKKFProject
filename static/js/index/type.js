@@ -1,12 +1,18 @@
-$(function () {
+let typeId;
 
+$(function () {
+    let tArr = window.location.href.split("/type/");
+    if(tArr.length===2){
+        typeId = tArr[1];
+    }
     //熏染设备分类
     $.post("/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
         if(res.data){
             let arr = res.data;
             for(let i=0;i<arr.length;i++){
                 let item = arr[i];
-                $('#typeWrap').append('<a class="myBtn" data-filter="'+item.id+'">'+item.name+'</a>');
+                let tid = item.id;
+                $('#typeWrap').append('<a class="myBtn" data-filter="'+tid+'">'+item.name+'</a>');
             }
             $('#typeWrap').find("a").each(function () {
                 $(this).on("click",function () {
@@ -15,26 +21,35 @@ $(function () {
                     }
                     $('#typeWrap').find("a").removeClass("filterActive");
                     $(this).addClass("filterActive");
-                    if(!$('#typeWrap').find(".filterActive").attr("data-filter")){
+                    let data = $(this).attr("data-filter");
+                    if(data==="0"){
                         //全部设备时自动熏染设备
                         $('#typeChildWrap').html("");
                         renderDevice();
                     }else{
                         renderChildType();
                     }
-
                 });
             })
+            if(typeId){
+                $('.myBtn').each(function () {
+                    let data = $(this).attr("data-filter");
+                    if(data===typeId){
+                        $(this).click();
+                    }
+                });
+            }
         }
-    })
+    });
 
-    renderDevice();
-
+    if(!typeId){
+        renderDevice();
+    }
     $('.preloader').fadeOut(200);
 })
 
 function renderChildType(){
-    let typeId = $('#typeWrap').find(".filterActive").attr("data-filter");
+    typeId = $('#typeWrap').find(".filterActive").attr("data-filter");
     $('.preloader').show(200);
     $.post("/typeChild/queryByTid",{_xsrf:$("#token", parent.document).val(),tid:typeId},function (res) {
         $('#typeChildWrap').html("");
@@ -68,12 +83,10 @@ function renderChildType(){
 
 function renderDevice(){
     let typeId = $('#typeWrap').find(".filterActive").attr("data-filter");
-    if(typeId!=0){
-        typeId = $('#typeChildWrap').find(".filterActive").attr("data-filter");
-    }
+    let ttid = $('#typeChildWrap').find(".filterActive").attr("data-filter");
 
     $('.preloader').show(200);
-    $.post("/type/device",{_xsrf:$("#token", parent.document).val(),typeId:typeId},function (res) {
+    $.post("/type/device",{_xsrf:$("#token", parent.document).val(),typeId:typeId,ttid:ttid},function (res) {
         if(res.data){
             $('#deviceWrap').html("");
             let arr = res.data;

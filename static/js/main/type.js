@@ -218,6 +218,14 @@ function add(){
         swal("系统提示",'检测周期不能为空!',"warning");
         return;
     }
+    if (!img){
+        swal("系统提示",'未上传图片!',"warning");
+        return;
+    }
+    if (!description){
+        swal("系统提示",'请填写简述信息!',"warning");
+        return;
+    }
 
     $.ajax({
         url : prefix+"/add",
@@ -259,6 +267,14 @@ function edit(){
     }
     if (!range){
         swal("系统提示",'检测周期不能为空!',"warning");
+        return;
+    }
+    if (!img){
+        swal("系统提示",'未上传图片!',"warning");
+        return;
+    }
+    if (!description){
+        swal("系统提示",'请填写简述信息!',"warning");
         return;
     }
     $.ajax({

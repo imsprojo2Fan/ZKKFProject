@@ -81,7 +81,7 @@
     padding: 6px 35px 6px 15px;
 }
 .libItemWrap .fa-files-o{
-    color: var(--thm-base);
+    color: #6195ff!important;
 }
 .libItemWrap .fa-trash-o{
     float: right;

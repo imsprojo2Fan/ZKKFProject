@@ -49,8 +49,8 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,4 ] }],//指定哪些列不排序
-        "order": [[ 3, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,2,5 ] }],//指定哪些列不排序
+        "order": [[ 4, "desc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 50,
         ajax: {
@@ -66,6 +66,9 @@ $(document).ready(function() {
                 }},
             { data: 'rid',"render":function (data) {
                     return data;
+                }},
+            { data: 'typeName',"render":function (data) {
+                    return stringUtil.maxLength(data,15);
                 }},
             { data: 'status',"render":function (data) {
                     let str;
@@ -86,7 +89,8 @@ $(document).ready(function() {
                     return commonTime;
                 }},
             { data: null,"render":function () {
-                    let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看详情</a>&nbsp;"
+                    let html = "<a href='javascript:void(0);'  class='detail btn btn-default btn-xs'>订单详情</a>&nbsp;"
+                    html += "<a href='javascript:void(0);'  class='protocol btn btn-primary btn-xs'>协议详情</a>&nbsp;"
                     return html;
                 } }
         ],
@@ -127,7 +131,7 @@ $(document).ready(function() {
     $('.dataTables_wrapper .dataTables_filter input').css("background","blue");
 
     let rowData;
-    $('#myTable').on("click",".btn-default",function(e){//查看
+    $('#myTable').on("click",".detail",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
         $('#detailModal').find('.rid').html(stringUtil.maxLength(rowData.rid));
         let str;
@@ -148,6 +152,9 @@ $(document).ready(function() {
         $('#detail_created').html(commonTime);
         let rid = rowData.rid;
         detail(rid);
+    });
+    $('#myTable').on("click",".protocol",function(e){//查看
+
     });
 
 } );

@@ -40,7 +40,23 @@ func (this *TypeChild) Update(obj *TypeChild) error {
 func (this *TypeChild) Delete(obj *TypeChild) error {
 
 	o := orm.NewOrm()
-	_, err := o.Delete(obj)
+	_ = o.Begin()
+	var device Device
+	err := device.DeleteByTtid(o,strconv.Itoa(obj.Id))
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_, err = o.Delete(obj)
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_ = o.Commit()
+	return err
+}
+func (this *TypeChild) DeleteByTid(o orm.Ormer,tid string) error {
+	_, err := o.Raw("delete from type_child where tid="+tid).Exec()
 	return err
 }
 

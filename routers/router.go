@@ -11,6 +11,7 @@ func init() {
 	beego.Router("/template/?:url", &controllers.IndexController{}, "*:Template")
 	beego.Router("/detail/?:rid", &controllers.DeviceController{}, "*:Detail")
 	beego.Router("/type/all", &controllers.TypeController{}, "*:All")
+	beego.Router("/type/?:id", &controllers.TypeController{}, "*:Redirect")
 	beego.Router("/news/all", &controllers.NewsController{}, "*:All")
 	beego.Router("/news/?:rid", &controllers.NewsController{}, "*:Detail")
 	beego.Router("/type/device", &controllers.DeviceController{}, "*:ListByType")

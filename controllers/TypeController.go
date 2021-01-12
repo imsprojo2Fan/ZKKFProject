@@ -130,3 +130,10 @@ func (this *TypeController) All() {
 	obj := new(models.Type)
 	this.jsonResult(200, 1, "查询所有分组信息", obj.All())
 }
+
+func (c *TypeController) Redirect() {
+	//设置token
+	c.Data["_xsrf"] = c.XSRFToken()
+	c.TplName = "type.html"
+
+}

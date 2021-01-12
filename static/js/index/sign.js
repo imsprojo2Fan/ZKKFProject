@@ -21,7 +21,7 @@ $(function () {
     $('.submit').on("click",function () {
         let canvas = document.getElementById('myCanvas');
         if(isCanvasBlank(canvas)){
-            swal("无任何签字！","","error");
+            swal("系统提示","无任何签字！","error");
             return false;
         }
         let res1 = cropSignatureCanvas(canvas);
@@ -35,7 +35,7 @@ $(function () {
             $.post("/signData",{data:res2,_xsrf:$("#token").val(),code:signCode},function (res) {
                 if(res.code===1){
                     if(!isPhone){
-                        swal("签字已发送！","","success");
+                        swal("系统提示","签字已发送！","success");
                         setTimeout(function () {
                             window.close();
                         },1000);
@@ -48,7 +48,7 @@ $(function () {
 
                     }
                 }else{
-                    swal(res.msg,"","error");
+                    swal("系统提示",res.msg,"error");
                 }
             });
         },500)

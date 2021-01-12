@@ -109,15 +109,15 @@ func(this *Setting) All()[]orm.Params {
 	return maps
 }
 
-func(this *Setting) MultiInsert(arr []*Setting)int64{
-	var count int64
-	if num, err := orm.NewOrm().InsertMulti(len(arr), arr); err != nil {
+func(this *Setting) MultiInsert(arr []*Setting)(int64,error){
+
+	num, err := orm.NewOrm().InsertMulti(len(arr), arr)
+	if err != nil {
 		fmt.Println(err)
 	} else {
-		count = num
 		fmt.Printf("Insert %d setting' data!\r\n", num)
 	}
-	return count
+	return num,err
 }
 
 func RangeValue(param []Setting,key string)string{

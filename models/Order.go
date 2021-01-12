@@ -34,58 +34,53 @@ func (this *Order) Insert(o orm.Ormer,obj *Order) error {
 }
 
 func(this *Order) MultiInsert(arr []*Order)(int64,error){
-	var count int64
-	var err error
-	if num, err := orm.NewOrm().InsertMulti(len(arr), arr); err != nil {
+
+	num, err := orm.NewOrm().InsertMulti(len(arr), arr)
+	if err != nil {
 		fmt.Println(err)
 	} else {
-		count = num
 		fmt.Printf("Insert %d order' data!\r\n", num)
 	}
-	return count,err
+	return num,err
 }
 func(this *Order) MultiInsert4Order(o orm.Ormer,arr []Order)(int64,error){
-	var count int64
-	var err error
-	if num, err := o.InsertMulti(len(arr), arr); err != nil {
+
+	num, err := o.InsertMulti(len(arr), arr)
+	if err != nil {
 		fmt.Println(err)
 	} else {
-		count = num
 		fmt.Printf("Insert %d order' data!\r\n", num)
 	}
-	return count,err
+	return num,err
 }
 
 func(this *Order) MultiInsert4Type(o orm.Ormer,arr []OrderType)(int64,error){
-	var count int64
-	var err error
-	if num, err := o.InsertMulti(len(arr), arr); err != nil {
+
+	num, err := o.InsertMulti(len(arr), arr)
+	if err != nil {
 		fmt.Println(err)
 	} else {
-		count = num
 		fmt.Printf("Insert %d order_type' data!\r\n", num)
 	}
-	return count,err
+	return num,err
 }
 func(this *Order) MultiInsert4Device(o orm.Ormer,arr []OrderDevice)(int64,error){
-	var count int64
-	var err error
-	if num, err := o.InsertMulti(len(arr), arr); err != nil {
+
+	num, err := o.InsertMulti(len(arr), arr)
+	if err != nil {
 		fmt.Println(err)
 	} else {
-		count = num
 		fmt.Printf("Insert %d order_device' data!\r\n", num)
 	}
-	return count,err
+	return num,err
 }
 func(this *Order) MultiInsert4Protocol(o orm.Ormer,arr []Protocol)(int64,error){
-	var count int64
-	var err error
-	if num, err := o.InsertMulti(len(arr), arr); err != nil {
+
+	count, err := o.InsertMulti(len(arr), arr)
+	if err != nil {
 		fmt.Println(err)
 	} else {
-		count = num
-		fmt.Printf("Insert %d protocol' data!\r\n", num)
+		fmt.Printf("Insert %d protocol' data!\r\n", count)
 	}
 	return count,err
 }
@@ -211,6 +206,18 @@ func (this *Order) All() ([]orm.Params, error) {
 	return res, err
 }
 
+func (this *Order) ListByRid4Type(rid string) (string,error) {
+
+	o := orm.NewOrm()
+	var tArr []orm.Params
+	_,err := o.Raw("select * from order_type o,type t where o.tid=t.id and o.rid=\""+rid+"\"").Values(&tArr)
+	if err!=nil{
+		return "",err
+	}
+	res := tArr[0]["name"].(string)
+	return res,err
+}
+
 func (this *Order) ListByRid(rid string) (error,[]map[string]interface{}) {
 
 	o := orm.NewOrm()
@@ -220,7 +227,7 @@ func (this *Order) ListByRid(rid string) (error,[]map[string]interface{}) {
 		return err,nil
 	}
 	var dArr []orm.Params
-	_,err = o.Raw("select d.name,d.id,o.count,t.id as tid from order_device o,device d,type t,type_child c where o.device_id=d.id and d.tid=c.id and c.tid=t.id and o.rid=\""+rid+"\"").Values(&dArr)
+	_,err = o.Raw("select d.name,d.id,o.count,t.id as tid from order_device o,device d,type t,type_child c where o.device_id=d.id and d.ttid=c.id and c.tid=t.id and o.rid=\""+rid+"\"").Values(&dArr)
 	if err!=nil{
 		return err,nil
 	}

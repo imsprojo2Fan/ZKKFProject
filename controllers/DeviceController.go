@@ -97,6 +97,7 @@ func (this *DeviceController) Add() {
 	obj.Rid = utils.RandomString(16)
 	obj.Uid = uid
 	obj.Tid, _ = this.GetInt("tid")
+	obj.Ttid, _ = this.GetInt("ttid")
 	obj.Name = name
 	obj.IsOrder,_ = this.GetInt("isOrder")
 	obj.Title = this.GetString("title")
@@ -108,6 +109,8 @@ func (this *DeviceController) Add() {
 	obj.Range = this.GetString("range")
 	obj.Achievement = this.GetString("achievement")
 	obj.Disabled, _ = this.GetInt("disabled")
+	obj.Standard = this.GetString("standard")
+	obj.Drawing = this.GetString("drawing")
 	obj.Remark = this.GetString("remark")
 	err := obj.Insert(&obj)
 	if err == nil {
@@ -126,6 +129,7 @@ func (this *DeviceController) Update() {
 	var obj models.Device
 	obj.Id, _ = this.GetInt("id")
 	obj.Tid, _ = this.GetInt("tid")
+	obj.Ttid, _ = this.GetInt("ttid")
 	obj.Name = name
 	obj.IsOrder,_ = this.GetInt("isOrder")
 	obj.Title = this.GetString("title")
@@ -137,6 +141,8 @@ func (this *DeviceController) Update() {
 	obj.Range = this.GetString("range")
 	obj.Achievement = this.GetString("achievement")
 	obj.Disabled, _ = this.GetInt("disabled")
+	obj.Standard = this.GetString("standard")
+	obj.Drawing = this.GetString("drawing")
 	obj.Remark = this.GetString("remark")
 	obj.Updated = time.Now()
 	err := obj.Update(&obj)
@@ -219,7 +225,8 @@ func (this *DeviceController)Detail() {
 
 func (this *DeviceController) ListByType() {
 	typeId := this.GetString("typeId")
+	ttid := this.GetString("ttid")
 	obj := new(models.Device)
-	res, _ := obj.ListByType(typeId)
+	res, _ := obj.ListByType(typeId,ttid)
 	this.jsonResult(200, 1, "查询信息成功", res)
 }

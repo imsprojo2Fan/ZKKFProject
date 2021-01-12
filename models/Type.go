@@ -40,7 +40,25 @@ func (this *Type) Update(obj *Type) error {
 func (this *Type) Delete(obj *Type) error {
 
 	o := orm.NewOrm()
-	_, err := o.Delete(obj)
+	_ = o.Begin()
+	var typeChild TypeChild
+	err := typeChild.DeleteByTid(o,strconv.Itoa(obj.Id))
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	var device Device
+	err = device.DeleteByTid(o,strconv.Itoa(obj.Id))
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_, err = o.Delete(obj)
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_ = o.Commit()
 	return err
 }
 

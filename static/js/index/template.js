@@ -15,7 +15,8 @@ $(function () {
         $('.blog-details__image').find("img").attr("src","/img/"+imgSrc);
     }
     $('#type').html(localStorage.getItem("t-type"));
-    $('.name').html(localStorage.getItem("t-name"));
+    let name = localStorage.getItem("t-name");
+    $('.itemHead').html("<h4>"+name+"</h4>");
     $('.sketch').html(localStorage.getItem("t-sketch"));
     $('.parameter').html(localStorage.getItem("t-parameter"));
     $('.feature').html(localStorage.getItem("t-feature"));

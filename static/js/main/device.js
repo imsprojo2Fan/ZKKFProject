@@ -364,14 +364,20 @@ function add(){
         imgSrc = imgSrc.substring(1,imgSrc.length);
         imgSrc = imgSrc.replaceAll("/img/","");
     }
-    let tid = $('#typeSel3').val();
+    let tid = $('#typeSel1').val();
     if(!tid){
+        swalParent("系统提示",'未选择父类分组!',"warning");
+        return;
+    }
+    let ttid = $('#typeSel3').val();
+    if(!ttid){
         swalParent("系统提示",'未选择子类分组!',"warning");
         return;
     }
     let formData = formUtil('form1');
     formData["isOrder"] = $('#isOrder').val();
     formData["tid"] = tid;
+    formData["ttid"] = ttid;
     formData["img"] = imgSrc;
     formData["disabled"] = $('#disabledSel1').val();
     formData["_xsrf"] = $("#token", parent.document).val();
@@ -414,14 +420,20 @@ function edit(){
         imgSrc = imgSrc.substring(1,imgSrc.length);
         imgSrc = imgSrc.replaceAll("/img/","");
     }
-    let tid = $('#typeSel4').val();
+    let tid = $('#typeSel2').val();
     if(!tid){
+        swalParent("系统提示",'未选择父类分组!',"warning");
+        return;
+    }
+    let ttid = $('#typeSel4').val();
+    if(!ttid){
         swalParent("系统提示",'未选择子类分组!',"warning");
         return;
     }
     let formData = formUtil('form2');
     formData["isOrder"] = $('#isOrder2').val();
     formData["tid"] = tid;
+    formData["ttid"] = ttid;
     formData["img"] = imgSrc;
     formData["disabled"] = $('#disabledSel2').val();
     formData["_xsrf"] = $("#token", parent.document).val();
