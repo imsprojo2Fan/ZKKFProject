@@ -235,7 +235,7 @@ func (this *LoginController) Sign() {
 	} else {
 		user.Email = tempAccount
 	}
-	user.Type = 0
+	user.Type = 99
 	//密码加密处理
 	result, err := utils.AesEncrypt([]byte(password+salt), []byte(key))
 	if err != nil {

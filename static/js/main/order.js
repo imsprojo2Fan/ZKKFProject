@@ -1,5 +1,7 @@
 let myTable;
 let prefix = "/main/order";
+let userInfo = parent.user();
+let uType = userInfo.type;
 window.onresize = function() {
     let bodyHeight = window.innerHeight;
     console.log("bodyHeight:"+bodyHeight);
@@ -10,34 +12,21 @@ window.onresize = function() {
 };
 
 $(document).ready(function() {
-
     //调用父页面弹窗通知
     //window.parent.swalInfo('TEST',666,'error')
 
-    //tab导航栏切换
-    $('#tabHref01').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
+    $('.breadcrumb span').on("click",function () {
+        if(!$(this).hasClass("active")){
             return false;
-        }else{
-            $('#tabHref02').addClass("active");
-            $(this).removeClass("active");
-            $('#tab2').fadeOut(200);
-            $("#tab1").fadeIn(200);
-            refresh();
         }
-    });
-    $('#tabHref02').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
+        $('.breadcrumb span').addClass("active");
+        $(this).removeClass("active");
+        let data = $(this).attr("data");
+        if(!data){
             return false;
-        }else{
-            renderTime("add");
-            $('#tabHref01').addClass("active");
-            $(this).removeClass("active");
-            $('#tab1').fadeOut(200);
-            $("#tab2").fadeIn(200);
         }
+        $('.tabWrap').hide(200);
+        $("#"+data).show(200);
     });
 
     //datatable setting
@@ -49,8 +38,8 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [0,8 ] }],//指定哪些列不排序
-        "order": [[ 7, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [0,5,7 ] }],//指定哪些列不排序
+        "order": [[ 6, "desc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 50,
         ajax: {
@@ -64,16 +53,16 @@ $(document).ready(function() {
             {"data": "id","width":"5%","render": function (data, type, row) {
                     return "<span class='tid'>"+row.id+"</span>";
                 }},
-            { data: 'name',"render":function (data) {
-                    return stringUtil.maxLength(data,3);
+            { data: 'name',"width":"8%","render":function (data) {
+                    return stringUtil.maxLength(data,5);
                 }},
             { data: 'company',"render":function (data) {
                     return stringUtil.maxLength(data,6);
                 } },
-            { data: 'phone',"render":function (data) {
+            { data: 'phone',"width":"10%","render":function (data) {
                     return stringUtil.maxLength(data,11);
                 } },
-            { data: 'status',"render":function (data) {
+            { data: 'status',"width":"6%","render":function (data) {
                     let str;
                     if(data=="0"){
                         str = "<span style='color:orangered'>待确认</span>";
@@ -86,26 +75,28 @@ $(document).ready(function() {
                     }
                     return str;
                 } },
-            { data: 'remark',"render":function (data) {
+            { data: 'remark',"width":"15%","render":function (data) {
                     return stringUtil.maxLength(data,20);
                 } },
-            { data: 'updated',"width":"12%","render":function (data,type,row,meta) {
+            /*{ data: 'updated',"width":"12%","render":function (data,type,row,meta) {
                     if (!data){
                         return "-";
                     }
                     let unixTimestamp = new Date(data);
                     let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
                     return commonTime;
-                }},
+                }},*/
             { data: 'created',"width":"12%","render":function (data,type,row,meta) {
                     let unixTimestamp = new Date(data);
                     let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
                     return commonTime;
                 }},
-            { data: null,"width":"15%","render":function () {
+            { data: null,"render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
-                    html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
+                    html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>&nbsp;"
+                    html += "<a href='javascript:void(0);'  class='protocol btn btn-primary btn-xs'>协议下载</a>&nbsp;"
+                    html += "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>指派订单</a>&nbsp;"
                     return html;
                 } }
         ],
@@ -129,6 +120,12 @@ $(document).ready(function() {
                 num = "0"+num;
             }
             $('td', row).eq(0).find(".tid").html(num);
+
+            if(uType>1){
+                $(row).find(".btn-danger").remove();
+                $(row).find(".assign").remove();
+            }
+
         },
         "fnPreDrawCallback": function (oSettings) {
             loadingParent(true,2);
@@ -168,7 +165,6 @@ $(document).ready(function() {
         let unixTimestamp = new Date(created);
         let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
         $('#detail_created').html(commonTime);
-
         let updated = rowData.updated;
         if(updated){
             let unixTimestamp = new Date(updated);
@@ -218,6 +214,81 @@ $(document).ready(function() {
         });
 
     });
+    $('#myTable').on("click",".protocol",function(e){
+        rowData = myTable.row($(this).closest('tr')).data();
+        //console.log(rowData);
+        /*$('#protocolModal .rid').html(rowData.rid);
+        $('#protocolModal').modal("show");*/
+        protocolDetail(rowData.rid);
+    });
+    $('#protocolModal .btn-primary').on("click",function () {
+        protocolDetail();
+    });
+    $('#pdfBtn').on("click",function () {
+        //imgUtil.addWatermark("protocolInfo","中科科辅");
+        imgUtil.domShot("protocolInfo",imgUtil.pagePdf,"中科科辅服务协议/"+dateUtil.nowTime());
+    });
+    $('#more').on("click",function () {
+        if($(this).attr("title")==="隐藏协议"){
+            $(this).attr("title","显示协议");
+            $(this).attr("src","../../static/img/square_left.png");
+        }else{
+            $(this).attr("src","../../static/img/square_down.png");
+            $(this).attr("title","隐藏协议");
+        }
+        $('.wat').remove();
+        $('.protocolTable').toggle(200);
+        setTimeout(function () {
+            imgUtil.addWatermark("protocolInfo","中科科辅");
+        },500)
+
+    });
+    $('#myTable').on("click",".assign",function(e){
+        rowData = myTable.row($(this).closest('tr')).data();
+        $('#assignModal .rid').html(rowData.rid);
+        $.post(prefix+"/assign",{rid:rowData.rid,_xsrf:$("#token", parent.document).val()},function (res) {
+            if(res.data.name){
+                $('#curUser').data("uid",res.data.id);
+                $('#curUser').html(res.data.name);
+            }else{
+                $('#curUser').data("uid",0);
+                $('#curUser').html("<span style='color: red;display: inline-block;margin-top: 6px'>暂未指派用户！</span>");
+            }
+
+        });
+        $('#assignModal').modal("show");
+    });
+    $.post("/main/user/assign",{_xsrf:$("#token", parent.document).val()},function (res) {
+        let tList = res.data;
+        if(tList){
+            $('#userSel').html('');
+            for(let i=0;i<tList.length;i++){
+                let item = tList[i];
+                $('#userSel').append('<option value="'+item.Id+'">'+item.Name+'</option>');
+            }
+        }else{
+            $('#userSelWrap').html('');
+            $('#userSelWrap').append('<span style="color: red;display: block;margin-top: 5px">暂无用户，请先添加!</span>');
+        }
+        $('#userSel').selectpicker('refresh');
+    })
+    $('#assignModal .btn-primary').on("click",function () {
+        let rid = $('#assignModal .rid').html();
+        let oldUid = $('#curUser').data("uid");
+        let newUid = $('#userSel').val();
+        if(oldUid==newUid){
+            swalParent("系统提示","该用户已被指派过!","error");
+            return false;
+        }
+        $.post(prefix+"/assign",{rid:rid,uid:newUid,_xsrf:$("#token", parent.document).val()},function (res) {
+            if(res.code===1){
+                $('#assignModal').modal("hide");
+                swalParent("系统提示","指派成功！","success");
+            }else{
+                swalParent("系统提示","指派失败,"+res.data,"error");
+            }
+        });
+    });
 
 } );
 
@@ -225,7 +296,6 @@ function detail(rid) {
     loadingParent(true,2);
     $.post(prefix+"/detail",{rid:rid,_xsrf:$("#token", parent.document).val()},function (res) {
         loadingParent(false,2);
-        console.log(res);
         let localOutArr = res.data;
         $('.libItemWrap').html("");
         for(let i=0;i<localOutArr.length;i++){
@@ -236,7 +306,7 @@ function detail(rid) {
             $('.libItemWrap').append('' +
                 '<div class="typeItem">\n' +
                 '   <div class="typeName">'+typeName+'</div>\n' +
-                '   <hr>\n' +
+                '   \n' +
                 '<div class="dWrap'+tid+'"></div>'+
                 '</div>');
             for(let j=0;j<innerArr.length;j++){
@@ -248,7 +318,6 @@ function detail(rid) {
                 $('.dWrap'+tid).append('<div class="dItem">\n<input type="hidden" value="'+dId+'" class="id">\n<i class="fa fa-files-o" aria-hidden="true"></i>\n<span class="dName" title="'+title+'">'+dName+'</span>\n<div class="countWrap" my-data="'+typeName+'" my-id="'+dId+'">&nbsp;&nbsp;<span class="count">x'+count+'</span>&nbsp;&nbsp;</div>\n</div>');
             }
         }
-
 
         $('#detailModal').modal("show");
     });
@@ -331,7 +400,6 @@ function edit(){
 }
 
 function del(rid){
-
     $.ajax({
         url : prefix+"/delete",
         type : "POST",
@@ -354,6 +422,150 @@ function del(rid){
         },
         complete:function () {
             $('#loading').fadeOut(200);
+        }
+    })
+}
+
+function protocolDetail(rid) {
+    $.ajax({
+        url : prefix+"/protocol",
+        type : "POST",
+        dataType : "json",
+        cache : false,
+        data : {
+            _xsrf:$("#token", parent.document).val(),
+            rid:rid
+        },
+        beforeSend:function(){
+            loadingParent(true,2);
+        },
+        success : function(r) {
+            let user = r.data.user;
+            let protocol = r.data.protocol;
+            $('#tab3 .company').html(user.Company);
+            $('#tab3 .invoice').html(user.Invoice);
+            $('#tab3 .invoice_code').html(user.InvoiceCode);
+            $('#tab3 .name').html(user.Name);
+            $('#tab3 .phone').html(user.Phone);
+            $('#tab3 .email').html(user.Email);
+            $('#tab3 .address').html(user.Address);
+            $('#tab3 .teacher').html(user.Teacher);
+            $('#tab3 .teacher_phone').html(user.TeacherPhone);
+            $('#tab3 .teacher_mail').html(user.TeacherMail);
+            $('#tab3 .myCompany').html(r.data.company);
+            $('#tab3 .myCompanyPhone').html(r.data.phone);
+            $('#tab3 .home').html(r.data.home);
+            $('#tab3 .myEmail').html(r.data.email);
+            $('#tab3 .myWechat').html(r.data.wechat);
+            $('#tab3 .myAddress').html(r.data.address);
+            $('#tab3 .myEmail').html(r.data.email);
+            $("input[value='"+protocol.Pay+"']").attr('checked', true);
+            $("input[value='"+protocol.TestResult+"']").attr('checked', true);
+            $('#tab3 .date').html(protocol.Date);
+            $('#tab3 .sign').html("<img src='"+protocol.Sign+"'>");
+            $('#tab3 .city').html(r.data.city);
+            $('#tab3 .mySign').html(r.data.sign);
+            $('#tableWrap').html("");
+            let devices = "";
+            let innerArr = r.data.deviceArr;
+            for(let j=0;j<innerArr.length;j++){
+                let item = innerArr[j];
+                let count = item.Count;
+                let name = item.Name;
+                devices += "<i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>&nbsp;"+name+"*"+count+"<br/>";
+            }
+
+            $('#tableWrap').append('' +
+                '<table>\n' +
+                '<tr style="height: 35px!important;line-height: 35px;">\n' +
+                '   <td class="btbg font-center titfont" colspan="6">\n技术服务要求\n</td>\n' +
+                '</tr>'+
+                '<tr style="color: #6195ff;font-size: 20px;">\n' +
+                '   <td class="tabtxt2" style="width: 7%;">所属分类</td>\n' +
+                '   <td colspan="4" class="type">'+r.data.type.Name+'</td>\n' +
+                '   <td class="typeMore"></td>\n' +
+                '</tr>\n' +
+                '<tr >\n' +
+                '   <td class="tabtxt2">已选项目</td>\n' +
+                '  <td colspan="5" height="75" class="allDevice">'+devices+'</td>\n' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td class="tabtxt2">检测周期</td>\n                                    ' +
+                '   <td colspan="5" class="detection_cycle">'+protocol.DetectionCycle+'</td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td class="tabtxt2">检测报告</td>\n                                    ' +
+                '   <td colspan="5">\n                                        ' +
+                '       <input type="radio" value="无需检测报告（默认）" name="detection_report"/>&nbsp;无需检测报告（默认）\n                                        ' +
+                '       <input type="radio" value="中文检测报告（加收200元）" name="detection_report"/>&nbsp;中文检测报告（加收200元）\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td class="tabtxt2">样品编号</td>\n                                    ' +
+                '   <div colspan="5">\n                                        ' +
+                '       <div>'+protocol.SampleCode+'"</div>\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td class="tabtxt2">样品名称</td>\n                                    ' +
+                '   <td colspan="2">\n                                        ' +
+                '       <div>'+protocol.SampleName+'</div>\n   ' +
+                '   </td>\n                                    ' +
+                '   <td class="tabtxt2" style="text-align: right;padding-right: 15px;">样品数量</td>\n                                    ' +
+                '   <td colspan="2">\n                                        ' +
+                '       <div>'+protocol.SampleCount+'</div>\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td class="tabtxt2">样品处理</td>\n                                    ' +
+                '   <td colspan="5">\n                                        ' +
+                '       <input type="radio" value="一般样品回收（50元）" name="sample_processing"/>&nbsp;一般样品回收（50元）\n                                        ' +
+                '       <input type="radio" value="样品不回收" name="sample_processing"/>&nbsp;样品不回收\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td class="tabtxt2">关于样品</td>\n                                    ' +
+                '   <td colspan="5">\n                                        ' +
+                '       <div>'+protocol.About+'</div>\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td height="175" class="tabtxt2">实验参数要求</td>\n                                    ' +
+                '   <td colspan="5">\n                                        ' +
+                '       <textarea class="form-control" id="parameterContent" name="parameter" ></textarea>\n                                        ' +
+                '       <div class="editor parameter" id="parameter"></div>\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td height="175" class="tabtxt2">其他特殊要求</td>\n                                    ' +
+                '   <td colspan="5">\n                                        ' +
+                '       <textarea class="form-control" id="aboutContent" name="about" placeholder="可插入文字图片"></textarea>\n                                        ' +
+                '       <div class="editor other" id="other"></div>\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td height="175" class="tabtxt2">参考结果图片</td>\n                                    ' +
+                '   <td colspan="5">\n                                        ' +
+                '       <textarea class="form-control" id="resultContent" name="result" placeholder="可插入文字图片"></textarea>\n                                        ' +
+                '       <div class="editor result" id="result"></div>\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                            ' +
+                '</table>');
+            $("input[value='"+protocol.DetectionReport+"']").attr('checked', true);
+            $("input[value='"+protocol.SampleProcessing+"']").attr('checked', true);
+            $('#tab3 .parameter').html(protocol.Parameter);
+            $('#tab3 .other').html(protocol.Other);
+            $('#tab3 .result').html(protocol.Result);
+            $('input').attr("disabled","true");
+            setTimeout(function () {
+                imgUtil.addWatermark("protocolInfo","中科科辅");
+            },500)
+            $('#tab1').hide();
+            $('#tab3').show();
+            $('#tabHref01').addClass("active");
+        },
+        complete:function () {
+            loadingParent(false,2);
         }
     })
 }

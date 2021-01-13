@@ -60,7 +60,7 @@ func (this *DeviceController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-	if uType < 1 { //账号类型小于3的用户可查看所有信息
+	if uType > 1 { //账号类型小于3的用户可查看所有信息
 		this.jsonResult(200, -1, "查询成功！", "无权限")
 	}
 

@@ -69,7 +69,7 @@ func (this *UserController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-	if uType < 2 { //账号类型小于3的用户可查看所有信息
+	if uType > 1 { //账号类型大于1的用户可查看所有信息
 		this.jsonResult(200, -1, "查询成功！", "无操作权限!")
 	}
 
@@ -439,4 +439,9 @@ func SendMail4Validate(mail, code string) {
 	if err != nil {
 		fmt.Printf("send mail error: %v", err)
 	}
+}
+
+func (this *UserController) Assign() {
+	user := new(models.User)
+	this.jsonResult(200, 1, "查询列表",user.Assign())
 }

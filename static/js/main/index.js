@@ -169,7 +169,7 @@ $(function () {
     },5000);
 
     //console.log(userInfo);
-    if(userInfo.type<1){
+    if(userInfo.type>1){
         $('.fa-gg-circle').parent().parent().remove();
         $('.fa-tags').parent().parent().remove();
         $('.fa-cubes').parent().parent().remove();
@@ -178,13 +178,13 @@ $(function () {
         $('.fa-newspaper-o').parent().parent().remove();
     }
 
-    if(userInfo.type<2){
+    if(userInfo.type>2){
         $('.fa-user-plus').parent().parent().remove();
     }
-    if(userInfo.type<3){
+    if(userInfo.type>3){
         $('.fa-cogs').parent().parent().remove();
     }
-    if(userInfo.type<1){
+    if(userInfo.type>2){
         if(!userInfo.account||!userInfo.name||!userInfo.phone||!userInfo.email||!userInfo.address||!userInfo.company||!userInfo.invoice||!userInfo.invoice_code){
             $('#infoModal').modal("show");
         }
@@ -226,6 +226,10 @@ window.onresize = function() {
     //console.log("tHeight:"+tHeight);
     //$('#J_iframe').find('.dataTables_scrollBody').css("height",tHeight+"px");
 };
+
+function user() {
+    return userInfo;
+}
 
 function swalInfo(title,msg,type){
     setTimeout(function () {

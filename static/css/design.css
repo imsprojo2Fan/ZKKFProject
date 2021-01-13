@@ -164,5 +164,18 @@ textarea {
     overflow-y: auto;
     height: 100vh;
 }
+.btn-primary {
+    background-color: #6195ff;
+    border-color: #6195ff;
+}
+.btn-primary:hover{
+    background-color: #6195ff;
+    border-color: #6195ff;
+    opacity: 0.75;
+}
+.btn-primary:focus,
+.btn-primary:active{
+    outline: none!important;
+}
 
 

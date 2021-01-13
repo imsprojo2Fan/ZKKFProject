@@ -80,14 +80,12 @@ $(document).ready(function() {
                 } },
             { data: 'type',"render":function (data) {
                     let str = "";
-                    if(data==0){
+                    if(data==99){
                         str = "普通用户";
-                    }else if(data==1){
-                        str = "管理员";
                     }else if(data==2){
+                        str = "管理员";
+                    }else if(data==1){
                         str = "高级管理员";
-                    }else if(data==3){
-                        str = "超级管理员";
                     }else{
                         str = "访客";
                     }
@@ -159,16 +157,12 @@ $(document).ready(function() {
         $('#detailModal').find('.name').html(stringUtil.maxLength(rowData.name));
 
         let str;
-        if(rowData.type==0){
+        if(rowData.type==99){
             str = "普通用户";
-        }else if(rowData.type==1){
-            str = "管理员";
         }else if(rowData.type==2){
+            str = "管理员";
+        }else if(rowData.type==1){
             str = "高级管理员";
-        }else if(rowData.type==3){
-            str = "超级管理员";
-        }else{
-            str = "访客";
         }
         $('#detailModal').find('.type').html(str);
         $('#detailModal').find('.phone').html(stringUtil.maxLength(rowData.phone));

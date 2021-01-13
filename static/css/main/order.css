@@ -67,6 +67,7 @@
     font-weight: bold;
     padding-left: 3px;
     border-left: 3px solid #6195ff;
+    border-bottom: 1px dashed #eee;
 }
 .libItemWrap hr{
     margin: 1px 0;
@@ -109,4 +110,148 @@
     padding-top: 0px;
     padding-bottom: 0px;
     margin-bottom: 0;
+}
+.modal-footer{
+    text-align: center;
+}
+
+/*表格样式*/
+/* CSS Document */
+table{
+    width: 100%;
+}
+#tab3 tr{
+    height: 55px;
+    font-size: 16px;
+}
+input[type='radio'] {
+    cursor: pointer;
+}
+
+.tabtop13 {
+    margin-top: 13px;
+}
+.tabtop13 td{
+    height:25px;
+    line-height:150%;
+}
+.font-left{ text-align:left}
+.font-center{ text-align:center}
+.btbg{background:#b5b9bf  !important;}
+.btbg1{background:#f2fbfe !important;}
+.btbg2{background:#f3f3f3 !important;}
+.biaoti{
+    font-family: "微软雅黑";
+    font-size: 30px;
+    font-weight: bold;
+    border-bottom:1px dashed #CCCCCC;
+    color: #6195ff;
+    padding: 6px 0;
+}
+.titfont {
+    font-family: 微软雅黑;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #e9faff;
+}
+.tabtxt2 {
+    font-family: 微软雅黑;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    color: #646567;
+}
+.tabtxt3 {
+    font-family: 微软雅黑;
+    font-size: 14px;
+    padding-left: 15px;
+    color: #000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    line-height: 20px;
+}
+#tab3{
+    width: 75%;
+    margin: 0 auto;
+    height: 100vh;
+    overflow-y: auto;
+    padding-bottom: 15vh;
+}
+#protocolModal .rid{
+    margin-top: 6px;
+}
+.tipRed{
+    color: red;
+}
+.home{
+    color: #6195ff;
+}
+.allDevice{
+    color: #848484;
+    font-size: 20px;
+}
+.allDevice i{
+    color: #6195ff;
+}
+.wat{
+    width: 100%;
+    z-index: 0;
+    position: absolute;
+    font-family: "Panxiang";
+    color: rgba(0,0,0,0.3);
+    /*color: red;*/
+    font-size: 17px;
+    top: 0;
+}
+.watword{
+    position: relative;
+    text-align: center;
+    transform: rotate(-16deg);
+    width: 20%;
+    float: left;
+    height: 150px;
+}
+
+
+
+.sign img{
+    width: 25%;
+}
+
+#tab3 textarea{
+    display: none;!important;
+}
+#tab3 .editor {
+    min-height: 255px;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 6px;
+    margin-bottom: 8px;
+}
+#tab3 h1,h2,h3,h4,h5{
+    margin-top: 0!important;
+}
+#pdfBtn{
+    position: fixed;
+    right: 7%;
+    width: 4%;
+    top: 45vh;
+    cursor: pointer;
+}
+#pdfBtn:hover{
+    opacity: 0.75;
+}
+#more{
+    position: fixed;
+    right: 7.5%;
+    width: 3%;
+    top: 35vh;
+    cursor: pointer;
+}
+#more:hover{
+    opacity: 0.75;
+}
+#assignModal .rid{
+    margin-top: 6px;
 }

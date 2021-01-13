@@ -144,4 +144,12 @@ func (this *Protocol) ListByUidAndTid(uid,tid string) ([]orm.Params, error) {
 	return res, err
 }
 
+func (this *Protocol) ListByRid(rid string) (Protocol,error) {
+
+	o := orm.NewOrm()
+	var res Protocol
+	err := o.Raw("select * from protocol where order_rid=\""+rid+"\"").QueryRow(&res)
+	return res,err
+}
+
 

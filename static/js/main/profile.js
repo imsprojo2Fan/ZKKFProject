@@ -61,7 +61,7 @@ $(function () {
             tipTip("姓名不能为空!");
             return
         }
-        if(userInfo.Type===0){
+        if(userInfo.Type===99){
             if(!company){
                 tipTip("单位/公司不能为空!");
                 return
@@ -86,7 +86,7 @@ $(function () {
             type:"POST",
             data:formData,
             beforeSend:function () {
-                $('#loading').fadeIn(200);
+                loadingParent(true,2);
             },
             success:function (r) {
                 if(r.code===1){
@@ -97,7 +97,7 @@ $(function () {
                 }
             },
             complete:function () {
-                $('#loading').fadeOut(200);
+                loadingParent(false,2);
             }
         });
 

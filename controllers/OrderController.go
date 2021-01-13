@@ -47,10 +47,10 @@ func (this *OrderController) List() {
 	if sortNum == "5" {
 		sortCol = "remark"
 	}
-	if sortNum == "6" {
+	/*if sortNum == "6" {
 		sortCol = "updated"
-	}
-	if sortNum == "7" {
+	}*/
+	if sortNum == "6" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -60,7 +60,7 @@ func (this *OrderController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-	if uType < 1 { //账号类型小于3的用户不可查看所有信息
+	if uType > 1 { //账号类型大于1的用户不可查看所有信息
 		this.jsonResult(200, -1, "查询成功！", "无权限")
 	}
 
@@ -260,6 +260,45 @@ func (this *OrderController) Detail() {
 	_, res := obj.ListByRid(rid)
 	this.jsonResult(200, 1, "查询信息成功", res)
 }
+func (this *OrderController) Protocol() {
+	rid := this.GetString("rid")
+	protocol := new(models.Protocol)
+	protocolRes, err := protocol.ListByRid(rid)
+	if err!=nil{
+		this.jsonResult(200, -1, "查询失败,"+err.Error(), nil)
+	}
+	orderType := new(models.OrderType)
+	var typeRes models.OrderType
+	typeRes,err = orderType.ListByRid(rid)
+	if err!=nil{
+		this.jsonResult(200, -1, "查询失败,"+err.Error(), nil)
+	}
+	orderDevice := new(models.OrderDevice)
+	var deviceRes []models.OrderDevice
+	deviceRes,err = orderDevice.ListByRid(rid)
+	if err!=nil{
+		this.jsonResult(200, -1, "查询失败,"+err.Error(), nil)
+	}
+	user := new(models.User)
+	u := user.SelectById(protocolRes.Uid)
+	bMap := make(map[string]interface{})
+	bMap["type"] = typeRes
+	bMap["deviceArr"] = deviceRes
+	bMap["user"] = u
+	bMap["protocol"] = protocolRes
+	res := settingObj.SelectByGroup("LocalInfo")
+	bMap["company"] = models.RangeValue(res,"company")
+	bMap["phone"] = models.RangeValue(res,"phone")
+	bMap["home"] = models.RangeValue(res,"home")
+	bMap["email"] = models.RangeValue(res,"email")
+	bMap["wechat"] = models.RangeValue(res,"wechat")
+	bMap["address"] = models.RangeValue(res,"address")
+	bMap["city"] = models.RangeValue(res,"city")
+	bMap["sign"] = models.RangeValue(res,"sign")
+
+
+	this.jsonResult(200, 1, "查询成功", bMap)
+}
 
 func (this *OrderController) IndexAdd() {
 
@@ -366,4 +405,23 @@ func (this *OrderController) IndexAdd() {
 	device.UpdateOrderNum(ids)
 	_ = o.Commit()
 	this.jsonResult(200, 1, "操作成功", nil)
+}
+
+func (this *OrderController) Assign(){
+	rid := this.GetString("rid")
+	uid,err := this.GetInt("uid")
+	assign := new(models.AssignHistory)
+	if err!=nil{
+		res,_ := assign.LimitOne(rid)
+		this.jsonResult(200, 1, "查询信息成功", res)
+	}else{
+		assign.Uid = uid
+		assign.Rid = rid
+		err := assign.Insert(assign)
+		if err!=nil{
+			this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+		}else{
+			this.jsonResult(200, 1, "操作成功", nil)
+		}
+	}
 }

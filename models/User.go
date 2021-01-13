@@ -239,3 +239,9 @@ func (this *User) SelectById(id int)User {
 	_ = o.Raw("select * from " + UserTBName()+" where id="+strconv.Itoa(id)).QueryRow(&u)
 	return  u
 }
+func (this *User) Assign()[]User {
+	o := orm.NewOrm()
+	var u []User
+	_,_ = o.Raw("select * from " + UserTBName()+" where type!=0 and type!=99").QueryRows(&u)
+	return  u
+}

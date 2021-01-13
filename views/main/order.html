@@ -28,7 +28,7 @@
     <!-- Start Page Header -->
     <div>
         <ol class="breadcrumb">
-            <li><span id="tabHref01">数据列表</span></li>
+            <li><span data="tab1" id="tabHref01">数据列表</span></li>
             <li><span class="active" onclick="refresh()">刷新数据</span></li>
         </ol>
     </div>
@@ -47,7 +47,7 @@
             <!-- Start Panel -->
             <div id="panel" class="col-sm-12">
                 <div class="panel panel-default">
-                    <div id="tab1" class="panel-body table-responsive">
+                    <div id="tab1" class="tabWrap panel-body table-responsive">
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
@@ -57,7 +57,7 @@
                                 <th>手机</th>
                                 <th>订单状态</th>
                                 <th>备注信息</th>
-                                <th>更新时间</th>
+                                {{/*<th>更新时间</th>*/}}
                                 <th>创建时间</th>
                                 <th>操作</th>
                             </tr>
@@ -66,7 +66,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div id="tab2" style="display: none">
+                    <div id="tab2" class="tabWrap" style="display: none">
 
                         <div class="panel-body">
                             <form class="form-horizontal" id="addForm" autocomplete="off">
@@ -126,6 +126,139 @@
                             </form>
                         </div>
                     </div>
+                    <div id="tab3" class="tabWrap" style="display: none">
+                        <img title="隐藏协议" id="more" src="../../static/img/square_down.png">
+                        <img id="pdfBtn" title="下载服务协议" src="../../static/img/download.png">
+                        <div class="panel-body">
+                            <div id="protocolInfo" class="col-lg-12">
+                                <form class="form-horizontal" autocomplete="off">
+                                    <table class="protocolTable" style="margin-top: 60px" id="table1" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+                                        <tr>
+                                            <td align="center" class="biaoti" height="60">中科科辅技术服务协议</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left" >
+                                                根据《中华人民共和国合同法》及相关法律规定，甲、乙双方基于平等互利、友好协商的基本原则，就科研工作中的材料检测与分析等相关事宜，达成一致意见，签订本协议。
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left" >
+                                                <div>
+                                                    <span class="tabtxt2">甲方：</span>
+                                                    <span style="color:red;" class="company"></span>
+                                                </div>
+                                                <div>
+                                                    <span class="tabtxt2">乙方：</span>
+                                                    <span style="color:#6195ff;" class="myCompany">中科科辅（北京）科技有限公司</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <table class="protocolTable tabtop13" width="100%" border="0" cellspacing="1" cellpadding="4" align="center">
+                                        <tr style="height: 35px!important;line-height: 35px;">
+                                            <td class="btbg font-center titfont" colspan="6">甲方信息</td>
+                                        </tr>
+                                        <tr colspan="6">
+                                            <td class="tabtxt2">发票抬头</td>
+                                            <td class="invoice"></td>
+                                            <td class="tabtxt2">纳税人识别号</td>
+                                            <td colspan="3" class="invoice_code"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tabtxt2">委托人姓名</td>
+                                            <td class="name"></td>
+                                            <td class="tabtxt2">电话</td>
+                                            <td class="phone"></td>
+                                            <td class="tabtxt2">邮箱</td>
+                                            <td class="email"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tabtxt2">收货地址</td>
+                                            <td colspan="5" class="address"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tabtxt2">导师/负责人姓名</td>
+                                            <td colspan="2" class="teacher"></td>
+                                            <td class="tabtxt2">电话</td>
+                                            <td colspan="2" class="teacher_phone">-</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tabtxt2">导师/负责人邮箱</td>
+                                            <td colspan="5" class="teacher_mail">-</td>
+                                        </tr>
+                                        <tr style="height: 35px!important;line-height: 35px;">
+                                            <td class="btbg font-center titfont" colspan="6">乙方信息</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tabtxt2">公司名称</td>
+                                            <td colspan="2" class="myCompany">中科科辅（北京）科技有限公司</td>
+                                            <td class="tabtxt2">公司电话</td>
+                                            <td colspan="2" class="myCompanyPhone">010-57340647</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tabtxt2">公司主页</td>
+                                            <td class="home">www.zkkefu.cn</td>
+                                            <td class="tabtxt2">公司邮箱</td>
+                                            <td class="myEmail">zheng@zkkefu.cn</td>
+                                            <td class="tabtxt2">业务微信</td>
+                                            <td class="myWechat"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tabtxt2">邮寄地址</td>
+                                            <td colspan="5" class="myAddress"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tabtxt2">付费方式</td>
+                                            <td><input type="radio" value="现金结算" name="pay"/>&nbsp;现金结算</td>
+                                            <td><input type="radio" value="银行汇款" name="pay"/>&nbsp;银行汇款</td>
+                                            <td><input type="radio" value="从预存款中扣除" name="pay"/>&nbsp;从预存款中扣除</td>
+                                            <td colspan="2"><input type="radio" value="其他" name="pay"/>&nbsp;其他</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tabtxt2">服务费用</td>
+                                            <td colspan="5">请参见最后页“EBSD收费标准”</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6">
+                                                <span class="tipRed">*</span>由于实验或测试项目受到诸如样品自身内应力、实际物相与提供的不一致、样品状态不稳定等非乙方技术问题而导致的实验失败，甲方仍需全额支付承检方样品制样费用。
+                                            </td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #eee;">
+                                            <td colspan="3" style="text-align: right;padding-right: 15px;">
+                                                <input type="radio" value="接受" name="test_result"/>&nbsp;接受
+                                            </td>
+                                            <td colspan="3" style="text-align: left;padding-left: 15px;">
+                                                <input type="radio" value="不接受" name="test_result"/>&nbsp;不接受
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tabtxt2">协议签署日期</td>
+                                            <td colspan="2" class="date"></td>
+                                            <td class="tabtxt2">协议签署地点</td>
+                                            <td colspan="2" class="city">北京</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="tabtxt2" style="border-bottom: 1px solid #eee;">甲方代表签字</td>
+                                            <td colspan="3" class="tabtxt2" style="border-bottom: 1px solid #eee;">乙方代表签字</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" style="height: 215px;line-height: 215px;width: 50%;text-align: center;" class="sign">扫码或点击此处完成签名</td>
+                                            <td colspan="3" style="line-height: 215px;text-align: center;border-left: 1px solid #eee;" class="mySign"></td>
+                                        </tr>
+                                        {{/*<tr style="height: 35px!important;line-height: 35px;">
+                                            <td class="btbg font-center titfont" colspan="6">
+                                                技术服务要求
+                                            </td>
+                                        </tr>*/}}
+                                    </table>
+
+                                    <div id="tableWrap"></div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- End Panel -->
@@ -165,7 +298,10 @@
                         <p class="form-control-static" >单位：<span class="company"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >创建时间：<span id="detail_created"></span></p>
+                        <p class="form-control-static" >
+                            创建时间：<span id="detail_created"></span>&nbsp;&nbsp;&nbsp;
+                            更新时间：<span id="detail_updated"></span>
+                        </p>
                     </div>
 
                     <div class="libItemWrap"></div>
@@ -234,6 +370,83 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+    <!-- 模态框-protocol（Modal） -->
+    <div class="modal fade" id="protocolModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title">
+                        查看订单协议或实验要求
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" autocomplete="off">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">订单编号</label>
+                            <div class="col-sm-6 rid"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">查看类型</label>
+                            <div class="col-sm-6">
+                                <select class="selectpicker" data-size="10">
+                                    <option value="0">服务协议</option>
+                                    <option value="1">实验要求</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">查看</button>
+                    <button type="button" class="btn btn-default">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- 模态框-assign（Modal） -->
+    <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title">
+                        指派订单
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" autocomplete="off">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">订单编号</label>
+                            <div class="col-sm-6 rid" ></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">当前处理用户</label>
+                            <div class="col-sm-6" id="curUser"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">指派用户</label>
+                            <div class="col-sm-6" id="userSelWrap">
+                                <select id="userSel" class="selectpicker" data-size="10" data-live-search="true" data-style="btn-default">
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">提交</button>
+                    <button type="button" class="btn btn-default">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 </div>
 <!-- End Content -->
@@ -243,11 +456,15 @@
 <script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>
 <script src="../../static/plugins/bootstrap/bootstrap-select/bootstrap-select.min.js"></script>
 <script src="../../static/plugins/icheck/icheck.min.js"></script>
+<script src="../../static/plugins/pdf/html2canvas.min.js"></script>
+<script type="module" src="../../static/plugins/pdf/canvas2image.js"></script>
+<script src="../../static/plugins/pdf/jspdf.min.js"></script>
 <script type="text/javascript" src="../../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="../../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <script src="../../static/js/util/util.js"></script>
 <script src="../../static/js/util/timeUtil.js"></script>
 <script src="../../static/js/util/stringUtil.js"></script>
+<script src="../../static/js/util/imgUtil.js"></script>
 <script src="../../static/plugins/datatables/datatables.min.js"></script>
 <script src="../../static/js/main/order.js?v={{ .random}}"></script>
 

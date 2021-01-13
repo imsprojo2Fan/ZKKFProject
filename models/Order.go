@@ -252,3 +252,11 @@ func (this *Order) ListByRid(rid string) (error,[]map[string]interface{}) {
 	return err,backArr
 }
 
+func (this *Order) UpdateStatus(rid,status string,o orm.Ormer)error{
+	if o==nil{
+		o = orm.NewOrm()
+	}
+	_,err := o.Raw("update `order` set status=? where rid=?",status,rid).Exec()
+	return err
+}
+

@@ -57,6 +57,7 @@ func init() {
 	beego.Router("/main/user/listOne", &controllers.UserController{}, "POST:ListOne")
 	beego.Router("/main/user/validate4mail", &controllers.UserController{}, "POST:Validate4mail")
 	beego.Router("/main/user/mail4confirm", &controllers.UserController{}, "POST:Mail4confirm")
+	beego.Router("/main/user/assign", &controllers.UserController{}, "POST:Assign")
 
 	//设备分组管理
 	beego.Router("/main/type/list", &controllers.TypeController{}, "POST:List")
@@ -95,6 +96,8 @@ func init() {
 	beego.Router("/main/order/delete", &controllers.OrderController{}, "POST:Delete")
 	beego.Router("/main/order/all", &controllers.OrderController{}, "POST:All")
 	beego.Router("/main/order/detail", &controllers.OrderController{}, "POST:Detail")
+	beego.Router("/main/order/protocol", &controllers.OrderController{}, "POST:Protocol")
+	beego.Router("/main/order/assign", &controllers.OrderController{}, "POST:Assign")
 	//系统设置相关
 	beego.Router("/main/setting/list", &controllers.SettingController{}, "POST:List")
 	beego.Router("/main/setting/add", &controllers.SettingController{}, "POST:Add")

@@ -90,7 +90,6 @@ $(document).ready(function() {
                 }},
             { data: null,"render":function () {
                     let html = "<a href='javascript:void(0);'  class='detail btn btn-default btn-xs'>订单详情</a>&nbsp;"
-                    html += "<a href='javascript:void(0);'  class='protocol btn btn-primary btn-xs'>协议详情</a>&nbsp;"
                     return html;
                 } }
         ],
