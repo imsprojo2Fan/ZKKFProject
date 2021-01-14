@@ -12,8 +12,10 @@ type TypeChildController struct {
 }
 
 func (this *TypeChildController) List() {
-	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uType := session.Get("type").(int)
+	if this.CheckAuth(3){
+		this.EmptyData()
+		return
+	}
 	GlobalDraw++
 	qMap := make(map[string]interface{})
 	var dataList []orm.Params
@@ -43,10 +45,6 @@ func (this *TypeChildController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sorType"] = sorType
 	qMap["searchKey"] = searchKey
-	if uType > 1 { //账号类型大于1的用户可查看所有信息
-		this.jsonResult(200, -1, "查询成功！", "无权限")
-	}
-
 	obj := new(models.TypeChild)
 	//获取总记录数
 	records := obj.Count(qMap)
@@ -124,6 +122,25 @@ func (this *TypeChildController) Delete() {
 	} else {
 		this.jsonResult(200, -1, "删除数据失败,"+err.Error(), err.Error())
 	}
+}
+
+func(this *TypeChildController) Delete4Batch() {
+	if this.CheckAuth(1){
+		this.jsonResult(200, -1, "无操作权限！", "无操作权限!")
+	}
+	idArr := this.GetString("idArr")
+	if idArr==""{
+		this.jsonResult(200,-1,"数据id不能为空！",nil)
+	}
+	obj := new(models.TypeChild)
+	idArr = "("+idArr+")"
+	err := obj.DeleteBatch(idArr)
+	if err!=nil{
+		this.jsonResult(200,-1,"批量删除数据失败,"+err.Error(),err.Error())
+	}else{
+		this.jsonResult(200,1,"批量删除数据成功！",nil)
+	}
+
 }
 
 func (this *TypeChildController) All() {

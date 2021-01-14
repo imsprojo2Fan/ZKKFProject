@@ -31,6 +31,7 @@
             <li><span id="tabHref01" href="javascript:void(0)">数据列表</span></li>
             <li><span id="tabHref02" class="active" href="javascript:void(0)">新增数据</span></li>
             <li><span class="active" onclick="refresh()">刷新数据</span></li>
+            <li><span class="batchDel" onclick="batchDel()">批量删除</span></li>
         </ol>
     </div>
 
@@ -52,6 +53,7 @@
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
+                                <th><div style="text-align: left"><input id="hCheck" type='checkbox' name='check' value='-1'><span style="margin-left: 3px;">编号</span></div></th>
                                 <th>标题</th>
                                 <th>缩略图</th>
                                 {{/*<th>内容</th>*/}}
@@ -107,6 +109,7 @@
 
                                     </div>
                                 </div>
+                                <div style="padding-left: 17%"><span class="help-block"><span style="color: red">*</span>建议宽高770*450,文件小于1MB</span></div>
                                 <hr>
                                 <div class="form-group submitWrap">
                                     <div class="col-sm-offset-5">

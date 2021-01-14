@@ -89,7 +89,8 @@ $(document).ready(function() {
                     return commonTime;
                 }},
             { data: null,"render":function () {
-                    let html = "<a href='javascript:void(0);'  class='detail btn btn-default btn-xs'>订单详情</a>&nbsp;"
+                    let html = "<a href='javascript:void(0);'  class='detail btn btn-default btn-xs'>订单详情&nbsp;<i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>&nbsp;";
+                    html += "<a href='javascript:void(0);'  class='result btn btn-primary btn-xs'>实验报告&nbsp;<i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i></a>";
                     return html;
                 } }
         ],
@@ -103,9 +104,9 @@ $(document).ready(function() {
             }
         },
         "createdRow": function ( row, data, index ) {//回调函数用于格式化返回数据
-            /*if(!data.name){
-                $('td', row).eq(2).html("暂未填写");
-            }*/
+            if(!data.file){
+                $(row).find(".result").remove();
+            }
             let pageObj = myTable.page.info();
             let num = index+1;
             num = num+ pageObj.page*(pageObj.length);
@@ -118,7 +119,7 @@ $(document).ready(function() {
             loadingParent(true,2);
         },
         "drawCallback": function( settings ) {
-            let api = this.api();
+            //let api = this.api();
             // 输出当前页的数据到浏览器控制台
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
@@ -138,13 +139,13 @@ $(document).ready(function() {
         if(status==="0"){
             str = "<span style='color:orangered'>待确认</span>";
         }else if(status==="1"){
-            str = "<span style='color:green'>已确认</span>";
+            str = "<span style='color:#6195FF'>已确认</span>";
         }else if(status==="2"){
             str = "<span style='color:red'>已取消</span>";
         }else{
-            str = "<span style='color:green'>已完成</span>";
+            str = "<span style='color:var(--thm-green)'>已完成</span>";
         }
-        $('#detailModal').find('.status').html("<span style='color:green'>"+str+"</span>");
+        $('#detailModal').find('.status').html(str);
         let created = rowData.created;
         let unixTimestamp = new Date(created);
         let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
@@ -152,8 +153,11 @@ $(document).ready(function() {
         let rid = rowData.rid;
         detail(rid);
     });
-    $('#myTable').on("click",".protocol",function(e){//查看
-
+    $('#myTable').on("click",".result",function(e){//实验报告
+        rowData = myTable.row($(this).closest('tr')).data();
+        let fileName = rowData.file;
+        $('#downloadBtn').attr("href","/file/upload/"+fileName);
+        $('#downloadBtn')[0].click();
     });
 
 } );
@@ -173,7 +177,7 @@ function detail(rid) {
             $('.libItemWrap').append('' +
                 '<div class="typeItem">\n' +
                 '   <div class="typeName">'+typeName+'</div>\n' +
-                '   <hr>\n' +
+                '   \n' +
                 '<div class="dWrap'+tid+'"></div>'+
                 '</div>');
             for(let j=0;j<innerArr.length;j++){

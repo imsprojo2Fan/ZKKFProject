@@ -31,6 +31,7 @@
             <li><span id="tabHref01" href="javascript:void(0)">数据列表</span></li>
             <li><span id="tabHref02" class="active" href="javascript:void(0)">新增数据</span></li>
             <li><span class="active" onclick="refresh()">刷新数据</span></li>
+            <li><span class="batchDel" onclick="batchDel()">批量删除</span></li>
         </ol>
     </div>
 
@@ -52,7 +53,7 @@
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
-                                <th>序号</th>
+                                <th><div style="text-align: left"><input id="hCheck" type='checkbox' name='check' value='-1'><span style="margin-left: 3px;">编号</span></div></th>
                                 <th>所属分组</th>
                                 <th>项目名称</th>
                                 <th>是否上线</th>
@@ -188,8 +189,26 @@
                                             <img src="../../static/img/test.jpg">
                                         </div>*/}}
                                     </div>
+                                    <span class="help-block"></span>
                                 </div>
                                 <div style="padding-left: 17%"><span class="help-block"><span style="color: red">*</span>建议宽高770*450,文件小于1MB</span></div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label form-label"><span class="red"></span>实验标准</label>
+                                    <div class="col-sm-3 standardWrap">
+                                        <select id="standardSelAdd" class="selectpicker" data-size="5" data-max-options="5" data-live-search="true" multiple data-style="btn-default">
+                                        </select>
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label form-label"><span class="red"></span>图纸下载</label>
+                                    <div class="col-sm-3 drawingWrap">
+                                        <select id="drawingSelAdd" class="selectpicker" data-size="5" data-max-options="5" data-live-search="true" multiple data-style="btn-default">
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <div class="form-group remark">
                                     <label for="name" class="col-sm-2 control-label form-label">备注信息</label>
@@ -415,6 +434,21 @@
                         </div>
                     </div>
                     <div style="padding-left: 17%"><span class="help-block"><span style="color: red">*</span>建议宽高770*450,文件小于1MB</span></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label form-label"><span class="red"></span>实验标准</label>
+                        <div class="col-sm-9 standardWrap">
+                            <select id="standardSelEdit" class="selectpicker" data-size="5" data-max-options="5" data-live-search="true" multiple data-style="btn-default">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label form-label"><span class="red"></span>图纸下载</label>
+                        <div class="col-sm-9 drawingWrap">
+                            <select id="drawingSelEdit" class="selectpicker" data-size="5" data-max-options="5" data-live-search="true" multiple data-style="btn-default">
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label form-label">备注信息</label>
                         <div class="col-sm-9">

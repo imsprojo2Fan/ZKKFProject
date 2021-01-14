@@ -1044,8 +1044,8 @@
 
         // 批量添加纯命令式方法。
         $.each({
-            upload: 'start-upload',
-            stop: 'stop-upload',
+            upload: 'start-easy-upload',
+            stop: 'stop-easy-upload',
             getFile: 'get-file',
             getFiles: 'get-files',
             addFile: 'add-file',
@@ -3061,7 +3061,7 @@
 
                 if ( me.options.auto ) {
                     setTimeout(function() {
-                        me.request('start-upload');
+                        me.request('start-easy-upload');
                     }, 20 );
                 }
             },
@@ -3140,7 +3140,7 @@
                 if ( file ) {
                     file = file.id ? file : me.queue.getFile( file );
                     file.setStatus( Status.QUEUED );
-                    noForceStart || me.request('start-upload');
+                    noForceStart || me.request('start-easy-upload');
                     return;
                 }
 
@@ -3153,7 +3153,7 @@
                     file.setStatus( Status.QUEUED );
                 }
 
-                me.request('start-upload');
+                me.request('start-easy-upload');
             },
 
             /**
@@ -3565,7 +3565,7 @@
             },
 
             reset: function() {
-                this.request( 'stop-upload', true );
+                this.request( 'stop-easy-upload', true );
                 this.runing = false;
                 this.pool = [];
                 this.stack = [];
@@ -3585,9 +3585,9 @@
              * 开始上传。此方法可以从初始状态调用开始上传流程，也可以从暂停状态调用，继续上传流程。
              *
              * 可以指定开始某一个文件。
-             * @grammar upload() => undefined
-             * @grammar upload( file | fileId) => undefined
-             * @method upload
+             * @grammar easy-upload() => undefined
+             * @grammar easy-upload( file | fileId) => undefined
+             * @method easy-upload
              * @for  Uploader
              */
             startUpload: function(file) {
@@ -6487,7 +6487,7 @@
         'widgets/image',
         'widgets/queue',
         'widgets/runtime',
-        'widgets/upload',
+        'widgets/easy-upload',
         'widgets/log',
         'runtime/html5/blob',
         'runtime/html5/filepicker',

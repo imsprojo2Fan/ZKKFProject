@@ -48,8 +48,8 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 2,3,4,5,9] }],//指定哪些列不排序
-        "order": [[ 8, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,3,4,5,6,10] }],//指定哪些列不排序
+        "order": [[ 9, "desc" ]],//默认排序
         "lengthMenu": [ [50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 50,
         ajax: {
@@ -60,6 +60,9 @@ $(document).ready(function() {
             }
         },
         columns: [
+            {"data": "id","width":"5%","render": function (data, type, row) {
+                    return "<div style='text-align: left'><input type='checkbox' name='check' value='"+row.id+"'><span style='margin-left: 3px;' class='tid'>"+row.id+"</span></div>";
+                }},
             { data: 'name',"render":function (data) {
                     return stringUtil.maxLength(data,3);
                 }},
@@ -105,7 +108,7 @@ $(document).ready(function() {
                 }},
             { data: null,"width":"15%","render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
-                    html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
+                    html += "<a href='javascript:void(0);' class='up btn btn-primary btn-xs'></i>编辑</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
                     return html;
                 } }
@@ -115,24 +118,58 @@ $(document).ready(function() {
         },
         "fnInitComplete": function(oSettings, json) {
             if(!json){
-                swal("系统提示","登录超时！请刷新页面","error");
+                swalParent("系统提示","登录超时！请刷新页面","error");
                 return false;
             }
         },
         "createdRow": function ( row, data, index ) {//回调函数用于格式化返回数据
-            /*if(!data.name){
-                $('td', row).eq(2).html("暂未填写");
-            }*/
+            let pageObj = myTable.page.info();
+            let num = index+1;
+            num = num+ pageObj.page*(pageObj.length);
+            if(num<10){
+                num = "0"+num;
+            }
+            $('td', row).eq(0).find(".tid").html(num);
         },
         "fnPreDrawCallback": function (oSettings) {
             loadingParent(true,2);
         },
         "drawCallback": function( settings ) {
-            let api = this.api();
+
+            $('input[name=check]').iCheck({
+                checkboxClass: 'icheckbox_flat-blue', // 指定的皮肤样式
+                radioClass: 'iradio_minimal',
+                increaseArea: '20%' // optional
+            });
+            //复选框选择
+            let $checkboxContainer = $('th input[type=checkbox]');
+            $checkboxContainer.on('ifChecked ifUnchecked', function(event){
+                if (event.type === 'ifChecked') {//全选
+                    $('td input[type="checkbox"]').each(function () {
+                        $(this).iCheck('check');
+                    });
+                } else {//全不选
+                    $('td input[type="checkbox"]').each(function () {
+                        $(this).iCheck('uncheck');
+                    });
+                }
+            });
+            $('td input[type="checkbox"]').on('ifUnchecked',function () {
+                //$checkboxContainer.icheck('uncheck');
+            });
+            $('td input[type="checkbox"]').on('ifChecked',function () {
+                let bg = $(this).parent().parent().parent().parent().css("background-color");
+                if(bg==="rgba(92, 184, 92, 0.35)"){
+
+                }
+            });
+
+            //let api = this.api();
             // 输出当前页的数据到浏览器控制台
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
             $('#myTable_filter').find('input').attr("placeholder","请输入姓名/手机/邮箱");
+            parent.checkType();
             loadingParent(false,2);
         }
     });
@@ -191,7 +228,7 @@ $(document).ready(function() {
         $('#detail_updated').html(updated);
         $('#detailModal').modal("show");
     });
-    $('#myTable').on("click",".btn-info",function(e){//编辑
+    $('#myTable').on("click",".btn-primary",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#editForm').find("input[name='id']").val(rowData.id);
         $('#editForm').find("input[name='account']").val(rowData.account);
@@ -388,6 +425,50 @@ function del(id){
             $('#loading').fadeOut(200);
         }
     })
+}
+
+function batchDel() {
+    let checkboxes = $('td input[type="checkbox"]');
+    // 获取选中的checkbox
+    let allChecked = checkboxes.filter(':checked');
+    if(allChecked.length===0){
+        swalParent("系统提示","未选中任何删除项!","warning");
+        return;
+    }
+    let idArr="";
+    for(let i=0;i<allChecked.length;i++){
+        let id = $(allChecked[i]).val();
+        idArr = idArr+","+id;
+    }
+    idArr = idArr.substring(1,idArr.length);
+    swal({
+        title: "确定删除这些数据吗?",
+        text: '删除将无法恢复该信息！',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#ff1200',
+        cancelButtonColor: '#474747',
+        confirmButtonText: '确定',
+        cancelButtonText:'取消'
+    },function(){
+        loading(true);
+        $.post(prefix+"/del4batch",{_xsrf:$("#token", parent.document).val(),idArr:idArr},function (res) {
+            loading(false);
+            if(res.code===1){
+                $("#hCheck").iCheck('uncheck');
+                refresh();
+                swalParent("系统提示",res.msg,"success");
+            }else{
+                let msg = res.msg;
+                if(!msg){
+                    msg = "当前用户无权限此操作!"
+                }
+                setTimeout(function () {
+                    swalParent("系统提示",msg,"error");
+                },100);
+            }
+        });
+    });
 }
 
 function reset() {

@@ -18,6 +18,7 @@ type Order struct {
 	Price    float32 //订单金额
 	Status   int    //订单状态，0待确认，1已确认，2已取消，3已完成
 	Remark   string    `orm:"size(255)"`
+	File string
 	Updated  time.Time //`orm:"auto_now_add;type(datetime)"`
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
 }
@@ -88,7 +89,7 @@ func(this *Order) MultiInsert4Protocol(o orm.Ormer,arr []Protocol)(int64,error){
 func (this *Order) Update(obj *Order) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj,"status", "remark", "updated")
+	_, err := o.Update(obj,"status", "remark","file", "updated")
 	return err
 }
 

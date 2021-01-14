@@ -70,7 +70,7 @@ $(document).ready(function() {
         },
         columns: [
             {"data": "id","width":"5%","render": function (data, type, row) {
-                    return "<span class='tid'>"+row.id+"</span>";
+                    return "<div style='text-align: left'><input type='checkbox' name='check' value='"+row.id+"'><span style='margin-left: 3px;' class='tid'>"+row.id+"</span></div>";
                 }},
             { data: 'name'},
             { data: 'description',"render":function (data) {
@@ -103,7 +103,7 @@ $(document).ready(function() {
                 }},
             { data: null,"render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
-                    html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
+                    html += "<a href='javascript:void(0);' class='up btn btn-primary btn-xs'></i>编辑</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
                     return html;
                 } }
@@ -133,10 +133,38 @@ $(document).ready(function() {
             loadingParent(true,2);
         },
         "drawCallback": function( settings ) {
-            let api = this.api();
+            $('input[name=check]').iCheck({
+                checkboxClass: 'icheckbox_flat-blue', // 指定的皮肤样式
+                radioClass: 'iradio_minimal',
+                increaseArea: '20%' // optional
+            });
+            //复选框选择
+            let $checkboxContainer = $('th input[type=checkbox]');
+            $checkboxContainer.on('ifChecked ifUnchecked', function(event){
+                if (event.type === 'ifChecked') {//全选
+                    $('td input[type="checkbox"]').each(function () {
+                        $(this).iCheck('check');
+                    });
+                } else {//全不选
+                    $('td input[type="checkbox"]').each(function () {
+                        $(this).iCheck('uncheck');
+                    });
+                }
+            });
+            $('td input[type="checkbox"]').on('ifUnchecked',function () {
+                //$checkboxContainer.icheck('uncheck');
+            });
+            $('td input[type="checkbox"]').on('ifChecked',function () {
+                let bg = $(this).parent().parent().parent().parent().css("background-color");
+                if(bg==="rgba(92, 184, 92, 0.35)"){
+
+                }
+            });
+            //let api = this.api();
             // 输出当前页的数据到浏览器控制台
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
+            parent.checkType();
             loadingParent(false,2);
         }
     });
@@ -170,7 +198,7 @@ $(document).ready(function() {
         $('#detail_updated').html(updated);
         $('#detailModal').modal("show");
     });
-    $('#myTable').on("click",".btn-info",function(e){//编辑
+    $('#myTable').on("click",".btn-primary",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#id').val(rowData.id);
         if(rowData.img){
@@ -240,7 +268,7 @@ function add(){
             description:description
         },
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             let type = "error";
@@ -251,7 +279,7 @@ function add(){
             swal("系统提示",r.msg,type);
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     });
 }
@@ -291,7 +319,7 @@ function edit(){
             description:description
         },
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             $('#editModal').modal("hide");
@@ -303,7 +331,7 @@ function edit(){
             swal("系统提示",r.msg,type);
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     });
 }
@@ -320,7 +348,7 @@ function del(id){
             id:id
         },
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             if (r.code == 1) {
@@ -333,9 +361,53 @@ function del(id){
             }
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     })
+}
+
+function batchDel() {
+    let checkboxes = $('td input[type="checkbox"]');
+    // 获取选中的checkbox
+    let allChecked = checkboxes.filter(':checked');
+    if(allChecked.length===0){
+        swalParent("系统提示","未选中任何删除项!","warning");
+        return;
+    }
+    let idArr="";
+    for(let i=0;i<allChecked.length;i++){
+        let id = $(allChecked[i]).val();
+        idArr = idArr+","+id;
+    }
+    idArr = idArr.substring(1,idArr.length);
+    swal({
+        title: "确定删除这些数据吗?",
+        text: '删除将无法恢复该信息！',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#ff1200',
+        cancelButtonColor: '#474747',
+        confirmButtonText: '确定',
+        cancelButtonText:'取消'
+    },function(){
+        loading(true);
+        $.post(prefix+"/del4batch",{_xsrf:$("#token", parent.document).val(),idArr:idArr},function (res) {
+            loading(false);
+            if(res.code===1){
+                $("#hCheck").iCheck('uncheck');
+                refresh();
+                swalParent("系统提示",res.msg,"success");
+            }else{
+                let msg = res.msg;
+                if(!msg){
+                    msg = "当前用户无权限此操作!"
+                }
+                setTimeout(function () {
+                    swalParent("系统提示",msg,"error");
+                },100);
+            }
+        });
+    });
 }
 
 function reset() {

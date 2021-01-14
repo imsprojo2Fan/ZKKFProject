@@ -741,8 +741,8 @@
 
         // 批量添加纯命令式方法。
         $.each({
-            upload: 'start-upload',
-            stop: 'stop-upload',
+            upload: 'start-easy-upload',
+            stop: 'stop-easy-upload',
             getFile: 'get-file',
             getFiles: 'get-files',
             addFile: 'add-file',
@@ -2758,7 +2758,7 @@
 
                 if ( me.options.auto ) {
                     setTimeout(function() {
-                        me.request('start-upload');
+                        me.request('start-easy-upload');
                     }, 20 );
                 }
             },
@@ -2837,7 +2837,7 @@
                 if ( file ) {
                     file = file.id ? file : me.queue.getFile( file );
                     file.setStatus( Status.QUEUED );
-                    noForceStart || me.request('start-upload');
+                    noForceStart || me.request('start-easy-upload');
                     return;
                 }
 
@@ -2850,7 +2850,7 @@
                     file.setStatus( Status.QUEUED );
                 }
 
-                me.request('start-upload');
+                me.request('start-easy-upload');
             },
 
             /**
@@ -3262,7 +3262,7 @@
             },
 
             reset: function() {
-                this.request( 'stop-upload', true );
+                this.request( 'stop-easy-upload', true );
                 this.runing = false;
                 this.pool = [];
                 this.stack = [];
@@ -3282,9 +3282,9 @@
              * 开始上传。此方法可以从初始状态调用开始上传流程，也可以从暂停状态调用，继续上传流程。
              *
              * 可以指定开始某一个文件。
-             * @grammar upload() => undefined
-             * @grammar upload( file | fileId) => undefined
-             * @method upload
+             * @grammar easy-upload() => undefined
+             * @grammar easy-upload( file | fileId) => undefined
+             * @method easy-upload
              * @for  Uploader
              */
             startUpload: function(file) {
@@ -3945,7 +3945,7 @@
         /**
          * @event error
          * @param {String} type 错误类型。
-         * @description 当validate不通过时，会以派送错误事件的形式通知调用者。通过`upload.on('error', handler)`可以捕获到此类错误，目前有以下错误会在特定的情况下派送错来。
+         * @description 当validate不通过时，会以派送错误事件的形式通知调用者。通过`easy-upload.on('error', handler)`可以捕获到此类错误，目前有以下错误会在特定的情况下派送错来。
          *
          * * `Q_EXCEED_NUM_LIMIT` 在设置了`fileNumLimit`且尝试给`uploader`添加的文件数量超出这个值时派送。
          * * `Q_EXCEED_SIZE_LIMIT` 在设置了`Q_EXCEED_SIZE_LIMIT`且尝试给`uploader`添加的文件总大小超出这个值时派送。
@@ -4600,7 +4600,7 @@
         'widgets/image',
         'widgets/queue',
         'widgets/runtime',
-        'widgets/upload',
+        'widgets/easy-upload',
         'widgets/validator',
 
         // runtimes

@@ -60,6 +60,19 @@ func (this *Device) Delete(obj *Device) error {
 	_, err := o.Delete(obj)
 	return err
 }
+
+func(this *Device) DeleteBatch(idArr string) error {
+	o := orm.NewOrm()
+	_ = o.Begin()
+	_,err := o.Raw("delete from device where id in "+idArr).Exec()
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_ = o.Commit()
+	return err
+}
+
 func (this *Device) DeleteByTid(o orm.Ormer,tid string) error {
 	_, err := o.Raw("delete from device where tid="+tid).Exec()
 	return err

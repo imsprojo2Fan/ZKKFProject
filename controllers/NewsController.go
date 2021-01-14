@@ -12,8 +12,10 @@ type NewsController struct {
 }
 
 func (this *NewsController) List() {
-	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uType := session.Get("type").(int)
+	if this.CheckAuth(3){
+		this.EmptyData()
+		return
+	}
 	GlobalDraw++
 	qMap := make(map[string]interface{})
 	var dataList []orm.Params
@@ -30,16 +32,16 @@ func (this *NewsController) List() {
 	sorType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "0" {
+	if sortNum == "1" {
 		sortCol = "title"
 	}
-	if sortNum == "2" {
+	if sortNum == "3" {
 		sortCol = "view"
 	}
-	if sortNum == "3" {
+	if sortNum == "4" {
 		sortCol = "updated"
 	}
-	if sortNum == "4" {
+	if sortNum == "5" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -49,9 +51,6 @@ func (this *NewsController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sorType"] = sorType
 	qMap["searchKey"] = searchKey
-	if uType > 1 { //账号类型小于2的用户可查看所有信息
-		this.jsonResult(200, -1, "查询成功！", "无权限")
-	}
 
 	obj := new(models.News)
 	//获取总记录数
@@ -132,6 +131,25 @@ func (this *NewsController) Delete() {
 	} else {
 		this.jsonResult(200, -1, "删除数据失败,"+err.Error(), err.Error())
 	}
+}
+
+func(this *NewsController) Delete4Batch() {
+	if this.CheckAuth(1){
+		this.jsonResult(200, -1, "无操作权限！", "无操作权限!")
+	}
+	idArr := this.GetString("idArr")
+	if idArr==""{
+		this.jsonResult(200,-1,"数据id不能为空！",nil)
+	}
+	obj := new(models.News)
+	idArr = "("+idArr+")"
+	err := obj.DeleteBatch(idArr)
+	if err!=nil{
+		this.jsonResult(200,-1,"批量删除数据失败,"+err.Error(),err.Error())
+	}else{
+		this.jsonResult(200,1,"批量删除数据成功！",nil)
+	}
+
 }
 
 func (this *NewsController) All() {

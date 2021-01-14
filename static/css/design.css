@@ -177,5 +177,29 @@ textarea {
 .btn-primary:active{
     outline: none!important;
 }
+.btn-success {
+    background-color: #4caf50;
+    border-color: #4caf50;
+}
+.btn-success:hover{
+    background-color: #4caf50;
+    border-color: #4caf50;
+    opacity: 0.75;
+}
+.btn-success:focus,
+.btn-success:active{
+    outline: none!important;
+}
+.batchDel{
+    color: red!important;
+    cursor: pointer;
+}
+.batchDel:hover{
+    opacity: 0.75;
+}
+#tab2{
+    padding-top: 20px!important;
+    padding-bottom: 5%;
+}
 
 

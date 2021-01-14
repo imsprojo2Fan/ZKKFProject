@@ -169,19 +169,20 @@ $(function () {
     },5000);
 
     //console.log(userInfo);
-    if(userInfo.type>1){
+    if(userInfo.type>2){
         $('.fa-gg-circle').parent().parent().remove();
         $('.fa-tags').parent().parent().remove();
         $('.fa-cubes').parent().parent().remove();
         $('.fa-money').parent().parent().remove();
         $('.fa-tasks').parent().parent().remove();
         $('.fa-newspaper-o').parent().parent().remove();
+        $('.fa-file-o').parent().parent().remove();
     }
 
-    if(userInfo.type>2){
+    if(userInfo.type>1){
         $('.fa-user-plus').parent().parent().remove();
     }
-    if(userInfo.type>3){
+    if(userInfo.type>0){
         $('.fa-cogs').parent().parent().remove();
     }
     if(userInfo.type>2){
@@ -229,6 +230,15 @@ window.onresize = function() {
 
 function user() {
     return userInfo;
+}
+
+function checkType() {
+    if(userInfo.type>1){
+        $('iframe').contents().find('.batchDel').parent().remove();
+        $('iframe').contents().find('input[name="check"]').remove();
+        $('iframe').contents().find('.icheckbox_flat-blue').remove();
+        $('iframe').contents().find('#myTable .btn-danger').remove();
+    }
 }
 
 function swalInfo(title,msg,type){

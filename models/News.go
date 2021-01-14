@@ -46,6 +46,12 @@ func (this *News) Delete(obj *News) error {
 	return err
 }
 
+func(this *News) DeleteBatch(idArr string) error {
+	o := orm.NewOrm()
+	_,err := o.Raw("delete from "+NewsTBName()+" where id in "+idArr).Exec()
+	return err
+}
+
 func (this *News) Read(obj *News) bool {
 
 	o := orm.NewOrm()

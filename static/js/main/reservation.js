@@ -253,7 +253,7 @@ $(document).ready(function() {
                 }},
             { data: null,"width":"15%","render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
-                    html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
+                    html += "<a href='javascript:void(0);' class='up btn btn-primary btn-xs'></i>编辑</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
                     return html;
                 } }
@@ -288,6 +288,7 @@ $(document).ready(function() {
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
             $('#myTable_filter').find('input').attr("placeholder","请输入用户名称或手机号");
+            parent.checkType();
             loadingParent(false,2);
         }
     });
@@ -340,7 +341,7 @@ $(document).ready(function() {
         $('#detail_updated').html(updated);
         $('#detailModal').modal("show");
     });
-    $('#myTable').on("click",".btn-info",function(e){//编辑
+    $('#myTable').on("click",".btn-primary",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#editForm').find("input[name='id']").val(rowData.id);
         $('#editForm').find("input[name='account']").val(rowData.account);
@@ -433,7 +434,7 @@ function add(){
         cache : false,
         data : formData,
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             let type = "error";
@@ -445,7 +446,7 @@ function add(){
             swalParent("系统提示",r.msg,type);
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     });
 }
@@ -476,7 +477,7 @@ function edit(){
         cache : false,
         data : formData,
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             $('#editModal').modal("hide");
@@ -488,7 +489,7 @@ function edit(){
             swalParent("系统提示",r.msg,type);
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     });
 }
@@ -505,7 +506,7 @@ function del(id){
             id:id
         },
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             if (r.code == 1) {
@@ -516,7 +517,7 @@ function del(id){
             }
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     })
 }

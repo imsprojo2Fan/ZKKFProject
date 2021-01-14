@@ -73,6 +73,18 @@ func (this *User) Delete(obj *User) error {
 	return err
 }
 
+func(this *User) DeleteBatch(idArr string) error {
+	o := orm.NewOrm()
+	_ = o.Begin()
+	_,err := o.Raw("delete from user where id in "+idArr).Exec()
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_ = o.Commit()
+	return err
+}
+
 func (this *User) Read(id string) (u User, err error) {
 
 	o := orm.NewOrm()

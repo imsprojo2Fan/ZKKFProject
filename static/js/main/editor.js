@@ -10,7 +10,7 @@ $(document).ready(function() {
     editor = new E('#editor');
     // 或者 var editor = new E( document.getElementById('editor') )
     // 配置服务器端地址
-    editor.customConfig.uploadImgServer = '/main/upload';
+    editor.customConfig.uploadImgServer = '/main/easy-upload';
     editor.customConfig.uploadImgParams = {
         _xsrf:$("#token").val()
     };

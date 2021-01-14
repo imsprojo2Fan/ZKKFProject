@@ -50,10 +50,10 @@ a:focus {
 }
 
 .nav > li > a {
-    color: #869fb1;
+    color: #FFF;
     font-weight: 600;
     padding: 14px 20px 14px 25px;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .nav li>a {
@@ -62,7 +62,7 @@ a:focus {
 }
 
 .nav.navbar-right > li > a {
-    color: #999c9e;
+    color: #fff;
 }
 
 .nav > li.active > a {
@@ -79,7 +79,7 @@ a:focus {
     border-left-color: #131e26!important;
     border-right-color: #6195FF!important;
     background-color: #131e26!important;
-    color: white!important;
+    color: #fff!important;
 }
 
 

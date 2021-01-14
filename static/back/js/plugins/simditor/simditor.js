@@ -3728,7 +3728,7 @@ ImageButton = (function(_super) {
     if (this.editor.uploader != null) {
       this.menu = [
         {
-          name: 'upload-image',
+          name: 'easy-upload-image',
           text: this._t('localImage')
         }, {
           name: 'external-image',
@@ -3814,7 +3814,7 @@ ImageButton = (function(_super) {
   ImageButton.prototype.renderMenu = function() {
     var $input, $uploadItem, createInput;
     ImageButton.__super__.renderMenu.call(this);
-    $uploadItem = this.menuEl.find('.menu-item-upload-image');
+    $uploadItem = this.menuEl.find('.menu-item-easy-upload-image');
     $input = null;
     createInput = (function(_this) {
       return function() {
@@ -3854,7 +3854,7 @@ ImageButton = (function(_super) {
 
   ImageButton.prototype._initUploader = function() {
     if (this.editor.uploader == null) {
-      this.el.find('.btn-upload').remove();
+      this.el.find('.btn-easy-upload').remove();
       return;
     }
     this.editor.uploader.on('beforeupload', (function(_this) {
@@ -4099,7 +4099,7 @@ ImagePopover = (function(_super) {
 
   ImagePopover.prototype.render = function() {
     var tpl;
-    tpl = "<div class=\"link-settings\">\n  <div class=\"settings-field\">\n    <label>" + (this._t('imageUrl')) + "</label>\n    <input class=\"image-src\" type=\"text\" tabindex=\"1\" />\n    <a class=\"btn-upload\" href=\"javascript:;\" title=\"" + (this._t('uploadImage')) + "\" tabindex=\"-1\">\n      <span class=\"fa fa-upload\"></span>\n    </a>\n  </div>\n  <div class=\"settings-field\">\n    <label>" + (this._t('imageSize')) + "</label>\n    <input class=\"image-size\" id=\"image-width\" type=\"text\" tabindex=\"2\" />\n    <span class=\"times\">×</span>\n    <input class=\"image-size\" id=\"image-height\" type=\"text\" tabindex=\"3\" />\n    <a class=\"btn-restore\" href=\"javascript:;\" title=\"" + (this._t('restoreImageSize')) + "\" tabindex=\"-1\">\n      <span class=\"fa fa-reply\"></span>\n    </a>\n  </div>\n</div>";
+    tpl = "<div class=\"link-settings\">\n  <div class=\"settings-field\">\n    <label>" + (this._t('imageUrl')) + "</label>\n    <input class=\"image-src\" type=\"text\" tabindex=\"1\" />\n    <a class=\"btn-easy-upload\" href=\"javascript:;\" title=\"" + (this._t('uploadImage')) + "\" tabindex=\"-1\">\n      <span class=\"fa fa-easy-upload\"></span>\n    </a>\n  </div>\n  <div class=\"settings-field\">\n    <label>" + (this._t('imageSize')) + "</label>\n    <input class=\"image-size\" id=\"image-width\" type=\"text\" tabindex=\"2\" />\n    <span class=\"times\">×</span>\n    <input class=\"image-size\" id=\"image-height\" type=\"text\" tabindex=\"3\" />\n    <a class=\"btn-restore\" href=\"javascript:;\" title=\"" + (this._t('restoreImageSize')) + "\" tabindex=\"-1\">\n      <span class=\"fa fa-reply\"></span>\n    </a>\n  </div>\n</div>";
     this.el.addClass('image-popover').append(tpl);
     this.srcEl = this.el.find('.image-src');
     this.srcEl.on('keydown', (function(_this) {
@@ -4196,7 +4196,7 @@ ImagePopover = (function(_super) {
 
   ImagePopover.prototype._initUploader = function() {
     var $uploadBtn, createInput;
-    $uploadBtn = this.el.find('.btn-upload');
+    $uploadBtn = this.el.find('.btn-easy-upload');
     if (this.editor.uploader == null) {
       $uploadBtn.remove();
       return;

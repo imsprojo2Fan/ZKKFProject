@@ -13,6 +13,7 @@
     cursor: pointer;
     float: left;
     text-align: center;
+    color:var(--thm-base)
 }
 .timeItem:hover{
     background: #6195ff;
@@ -253,5 +254,8 @@ input[type='radio'] {
     opacity: 0.75;
 }
 #assignModal .rid{
+    margin-top: 6px;
+}
+#curUser{
     margin-top: 6px;
 }

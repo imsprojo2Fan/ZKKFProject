@@ -144,7 +144,7 @@ $(function () {
                 }},
             { data: null,"render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
-                    html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
+                    html += "<a href='javascript:void(0);' class='up btn btn-primary btn-xs'></i>编辑</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
                     return html;
                 } }
@@ -215,7 +215,7 @@ $(function () {
         $('#detail_updated').html(updated);
         $('#detailModal').modal("show");
     });
-    $('#myTable').on("click",".btn-info",function(e){//编辑
+    $('#myTable').on("click",".btn-primary",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#Id').val(rowData.id);
         $('#grouping_edit').val(rowData.grouping);
@@ -274,7 +274,7 @@ function add(){
             remark:remark
         },
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             let type = "error";
@@ -285,7 +285,7 @@ function add(){
             swalInfo("系统提示",r.msg,type);
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     });
 }
@@ -317,7 +317,7 @@ function edit(){
             remark:remark
         },
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             $('#editModal').modal("hide");
@@ -329,7 +329,7 @@ function edit(){
             swalInfo("系统提示",r.msg,type);
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     });
 }
@@ -346,7 +346,7 @@ function del(id){
             id:id
         },
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             if (r.code == 1) {
@@ -357,7 +357,7 @@ function del(id){
             }
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     })
 }

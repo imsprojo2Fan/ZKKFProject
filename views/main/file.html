@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件管理</title>
+    <!-- ========== Css Files ========== -->
+    <link href="../../static/css/root.css" rel="stylesheet">
+    <link href="../../static/css/design.css?v={{ .random}}" rel="stylesheet">
+    <link href="../../static/css/main/file.css?v={{ .random}}" rel="stylesheet">
+    <style>
+
+    </style>
+</head>
+<body>
+<input type="hidden" value="{{ ._xsrf}}" id="token">
+<a style="display: none" id="downloadBtn" href="" download>下载</a>
+<div id="loading" class="loading-wrap">
+    <div class="loader" >
+        <div class="la-ball-clip-rotate-multiple la-3x">
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loaderTxt">数据交互中...</div>
+    </div>
+</div>
+
+<div class="mHead">
+    <!-- Start Page Header -->
+    <div>
+        <ol class="breadcrumb">
+            <li><span data="tab1" href="javascript:void(0)">数据列表</span></li>
+            <li><span data="tab2" class="active" href="javascript:void(0)">新增数据</span></li>
+            <li><span class="active" onclick="refresh()">刷新数据</span></li>
+            <li><span class="batchDel" onclick="batchDel()">批量删除</span></li>
+        </ol>
+    </div>
+
+</div>
+
+<!-- START CONTENT -->
+<div class="content">
+
+    <!-- START CONTAINER -->
+    <div class="container-padding" >
+
+        <!-- Start Row -->
+        <div class="row">
+
+            <!-- Start Panel -->
+            <div id="panel" class="col-sm-12">
+                <div class="panel panel-default">
+                    <div id="tab1" class="tabWrap panel-body table-responsive">
+                        <table id="myTable" class="table display">
+                            <thead>
+                            <tr>
+                                <th><div style="text-align: left"><input id="hCheck" type='checkbox' name='check' value='-1'><span style="margin-left: 3px;">编号</span></div></th>
+                                <th>原文件名</th>
+                                <th>文件名</th>
+                                <th>备注</th>
+                                <th>更新时间</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="tab2" class="tabWrap" style="display: none">
+
+                        <div class="panel-body">
+                            <form id="addForm" class="form-horizontal" autocomplete="off">
+
+                                <div class="form-group">
+                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>选择文件</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" name="file" type="file"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>备注信息</label>
+                                    <div class="col-sm-6">
+                                        <textarea class="form-control"></textarea>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group submitWrap">
+                                    <div class="col-sm-offset-5">
+                                        <a href="javascript:add()" class="btn btn-default">提交</a>&nbsp;&nbsp;
+                                        <a id="reset" href="javascript:reset()" class="btn btn-danger">重置</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Panel -->
+
+        </div>
+        <!-- End Row -->
+
+    </div>
+    <!-- END CONTAINER -->
+</div>
+<!-- End Content -->
+
+<!-- 模态框-detail（Modal） -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    查看详情
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >所属分组：<span class="type"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >设备名称：<span class="name"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >设备标题：<span class="title"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >是否上线：<span class="disabled"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >来源：<span class="source"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >设备简述：<span class="sketch"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >仪器参数：<span class="parameter"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >设备功能：<span class="feature"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >应用范围：<span class="range"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >代表性成果：<span class="achievement"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >备注信息：<span class="remark"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >创建时间：<span class="created"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >最近更新：<span class="updated"></span></p>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 模态框-edit（Modal） -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="editModalLabel">
+                    编辑信息&nbsp;&nbsp;<span id="tip"></span>
+                </h4>
+            </div>
+            <div class="modal-body" id="editBody">
+                <form id="editForm" class="form-horizontal" autocomplete="off">
+                    <input type="hidden" name="id" id="id">
+                    <div class="form-group">
+                        <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>原文件名</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="oriName" class="form-control" disabled maxlength="255" placeholder="请输入标题">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>新文件名</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="fileName" class="form-control" disabled maxlength="255" placeholder="请输入标题">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>备注信息</label>
+                        <div class="col-sm-9">
+                            <textarea name="remark" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="edit()" class="btn btn-default">
+                    提交更新
+                </button>
+                &nbsp;&nbsp;
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script src="../../static/js/jquery.min.js"></script>
+<script src="../../static/plugins/bootstrap/bootstrap.min.js"></script>
+<script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="../../static/plugins/bootstrap/bootstrap-select/bootstrap-select.min.js"></script>
+<script src="../../static/plugins/icheck/icheck.min.js"></script>
+<script src="../../static/js/util/stringUtil.js"></script>
+<script src="../../static/js/util/util.js"></script>
+<script src="../../static/plugins/datatables/datatables.min.js"></script>
+<script src="../../static/js/main/file.js?v={{ .random}}"></script>
+
+</body>
+</html>

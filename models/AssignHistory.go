@@ -14,7 +14,8 @@ import (
  */
 type AssignHistory struct {
 	Id int
-	Uid int
+	Uid int	//创建用户id
+	Uuid int //被指派用户id
 	Rid string
 	Status int
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
@@ -124,7 +125,7 @@ func (this *AssignHistory) DetailByRid(rid string) ([]AssignHistory, error) {
 func (this *AssignHistory) LimitOne(rid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select * from "+AssignHistoryTBName()+" a,user u where a.uid=u.id and a.rid=? order by a.id desc limit 1"
+	sql := "select a.*,u.name from "+AssignHistoryTBName()+" a,user u where a.uuid=u.id and a.rid=? order by a.id desc limit 1"
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }

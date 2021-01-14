@@ -15,8 +15,10 @@ type OrderController struct {
 }
 
 func (this *OrderController) List() {
-	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uType := session.Get("type").(int)
+	if this.CheckAuth(3){
+		this.EmptyData()
+		return
+	}
 	GlobalDraw++
 	qMap := make(map[string]interface{})
 	backMap := make(map[string]interface{})
@@ -60,9 +62,6 @@ func (this *OrderController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-	if uType > 1 { //账号类型大于1的用户不可查看所有信息
-		this.jsonResult(200, -1, "查询成功！", "无权限")
-	}
 
 	obj := new(models.Order)
 	//获取总记录数
@@ -409,13 +408,19 @@ func (this *OrderController) IndexAdd() {
 
 func (this *OrderController) Assign(){
 	rid := this.GetString("rid")
-	uid,err := this.GetInt("uid")
+	uuid,err := this.GetInt("uid")
 	assign := new(models.AssignHistory)
 	if err!=nil{
 		res,_ := assign.LimitOne(rid)
 		this.jsonResult(200, 1, "查询信息成功", res)
 	}else{
+		session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+		if session.Get("id")==nil{
+			this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
+		}
+		uid := session.Get("id").(int)
 		assign.Uid = uid
+		assign.Uuid = uuid
 		assign.Rid = rid
 		err := assign.Insert(assign)
 		if err!=nil{

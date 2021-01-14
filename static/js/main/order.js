@@ -93,9 +93,9 @@ $(document).ready(function() {
                 }},
             { data: null,"render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
-                    html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
+                    html += "<a href='javascript:void(0);' class='up btn btn-primary btn-xs'></i>编辑</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>&nbsp;"
-                    html += "<a href='javascript:void(0);'  class='protocol btn btn-primary btn-xs'>协议下载</a>&nbsp;"
+                    html += "<a href='javascript:void(0);'  class='protocol btn btn-success btn-xs'>协议下载</a>&nbsp;"
                     html += "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>指派订单</a>&nbsp;"
                     return html;
                 } }
@@ -136,6 +136,7 @@ $(document).ready(function() {
             //console.log( api.rows( {page:'current'} ).data );
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
             $('#myTable_filter').find('input').attr("placeholder","请输入名称、手机号或订单号");
+            parent.checkType();
             loadingParent(false,2);
         }
     });
@@ -154,13 +155,13 @@ $(document).ready(function() {
         if(status=="0"){
             str = "<span style='color:orangered'>待确认</span>";
         }else if(status=="1"){
-            str = "<span style='color:green'>已确认</span>";
+            str = "<span style='color:#6195FF'>已确认</span>";
         }else if(status=="2"){
             str = "<span style='color:red'>已取消</span>";
         }else{
-            str = "<span style='color:green'>已完成</span>";
+            str = "<span style='color:var(--thm-green)'>已完成</span>";
         }
-        $('#detailModal').find('.status').html("<span style='color:green'>"+str+"</span>");
+        $('#detailModal').find('.status').html(str);
         let created = rowData.created;
         let unixTimestamp = new Date(created);
         let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
@@ -176,7 +177,7 @@ $(document).ready(function() {
         let rid = rowData.rid;
         detail(rid);
     });
-    $('#myTable').on("click",".btn-info",function(e){//编辑
+    $('#myTable').on("click",".btn-primary",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#editForm').find("input[name='id']").val(rowData.id);
         $('#editForm').find(".rid").html(rowData.rid);
@@ -247,12 +248,13 @@ $(document).ready(function() {
         rowData = myTable.row($(this).closest('tr')).data();
         $('#assignModal .rid').html(rowData.rid);
         $.post(prefix+"/assign",{rid:rowData.rid,_xsrf:$("#token", parent.document).val()},function (res) {
-            if(res.data.name){
-                $('#curUser').data("uid",res.data.id);
-                $('#curUser').html(res.data.name);
+            if(res.data){
+                let data = res.data[0];
+                $('#curUser').data("uid",data.uuid);
+                $('#curUser').html(data.name);
             }else{
                 $('#curUser').data("uid",0);
-                $('#curUser').html("<span style='color: red;display: inline-block;margin-top: 6px'>暂未指派用户！</span>");
+                $('#curUser').html("<span style='color: red;'>暂未指派用户！</span>");
             }
 
         });
@@ -277,15 +279,16 @@ $(document).ready(function() {
         let oldUid = $('#curUser').data("uid");
         let newUid = $('#userSel').val();
         if(oldUid==newUid){
-            swalParent("系统提示","该用户已被指派过!","error");
+            swalParent("系统提示","该用户已在处理！","error");
             return false;
         }
         $.post(prefix+"/assign",{rid:rid,uid:newUid,_xsrf:$("#token", parent.document).val()},function (res) {
             if(res.code===1){
                 $('#assignModal').modal("hide");
-                swalParent("系统提示","指派成功！","success");
+                refresh();
+                swalParent("系统提示","订单已指派！","success");
             }else{
-                swalParent("系统提示","指派失败,"+res.data,"error");
+                swalParent("系统提示","订单指派失败,"+res.data,"error");
             }
         });
     });
@@ -349,7 +352,7 @@ function add(){
         cache : false,
         data : formData,
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             let type = "error";
@@ -361,7 +364,7 @@ function add(){
             swalParent("系统提示",r.msg,type);
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     });
 }
@@ -382,7 +385,7 @@ function edit(){
         cache : false,
         data : formData,
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             $('#editModal').modal("hide");
@@ -394,7 +397,7 @@ function edit(){
             swalParent("系统提示",r.msg,type);
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     });
 }
@@ -410,7 +413,7 @@ function del(rid){
             rid:rid
         },
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loadingParent(true,2);
         },
         success : function(r) {
             if (r.code == 1) {
@@ -421,7 +424,7 @@ function del(rid){
             }
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loadingParent(false,2);
         }
     })
 }

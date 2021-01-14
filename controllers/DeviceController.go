@@ -12,8 +12,10 @@ type DeviceController struct {
 }
 
 func (this *DeviceController) List() {
-	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uType := session.Get("type").(int)
+	if this.CheckAuth(3){
+		this.EmptyData()
+		return
+	}
 	GlobalDraw++
 	qMap := make(map[string]interface{})
 	backMap := make(map[string]interface{})
@@ -60,9 +62,6 @@ func (this *DeviceController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-	if uType > 1 { //账号类型小于3的用户可查看所有信息
-		this.jsonResult(200, -1, "查询成功！", "无权限")
-	}
 
 	obj := new(models.Device)
 	//获取总记录数
@@ -154,6 +153,9 @@ func (this *DeviceController) Update() {
 }
 
 func (this *DeviceController) Delete() {
+	if this.CheckAuth(1){
+		this.jsonResult(200, -1, "无操作权限！", "无操作权限!")
+	}
 	obj := new(models.Device)
 	obj.Id, _ = this.GetInt("id")
 	if obj.Id == 0 {
@@ -165,6 +167,25 @@ func (this *DeviceController) Delete() {
 	} else {
 		this.jsonResult(200, -1, "删除数据失败,"+err.Error(), err.Error())
 	}
+}
+
+func(this *DeviceController) Delete4Batch() {
+	if this.CheckAuth(1){
+		this.jsonResult(200, -1, "无操作权限！", "无操作权限!")
+	}
+	idArr := this.GetString("idArr")
+	if idArr==""{
+		this.jsonResult(200,-1,"数据id不能为空！",nil)
+	}
+	obj := new(models.Device)
+	idArr = "("+idArr+")"
+	err := obj.DeleteBatch(idArr)
+	if err!=nil{
+		this.jsonResult(200,-1,"批量删除数据失败,"+err.Error(),err.Error())
+	}else{
+		this.jsonResult(200,1,"批量删除数据成功！",nil)
+	}
+
 }
 
 func (this *DeviceController) All() {

@@ -13,8 +13,10 @@ type ReservationController struct {
 }
 
 func (this *ReservationController) List() {
-	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uType := session.Get("type").(int)
+	if this.CheckAuth(3){
+		this.EmptyData()
+		return
+	}
 	GlobalDraw++
 	qMap := make(map[string]interface{})
 	backMap := make(map[string]interface{})
@@ -49,9 +51,6 @@ func (this *ReservationController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-	if uType > 1 { //账号类型大于1的用户不可查看所有信息
-		this.jsonResult(200, -1, "查询成功！", "无权限")
-	}
 
 	obj := new(models.Reservation)
 	//获取总记录数

@@ -62,6 +62,29 @@ func (this *Type) Delete(obj *Type) error {
 	return err
 }
 
+func(this *Type) DeleteBatch(idArr string) error {
+	o := orm.NewOrm()
+	_ = o.Begin()
+	_,err := o.Raw("delete from `type` where id in "+idArr).Exec()
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+
+	_,err = o.Raw("delete from type_child where tid in "+idArr).Exec()
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_,err = o.Raw("delete from device where tid in "+idArr).Exec()
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_ = o.Commit()
+	return err
+}
+
 func (this *Type) Read(obj *Type) bool {
 
 	o := orm.NewOrm()

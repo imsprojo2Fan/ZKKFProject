@@ -55,6 +55,25 @@ func (this *TypeChild) Delete(obj *TypeChild) error {
 	_ = o.Commit()
 	return err
 }
+
+func(this *TypeChild) DeleteBatch(idArr string) error {
+	o := orm.NewOrm()
+	_ = o.Begin()
+
+	_,err := o.Raw("delete from type_child where id in "+idArr).Exec()
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_,err = o.Raw("delete from device where ttid in "+idArr).Exec()
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_ = o.Commit()
+	return err
+}
+
 func (this *TypeChild) DeleteByTid(o orm.Ormer,tid string) error {
 	_, err := o.Raw("delete from type_child where tid="+tid).Exec()
 	return err
