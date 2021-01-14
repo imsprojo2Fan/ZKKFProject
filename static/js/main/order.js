@@ -220,6 +220,10 @@ $(document).ready(function() {
         //console.log(rowData);
         /*$('#protocolModal .rid').html(rowData.rid);
         $('#protocolModal').modal("show");*/
+        $('.wat').remove();
+        $('.protocolTable').show(200);
+        $("#more").attr("src","../../static/img/square_down.png");
+        $("#more").attr("title","隐藏协议");
         protocolDetail(rowData.rid);
     });
     $('#protocolModal .btn-primary').on("click",function () {
