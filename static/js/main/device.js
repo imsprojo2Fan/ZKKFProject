@@ -185,11 +185,11 @@ $(document).ready(function() {
             {"data": "id","width":"5%","render": function (data, type, row) {
                     return "<div style='text-align: left'><input type='checkbox' name='check' value='"+row.id+"'><span style='margin-left: 3px;' class='tid'>"+row.id+"</span></div>";
                 }},
-            { data: 'typeName'},
+            { data: 'typeName',"width":"8%",},
             { data: 'name',"render":function (data) {
                     return stringUtil.maxLength(data,7);
                 } },
-            { data: 'disabled',"render":function (data) {
+            { data: 'disabled',"width":"6%","render":function (data) {
                     if(data==="0"){
                         return "<span style='color:green'>上线</span>";
                     }else{
@@ -199,26 +199,26 @@ $(document).ready(function() {
             { data: 'sketch',"render":function (data) {
                     return stringUtil.maxLength(data,8);
                 } },
-            { data: 'view',"render":function (data) {
+            { data: 'view',"width":"5%","render":function (data) {
                     return data;
                 } },
-            { data: 'order',"render":function (data) {
+            { data: 'order',"width":"5%","render":function (data) {
                     return data;
                 } },
-            { data: 'reservation',"render":function (data) {
+            { data: 'reservation',"width":"5%","render":function (data) {
                     return data;
                 } },
-            { data: 'updated',"render":function (data,type,row,meta) {
+            { data: 'updated',"width":"10%","render":function (data,type,row,meta) {
                     let unixTimestamp = new Date(data);
                     let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
                     return commonTime;
                 }},
-            { data: 'created',"render":function (data,type,row,meta) {
+            { data: 'created',"width":"10%","render":function (data,type,row,meta) {
                     let unixTimestamp = new Date(data);
                     let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
                     return commonTime;
                 }},
-            { data: null,"render":function () {
+            { data: null,"width":"15%","render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='up btn btn-primary btn-xs'></i>编辑</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='preview btn btn-success btn-xs'></i>预览</a>&nbsp;"
@@ -483,7 +483,7 @@ function add(){
     }
     let val1 = $('#standardSelAdd').val();
     let tArr = "";
-    if(val1.length!==0){
+    if(val1&&val1.length!==0){
         $.each(val1,function (i,item) {
             tArr = tArr+","+item;
         });
@@ -491,7 +491,7 @@ function add(){
     }
     let val2 = $('#drawingSelEdit').val();
     let tArr2 = "";
-    if(val2.length!==0){
+    if(val2&&val2.length!==0){
         $.each(val2,function (i,item) {
             tArr2 = tArr2+","+item;
         });
