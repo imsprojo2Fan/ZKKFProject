@@ -60,10 +60,20 @@ $(document).ready(function() {
             {"data": "id","render": function (data, type, row) {
                     return "<div style='text-align: left'><input type='checkbox' name='check' value='"+row.id+"'><span style='margin-left: 3px;' class='tid'>"+row.id+"</span></div>";
                 }},
-            { data: 'ori_name',"render":function (data) {
-                    return stringUtil.maxLength(data,20);
+            { data: 'type',"render":function (data) {
+                    let str;
+                    if(data==="0"){
+                        str = "项目文件";
+                    }else if(data==="1"){
+                        str = "内部文件";
+                    }else if(data==="2"){
+                        str = "共享文件";
+                    }else{
+                        str = "其他文件";
+                    }
+                    return str;
                 } },
-            { data: 'file_name',"render":function (data) {
+            { data: 'ori_name',"render":function (data) {
                     return stringUtil.maxLength(data,15);
                 } },
             { data: 'remark',"render":function (data) {
@@ -211,6 +221,8 @@ $(document).ready(function() {
     $('#myTable').on("click",".btn-primary",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#id').val(rowData.id);
+        $('#editForm').find(".type").selectpicker('val',rowData.type);
+        $('#editForm').find(".type").selectpicker('refresh');
         $('#editModal').find('input[name="fileName"]').val(rowData.file_name);
         $('#editModal').find('input[name="oriName"]').val(rowData.ori_name);
         $('#editModal').find('textarea').val(rowData.remark);
@@ -259,6 +271,7 @@ function add(){
         return
     }
     let formData = new FormData();
+    formData.append('type', $('#addForm').find(".type").val());
     formData.append('file', files[0]);
     formData.append("_xsrf",$("#token", parent.document).val());
     formData.append("remark",remark);

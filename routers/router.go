@@ -65,6 +65,7 @@ func init() {
 	beego.Router("/main/type/delete", &controllers.TypeController{}, "POST:Delete")
 	beego.Router("/main/type/del4batch", &controllers.TypeController{}, "POST:Delete4Batch")
 	beego.Router("/main/type/all", &controllers.TypeController{}, "POST:All")
+	beego.Router("/main/type/rank", &controllers.TypeController{}, "POST:Rank")
 	//设备分组管理2
 	beego.Router("/main/typeChild/list", &controllers.TypeChildController{}, "POST:List")
 	beego.Router("/main/typeChild/add", &controllers.TypeChildController{}, "POST:Add")
@@ -100,6 +101,7 @@ func init() {
 	beego.Router("/main/order/detail", &controllers.OrderController{}, "POST:Detail")
 	beego.Router("/main/order/protocol", &controllers.OrderController{}, "POST:Protocol")
 	beego.Router("/main/order/assign", &controllers.OrderController{}, "POST:Assign")
+	beego.Router("/main/order/report", &controllers.OrderController{}, "POST:Report")
 	//系统设置相关
 	beego.Router("/main/setting/list", &controllers.SettingController{}, "POST:List")
 	beego.Router("/main/setting/add", &controllers.SettingController{}, "POST:Add")
@@ -112,6 +114,7 @@ func init() {
 	beego.Router("/main/file/del4batch", &controllers.FileController{}, "POST:Delete4Batch")
 	beego.Router("/main/file/list", &controllers.FileController{}, "POST:List")
 	beego.Router("/main/file/all", &controllers.FileController{}, "POST:All")
+	beego.Router("/main/file/list4type", &controllers.FileController{}, "POST:List4Type")
 	//富文本文件管理
 	beego.Router("/main/upload", &controllers.FileController{}, "POST:Upload")
 	//图片上传

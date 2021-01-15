@@ -28,8 +28,9 @@
     <!-- Start Page Header -->
     <div>
         <ol class="breadcrumb">
-            <li><span id="tabHref01" href="javascript:void(0)">数据列表</span></li>
-            <li><span id="tabHref02" class="active" href="javascript:void(0)">新增数据</span></li>
+            <li><span data="tab1">数据列表</span></li>
+            <li><span data="tab3" class="active">列表排序</span></li>
+            <li><span data="tab2" class="active" >新增数据</span></li>
             <li><span class="active" onclick="refresh()">刷新数据</span></li>
             <li><span class="batchDel" onclick="batchDel()">批量删除</span></li>
         </ol>
@@ -49,14 +50,15 @@
             <!-- Start Panel -->
             <div id="panel" class="col-sm-12">
                 <div class="panel panel-default">
-                    <div id="tab1" class="panel-body table-responsive">
+                    <div id="tab1" class="tabWrap panel-body table-responsive">
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
                                 <th><div style="text-align: left"><input id="hCheck" type='checkbox' name='check' value='-1'><span style="margin-left: 3px;">编号</span></div></th>
-                                <th>分组名称</th>
-                                <th>分组描述</th>
-                                <th>分组图片</th>
+                                <th>排序</th>
+                                <th>名称</th>
+                                <th>描述信息</th>
+                                <th>图片</th>
                                 <th>更新时间</th>
                                 <th>创建时间</th>
                                 <th>操作</th>
@@ -66,7 +68,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div id="tab2" style="display: none">
+                    <div id="tab2" class="tabWrap" style="display: none">
 
                         <div class="panel-body">
                             <form class="form-horizontal" autocomplete="off">
@@ -80,7 +82,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>检测周期</label>
+                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>检测周期(天)</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" oninput = "value=value.replace(/[^\d]/g,'')" maxlength="2" id="detection_cycle" placeholder="请输入检测周期(单位/天)">
                                         <span class="help-block"></span>
@@ -115,6 +117,18 @@
                             </form>
                         </div>
                     </div>
+                    <div id="tab3" class="tabWrap" style="display: none">
+                        <div class="panel-body">
+                            <div class="layer block">
+                                <ul id="foo" class="block__list block__list_words">
+
+                                </ul>
+                            </div>
+                            <div class="btnWrap">
+                                <a href="javascript:rank()" class="btn btn-success">提交</a>&nbsp;&nbsp;
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- End Panel -->
@@ -142,7 +156,7 @@
                         <p class="form-control-static" >分组名称：<span id="detail_name"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >检测周期：<span id="detail_detection_cycle"></span></p>
+                        <p class="form-control-static" >检测周期(天)：<span id="detail_detection_cycle"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
                         <p class="form-control-static" >图片地址：<span id="detail_img"></span></p>
@@ -190,7 +204,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>检测周期</label>
+                            <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>检测周期(天)</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" oninput = "value=value.replace(/[^\d]/g,'')" maxlength="2" id="edit_detection_cycle" placeholder="请输入检测周期(单位/天)">
                                 <span class="help-block"></span>
@@ -225,11 +239,49 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+    <!-- 模态框-sort（Modal） -->
+    <div class="modal fade" id="rankModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title">
+                        列表排序
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div data-force="30" class="layer block" style="left: 14.5%; top: 0; width: 37%">
+                        <ul id="foo" class="block__list block__list_words">
+                            <li>бегемот</li>
+                            <li>корм</li>
+                            <li>антон</li>
+                            <li>сало</li>
+                            <li>железосталь</li>
+                            <li>валик</li>
+                            <li>кровать</li>
+                            <li>краб</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">
+                        提交
+                    </button>&nbsp;
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 </div>
 <!-- End Content -->
 
 <script src="../../static/js/jquery.min.js"></script>
+<script src="../../static/plugins/sortable/Sortable.min.js"></script>
 <script src="../../static/plugins/bootstrap/bootstrap.min.js"></script>
 <script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>
 <script src="../../static/plugins/bootstrap/bootstrap-select/bootstrap-select.min.js"></script>

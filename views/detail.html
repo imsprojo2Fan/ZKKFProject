@@ -48,6 +48,7 @@
 <input type="hidden" value="{{ .login}}" id="loginFlag">
 <input type="hidden" value="{{ .err}}" id="err">
 <input type="hidden" value="{{ .info.id}}" id="deviceId">
+<a style="display: none" id="downloadBtn" href="" download>下载</a>
     <div class="preloader">
         <div class="lds-ripple">
             <div></div>
@@ -258,20 +259,36 @@
                                 <div class="itemHead">备注留言</div>
                                 <textarea id="message"></textarea>
                             </div>
-                            <div class="itemHead">仪器参数</div>
-                            <div class="itemContent parameter">
-                                {{.info.Parameter}}
+                            <div>
+                                <div class="itemHead">仪器参数</div>
+                                <div class="itemContent parameter">
+                                    {{.info.Parameter}}
+                                </div>
                             </div>
-                            <div class="itemHead">设备功能</div>
-                            <div class="itemContent feature">
-                                {{.info.Feature}}
+                            <div>
+                                <div class="itemHead">设备功能</div>
+                                <div class="itemContent feature">
+                                    {{.info.Feature}}
+                                </div>
                             </div>
-                            <div class="itemHead">应用范围</div>
-                            <div class="itemContent range">
-                                {{.info.Range}}
+                            <div>
+                                <div class="itemHead">应用范围</div>
+                                <div class="itemContent range">
+                                    {{.info.Range}}
+                                </div>
                             </div>
-                            <div class="itemHead">代表性成果</div>
-                            <div class="itemContent achievement">{{.info.Achievement}}</div>
+                            <div>
+                                <div class="itemHead">代表性成果</div>
+                                <div class="itemContent achievement">{{.info.Achievement}}</div>
+                            </div>
+                            <div>
+                                <div class="itemHead">实验标准</div>
+                                <div class="itemContent standard download"></div>
+                            </div>
+                            <div>
+                                <div class="itemHead">图纸下载</div>
+                                <div class="itemContent drawing download"></div>
+                            </div>
 
                         </div><!-- /.blog-details__main -->
 

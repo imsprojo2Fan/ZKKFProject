@@ -34,10 +34,45 @@ $(function () {
         $('#messageWrap').hide();
     }else{
         //熏染线上信息
-        $('.parameter').html(info.parameter);
-        $('.feature').html(info.feature);
-        $('.range').html(info.range);
-        $('.achievement').html(info.achievement);
+        if(!info.parameter){
+            $('.parameter').parent().remove();
+        }else{
+            $('.parameter').html(info.parameter);
+        }
+        if(!info.feature){
+            $('.feature').parent().remove();
+        }else{
+            $('.feature').html(info.feature);
+        }
+        if(!info.range){
+            $('.range').parent().remove();
+        }else{
+            $('.range').html(info.range);
+        }
+        if(!info.achievement){
+            $('.achievement').parent().remove();
+        }else{
+            $('.achievement').html(info.achievement);
+        }
+
+        let standard = info.standard;
+        if(standard){
+            for(let i=0;i<standard.length;i++){
+                let item = standard[i];
+                $('.standard').append("<a title='点击下载' data='"+item.FileName+"' href='javascript:void(0);'>"+item.OriName+"</a><br>");
+            }
+        }else{
+            $('.standard').parent().remove();
+        }
+        let drawing = info.drawing;
+        if(drawing){
+            for(let i=0;i<drawing.length;i++){
+                let item = drawing[i];
+                $('.drawing').append("<a title='点击下载' data='"+item.FileName+"' href='javascript:void(0);'>"+item.FileName+"</a><br>");
+            }
+        }else{
+            $('.drawing').parent().remove();
+        }
         if(info.is_order==="0"){
             $('#btnHead').html("预约设备");
             $('#submitBtn').html("提交预约");
@@ -156,6 +191,12 @@ $(function () {
     $('#pdfBtn').on("click",function () {
         imgUtil.addWatermark("protocolInfo","中科科辅");
         imgUtil.domShot("protocolInfo",imgUtil.pagePdf,"中科科辅服务协议/"+dateUtil.nowTime());
+    });
+
+    $('.download a').on("click",function () {
+        let fileName = $(this).attr("data");
+        $('#downloadBtn').attr("href","/download/"+fileName);
+        $('#downloadBtn')[0].click();
     });
 
 

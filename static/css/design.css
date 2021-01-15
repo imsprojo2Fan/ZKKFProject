@@ -18,6 +18,9 @@ a:active{
     margin: 40px 0 20px;
     border-bottom: 0px solid #eee;
 }
+hr{
+    margin: 10px 0;
+}
 .mHead{
     position: fixed;
     top:0;
@@ -176,6 +179,11 @@ textarea {
 .btn-primary:focus,
 .btn-primary:active{
     outline: none!important;
+}
+.btn-primary:hover, .btn-primary:focus{
+    background-color: #6195ff;
+    border-color: #6195ff;
+    opacity: 0.75;
 }
 .btn-success {
     background-color: #4caf50;

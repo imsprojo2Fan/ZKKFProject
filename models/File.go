@@ -13,6 +13,7 @@ type File struct {
 	Rid      string    //唯一识别字符串
 	OriName   string    `orm:"size(255)"`
 	FileName  string
+	Type int //文件类型 0项目文件、1内部文件、2共享文件、3其他文件
 	Md5 string
 	Remark string `orm:"size(255)"`
 	Updated  time.Time `orm:"auto_now_add;type(datetime)"`
@@ -33,7 +34,7 @@ func (this *File) Insert(obj *File) error {
 func (this *File) Update(obj *File) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "remark","updated")
+	_, err := o.Update(obj, "type","remark","updated")
 	return err
 }
 
@@ -76,7 +77,7 @@ func (this *File) Count(qMap map[string]interface{}) (int, error) {
 	sql := "SELECT id from file where 1=1 "
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
-		sql += " and (name like \"%" + key + "%\" or remark like \"%"+key+"%\")"
+		sql += " and (ori_name like \"%" + key + "%\" or remark like \"%"+key+"%\")"
 	}
 	var arr []orm.Params
 	_, err := o.Raw(sql).Values(&arr)
@@ -89,7 +90,7 @@ func (this *File) ListByPage(qMap map[string]interface{}) ([]orm.Params, error) 
 	sql := "SELECT * from file where 1=1 "
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
-		sql += " and (name like \"%" + key + "%\" or remark like \"%"+key+"%\")"
+		sql += " and (ori_name like \"%" + key + "%\" or remark like \"%"+key+"%\")"
 	}
 	if qMap["sortCol"] != nil && qMap["sortType"] != nil {
 		sortCol := qMap["sortCol"].(string)
@@ -112,6 +113,22 @@ func (this *File) All() ([]orm.Params, error) {
 	o := orm.NewOrm()
 	sql := "select * from " + FileTBName()
 	_, err := o.Raw(sql).Values(&res)
+	return res, err
+}
+
+func (this *File) ListByType(t string) ([]orm.Params, error) {
+	var res []orm.Params
+	o := orm.NewOrm()
+	sql := "select * from " + FileTBName()+" where `type`="+t
+	_, err := o.Raw(sql).Values(&res)
+	return res, err
+}
+
+func (this *File) ListByIds(ids string) ([]File, error) {
+	var res []File
+	o := orm.NewOrm()
+	sql := "select id,ori_name from " + FileTBName()+" where id in ("+ids+")"
+	_, err := o.Raw(sql).QueryRows(&res)
 	return res, err
 }
 

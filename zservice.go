@@ -26,6 +26,8 @@ func init() {
 
 	beego.SetStaticPath("/file", "./file")
 	beego.SetStaticPath("/img", "./file/img")
+	beego.SetStaticPath("/download", "./file/upload")
+	beego.SetStaticPath("/report", "./file/report")
 
 	//透明static
 	beego.InsertFilter("/static", beego.BeforeRouter, TransparentStatic)

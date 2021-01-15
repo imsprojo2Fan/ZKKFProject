@@ -156,7 +156,7 @@ $(document).ready(function() {
     $('#myTable').on("click",".result",function(e){//实验报告
         rowData = myTable.row($(this).closest('tr')).data();
         let fileName = rowData.file;
-        $('#downloadBtn').attr("href","/file/upload/"+fileName);
+        $('#downloadBtn').attr("href","/file/report/"+fileName);
         $('#downloadBtn')[0].click();
     });
 

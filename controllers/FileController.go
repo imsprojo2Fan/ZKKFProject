@@ -49,10 +49,10 @@ func (this *FileController) List() {
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
 	if sortNum == "1" {
-		sortCol = "ori_name"
+		sortCol = "type"
 	}
 	if sortNum == "2" {
-		sortCol = "file_name"
+		sortCol = "ori_name"
 	}
 	if sortNum == "3" {
 		sortCol = "remark"
@@ -92,6 +92,7 @@ func (this *FileController) List() {
 func(this *FileController) Add()  {
 
 	obj := new(models.File)
+	obj.Type,_ = this.GetInt("type")
 	obj.Remark = this.GetString("remark")
 	file, information, err := this.GetFile("file")  //返回文件，文件信息头，错误信息
 
@@ -138,10 +139,10 @@ func(this *FileController) Add()  {
 }
 
 func (this *FileController) Update() {
-	id, _ := this.GetInt("id")
-	remark := this.GetString("remark")
-
 	var obj models.File
+	id, _ := this.GetInt("id")
+	obj.Type,_ = this.GetInt("type")
+	remark := this.GetString("remark")
 	obj.Id = id
 	obj.Remark = remark
 	obj.Updated = time.Now()
@@ -204,6 +205,14 @@ func (this *FileController) All() {
 	res,_ := obj.All()
 	this.jsonResult(200, 1, "查询所有信息", res)
 }
+
+func (this *FileController) List4Type() {
+	t := this.GetString("type")
+	obj := new(models.File)
+	res,_ := obj.ListByType(t)
+	this.jsonResult(200, 1, "按类型查询信息", res)
+}
+
 //用于富文本上传图片
 func(this *FileController) Upload()  {
 	file, information, err := this.GetFile("file")  //返回文件，文件信息头，错误信息

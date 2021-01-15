@@ -260,4 +260,8 @@ func (this *Order) UpdateStatus(rid,status string,o orm.Ormer)error{
 	_,err := o.Raw("update `order` set status=? where rid=?",status,rid).Exec()
 	return err
 }
+func (this *Order) UpdateReport(rid,file string)error{
+	_,err := orm.NewOrm().Raw("update `order` set file=? where rid=?",file,rid).Exec()
+	return err
+}
 

@@ -46,7 +46,7 @@ $(document).ready(function() {
 
     // 中文重写select 查询为空提示信息
     $('.selectpicker').selectpicker({
-        noneSelectedText: '下拉选择分组',
+        noneSelectedText: '下拉选择指定项',
         noneResultsText: '无匹配选项',
         maxOptionsText: function (numAll, numGroup) {
             let arr = [];
@@ -94,7 +94,7 @@ $(document).ready(function() {
     });
 
     //初始化文件选择
-    $.post("/main/file/all",{_xsrf:$("#token", parent.document).val()},function (res) {
+    $.post("/main/file/list4type",{_xsrf:$("#token", parent.document).val(),type:0},function (res) {
         if(res.code===1){
             let tList = res.data;
             if(tList){
@@ -112,12 +112,12 @@ $(document).ready(function() {
             }else{
                 $('#form1 .standardWrap').html('');
                 $('#form1 .drawingWrap').html('');
-                $('#form1 .standardWrap').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
-                $('#form1 .drawingWrap').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
+                $('#form1 .standardWrap').append('<span style="display: block;margin-top: 5px">暂无文件，请先添加!</span>');
+                $('#form1 .drawingWrap').append('<span style="display: block;margin-top: 5px">暂无文件，请先添加!</span>');
                 $('#form2 .standardWrap').html('');
                 $('#form2 .drawingWrap').html('');
-                $('#form2 .standardWrap').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
-                $('#form2 .drawingWrap').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
+                $('#form2 .standardWrap').append('<span style="display: block;margin-top: 5px">暂无文件，请先添加!</span>');
+                $('#form2 .drawingWrap').append('<span style="display: block;margin-top: 5px">暂无文件，请先添加!</span>');
             }
             $('#standardSelAdd').selectpicker('refresh');
             $('#drawingSelAdd').selectpicker('refresh');
@@ -187,7 +187,7 @@ $(document).ready(function() {
                 }},
             { data: 'typeName'},
             { data: 'name',"render":function (data) {
-                    return stringUtil.maxLength(data,8);
+                    return stringUtil.maxLength(data,7);
                 } },
             { data: 'disabled',"render":function (data) {
                     if(data==="0"){
@@ -354,6 +354,10 @@ $(document).ready(function() {
         rowData = myTable.row($(this).closest('tr')).data();
         $('#id').val(rowData.id);
         $('#editModal').find('.name').val(rowData.name);
+        $('#typeSel2').selectpicker('val',rowData.tid);
+        $('#typeSel2').selectpicker('refresh');
+        $('#typeSel4').selectpicker('val',rowData.ttid);
+        $('#typeSel4').selectpicker('refresh');
         $('#editModal').find('.disabled').selectpicker('val',rowData.disabled);
         $('#editModal').find('.disabled').selectpicker('refresh');
         $('#editModal').find('.isOrder').selectpicker('val',rowData.is_order);
@@ -366,6 +370,45 @@ $(document).ready(function() {
         $('#editModal').find('.range').val(rowData.range);
         $('#editModal').find('.achievement').val(rowData.achievement);
         $('#editModal').find('.remark').val(rowData.remark);
+        let standardStr = rowData.standard;
+        if(document.getElementById("standardSelEdit")){
+            $('#standardSelEdit').selectpicker('val',['noneSelectedText'])
+            //document.getElementById("standardSelEdit").options.selectedIndex = 0; //回到初始状态
+        }
+        $("#standardSelEdit").selectpicker('refresh');//对searchPayState这个下拉框进行重置刷新
+        if(standardStr){
+            let arr = standardStr.split(",");
+            let tempArr = [];
+            for(let i=0;i<arr.length;i++){
+                let id = arr[i];
+                if(!id){
+                    continue
+                }
+                tempArr.push(id);
+            }
+            $('#standardSelEdit').selectpicker('val',tempArr);
+            $("#standardSelEdit").selectpicker('refresh');
+        }
+        let drawingStr = rowData.drawing;
+        if(document.getElementById("drawingSelEdit")){
+            $('#drawingSelEdit').selectpicker('val',['noneSelectedText'])
+            //document.getElementById("drawingSelEdit").options.selectedIndex = 0; //回到初始状态
+        }
+        
+        $("#drawingSelEdit").selectpicker('refresh');//对searchPayState这个下拉框进行重置刷新
+        if(drawingStr){
+            let arr = drawingStr.split(",");
+            let tempArr = [];
+            for(let i=0;i<arr.length;i++){
+                let id = arr[i];
+                if(!id){
+                    continue
+                }
+                tempArr.push(id);
+            }
+            $('#drawingSelEdit').selectpicker('val',tempArr);
+            $("#drawingSelEdit").selectpicker('refresh');
+        }
         $('#editImgWrap').find(".imgItem").remove();
         if(rowData.img){
             let imgArr = rowData.img.split(",");
@@ -438,11 +481,29 @@ function add(){
         swalParent("系统提示",'未选择子类分组!',"warning");
         return;
     }
+    let val1 = $('#standardSelAdd').val();
+    let tArr = "";
+    if(val1.length!==0){
+        $.each(val1,function (i,item) {
+            tArr = tArr+","+item;
+        });
+        tArr = tArr.substring(1,tArr.length);
+    }
+    let val2 = $('#drawingSelEdit').val();
+    let tArr2 = "";
+    if(val2.length!==0){
+        $.each(val2,function (i,item) {
+            tArr2 = tArr2+","+item;
+        });
+        tArr2 = tArr2.substring(1,tArr2.length);
+    }
     let formData = formUtil('form1');
     formData["isOrder"] = $('#isOrder').val();
     formData["tid"] = tid;
     formData["ttid"] = ttid;
     formData["img"] = imgSrc;
+    formData["standard"] = tArr;
+    formData["drawing"] = tArr2;
     formData["disabled"] = $('#disabledSel1').val();
     formData["_xsrf"] = $("#token", parent.document).val();
     $.ajax({
@@ -494,11 +555,29 @@ function edit(){
         swalParent("系统提示",'未选择子类分组!',"warning");
         return;
     }
+    let val1 = $('#standardSelEdit').val();
+    let tArr = "";
+    if(val1&&val1.length!==0){
+        $.each(val1,function (i,item) {
+            tArr = tArr+","+item;
+        });
+        tArr = tArr.substring(1,tArr.length);
+    }
+    let val2 = $('#drawingSelEdit').val();
+    let tArr2 = "";
+    if(val2&&val2.length!==0){
+        $.each(val2,function (i,item) {
+            tArr2 = tArr2+","+item;
+        });
+        tArr2 = tArr2.substring(1,tArr2.length);
+    }
     let formData = formUtil('form2');
     formData["isOrder"] = $('#isOrder2').val();
     formData["tid"] = tid;
     formData["ttid"] = ttid;
     formData["img"] = imgSrc;
+    formData["standard"] = tArr;
+    formData["drawing"] = tArr2;
     formData["disabled"] = $('#disabledSel2').val();
     formData["_xsrf"] = $("#token", parent.document).val();
     $.ajax({

@@ -1,5 +1,6 @@
 let myTable;
 let prefix = "/main/type";
+let sort;
 window.onresize = function() {
     let bodyHeight = window.innerHeight;
     console.log("bodyHeight:"+bodyHeight);
@@ -15,29 +16,24 @@ $(document).ready(function() {
     //window.parent.swalInfo('TEST',666,'error')
 
     //tab导航栏切换
-    $('#tabHref01').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
-            return
-        }else{
-            $('#tabHref02').addClass("active");
-            $(this).removeClass("active");
-            $('#tab2').fadeOut(200);
-            $("#tab1").fadeIn(200);
+    $('.breadcrumb span').on("click",function () {
+        if(!$(this).hasClass("active")){
+            return false;
+        }
+        let data = $(this).attr("data");
+        if(!data){
+            return false;
+        }
+        $('.breadcrumb span').addClass("active");
+        $(this).removeClass("active");
+        if(data==="tab1"){
             refresh();
         }
-    });
-
-    $('#tabHref02').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
-            return
-        }else{
-            $('#tabHref01').addClass("active");
-            $(this).removeClass("active");
-            $('#tab1').fadeOut(200);
-            $("#tab2").fadeIn(200);
+        if(data==="tab3"){
+            renderRank();
         }
+        $('.tabWrap').fadeOut(300);
+        $("#"+data).fadeIn(300);
     });
 
     $('#uploadPic').on('click',function () {
@@ -48,6 +44,9 @@ $(document).ready(function() {
         openWindow("/main/uploadPic?btnId=edit_uploadPic&domId=edit_picName","中科科辅",1000,600);
     });
 
+    //初始化分组数据
+    renderRank();
+
     //datatable setting
     myTable =$('#myTable').DataTable({
         autoWidth: true,
@@ -57,8 +56,8 @@ $(document).ready(function() {
         fixedHeader: true,
         serverSide: true,
         //bSort:false,//排序
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,3,6 ] }],//指定哪些列不排序
-        "order": [[ 5, "desc" ]],//默认排序
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,2,3,4,7 ] }],//指定哪些列不排序
+        "order": [[ 1, "asc" ]],//默认排序
         "lengthMenu": [ [30, 50, 100, 200,500], [30, 50, 100, 200,500] ],
         "pageLength": 30,
         ajax: {
@@ -72,6 +71,7 @@ $(document).ready(function() {
             {"data": "id","width":"5%","render": function (data, type, row) {
                     return "<div style='text-align: left'><input type='checkbox' name='check' value='"+row.id+"'><span style='margin-left: 3px;' class='tid'>"+row.id+"</span></div>";
                 }},
+            { data: 'rank'},
             { data: 'name'},
             { data: 'description',"render":function (data) {
                     let temp = data;
@@ -232,6 +232,44 @@ $(document).ready(function() {
     });
 
 } );
+
+function renderRank() {
+    if(sort){
+        sort.destroy();
+    }
+    $.post(prefix+"/all",{_xsrf:$("#token", parent.document).val()},function (res) {
+        $('#foo').html("");
+        let tList = res.data;
+        if(tList){
+            for(let i=0;i<tList.length;i++){
+                let item = tList[i];
+                $('#foo').append('<li data="'+item.id+'" >'+item.name+'</li>');
+            }
+            //排序
+            sort = Sortable.create(document.getElementById('foo'), {
+                group: "words",
+                animation: 150,
+                store: {
+                    get: function (sortable) {
+                        let order = localStorage.getItem(sortable.options.group);
+                        return order ? order.split('|') : [];
+                    },
+                    set: function (sortable) {
+                        let order = sortable.toArray();
+                        localStorage.setItem(sortable.options.group, order.join('|'));
+                    }
+                },
+                /*onAdd: function (evt){ console.log('onAdd.foo:', [evt.item, evt.from]); },
+                onUpdate: function (evt){ console.log('onUpdate.foo:', [evt.item, evt.from]); },
+                onRemove: function (evt){ console.log('onRemove.foo:', [evt.item, evt.from]); },
+                onStart:function(evt){ console.log('onStart.foo:', [evt.item, evt.from]);},
+                onSort:function(evt){ console.log('onStart.foo:', [evt.item, evt.from]);},
+                onEnd: function(evt){ console.log('onEnd.foo:', [evt.item, evt.from]);}*/
+            });
+        }
+
+    });
+}
 
 function add(){
     let name = $('#name').val().trim();
@@ -407,6 +445,40 @@ function batchDel() {
                 },100);
             }
         });
+    });
+}
+
+function rank() {
+    swal({
+        title: "系统提示",
+        text: '是否确定当前排序?',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#ff1200',
+        cancelButtonColor: '#474747',
+        confirmButtonText: '是',
+        cancelButtonText:'否'
+    },function(){
+        let arr = [];
+        $('#foo').find("li").each(function (index,item) {
+            let id = $(item).attr("data");
+            let rank = index+1;
+            let obj = {};
+            obj.id = id;
+            obj.rank = "\""+rank+"\"";
+            arr.push(obj);
+        });
+        loadingParent(true,2);
+        $.post(prefix+"/rank",{_xsrf:$("#token", parent.document).val(),data:JSON.stringify(arr)},function (res) {
+            loadingParent(false,2);
+            if(res.code===1){
+                swalParent("系统提示",res.msg,"success");
+            }else{
+                setTimeout(function () {
+                    swalParent("系统提示",res.msg,"error");
+                },100);
+            }
+        })
     });
 }
 

@@ -196,6 +196,7 @@ func (this *DeviceController) All() {
 
 var obj models.Device
 var settingObj models.Setting
+var fileObj models.File
 var bMap = make(map[string]interface{})
 func (this *DeviceController)Detail() {
 	rid := this.Ctx.Input.Param(":rid")
@@ -213,17 +214,29 @@ func (this *DeviceController)Detail() {
 	}
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	id := session.Get("id")
+	deviceInfo := res[0]
 	//首页判断是否已登录过
 	if id==nil{
 		this.Data["login"] = 0
 	}else{
 		this.Data["login"] = 1
+		//查询关联文件
+		standardIds := deviceInfo["standard"].(string)
+		if standardIds!=""{
+			deviceInfo["standard"],_ = fileObj.ListByIds(standardIds)
+		}
+		drawingIds := deviceInfo["drawing"].(string)
+		if drawingIds!=""{
+			deviceInfo["drawing"],_ = fileObj.ListByIds(drawingIds)
+		}
+
 		uid := session.Get("id").(int)
+		//查询用户信息
 		user := userObj.SelectById(uid)
-		//user := session.Get("user").(*models.User)
 		user.Remark = ""
 		user.Type = -1
 		this.Data["user"] = user
+		//查询公司信息
 		res := settingObj.SelectByGroup("LocalInfo")
 		bMap["company"] = models.RangeValue(res,"company")
 		bMap["phone"] = models.RangeValue(res,"phone")
@@ -239,7 +252,7 @@ func (this *DeviceController)Detail() {
 		obj.UpdateNum("view",rid)
 	}
 	this.Data["_xsrf"] = this.XSRFToken()
-	this.Data["info"] = res[0]
+	this.Data["info"] = deviceInfo
 	this.TplName = "detail.html"
 
 }

@@ -3,7 +3,9 @@ package controllers
 import (
 	"ZkkfProject/models"
 	"ZkkfProject/utils"
+	"encoding/json"
 	"github.com/astaxie/beego/orm"
+	"net/http"
 	"time"
 )
 
@@ -32,10 +34,13 @@ func (this *TypeController) List() {
 	sorType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "4" {
-		sortCol = "updated"
+	if sortNum == "1" {
+		sortCol = "rank"
 	}
 	if sortNum == "5" {
+		sortCol = "updated"
+	}
+	if sortNum == "6" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -80,11 +85,12 @@ func (this *TypeController) Add() {
 	obj.Description = description
 	obj.Img = img
 	obj.DetectionCycle,_ = this.GetInt("detection_cycle")
+	obj.Rank = obj.LastRank()+1
 	err := obj.Insert(&obj)
 	if err == nil {
 		this.jsonResult(200, 1, "操作成功", nil)
 	} else {
-		this.jsonResult(200, -1, "操作失败", err.Error())
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
 }
 
@@ -107,7 +113,7 @@ func (this *TypeController) Update() {
 	if err == nil {
 		this.jsonResult(200, 1, "操作成功", nil)
 	} else {
-		this.jsonResult(200, -1, "操作失败", err.Error())
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
 }
 
@@ -121,7 +127,7 @@ func (this *TypeController) Delete() {
 	if err == nil {
 		this.jsonResult(200, 1, "删除数据成功！", nil)
 	} else {
-		this.jsonResult(200, -1, "删除数据失败,请稍后再试！", err.Error())
+		this.jsonResult(200, -1, "删除数据失败,"+err.Error(), err.Error())
 	}
 }
 
@@ -149,9 +155,25 @@ func (this *TypeController) All() {
 	this.jsonResult(200, 1, "查询所有分组信息", obj.All())
 }
 
+func (this *TypeController) Rank() {
+	obj := new(models.Type)
+	var dataArr []map[string]string
+	dataStr := this.GetString("data")
+	err := json.Unmarshal([]byte(dataStr), &dataArr)
+	if err != nil {
+		this.jsonResult(http.StatusOK, -1, "参数解析错误!", err.Error())
+	}
+	err = obj.UpdateRank(dataArr)
+	if err!=nil{
+		this.jsonResult(200, -1, "更新失败,"+err.Error(),err.Error())
+	}else{
+		this.jsonResult(200, 1, "更新成功",nil)
+	}
+
+}
+
 func (c *TypeController) Redirect() {
 	//设置token
 	c.Data["_xsrf"] = c.XSRFToken()
 	c.TplName = "type.html"
-
 }

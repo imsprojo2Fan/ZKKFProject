@@ -6,7 +6,10 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego/orm"
 	"net/http"
+	"os"
+	"path"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -429,4 +432,36 @@ func (this *OrderController) Assign(){
 			this.jsonResult(200, 1, "操作成功", nil)
 		}
 	}
+}
+
+func(this *OrderController) Report()  {
+
+	obj := new(models.Order)
+	rid := this.GetString("rid")
+	file,information,err := this.GetFile("file")  //返回文件，文件信息头，错误信息
+
+	if err != nil {
+		this.jsonResult(http.StatusOK,-1, "上传文件失败!", nil)
+		return
+	}
+	filePath := "./file/report/"
+	if !utils.CheckFileIsExist(filePath){
+		_ = os.MkdirAll(filePath, 777)
+	}
+
+	defer file.Close()//关闭上传的文件，否则出现临时文件不清除的情况  mmp错了好多次啊
+	fileName := "中科科辅实验报告-"+strings.ToLower(utils.RandomString(6))
+	fName := information.Filename
+	fileName = fileName+fName[strings.LastIndex(fName,"."):]
+	err = this.SaveToFile("file", path.Join(filePath,fileName))//保存文件的路径。保存在static/upload中(文件名)
+	if err != nil {
+		this.jsonResult(http.StatusOK,-1, "读写文件失败!", nil)
+	}
+	err = obj.UpdateReport(rid,fileName)
+	if err==nil{
+		this.jsonResult(200,1,"操作成功!",nil)
+	}else{
+		this.jsonResult(200,-1,"操作失败,"+err.Error(),err.Error())
+	}
+
 }

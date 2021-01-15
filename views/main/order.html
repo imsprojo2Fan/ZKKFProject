@@ -14,6 +14,7 @@
 </head>
 <body>
 <input type="hidden" value="{{ ._xsrf}}" id="token">
+<a style="display: none" id="downloadBtn" href="" download>下载</a>
 <div id="loading" class="loading-wrap">
     <div class="loader" >
         <div class="la-ball-clip-rotate-multiple la-3x">
@@ -443,6 +444,46 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">提交</button>
                     <button type="button" class="btn btn-default">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- 模态框-report（Modal） -->
+    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title">
+                        实验报告
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" autocomplete="off">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">订单编号</label>
+                            <div class="col-sm-6 rid" ></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">上传文件</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" name="file" type="file"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">下载文件</label>
+                            <div class="col-sm-6" id="fileWrap">
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">提交</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

@@ -15,6 +15,7 @@ type Type struct {
 	Description string `orm:"size(1024)"`
 	Img         string
 	DetectionCycle int //检测周期，天
+	Rank int //排序
 	Updated     time.Time `orm:"auto_now_add;type(datetime)"`
 	Created     time.Time `orm:"auto_now_add;type(datetime)"`
 }
@@ -155,7 +156,26 @@ func (this *Type) ListByPage4Index(qMap map[string]interface{}, Types *[]Type) {
 func (this *Type) All() []orm.Params {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select * from "+TypeTBName()+" where 1=1"
+	sql := "select * from "+TypeTBName()+" order by rank asc"
 	_, _ = o.Raw(sql).Values(&res)
 	return res
+}
+func (this *Type) LastRank() int {
+	var res Type
+	o := orm.NewOrm()
+	sql := "select * from "+TypeTBName()+" order by rank desc limit 1"
+	_ = o.Raw(sql).QueryRow(&res)
+	return res.Rank
+}
+
+func(this *Type) UpdateRank(dataArr []map[string]string)error  {
+	//sqlTxt := "insert into test_tbl (id,dr) values (1,'2'),(2,'3'),...(x,'y') on duplicate key update dr=values(dr);"
+	sqlTxt := "insert into type (id,rank) values "
+	for _,item := range dataArr{
+		sqlTxt += "("+item["id"]+","+item["rank"]+"),"
+	}
+	sqlTxt = sqlTxt[0:len(sqlTxt)-1]
+	sqlTxt += " on duplicate key update rank=values(rank);"
+	_,err := orm.NewOrm().Raw(sqlTxt).Exec()
+	return err
 }

@@ -2,6 +2,9 @@
     width: 15.5vw!important;
     height: 30px;
 }
+.col-sm-6{
+    margin-top: 6px;
+}
 .timeItem{
     display: inline-block;
     height: 30px;
