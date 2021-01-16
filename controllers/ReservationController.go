@@ -195,6 +195,20 @@ func (this *ReservationController) Delete() {
 	}
 }
 
+func (this *ReservationController) SoftDelete() {
+	obj := new(models.Reservation)
+	obj.Id, _ = this.GetInt("id")
+	if obj.Id == 0 {
+		this.jsonResult(200, -1, "id不能为空！", nil)
+	}
+	err := obj.SoftDelete(strconv.Itoa(obj.Id))
+	if err == nil {
+		this.jsonResult(200, 1, "删除数据成功！", nil)
+	} else {
+		this.jsonResult(200, -1, "删除数据失败,"+err.Error(), err.Error())
+	}
+}
+
 func (this *ReservationController) All() {
 	obj := new(models.Reservation)
 	res, _ := obj.All()

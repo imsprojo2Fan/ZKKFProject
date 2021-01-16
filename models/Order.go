@@ -12,6 +12,7 @@ import (
 type Order struct {
 	Id       int
 	Uid      int       //创建人id/user表id
+	Tid 	 int //type表id
 	Uuid     int       //处理人id
 	Rid      string    //订单编号
 	Count    int //订单项目数量
@@ -19,6 +20,7 @@ type Order struct {
 	Status   int    //订单状态，0待确认，1已确认，2已取消，3已完成
 	Remark   string    `orm:"size(255)"`
 	File string
+	Del int //软删除标记
 	Updated  time.Time //`orm:"auto_now_add;type(datetime)"`
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
 }
@@ -93,6 +95,13 @@ func (this *Order) Update(obj *Order) error {
 	return err
 }
 
+func (this *Order) SoftDelete(rid string) error {
+
+	o := orm.NewOrm()
+	_,err := o.Raw("update `order` set del=1,updated=now() where rid=\""+rid+"\"").Exec()
+	return err
+}
+
 func (this *Order) Delete(obj *Order) error {
 
 	o := orm.NewOrm()
@@ -123,21 +132,6 @@ func (this *Order) DeleteByRid(rid string) error {
 	return err
 }
 
-func (this *Order) Read(obj *Order) bool {
-
-	o := orm.NewOrm()
-	err := o.Read(obj)
-	if err == orm.ErrNoRows {
-		fmt.Println("查询不到")
-		return false
-	} else if err == orm.ErrMissPK {
-		fmt.Println("找不到主键")
-		return false
-	} else {
-		return true
-	}
-}
-
 func (this *Order) SelectByUid(obj *Order) {
 	o := orm.NewOrm()
 	_ = o.Read(obj, "uid")
@@ -152,10 +146,14 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 
 	o := orm.NewOrm()
 	//sql := "SELECT id from "+OrderTBName()+" r where 1=1 "
-	sql := "SELECT o.id from `order` o,user u where o.uid=u.id "
+	sql := "SELECT o.id from `order` o,user u where o.uid=u.id and o.del=0 "
 	if qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
 		sql += " and o.uid="+strconv.Itoa(uid)
+	}
+	if qMap["tid"].(string) != "0" {
+		tid := qMap["tid"].(string)
+		sql = sql + " and o.tid="+tid
 	}
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
@@ -169,10 +167,14 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error) {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	sql := "SELECT o.*,u.name,u.phone,u.company from `order` o,user u where o.uid=u.id "
+	sql := "SELECT o.*,u.name,u.phone,u.company from `order` o,user u where o.uid=u.id and o.del=0 "
 	if qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
 		sql += " and o.uid="+strconv.Itoa(uid)
+	}
+	if qMap["tid"].(string) != "0" {
+		tid := qMap["tid"].(string)
+		sql = sql + " and o.tid="+tid
 	}
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)

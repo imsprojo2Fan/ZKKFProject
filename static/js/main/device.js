@@ -77,6 +77,7 @@ $(document).ready(function() {
                 $('#typeSel2').html('');
                 for(let i=0;i<tList.length;i++){
                     let item = tList[i];
+                    $('#filterSelect').append('<option value="'+item.id+'">'+item.name+'</option>');
                     $('#typeSel1').append('<option value="'+item.id+'">'+item.name+'</option>');
                     $('#typeSel2').append('<option value="'+item.id+'">'+item.name+'</option>');
                 }
@@ -86,6 +87,7 @@ $(document).ready(function() {
                 $('#selWrap1').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
                 $('#selWrap2').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
             }
+            $('#filterSelect').selectpicker('refresh');
             $('#typeSel1').selectpicker('refresh');
             $('#typeSel2').selectpicker('refresh');
             let tid = $('#typeSel1').val();
@@ -178,6 +180,8 @@ $(document).ready(function() {
             url: prefix+'/list',
             type: 'POST',
             data:{
+                tid:$('#filterSelect').val(),
+                ttid:$('#filterSelect2').val(),
                 _xsrf:$("#token", parent.document).val()
             }
         },
@@ -221,8 +225,8 @@ $(document).ready(function() {
             { data: null,"width":"15%","render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
                     html += "<a href='javascript:void(0);' class='up btn btn-primary btn-xs'></i>编辑</a>&nbsp;"
-                    html += "<a href='javascript:void(0);' class='preview btn btn-success btn-xs'></i>预览</a>&nbsp;"
-                    html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
+                    html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>&nbsp;";
+                    html += "<a href='javascript:void(0);' class='preview btn btn-success btn-xs'></i>预览</a>"
                     return html;
                 } }
         ],
@@ -454,7 +458,7 @@ $(document).ready(function() {
         window.open("/detail/"+rid,"_blank");
     })
 
-} );
+});
 
 function add(){
     let name = $('#form1').find('.name').val().trim();
@@ -713,17 +717,27 @@ function preview(oType) {
 }
 
 function reset() {
-    $(":input").each(function () {
-        $(this).val("");
-    });
+    $(":input").val("");
     $('.addItem').show();
     $('.imgItem').html("");
-    $("textarea").each(function () {
-        $(this).val("");
-    });
+    $("textarea").val("")
 }
 
 function refresh() {
+    let tid = $('#filterSelect').val();
+    if(!tid){
+        tid = 0;
+    }
+    let ttid = $('#filterSelect2').val();
+    if(!tid){
+        ttid = 0;
+    }
+    let param = {
+        "_xsrf":$("#token", parent.document).val(),
+        "tid": tid,
+        "ttid": ttid,
+    };
+    myTable.settings()[0].ajax.data = param;
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
 }
 
@@ -788,6 +802,26 @@ function renderChildType(tid) {
             $('#typeSel3').selectpicker('refresh');
             $('#typeSel4').selectpicker('refresh');
         }
+    });
+}
+
+function renderChildType2() {
+    let tid = $('#filterSelect').val();
+    //初始化子类分组数据
+    $.post("/main/typeChild/queryByTid",{_xsrf:$("#token",parent.document).val(),tid:tid},function (res) {
+        if(res.code===1){
+            let tList = res.data;
+            $('#filterSelect2').html('');
+            $('#filterSelect2').append('<option value="0">全部设备</option>');
+            if(tList&&tid!=0){
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i];
+                    $('#filterSelect2').append('<option value="'+item.id+'">'+item.name+'</option>');
+                }
+            }
+            $('#filterSelect2').selectpicker('refresh');
+        }
+        refresh();
     });
 }
 

@@ -29,6 +29,20 @@ $(document).ready(function () {
         $("#" + data).fadeIn(200);
     });
 
+    //初始化子类分组数据
+    $.post("/main/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
+        if(res.code===1){
+            let tList = res.data;
+            if(tList){
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i];
+                    $('#filterSelect').append('<option value="'+item.id+'">'+item.name+'</option>');
+                }
+            }
+            $('#filterSelect').selectpicker('refresh');
+        }
+    });
+
     //datatable setting
     myTable = $('#myTable').DataTable({
         autoWidth: true,
@@ -49,7 +63,8 @@ $(document).ready(function () {
             url: prefix + '/list',
             type: 'POST',
             data: {
-                _xsrf: $("#token", parent.document).val()
+                _xsrf: $("#token", parent.document).val(),
+                tid:$('#filterSelect').val()
             }
         },
         columns: [
@@ -386,11 +401,19 @@ function detail(rid) {
     }, function (res) {
         loadingParent(false, 2);
         let localOutArr = res.data;
+        if(!localOutArr){
+            swalParent("系统提示","当前订单包含项目已被删除！","error");
+            return false;
+        }
         $('.libItemWrap').html("");
         for (let i = 0; i < localOutArr.length; i++) {
             let outItem = localOutArr[i];
             let tid = outItem.tid;
             let typeName = outItem.name;
+            if(!typeName){
+                $('.libItemWrap').append('<p class="red">当前订单包含分组已被删除！</p>')
+                continue;
+            }
             let innerArr = outItem.data;
             $('.libItemWrap').append('' +
                 '<div class="typeItem">\n' +
@@ -398,6 +421,10 @@ function detail(rid) {
                 '   \n' +
                 '<div class="dWrap' + tid + '"></div>' +
                 '</div>');
+            if(!innerArr){
+                $('.dWrap' + tid).append('<p class="red">当前订单包含项目已被删除！</p>');
+                continue;
+            }
             for (let j = 0; j < innerArr.length; j++) {
                 let dName = innerArr[j].name;
                 let title = dName;
@@ -494,7 +521,7 @@ function edit() {
 
 function del(rid) {
     $.ajax({
-        url: prefix + "/delete",
+        url: prefix + "/delete4soft",
         type: "POST",
         dataType: "json",
         cache: false,
@@ -561,6 +588,16 @@ function protocolDetail(rid) {
             $('#tableWrap').html("");
             let devices = "";
             let innerArr = r.data.deviceArr;
+            if(!r.data.type.Name){
+                if(!innerArr){
+                    swalParent("系统提示","当前订单包含分组已被删除！","error");
+                    return false;
+                }
+            }
+            if(!innerArr){
+                swalParent("系统提示","当前订单包含项目已被删除！","error");
+                return false;
+            }
             for (let j = 0; j < innerArr.length; j++) {
                 let item = innerArr[j];
                 let count = item.Count;
@@ -779,6 +816,15 @@ function reset() {
 }
 
 function refresh() {
+    let tid = $('#filterSelect').val();
+    if(!tid){
+        tid = 0;
+    }
+    let param = {
+        "_xsrf":$("#token", parent.document).val(),
+        "tid": tid
+    };
+    myTable.settings()[0].ajax.data = param;
     myTable.ajax.reload(null, false); // 刷新表格数据，分页信息不会重置
 }
 

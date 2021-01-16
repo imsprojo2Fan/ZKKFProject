@@ -112,6 +112,10 @@ func (this *TypeChild) Count(qMap map[string]interface{}) int {
 		key := qMap["searchKey"].(string)
 		sql = sql + " and (name like \"%" + key + "%\")"
 	}
+	if qMap["tid"].(string) != "0" {
+		tid := qMap["tid"].(string)
+		sql = sql + " and tid="+tid
+	}
 	var arr []orm.Params
 	_, _ = o.Raw(sql).Values(&arr)
 	return len(arr)
@@ -123,6 +127,10 @@ func (this *TypeChild) ListByPage(qMap map[string]interface{}) []orm.Params {
 	sql := "select * from "+TypeChildTBName()+" where 1=1"
 	if qMap["searchKey"] != "" {
 		sql = sql + " and name like '%" + qMap["searchKey"].(string) + "%'"
+	}
+	if qMap["tid"].(string) != "0" {
+		tid := qMap["tid"].(string)
+		sql = sql + " and tid="+tid
 	}
 	if qMap["sortCol"] != "" {
 		sortCol := qMap["sortCol"].(string)

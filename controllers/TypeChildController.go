@@ -20,7 +20,6 @@ func (this *TypeChildController) List() {
 	qMap := make(map[string]interface{})
 	var dataList []orm.Params
 	backMap := make(map[string]interface{})
-
 	pageNow, err2 := this.GetInt64("start")
 	pageSize, err := this.GetInt64("length")
 
@@ -39,7 +38,8 @@ func (this *TypeChildController) List() {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
-
+	tid := this.GetString("tid")
+	qMap["tid"] = tid
 	qMap["pageNow"] = pageNow
 	qMap["pageSize"] = pageSize
 	qMap["sortCol"] = sortCol

@@ -54,6 +54,7 @@ func(this *File) SelectByCol(obj *File,col string) {
 	o := orm.NewOrm()
 	_ = o.Read(obj, col)
 }
+
 func(this *File) SelectByIds(ids string)([]File,error) {
 	o := orm.NewOrm()
 	var res []File
@@ -127,7 +128,7 @@ func (this *File) ListByType(t string) ([]orm.Params, error) {
 func (this *File) ListByIds(ids string) ([]File, error) {
 	var res []File
 	o := orm.NewOrm()
-	sql := "select id,ori_name from " + FileTBName()+" where id in ("+ids+")"
+	sql := "select id,ori_name,file_name from " + FileTBName()+" where id in ("+ids+")"
 	_, err := o.Raw(sql).QueryRows(&res)
 	return res, err
 }

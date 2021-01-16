@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/orm"
 	"strconv"
 	"time"
@@ -19,6 +18,7 @@ type Reservation struct {
 	Status   int       //预约状态，0待确认，1已确认，2已取消，3已完成
 	Remark   string    `orm:"size(255)"`
 	Message string //留言信息
+	Del int //软删除标记
 	Updated  time.Time //`orm:"auto_now_add;type(datetime)"`
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
 }
@@ -48,19 +48,11 @@ func (this *Reservation) Delete(obj *Reservation) error {
 	return err
 }
 
-func (this *Reservation) Read(obj *Reservation) bool {
+func (this *Reservation) SoftDelete(id string) error {
 
 	o := orm.NewOrm()
-	err := o.Read(obj)
-	if err == orm.ErrNoRows {
-		fmt.Println("查询不到")
-		return false
-	} else if err == orm.ErrMissPK {
-		fmt.Println("找不到主键")
-		return false
-	} else {
-		return true
-	}
+	_,err := o.Raw("update reservation set del=1,updated=now() where id=\""+id+"\"").Exec()
+	return err
 }
 
 func (this *Reservation) SelectByUid(obj *Reservation) {
@@ -77,7 +69,7 @@ func (this *Reservation) Count(qMap map[string]interface{}) (int, error) {
 
 	o := orm.NewOrm()
 	//sql := "SELECT id from "+ReservationTBName()+" r where 1=1 "
-	sql := "SELECT r.id from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id "
+	sql := "SELECT r.id from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id and r.del=0 "
 	if qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
 		sql += " and r.uuid="+strconv.Itoa(uid)
@@ -95,7 +87,7 @@ func (this *Reservation) ListByPage(qMap map[string]interface{}) ([]orm.Params, 
 	var maps []orm.Params
 	o := orm.NewOrm()
 	//sql := "SELECT r.*,u.name,u.phone from user u,"+ReservationTBName()+" r where u.id=r.uid "
-	sql := "SELECT r.*,u.name,u.company,u.phone,d.name as deviceName,s.value as time from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id "
+	sql := "SELECT r.*,u.name,u.company,u.phone,d.name as deviceName,s.value as time from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id and del=0 "
 	if qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
 		sql += " and r.uuid="+strconv.Itoa(uid)
@@ -118,12 +110,6 @@ func (this *Reservation) ListByPage(qMap map[string]interface{}) ([]orm.Params, 
 	sql = sql + " LIMIT " + pageNow_ + "," + pageSize_
 	_, err := o.Raw(sql).Values(&maps)
 	return maps, err
-}
-
-func (this *Reservation) ListByPage4Index(qMap map[string]interface{}, Reservations *[]Reservation) {
-	o := orm.NewOrm()
-	sql := "select * from " + ReservationTBName() + " where 1=1"
-	_, _ = o.Raw(sql).QueryRows(Reservations)
 }
 
 func (this *Reservation) All() ([]orm.Params, error) {

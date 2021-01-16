@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"strings"
 	"time"
 )
 
@@ -92,6 +91,7 @@ func (this *FileController) List() {
 func(this *FileController) Add()  {
 
 	obj := new(models.File)
+	obj.Rid = utils.RandomString(9)
 	obj.Type,_ = this.GetInt("type")
 	obj.Remark = this.GetString("remark")
 	file, information, err := this.GetFile("file")  //返回文件，文件信息头，错误信息
@@ -116,14 +116,20 @@ func(this *FileController) Add()  {
 	if obj.Id>0{
 		this.jsonResult(200,-1,"文件已存在!",nil)
 	}
+	fName := information.Filename
+	obj.OriName = fName
+	obj.SelectByCol(obj,"ori_name")
+	if obj.Id>0{
+		this.jsonResult(200,-1,"文件名已存在!",nil)
+	}
 
 	defer file.Close()    //关闭上传的文件，否则出现临时文件不清除的情况  mmp错了好多次啊
-	fileName := utils.RandomString(9)
-	fName := information.Filename
-	fileName = fileName+fName[strings.LastIndex(fName,"."):]
-	obj.FileName = fileName
+	//fileName := utils.RandomString(9)
+	//fName := information.Filename
+	//fileName = fileName+fName[strings.LastIndex(fName,"."):]
+	obj.FileName = fName
 	obj.OriName = fName
-	err = this.SaveToFile("file", path.Join(filePath,fileName))//保存文件的路径。保存在static/upload中(文件名)
+	err = this.SaveToFile("file", path.Join(filePath,fName))//保存文件的路径。保存在static/upload中(文件名)
 
 	if err != nil {
 		//this.Ctx.WriteString("File upload failed！")

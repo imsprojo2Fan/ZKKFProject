@@ -95,10 +95,26 @@
     overflow-y: auto;
 }
 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-    width: 175px;
-    height: 30px;
+    width: 135px;
+    height: 28px;
 }
 .help-block{
     margin-bottom: 0;
     margin-top: 0;
+}
+.dataTables_filter{
+    margin-right: 278px;
+    margin-top: -18px;
+}
+#filterWrap{
+    position: fixed;
+    z-index: 999;
+    right: 152px;
+    top: 53px;
+}
+#filterWrap2{
+    position: fixed;
+    z-index: 999;
+    right: 15px;
+    top: 53px;
 }

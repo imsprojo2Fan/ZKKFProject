@@ -9,6 +9,20 @@ window.onresize = function() {
     $('.dataTables_scrollBody').css("height",tHeight+"px");
 };
 
+//初始化子类分组数据
+$.post("/main/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
+    if(res.code===1){
+        let tList = res.data;
+        if(tList){
+            for(let i=0;i<tList.length;i++){
+                let item = tList[i];
+                $('#filterSelect').append('<option value="'+item.id+'">'+item.name+'</option>');
+            }
+        }
+        $('#filterSelect').selectpicker('refresh');
+    }
+});
+
 $(document).ready(function() {
 
     //调用父页面弹窗通知
@@ -57,7 +71,8 @@ $(document).ready(function() {
             url: prefix+'/list4person',
             type: 'POST',
             data:{
-                _xsrf:$("#token", parent.document).val()
+                _xsrf:$("#token", parent.document).val(),
+                tid:$('#filterSelect').val()
             }
         },
         columns: [
@@ -196,6 +211,15 @@ function detail(rid) {
 }
 
 function refresh() {
+    let tid = $('#filterSelect').val();
+    if(!tid){
+        tid = 0;
+    }
+    let param = {
+        "_xsrf":$("#token", parent.document).val(),
+        "tid": tid
+    };
+    myTable.settings()[0].ajax.data = param;
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
 }
 

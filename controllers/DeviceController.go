@@ -56,7 +56,10 @@ func (this *DeviceController) List() {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
-
+	tid := this.GetString("tid")
+	qMap["tid"] = tid
+	ttid := this.GetString("ttid")
+	qMap["ttid"] = ttid
 	qMap["pageNow"] = pageNow
 	qMap["pageSize"] = pageSize
 	qMap["sortCol"] = sortCol

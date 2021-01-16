@@ -110,6 +110,14 @@ func (this *Device) Count(qMap map[string]interface{}) (int, error) {
 		key := qMap["searchKey"].(string)
 		sql += " and (d.name like \"%" + key + "%\")"
 	}
+	if qMap["tid"].(string) != "0" {
+		tid := qMap["tid"].(string)
+		sql = sql + " and d.tid="+tid
+	}
+	if qMap["tid"].(string) != "0"&&qMap["ttid"].(string) != "0" {
+		ttid := qMap["ttid"].(string)
+		sql = sql + " and d.ttid="+ttid
+	}
 	var arr []orm.Params
 	_, err := o.Raw(sql).Values(&arr)
 	return len(arr), err
@@ -121,6 +129,14 @@ func (this *Device) ListByPage(qMap map[string]interface{}) ([]orm.Params, error
 	sql := "select d.*,t.name as typeName,c.name as childName from " + DeviceTBName() + " d,type t,type_child c where d.ttid=c.id and t.id=c.tid "
 	if qMap["searchKey"] != "" {
 		sql += " and d.name like '%" + qMap["searchKey"].(string) + "%'"
+	}
+	if qMap["tid"].(string) != "0" {
+		tid := qMap["tid"].(string)
+		sql = sql + " and d.tid="+tid
+	}
+	if qMap["tid"].(string) != "0"&&qMap["ttid"].(string) != "0" {
+		ttid := qMap["ttid"].(string)
+		sql = sql + " and d.ttid="+ttid
 	}
 	if qMap["sortCol"] != "" {
 		sortCol := qMap["sortCol"].(string)

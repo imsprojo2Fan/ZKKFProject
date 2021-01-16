@@ -1,5 +1,5 @@
 #tab2 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-    width: 15.5vw!important;
+    width: 135px!important;
     height: 30px;
 }
 .col-sm-6{
@@ -261,4 +261,14 @@ input[type='radio'] {
 }
 #curUser{
     margin-top: 6px;
+}
+.dataTables_filter{
+    margin-right: 146px;
+    margin-top: 0;
+}
+#filterWrap{
+    position: fixed;
+    z-index: 999;
+    right: 15px;
+    top: 53px;
 }

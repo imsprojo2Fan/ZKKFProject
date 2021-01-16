@@ -1,0 +1,95 @@
+.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: 135px;
+    height: 28px;
+}
+#filterWrap{
+    position: fixed;
+    z-index: 999;
+    right: 15px;
+    top: 53px;
+}
+.dataTables_filter{
+    margin-right: 146px;
+}
+
+#imgWrap img{
+    width: 25px;
+}
+textarea{
+    height: 110px;
+}
+#tab3{
+    padding-bottom: 6%;
+    height: 90vh;
+}
+.btnWrap{
+    padding-top: 3%;
+    width: 100%;
+    text-align: center;
+}
+.btnWrap a{
+    width: 25%;
+}
+
+#foo .sortable-drag {
+    background: #daf4ff;
+}
+#foo li:last-child{
+    border-bottom: none;
+}
+
+.block {
+    opacity: 1;
+    overflow-y: auto;
+    margin-top: 4%;
+}
+.block__list {
+    padding: 0 0;
+    margin: 0 auto;
+    border: 1px solid #eee;
+    background-color: #fff;
+}
+.block__list-title {
+    margin: -20px 0 0;
+    padding: 10px;
+    text-align: center;
+    background: #5F9EDF;
+}
+.block__list li { cursor: move; }
+
+.block__list_words li {
+    background-color: #fff;
+    padding: 10px 40px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+.block__list_words .sortable-ghost {
+    opacity: 0.4;
+    background-color: #F4E2C9;
+}
+
+.block__list_words li:first-letter {
+    text-transform: uppercase;
+}
+
+.block__list_tags {
+    padding-left: 30px;
+}
+
+.block__list_tags:after {
+    clear: both;
+    content: '';
+    display: block;
+}
+.block__list_tags li {
+    color: #fff;
+    float: left;
+    margin: 8px 20px 10px 0;
+    padding: 5px 10px;
+    min-width: 10px;
+    background-color: #5F9EDF;
+    text-align: center;
+}
+.block__list_tags li:first-child:first-letter {
+    text-transform: uppercase;
+}

@@ -497,7 +497,7 @@ function edit(){
 function del(id){
 
     $.ajax({
-        url : prefix+"/delete",
+        url : prefix+"/delete4soft",
         type : "POST",
         dataType : "json",
         cache : false,

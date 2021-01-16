@@ -88,6 +88,7 @@ func init() {
 	beego.Router("/main/reservation/add", &controllers.ReservationController{}, "POST:Add")
 	beego.Router("/main/reservation/update", &controllers.ReservationController{}, "POST:Update")
 	beego.Router("/main/reservation/delete", &controllers.ReservationController{}, "POST:Delete")
+	beego.Router("/main/reservation/delete4soft", &controllers.ReservationController{}, "POST:SoftDelete")
 	beego.Router("/main/reservation/all", &controllers.ReservationController{}, "POST:All")
 	beego.Router("/reservation/timeQuery", &controllers.ReservationController{}, "POST:TimeQuery")
 
@@ -97,6 +98,7 @@ func init() {
 	beego.Router("/main/order/add", &controllers.OrderController{}, "POST:Add")
 	beego.Router("/main/order/update", &controllers.OrderController{}, "POST:Update")
 	beego.Router("/main/order/delete", &controllers.OrderController{}, "POST:Delete")
+	beego.Router("/main/order/delete4soft", &controllers.OrderController{}, "POST:SoftDelete")
 	beego.Router("/main/order/all", &controllers.OrderController{}, "POST:All")
 	beego.Router("/main/order/detail", &controllers.OrderController{}, "POST:Detail")
 	beego.Router("/main/order/protocol", &controllers.OrderController{}, "POST:Protocol")

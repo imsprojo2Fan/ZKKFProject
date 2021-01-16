@@ -59,7 +59,8 @@ func (this *OrderController) List() {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
-
+	tid := this.GetString("tid")
+	qMap["tid"] = tid
 	qMap["pageNow"] = pageNow
 	qMap["pageSize"] = pageSize
 	qMap["sortCol"] = sortCol
@@ -114,7 +115,8 @@ func (this *OrderController) ListForPerson() {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
-
+	tid := this.GetString("tid")
+	qMap["tid"] = tid
 	qMap["uid"] = uid
 	qMap["pageNow"] = pageNow
 	qMap["pageSize"] = pageSize
@@ -236,6 +238,20 @@ func (this *OrderController) Update() {
 	}
 }
 
+func (this *OrderController) SoftDelete() {
+	obj := new(models.Order)
+	Rid := this.GetString("rid")
+	if Rid == "" {
+		this.jsonResult(200, -1, "rid不能为空！", nil)
+	}
+	err := obj.SoftDelete(Rid)
+	if err == nil {
+		this.jsonResult(200, 1, "删除数据成功！", nil)
+	} else {
+		this.jsonResult(200, -1, "删除数据失败,"+err.Error(), err.Error())
+	}
+}
+
 func (this *OrderController) Delete() {
 	obj := new(models.Order)
 	obj.Rid = this.GetString("rid")
@@ -335,6 +351,7 @@ func (this *OrderController) IndexAdd() {
 		var obj models.Order
 		obj.Rid = Rid
 		obj.Uid = uid
+		obj.Tid,_ = strconv.Atoi(item.Tid)
 		obj.Status = 0
 		obj.Count = item.Count
 		orderArr = append(orderArr,obj)

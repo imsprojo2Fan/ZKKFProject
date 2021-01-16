@@ -63,6 +63,7 @@ $(document).ready(function() {
                 $('#typeSel2').html('');
                 for(let i=0;i<tList.length;i++){
                     let item = tList[i];
+                    $('#filterSelect').append('<option value="'+item.id+'">'+item.name+'</option>');
                     $('#typeSel1').append('<option value="'+item.id+'">'+item.name+'</option>');
                     $('#typeSel2').append('<option value="'+item.id+'">'+item.name+'</option>');
                 }
@@ -72,6 +73,7 @@ $(document).ready(function() {
                 $('#selWrap1').append('<span style="color: red;display: block;margin-top: -24px">暂无分组，请先添加!</span>');
                 $('#selWrap2').append('<span style="color: red;display: block;margin-top: -24px">暂无分组，请先添加!</span>');
             }
+            $('#filterSelect').selectpicker('refresh');
             $('#typeSel1').selectpicker('refresh');
             $('#typeSel2').selectpicker('refresh');
         }
@@ -106,6 +108,7 @@ $(document).ready(function() {
             url: prefix+'/list',
             type: 'POST',
             data:{
+                tid:$('#filterSelect').val(),
                 _xsrf:$("#token", parent.document).val()
             }
         },
@@ -437,6 +440,16 @@ function reset() {
 }
 
 function refresh() {
+    let tid = $('#filterSelect').val();
+    if(!tid){
+        tid = 0;
+    }
+    let param = {
+        "_xsrf":$("#token", parent.document).val(),
+        "tid": tid
+    };
+
+    myTable.settings()[0].ajax.data = param;
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
 }
 

@@ -59,16 +59,17 @@ $(function () {
         if(standard){
             for(let i=0;i<standard.length;i++){
                 let item = standard[i];
-                $('.standard').append("<a title='点击下载' data='"+item.FileName+"' href='javascript:void(0);'>"+item.OriName+"</a><br>");
+                $('.standard').append("<a title='点击下载' data='"+item.OriName+"' href='javascript:void(0);'>"+item.OriName+"</a><br>");
             }
         }else{
             $('.standard').parent().remove();
         }
+        debugger
         let drawing = info.drawing;
         if(drawing){
             for(let i=0;i<drawing.length;i++){
                 let item = drawing[i];
-                $('.drawing').append("<a title='点击下载' data='"+item.FileName+"' href='javascript:void(0);'>"+item.FileName+"</a><br>");
+                $('.drawing').append("<a title='点击下载' data='"+item.OriName+"' href='javascript:void(0);'>"+item.OriName+"</a><br>");
             }
         }else{
             $('.drawing').parent().remove();
