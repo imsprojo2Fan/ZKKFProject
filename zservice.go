@@ -18,11 +18,12 @@ func init() {
 	orm.Debug = sysinit.SqlFlag
 	//是否开启 XSRF，默认为 false，不开启  防跨站
 	beego.BConfig.WebConfig.EnableXSRF = true
-	beego.BConfig.WebConfig.XSRFExpire = 3600 //过期时间，默认1小时
+	beego.BConfig.WebConfig.XSRFExpire = 0 //过期时间，默认1小时
 	beego.BConfig.WebConfig.XSRFKey = "61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o"
 	//是否开启热升级，默认是 false，关闭热升级。
 	//beego.BConfig.Listen.Graceful=true
 	beego.BConfig.EnableGzip = true
+	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime=36000000000
 
 	beego.SetStaticPath("/file", "./file")
 	beego.SetStaticPath("/img", "./file/img")

@@ -79,9 +79,14 @@ func (this *TypeController) Add() {
 	if name == "" {
 		this.jsonResult(200, -1, "设备分组类目不能为空！", nil)
 	}
+	request := this.GetString("request")
+	if request == "" {
+		this.jsonResult(200, -1, "实验要求不能为空！", nil)
+	}
 	var obj models.Type
 	obj.Uid = uid
 	obj.Name = name
+	obj.Request = request
 	obj.Description = description
 	obj.Img = img
 	obj.DetectionCycle,_ = this.GetInt("detection_cycle")
@@ -102,9 +107,14 @@ func (this *TypeController) Update() {
 	if name == "" {
 		this.jsonResult(200, -1, "设备分组类目不能为空！", nil)
 	}
+	request := this.GetString("request")
+	if request == "" {
+		this.jsonResult(200, -1, "实验要求不能为空！", nil)
+	}
 	var obj models.Type
 	obj.Id = id
 	obj.Name = name
+	obj.Request = request
 	obj.Description = description
 	obj.Img = img
 	obj.DetectionCycle,_ = this.GetInt("detection_cycle")

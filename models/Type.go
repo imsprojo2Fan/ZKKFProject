@@ -16,6 +16,7 @@ type Type struct {
 	Img         string
 	DetectionCycle int //检测周期，天
 	Rank int //排序
+	Request string //实验要求，必填
 	Updated     time.Time `orm:"auto_now_add;type(datetime)"`
 	Created     time.Time `orm:"auto_now_add;type(datetime)"`
 }
@@ -34,7 +35,7 @@ func (this *Type) Insert(obj *Type) error {
 func (this *Type) Update(obj *Type) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "name", "description", "img","detection_cycle", "updated")
+	_, err := o.Update(obj, "name", "description", "img","detection_cycle","request", "updated")
 	return err
 }
 

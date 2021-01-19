@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/orm"
 	"strconv"
 	"time"
@@ -80,21 +79,6 @@ func (this *Device) DeleteByTid(o orm.Ormer,tid string) error {
 func (this *Device) DeleteByTtid(o orm.Ormer,ttid string) error {
 	_, err := o.Raw("delete from device where ttid="+ttid).Exec()
 	return err
-}
-
-func (this *Device) Read(obj *Device) bool {
-
-	o := orm.NewOrm()
-	err := o.Read(obj)
-	if err == orm.ErrNoRows {
-		fmt.Println("查询不到")
-		return false
-	} else if err == orm.ErrMissPK {
-		fmt.Println("找不到主键")
-		return false
-	} else {
-		return true
-	}
 }
 
 func (this *Device) SelectByCol(col string, obj *Device) {
@@ -177,7 +161,7 @@ func (this *Device) UpdateOrderNum(ids string) {
 func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select d.id,d.rid,d.tid,d.name as name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,d.standard,d.drawing,t.name as typeName,t.id as tid,t.detection_cycle as detectionCycle,c.id as ttid,c.name as childName from device d,type t,type_child c where d.ttid=c.id and c.tid=t.id and d.rid=?"
+	sql := "select d.id,d.rid,d.tid,d.name as name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,d.standard,d.drawing,t.name as typeName,t.id as tid,t.detection_cycle as detectionCycle,t.request,c.id as ttid,c.name as childName from device d,type t,type_child c where d.ttid=c.id and c.tid=t.id and d.rid=?"
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }

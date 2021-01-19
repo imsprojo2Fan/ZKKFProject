@@ -64,7 +64,6 @@ $(function () {
         }else{
             $('.standard').parent().remove();
         }
-        debugger
         let drawing = info.drawing;
         if(drawing){
             for(let i=0;i<drawing.length;i++){
@@ -363,6 +362,7 @@ function addOrder() {
         outItem.Tid = info.tid;
         outItem.Type = info.typeName;
         outItem.DetectionCycle = info.detectionCycle;
+        outItem.Request = info.request;
         outItem.Count = 1;
         outItem.Data = localInnerArr;
         localOutArr.push(outItem);
@@ -522,6 +522,7 @@ function renderProtocol() {
         let tid = outItem.Tid;
         let typeName = outItem.Type;
         let detectionCycle = outItem.DetectionCycle;
+        let request = outItem.Request;
         let innerArr = outItem.Data;
         let devices = "";
         for(let j=0;j<innerArr.length;j++){
@@ -586,7 +587,7 @@ function renderProtocol() {
             '   <td height="175" class="tabtxt2">实验参数要求</td>\n                                    ' +
             '   <td colspan="5">\n                                        ' +
             '       <textarea class="form-control" id="parameter'+tid+'Content" name="parameter" ></textarea>\n                                        ' +
-            '       <div class="editor" id="parameter'+tid+'">可插入文字图片</div>\n                                    ' +
+            '       <div class="editor" id="parameter'+tid+'">'+request+'</div>\n                                    ' +
             '   </td>\n                                ' +
             '</tr>\n                                ' +
             '<tr>\n                                    ' +
@@ -604,6 +605,7 @@ function renderProtocol() {
             '   </td>\n                                ' +
             '</tr>\n                            ' +
             '</table>');
+        $('#parameter'+tid+"Content").val(request);
     }
     renderClick();
 }

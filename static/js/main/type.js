@@ -36,6 +36,12 @@ $(document).ready(function() {
         $("#"+data).fadeIn(300);
     });
 
+    //富文本监听事件
+    $('.editor').on("click",function () {
+        let id = $(this).attr("id");
+        openWindow("/main/editor?domId="+id,"中科科辅",1000,600);
+    });
+
     $('#uploadPic').on('click',function () {
         openWindow("/main/uploadPic?btnId=uploadPic&domId=picName","中科科辅",1000,600);
     });
@@ -208,6 +214,7 @@ $(document).ready(function() {
         $('#edit_detection_cycle').val(rowData.detection_cycle);
         $('#edit_picName').html(rowData.img);
         $('#edit_description').val(rowData.description);
+        $('#requestEdit').val(rowData.request);
         $('#tip').html("");
         $('#editModal').modal("show");
     });
@@ -276,6 +283,7 @@ function add(){
     let range = $('#detection_cycle').val().trim();
     let description = $('#description').val().trim();
     let img = $('#picName').html();
+    let request = $('#request').val();
     if (!name){
         swal("系统提示",'分组名称不能为空!',"warning");
         return;
@@ -292,6 +300,10 @@ function add(){
         swal("系统提示",'请填写简述信息!',"warning");
         return;
     }
+    if (!request){
+        swal("系统提示",'请填写实验要求模板!',"warning");
+        return;
+    }
 
     $.ajax({
         url : prefix+"/add",
@@ -303,7 +315,8 @@ function add(){
             name:name,
             detection_cycle:$('#detection_cycle').val().trim(),
             img:img,
-            description:description
+            description:description,
+            request:request
         },
         beforeSend:function(){
             loadingParent(true,2);
@@ -327,6 +340,7 @@ function edit(){
     let description = $('#edit_description').val().trim();
     let range = $('#edit_detection_cycle').val().trim();
     let img = $('#edit_picName').html();
+    let request = $('#requestEdit').val();
     if (!name){
         swal("系统提示",'分组名称不能为空!',"warning");
         return;
@@ -343,6 +357,10 @@ function edit(){
         swal("系统提示",'请填写简述信息!',"warning");
         return;
     }
+    if (!request){
+        swal("系统提示",'请填写实验要求模板!',"warning");
+        return;
+    }
     $.ajax({
         url : prefix+"/update",
         type : "POST",
@@ -354,7 +372,8 @@ function edit(){
             name:name,
             detection_cycle:range,
             img:img,
-            description:description
+            description:description,
+            request:request
         },
         beforeSend:function(){
             loadingParent(true,2);
@@ -502,6 +521,13 @@ function openWindow(url,name,iWidth,iHeight) {
     let iTop = (window.screen.availHeight-30-iHeight)/2;
     let iLeft = (window.screen.availWidth-10-iWidth)/2;
     let openWindow = window.open(url,name,'height='+iHeight+',innerHeight='+iHeight+',width='+iWidth+',innerWidth='+iWidth+',top='+iTop+',left='+iLeft+',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no');
+}
+
+//富文本输入回调
+function openRes(domId,content) {
+    //alert(content)
+    //console.log(content);
+    $('#'+domId).val(content);
 }
 
 //接收上传图片回调
