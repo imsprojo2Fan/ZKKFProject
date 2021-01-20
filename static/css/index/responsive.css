@@ -238,8 +238,8 @@
     }
 
     .testimonials-one {
-        padding-top: 150px;
-        padding-bottom: 150px;
+        padding-top: 65px;
+        padding-bottom: 65px;
     }
 
     .testimonials-one__main-image img {
@@ -466,9 +466,8 @@
         width: 18vw!important;
     }
     .devImg{
-        width: 19vw!important;
-        margin: 0 auto;
-        height: 255px;
+        width: 7vw!important;
+        height: 110px;
     }
     .newsImg{
         /*width: 125px!important;*/
@@ -476,9 +475,17 @@
     #cooperate .owl-item{
         margin-left: 60px!important;
     }
+    #deviceWrap .sketch{
+        height: 55px;
+    }
+
 }
 
 @media(max-width: 425px) {
+
+    .deviceItem{
+        border: none!important;
+    }
 
     .site-footer__bottom-logo img{
         width: 75%;
@@ -496,9 +503,8 @@
     }
 
     .devImg{
-        width: 76vw!important;
+        width: 40vw!important;
         margin: 0 auto;
-        height: 255px;
     }
     .uItem{
         width: 40vw!important;

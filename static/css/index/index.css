@@ -1,5 +1,5 @@
 .collection-two{
-    padding-top: 40px;
+    padding-top: 10px;
     padding-bottom: 40px;
 }
 .block-title-two{
@@ -91,11 +91,62 @@ textarea{
     justify-content: center;
     -webkit-box-align: center;
     align-items: center;
-    margin-top: 115px;
+    margin-top: 0.5%;
     background: var(--thm-blue);
     border-color: var(--thm-blue);
     color: white;
 }
 .more:hover{
     opacity: 0.75;
+}
+#deviceWrap{
+    text-align: center;
+}
+
+#deviceWrap .title{
+    font-size: 20px;
+    font-weight: 600;
+}
+#deviceWrap .sketch{
+    font-size: 15px;
+}
+.deviceItem{
+    border: 1px solid #eee;
+    padding: 15px 20px;
+    display: inline-block;
+    margin: 0 0 -1px -1px;
+}
+.deviceItem:hover{
+    /*background-color: var(--thm-base);
+    transition: all 0.15s ease-in-out;
+    color: white;*/
+}
+.deviceItem img{
+    cursor: pointer;
+}
+.deviceItem a{
+    color: #ccc;
+}
+.deviceItem:hover::before {
+    -webkit-transform-origin: left center;
+    transform-origin: left center;
+    -webkit-transform: scale(1, 1);
+    transform: scale(1, 1);
+}
+.deviceItem::before {
+    content: "";
+    width: 100%;
+    height: 1px;
+    background-color: var(--thm-base);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    -webkit-transform: scale(0, 1);
+    transform: scale(0, 1);
+    -webkit-transform-origin: right center;
+    transform-origin: right center;
+    -webkit-transition: -webkit-transform 500ms ease;
+    transition: -webkit-transform 500ms ease;
+    transition: transform 500ms ease;
+    transition: transform 500ms ease, -webkit-transform 500ms ease;
 }

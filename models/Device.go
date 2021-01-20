@@ -169,9 +169,9 @@ func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
 func (this *Device) ListByType(tid,ttid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select * from " + DeviceTBName()
+	sql := "select name,sketch,is_order,img,rid from " + DeviceTBName()
 	if tid!="0"{
-		sql = "select * from " + DeviceTBName() + " where tid="+tid+" and ttid="+ttid
+		sql = "select name,sketch,is_order,img,rid from " + DeviceTBName() + " where tid="+tid+" and ttid="+ttid
 	}
 	_, err := o.Raw(sql).Values(&res)
 	return res, err

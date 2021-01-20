@@ -1,3 +1,25 @@
+@media (min-width:425px ) {
+    .col-lg-4{
+        display: none;
+    }
+    .deviceItem{
+        padding: 20px 8px;
+        border: 1px solid #eee;
+        margin: 0 0 -1px -1px;
+    }
+    .deviceItem img{
+        margin: 0 auto;
+    }
+    .deviceItem .sketch{
+        height: 25px;
+    }
+}
+
+@media(max-width: 425px) {
+
+}
+
+
 .main-nav__right{
     position: absolute!important;
     right: 20%!important;
@@ -55,7 +77,11 @@
     color: #0b0b0b80;
 }
 .sidebar{
-    padding-top: 20px;
+    padding-top: 25px;
+    padding-left: 30px;
+    box-shadow:none;
+    padding-bottom: 84px;
+    background: #eee;
 }
 .sidebar__single+.sidebar__single {
     margin-top: 28px;
@@ -68,37 +94,131 @@
 }
 .myBtn{
     display: block;
-    border: 1px solid #e5e5e5;
-    font-size: 16px;
+    font-size: 18px;
     color: var(--thm-black);
-    padding: 5px 20px;
-    cursor: pointer;
-    -webkit-transition: 300ms;
-    transition: 300ms;
-    text-decoration: none;
     margin-right: 12px;
-    margin-bottom: 12px;
+    cursor: pointer;
+    position: relative;
 }
 .myBtn:hover,
 .myBtn:focus,
 .myBtn:active{
-    color: white!important;
-    background-color: var(--thm-base);
-    border-color: var(--thm-base);
+    /*color: var(--thm-base)!important;
+    border-bottom: 1px solid var(--thm-base);
     outline: none;
+    transition: transform 500ms ease;*/
 }
 .filterActive{
-    color: white!important;
-    background-color: var(--thm-base);
-    border-color: var(--thm-base)!important;
+    color: var(--thm-base)!important;
+    /*border-bottom: 1px solid var(--thm-base);*/
 }
 .dataTip{
     margin-left: 15px;
 }
 #typeChildWrap{
-    margin-top: 0;
+    margin-top: 6px;
 }
 #typeChildWrap a{
-    padding: 0 10px;
+    font-size: 15px;
+}
+#typeWrap{
+    font-size: 18px;
+}
+.typeWrap h3{
+    padding-bottom: 10px!important;
+    border-bottom: 1px solid #ddd!important;
+    margin: 0;
+    color: #848484;
+    font-weight: bold;
+    font-size: 24px;
+}
+.typeWrap h4{
+    padding-bottom: 10px!important;
+    border-bottom: 1px solid #ddd!important;
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #848484;
+}
+.sidebar .sketch{
     font-size: 13px;
+}
+.myBtn:hover::before {
+    -webkit-transform-origin: left center;
+    transform-origin: left center;
+    -webkit-transform: scale(1, 1);
+    transform: scale(1, 1);
+}
+.myBtn::before {
+    content: "";
+    width: 100%;
+    height: 1px;
+    background-color: var(--thm-base);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    -webkit-transform: scale(0, 1);
+    transform: scale(0, 1);
+    -webkit-transform-origin: right center;
+    transform-origin: right center;
+    -webkit-transition: -webkit-transform 500ms ease;
+    transition: -webkit-transform 500ms ease;
+    transition: transform 500ms ease;
+    transition: transform 500ms ease, -webkit-transform 500ms ease;
+}
+.centerWrap{
+    width: 100%;
+    text-align: center;
+}
+#deviceWrap{
+    padding-bottom: 5%;
+}
+.deviceItem{
+    text-align: center;
+    margin: 0 0 -1px -1px;
+}
+.deviceItem:hover:before{
+    -webkit-transform-origin: left center;
+    transform-origin: left center;
+    -webkit-transform: scale(1, 1);
+    transform: scale(1, 1);
+}
+.deviceItem::before {
+    content: "";
+    width: 100%;
+    height: 1px;
+    background-color: var(--thm-base);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    -webkit-transform: scale(0, 1);
+    transform: scale(0, 1);
+    -webkit-transform-origin: right center;
+    transform-origin: right center;
+    -webkit-transition: -webkit-transform 500ms ease;
+    transition: -webkit-transform 500ms ease;
+    transition: transform 500ms ease;
+    transition: transform 500ms ease, -webkit-transform 500ms ease;
+}
+.deviceItem img{
+    cursor: pointer;
+}
+.deviceItem .title{
+    font-size: 20px;
+    font-weight: 600;
+}
+.deviceItem .sketch{
+    font-size: 14px;
+}
+.deviceItem .addBtn{
+    padding: 4px 16px;
+    background: var(--thm-base);
+    color: white;
+    cursor: pointer;
+    margin-top: 5px;
+    display: inline-block;
+}
+.deviceItem .addBtn:hover{
+    opacity: 0.75;
+    color: white;
 }

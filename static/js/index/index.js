@@ -32,6 +32,8 @@ $(window).on('load', function () {
     renderType();
     renderNews();
 
+    initOwl();
+
     $('.preloader').fadeOut(200);
 });
 
@@ -43,31 +45,31 @@ function renderType(){
             for(let i=0;i<arr.length;i++){
                 let item = arr[i];
                 let head = item.name;
-                if(head.length>25){
-                    head = head.substring(0,22)+"...";
+                head = head.replace("（","(");
+                head = head.replace("）",")");
+                head = head.replace(" ","");
+                if(head.length>10){
+                    head = head.substring(0,8)+"...";
                 }
                 let sketch = item.description;
+                sketch = sketch.replace("（","(");
+                sketch = sketch.replace("）",")");
+                sketch = sketch.replace(" ","");
                 if(sketch.length>45){
                     sketch = sketch.substring(0,42)+"...";
                 }
                 let id = item.id;
                 let img = item.img;
                 $('#deviceWrap').append('' +
-                    '<div class="item">' +
+                    '<div class="col-sm-2 deviceItem">\n' +
                     '   <a target="_blank" href="/type/'+id+'">\n' +
-                    '   <div class="collection-two__single">\n' +
-                    '       <div class="collection-two__image">\n' +
-                    '           <img class="devImg" src="/img/'+img+'" onerror="this.src= \'../../static/img/default2.png\'; this.onerror = null;this.style.marginTop=\'0px\';this.style.marginLeft=\'45px\'" alt="">\n' +
-                    '       </div>\n' +
-                    '       <div class="collection-two__content">\n' +
-                    '           <h3><a target="_blank" href="/type/'+id+'">'+head+'</a></h3>\n' +
-                    '           <p>'+sketch+'</p>\n' +
-                    '       </div>\n' +
-                    '   </div>\n' +
-                    '   </a>' +
+                        '   <img class="devImg" src="/img/'+img+'" onerror="this.src= \'../../static/img/default1.png\'; this.onerror = null;" alt="">\n' +
+                        '   </a><div class="sketch">'+sketch+'</div>\n' +
+                        '   <div class="title">'+head+'</div>\n' +
+                    '   ' +
                     '</div>');
+
             }
-            initOwl();
         }else{
             $('#deviceWrap').html("<span class='dataTip'>无任何分组!</span>");
         }

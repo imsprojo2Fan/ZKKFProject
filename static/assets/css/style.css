@@ -46,7 +46,7 @@ font-family: 'Work Sans', sans-serif; */
 	--thm-font: "Karla", sans-serif;
 	--heading-font: "Playfair Display", serif;
 	--special-font: "Work Sans", sans-serif;
-	--thm-base: #6195ff;
+	--thm-base: rgba(97, 149, 255, 0.75);
 	--thm-base-rgb: 170, 160, 129;
 	--thm-black: #252930;
     --thm-blue: #6195FFC9;
@@ -593,7 +593,7 @@ a:focus {
 }
 
 .block-title h3 {
-	font-family: "Playfair Display";
+	/*font-family: "Playfair Display";*/
 	font-weight: bold;
 	color: var(--thm-black);
 	font-size: 44px;
@@ -3728,7 +3728,7 @@ a:focus {
 	        justify-content: center;
 	-webkit-box-align: center;
 	        align-items: center;
-	margin-top: 35px;
+	margin-top: 30px;
 }
 
 .cta-one h3 {
@@ -5073,7 +5073,7 @@ a:focus {
 }
 
 .testimonials-one .block-title {
-	margin-bottom: 60px;
+	margin-bottom: 20px;
 }
 
 .testimonials-one__block {
