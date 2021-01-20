@@ -80,7 +80,7 @@
     padding-top: 25px;
     padding-left: 30px;
     box-shadow:none;
-    padding-bottom: 84px;
+    padding-bottom: 103px;
     background: #eee;
 }
 .sidebar__single+.sidebar__single {
@@ -206,16 +206,18 @@
 .deviceItem .title{
     font-size: 20px;
     font-weight: 600;
+    padding: 5px 0;
 }
 .deviceItem .sketch{
     font-size: 14px;
+    padding: 5px 0;
 }
 .deviceItem .addBtn{
     padding: 4px 16px;
     background: var(--thm-base);
     color: white;
     cursor: pointer;
-    margin-top: 5px;
+    margin-top: 15px;
     display: inline-block;
 }
 .deviceItem .addBtn:hover{
