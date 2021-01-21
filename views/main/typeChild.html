@@ -59,9 +59,9 @@
                             <thead>
                             <tr>
                                 <th><div style="text-align: left"><input id="hCheck" type='checkbox' name='check' value='-1'><span style="margin-left: 3px;">编号</span></div></th>
-                                <th>子类名称</th>
-                                <th>分组描述</th>
-                                <th>分组图片</th>
+                                <th>名称</th>
+                                <th>描述</th>
+                                <th>图片</th>
                                 <th>更新时间</th>
                                 <th>创建时间</th>
                                 <th>操作</th>
@@ -77,7 +77,7 @@
                             <form class="form-horizontal" autocomplete="off">
 
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label">所属分组</label>
+                                    <label class="col-sm-3 control-label form-label">所属分组</label>
                                     <div class="col-sm-3 selWrap" id="selWrap1">
                                         <select id="typeSel1" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
                                         </select>
@@ -86,27 +86,35 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>子类名称</label>
+                                    <label for="account" class="col-sm-3 control-label form-label"><span class="red">*</span>名称</label>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control" maxlength="20" id="name" placeholder="请输入子类名称">
+                                        <input type="text" class="form-control" maxlength="20" id="name" placeholder="请输入名称">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label"><span class="red"></span>分组图片</label>
+                                    <label for="account" class="col-sm-3 control-label form-label"><span class="red">*</span>服务周期(天)</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" oninput = "value=value.replace(/[^\d]/g,'')" maxlength="2" id="detection_cycle" placeholder="请输入服务周期(天)">
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label form-label"><span class="red"></span>图片</label>
                                     <div class="col-sm-5">
                                         <div id="imgWrap">
                                             <button type="button" id="uploadPic" class="btn btn-default">上传图片</button>
                                             &nbsp;<span class="text-info " id="picName"></span>
-                                            <span class="help-block"><span style="color: red">*</span>建议宽高370*270,文件小于1MB</span>
+                                            <span class="help-block"><span style="color: red">*</span>建议宽高146*128，文件小于1MB</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="name" class="col-sm-2 control-label form-label">描述信息</label>
-                                    <div class="col-sm-8">
+                                    <label for="name" class="col-sm-3 control-label form-label">描述信息</label>
+                                    <div class="col-sm-5">
                                         <textarea id="description" class="form-control" placeholder=""></textarea>
                                     </div>
                                 </div>
@@ -148,6 +156,9 @@
                         <p class="form-control-static" >子类名称：<span id="detail_name"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
+                        <p class="form-control-static" >检测周期(天)：<span id="detail_detection_cycle"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
                         <p class="form-control-static" >图片地址：<span id="detail_img"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
@@ -187,7 +198,7 @@
                         <input type="hidden" id="id">
 
                         <div class="form-group">
-                            <label class="col-sm-2 control-label form-label">所属分组</label>
+                            <label class="col-sm-3 control-label form-label">所属分组</label>
                             <div class="col-sm-5 selWrap" id="selWrap2">
                                 <select class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" id="typeSel2" >
                                 </select>
@@ -196,7 +207,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>子类名称</label>
+                            <label for="account" class="col-sm-3 control-label form-label"><span class="red">*</span>子类名称</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" maxlength="20" id="edit_name" placeholder="请输入子类名称">
                                 <span class="help-block"></span>
@@ -204,18 +215,26 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-2 control-label form-label"><span class="red"></span>分组图片</label>
+                            <label for="account" class="col-sm-3 control-label form-label"><span class="red">*</span>服务周期(天)</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" oninput = "value=value.replace(/[^\d]/g,'')" maxlength="2" id="edit_detection_cycle" placeholder="请输入服务周期(天)">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label form-label"><span class="red"></span>分组图片</label>
                             <div class="col-sm-8">
                                 <div id="imgWrap">
                                     <button type="button" id="edit_uploadPic" class="btn btn-default">上传图片</button>
                                     &nbsp;<span class="text-info" id="edit_picName"></span>
-                                    <span class="help-block"><span style="color: red">*</span>建议宽高370*270,文件小于1MB</span>
+                                    <span class="help-block"><span style="color: red">*</span>建议宽高176*128,文件小于1MB</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label form-label">描述信息</label>
+                            <label for="name" class="col-sm-3 control-label form-label">描述信息</label>
                             <div class="col-sm-8">
                                 <textarea id="edit_description" class="form-control" placeholder=""></textarea>
                             </div>

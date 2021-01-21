@@ -83,6 +83,9 @@ $(function () {
                     if(window.location.href.indexOf("detail")!==-1){
                         location.reload();
                     }
+                    if(window.location.href.indexOf("type")!==-1){
+                        location.reload();
+                    }
                     //swal("登录成功!",' ',"success");
                 } else {
                     $('#alertTip').html(r.msg);

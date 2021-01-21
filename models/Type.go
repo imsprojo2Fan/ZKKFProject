@@ -35,7 +35,7 @@ func (this *Type) Insert(obj *Type) error {
 func (this *Type) Update(obj *Type) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "name", "description", "img","detection_cycle","request", "updated")
+	_, err := o.Update(obj, "name", "description", "img","request", "updated")
 	return err
 }
 

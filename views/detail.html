@@ -35,6 +35,7 @@
     <!--login-->
     <link rel="stylesheet" type="text/css" href="../static/assets/css/login.css" />
     <link rel="stylesheet" type="text/css" href="../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/index/order.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/index/detail.css" />
     {{/*news-details.html*/}}
     <style>
@@ -105,7 +106,7 @@
                     </div>
                     <div id="protocolInfo" class="col-lg-12">
                         <form class="form-horizontal" autocomplete="off">
-                            <table style="margin-top: 60px" id="table1" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+                            <table style="margin-top: 50px" id="table1" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
                                 <tr>
                                     <td align="center" class="biaoti" height="60">中科科辅技术服务协议</td>
                                 </tr>
@@ -205,6 +206,7 @@
                                         <input type="radio" value="不接受" name="test_result"/>&nbsp;不接受
                                     </td>
                                 </tr>
+                                <br>
                                 <tr>
                                     <td class="tabtxt2">协议签署日期</td>
                                     <td colspan="2" class="date"></td>
@@ -233,7 +235,7 @@
                     <div id="deviceInfo" class="col-lg-8">
                         <div class="blog-details__main">
                             <div class="blog-details__image">
-                                <img src="../static/img/default1.png" onerror="this.src= '../../static/img/default2.png'; this.onerror = null;this.style.marginTop='18px';this.style.marginLeft='45px'" class="img-fluid" alt="">
+                                <img src="../static/img/default1.png" onerror="this.src= '../../static/img/default1.png'; this.onerror = null;this.style.marginTop='18px';this.style.marginLeft='45px'" class="img-fluid" alt="">
                             </div><!-- /.blog-details__image -->
                             <div class="itemHead"><h4 class="deviceName">{{.info.name}}</h4></div>
                             <p class="createTime">
@@ -248,10 +250,14 @@
                             <div class="btnWrap">
                                 <button class="thm-btn contact-one__btn thm-btnActive myBtn" id="btnHead" type="button">在线下单</button>
                                 <button style="margin-left: -5px;display: none" class="thm-btn contact-one__btn myBtn" type="button">预订设备</button>
-                                <button id="submitBtn" class="thm-btn contact-one__btn" type="button"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;&nbsp;加入实验计划</button>
+                                <button id="submitBtn" class="thm-btn contact-one__btn" type="button"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;&nbsp;添加实验</button>
                             </div>
                             <div id="dateWrap">
-                                <div class="itemHead">日期选择<input id="dateInput" type="text" readonly="readonly" name="date" autocomplete="off"  placeholder="请选择日期"></div>
+                                <div class="itemHead">日期选择
+                                    <div class="weekWrap">
+                                        <span class="weekWrapActive">近一周</span><span>第二周</span><span>第三周</span>
+                                    </div>
+                                </div>
                                 <div class="itemHead">预约时间</div>
                                 <div class="timeWrap"></div>
                             </div>
@@ -449,7 +455,7 @@
         <img src="../static/img/pdf.png">
     </div>
 
-    <div id="lib" title="点击查看已选实验计划">
+    <div id="lib" title="点击查看已选实验">
         <span>0</span>
         <img src="../static/img/lib.png">
     </div>
@@ -576,7 +582,7 @@
         </div><!-- /.side-menu__block-inner -->
     </div><!-- /.side-menu__block -->
 
-    <div class="submitBtn">提交实验计划</div>
+    <div class="submitBtn">提交实验</div>
 
     <a id="qrCode" ><i class="fa fa-qrcode"></i></a>
     <div class="wechat-alert" id="wechat-alert" style="display: none;">
@@ -704,6 +710,7 @@
     <script src="../static/js/util/imgUtil.js"></script>
     <script src="../static/js/util/browserInfo.js"></script>
     <script src="../static/js/index/login.js"></script>
+    <script src="../static/js/index/order.js"></script>
     <script src="../static/js/index/detail.js"></script>
     <script>let info = {{.info}}</script>
     <script>let user = {{.user}}</script>

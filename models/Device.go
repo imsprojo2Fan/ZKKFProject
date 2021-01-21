@@ -161,7 +161,7 @@ func (this *Device) UpdateOrderNum(ids string) {
 func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select d.id,d.rid,d.tid,d.name as name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,d.standard,d.drawing,t.name as typeName,t.id as tid,t.detection_cycle as detectionCycle,t.request,c.id as ttid,c.name as childName from device d,type t,type_child c where d.ttid=c.id and c.tid=t.id and d.rid=?"
+	sql := "select d.id,d.rid,d.tid,d.ttid,d.name as name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,d.standard,d.drawing,t.name as typeName,t.id as tid,t.detection_cycle as detectionCycle,t.request,c.id as ttid,c.name as childName from device d,type t,type_child c where d.ttid=c.id and c.tid=t.id and d.rid=?"
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }
@@ -169,9 +169,9 @@ func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
 func (this *Device) ListByType(tid,ttid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select name,sketch,is_order,img,rid from " + DeviceTBName()
+	sql := "select d.id,d.tid,d.ttid,d.name,d.sketch,d.is_order,d.img,d.rid,t.name as typeName,t.request,c.name as childName,c.detection_cycle as detectionCycle from device d,`type` t,type_child c where d.tid=t.id and d.ttid=c.id"
 	if tid!="0"{
-		sql = "select name,sketch,is_order,img,rid from " + DeviceTBName() + " where tid="+tid+" and ttid="+ttid
+		sql += " and d.tid="+tid+" and d.ttid="+ttid
 	}
 	_, err := o.Raw(sql).Values(&res)
 	return res, err

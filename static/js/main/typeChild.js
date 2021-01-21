@@ -156,7 +156,7 @@ $(document).ready(function() {
         },
         "fnInitComplete": function(oSettings, json) {
             if(!json){
-                swal("系统提示","登录超时！请刷新页面","error");
+                swalParent("系统提示","登录超时！请刷新页面","error");
                 return false;
             }
         },
@@ -220,6 +220,7 @@ $(document).ready(function() {
     $('#myTable').on("click",".btn-default",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
         $('#detail_name').html(rowData.name);
+        $('#detail_detection_cycle').html(rowData.detection_cycle);
         $('#detail_img').html("<a target='_blank' href='/img/"+rowData.img+"'>"+rowData.img+"</a>");
         let description = rowData.description;
         if(!description){
@@ -251,6 +252,7 @@ $(document).ready(function() {
         $('#edit_name').val(rowData.name);
         $('#edit_picName').html(rowData.img);
         $('#edit_description').val(rowData.description);
+        $('#edit_detection_cycle').val(rowData.detection_cycle);
         $('#tip').html("");
         $('#editModal').modal("show");
     });
@@ -281,7 +283,12 @@ function add(){
     let description = $('#description').val().trim();
     let img = $('#picName').html();
     if (!name){
-        swal("系统提示",'分组名称不能为空!',"warning");
+        swalParent("系统提示",'分组名称不能为空!',"warning");
+        return;
+    }
+    let range = $('#detection_cycle').val().trim();
+    if (!range){
+        swalParent("系统提示",'服务周期不能为空!',"warning");
         return;
     }
 
@@ -295,7 +302,8 @@ function add(){
             name:name,
             img:img,
             tid:$('#typeSel1').val(),
-            description:description
+            description:description,
+            detection_cycle:range
         },
         beforeSend:function(){
             loadingParent(true,2);
@@ -306,7 +314,7 @@ function add(){
                 type = "success";
                 reset();
             }
-            swal("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             loadingParent(false,2);
@@ -319,7 +327,12 @@ function edit(){
     let description = $('#edit_description').val().trim();
     let img = $('#edit_picName').html();
     if (!name){
-        swal("系统提示",'分组名称不能为空!',"warning");
+        swalParent("系统提示",'分组名称不能为空!',"warning");
+        return;
+    }
+    let range = $('#edit_detection_cycle').val().trim();
+    if (!range){
+        swalParent("系统提示",'服务周期不能为空!',"warning");
         return;
     }
     $.ajax({
@@ -333,7 +346,8 @@ function edit(){
             name:name,
             img:img,
             tid:$('#typeSel2').val(),
-            description:description
+            description:description,
+            detection_cycle:range
         },
         beforeSend:function(){
             loadingParent(true,2);
@@ -345,7 +359,7 @@ function edit(){
                 type = "success";
                 refresh();
             }
-            swal("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             loadingParent(false,2);
@@ -370,11 +384,11 @@ function del(id){
         success : function(r) {
             if (r.code == 1) {
                 setTimeout(function () {
-                    swal("系统提示",r.msg, "success");
+                    swalParent("系统提示",r.msg, "success");
                     refresh();
                 },100);
             }else{
-                swal("系统提示",r.msg, "error");
+                swalParent("系统提示",r.msg, "error");
             }
         },
         complete:function () {

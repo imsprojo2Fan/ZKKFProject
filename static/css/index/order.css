@@ -1,0 +1,285 @@
+#pdfBtn{
+    position: fixed;
+    top: 46%;
+    right: 15%;
+    cursor: pointer;
+    display: none;
+}
+#pdfBtn img{
+    width: 75px;
+}
+#pdfBtn:hover{
+    opacity: 0.75;
+}
+
+#tempPDF{
+    width: 100%;
+    display: block;
+}
+#lib{
+    position: fixed;
+    top: 45%;
+    right: 15px;
+    cursor: pointer;
+    display: none;
+}
+#lib:hover{
+    opacity: 0.75;
+}
+#lib span{
+    position: relative;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    right: -130px;
+    top: -50px;
+    color: white;
+    font-size: 20px;
+    background: red;
+    border-radius: 50%;
+    display: inline-block;
+}
+.modal-content{
+    margin-top: 18vh;
+}
+.modal-header .close:focus,
+.modal-header .close:active{
+    outline: none;
+}
+.modal-body{
+    max-height: 45vh;
+    overflow-y: auto;
+}
+.modal-footer{
+    padding: 40px 0;
+}
+.modal-footer button{
+    width: 50%;
+    margin: 0 auto;
+    height: 45px;
+    line-height: 30px;
+}
+.modal-footer button:hover{
+    background: var(--thm-base);
+    border-color: var(--thm-base);
+}
+.modal-footer button:focus,
+.modal-footer button:active {
+    outline: none;
+}
+.btn-secondary.focus, .btn-secondary:focus {
+    box-shadow: 0 0 0 0.2rem transparent;
+}
+.btn.focus, .btn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0);
+}
+.typeName{
+    font-size: 18px;
+    font-weight: bold;
+}
+.modal-body hr{
+    margin: 1px 0;
+}
+.modal-body .dWrap{
+    padding: 2% 8%;
+}
+.modal-body .dWrap i{
+    font-size: 18px;
+}
+.modal-body .dItem{
+    padding: 6px 35px;
+}
+.modal-body .fa-files-o{
+    color: var(--thm-base);
+}
+.modal-body .fa-trash-o{
+    float: right;
+    margin-top: 6px;
+    margin-right: 8%;
+    color: red;
+    cursor: pointer;
+}
+.cac{
+    font-size: 20px;
+    cursor: pointer;
+}
+.count{
+    font-size: 16px;
+}
+.countWrap{
+    display: inline-block;
+    float: right;
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none;
+}
+@media (min-width: 576px){
+    .modal-dialog {
+        max-width: 45vw;
+        margin: 1rem auto!important;
+    }
+}
+.modal-title{
+    color: var(--thm-base);
+}
+#modalTip{
+    font-size: 16px;
+    color: red;
+}
+.back{
+    z-index: 999;
+    position: absolute;
+    left: 30px;
+    width: 80px!important;
+    display: none;
+}
+#protocolInfo{
+    display: none;
+}
+
+/*表格样式*/
+/* CSS Document */
+table{
+    width: 100%;
+}
+tr{
+    height: 55px;
+}
+input[type='radio'] {
+    cursor: pointer;
+}
+
+.tabtop13 {
+    margin-top: 13px;
+}
+.tabtop13 td{
+    height:25px;
+    line-height:150%;
+}
+.font-left{ text-align:left}
+.font-center{ text-align:center}
+.btbg{background:#b5b9bf  !important;}
+.btbg1{background:#f2fbfe !important;}
+.btbg2{background:#f3f3f3 !important;}
+.biaoti{
+    font-family: "微软雅黑";
+    font-size: 30px;
+    font-weight: bold;
+    border-bottom:1px dashed #CCCCCC;
+    color: var(--thm-base);
+    padding: 6px 0;
+}
+.titfont {
+    font-family: 微软雅黑;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #e9faff;
+}
+.tabtxt2 {
+    font-family: 微软雅黑;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    color: #646567;
+}
+.tabtxt3 {
+    font-family: 微软雅黑;
+    font-size: 14px;
+    padding-left: 15px;
+    color: #000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    line-height: 20px;
+}
+#protocolInfoTip{
+    display: none;
+}
+.myTip{
+    font-size: 13px;
+    margin-top: -18px;
+}
+.tipRed{
+    color: red;
+}
+.form-control:focus{
+    box-shadow:none;
+}
+textarea{
+    display: none!important;
+}
+.editor{
+    min-height: 255px;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+.submitBtn{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    height: 12vh;
+    line-height: 12vh;
+    background: var(--thm-blue);
+    font-size: 3.5vh;
+    cursor: pointer;
+    color: #fff!important;
+    display: none;
+}
+.submitBtn:hover{
+    background: #4caf50;
+}
+.typeMore i{
+    font-size: 26px;
+    color: #9E9E9E;
+    float: right;
+    cursor: pointer;
+}
+.home{
+    color: #6195ff;
+}
+.sign{
+    cursor: pointer;
+}
+.sign img{
+    width: 40%;
+}
+#signCode{
+    position: fixed;
+    left: 20px;
+    top: 46%;
+    display: none;
+}
+.allDevice{
+    color: #848484;
+    font-size: 16px;
+}
+.allDevice i{
+    color: #6195ff;
+}
+.wat{
+    width: 100%;
+    z-index: 99;
+    position: absolute;
+    font-family: "Panxiang";
+    color: rgba(0,0,0,0.3);
+    /*color: red;*/
+    font-size: 17px;
+    top: 0;
+}
+.watword{
+    position: relative;
+    text-align: center;
+    transform: rotate(-16deg);
+    width: 20%;
+    float: left;
+    height: 150px;
+}
+.form-control{
+    background: transparent;
+}

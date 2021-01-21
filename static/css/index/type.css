@@ -3,12 +3,14 @@
         display: none;
     }
     .deviceItem{
-        padding: 20px 8px;
+        padding: 20px 8px 40px 8px;
         border: 1px solid #eee;
         margin: 0 0 -1px -1px;
     }
     .deviceItem img{
-        margin: 0 auto;
+        cursor: pointer;
+        width: 175px;
+        height: 135px;
     }
     .deviceItem .sketch{
         height: 25px;
@@ -143,13 +145,13 @@
 .sidebar .sketch{
     font-size: 13px;
 }
-.myBtn:hover::before {
+.myBtn:hover::before{
     -webkit-transform-origin: left center;
     transform-origin: left center;
     -webkit-transform: scale(1, 1);
     transform: scale(1, 1);
 }
-.myBtn::before {
+.myBtn::before{
     content: "";
     width: 100%;
     height: 1px;
@@ -166,6 +168,7 @@
     transition: transform 500ms ease;
     transition: transform 500ms ease, -webkit-transform 500ms ease;
 }
+
 .centerWrap{
     width: 100%;
     text-align: center;
@@ -183,7 +186,7 @@
     -webkit-transform: scale(1, 1);
     transform: scale(1, 1);
 }
-.deviceItem::before {
+.deviceItem::before{
     content: "";
     width: 100%;
     height: 1px;
@@ -200,9 +203,30 @@
     transition: transform 500ms ease;
     transition: transform 500ms ease, -webkit-transform 500ms ease;
 }
-.deviceItem img{
-    cursor: pointer;
+.deviceItem:hover::after {
+    -webkit-transform-origin: top;
+    transform-origin: top;
+    -webkit-transform: scaleY(1);
+    transform: scaleY(1);
 }
+.deviceItem::after {
+    content: "";
+    width: 1px;
+    height: 100%;
+    background-color: var(--thm-base);
+    position: absolute;
+    top: 0;
+    right: 0;
+    -webkit-transform: scaleY(0);
+    transform: scaleY(0);
+    -webkit-transform-origin: bottom;
+    transform-origin: bottom;
+    -webkit-transition: -webkit-transform 500ms ease;
+    transition: -webkit-transform 500ms ease;
+    transition: transform 500ms ease;
+    transition: transform 500ms ease, -webkit-transform 500ms ease;
+}
+
 .deviceItem .title{
     font-size: 20px;
     font-weight: 600;

@@ -79,6 +79,7 @@ func (this *TypeChildController) Add() {
 	obj.Name = name
 	obj.Description = description
 	obj.Img = img
+	obj.DetectionCycle,_ = this.GetInt("detection_cycle")
 	err := obj.Insert(&obj)
 	if err == nil {
 		this.jsonResult(200, 1, "操作成功", nil)
@@ -101,6 +102,7 @@ func (this *TypeChildController) Update() {
 	obj.Name = name
 	obj.Description = description
 	obj.Img = img
+	obj.DetectionCycle,_ = this.GetInt("detection_cycle")
 	obj.Updated = time.Now()
 	err := obj.Update(&obj)
 	if err == nil {

@@ -29,8 +29,8 @@
     <div>
         <ol class="breadcrumb">
             <li><span data="tab1">数据列表</span></li>
-            <li><span data="tab3" class="active">列表排序</span></li>
             <li><span data="tab2" class="active" >新增数据</span></li>
+            <li><span data="tab3" class="active">列表排序</span></li>
             <li><span class="active" onclick="refresh()">刷新数据</span></li>
             <li><span class="batchDel" onclick="batchDel()">批量删除</span></li>
         </ol>
@@ -77,17 +77,16 @@
                                     <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>分组名称</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" maxlength="20" id="name" placeholder="请输入分组名称">
-                                        <span class="help-block"></span>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                {{/*<div class="form-group">
                                     <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>检测周期(天)</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" oninput = "value=value.replace(/[^\d]/g,'')" maxlength="2" id="detection_cycle" placeholder="请输入检测周期(单位/天)">
                                         <span class="help-block"></span>
                                     </div>
-                                </div>
+                                </div>*/}}
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label"><span class="red"></span><span class="red">*</span>分组图片</label>
@@ -95,7 +94,7 @@
                                         <div id="imgWrap">
                                             <button type="button" id="uploadPic" class="btn btn-default">上传图片</button>
                                             &nbsp;<span class="text-info " id="picName"></span>
-                                            <span class="help-block"><span style="color: red">*</span>建议宽高370*270,文件小于1MB</span>
+                                            <span class="help-block"><span style="color: red">*</span>建议宽高176*128，文件小于1MB</span>
                                         </div>
                                     </div>
                                 </div>
@@ -162,9 +161,9 @@
                     <div class="col-sm-offset-1">
                         <p class="form-control-static" >分组名称：<span id="detail_name"></span></p>
                     </div>
-                    <div class="col-sm-offset-1">
+                    {{/*<div class="col-sm-offset-1">
                         <p class="form-control-static" >检测周期(天)：<span id="detail_detection_cycle"></span></p>
-                    </div>
+                    </div>*/}}
                     <div class="col-sm-offset-1">
                         <p class="form-control-static" >图片地址：<span id="detail_img"></span></p>
                     </div>
@@ -204,26 +203,26 @@
                     <form class="form-horizontal" autocomplete="off">
                         <input type="hidden" id="id">
                         <div class="form-group">
-                            <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>分组名称</label>
+                            <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>名称</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" maxlength="20" id="edit_name" placeholder="请输入分组名称">
                                 <span class="help-block"></span>
                             </div>
                         </div>
-                        <div class="form-group">
+                        {{/*<div class="form-group">
                             <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>检测周期(天)</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" oninput = "value=value.replace(/[^\d]/g,'')" maxlength="2" id="edit_detection_cycle" placeholder="请输入检测周期(单位/天)">
                                 <span class="help-block"></span>
                             </div>
-                        </div>
+                        </div>*/}}
                         <div class="form-group">
-                            <label class="col-sm-2 control-label form-label"><span class="red">*</span>分组图片</label>
+                            <label class="col-sm-2 control-label form-label"><span class="red">*</span>图片</label>
                             <div class="col-sm-8">
                                 <div id="imgWrap">
                                     <button type="button" id="edit_uploadPic" class="btn btn-default">上传图片</button>
                                     &nbsp;<span class="text-info" id="edit_picName"></span>
-                                    <span class="help-block"><span style="color: red">*</span>建议宽高370*270,文件小于1MB</span>
+                                    <span class="help-block"><span style="color: red">*</span>建议宽高176*128，文件小于1MB</span>
                                 </div>
                             </div>
                         </div>
@@ -236,7 +235,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="request" class="col-sm-2 control-label form-label"><span class="red">*</span>实验要求</label>
+                            <label for="request" class="col-sm-2 control-label form-label"><span class="red">*</span>实验要求模板</label>
                             <div class="col-sm-8">
                                 <textarea id="requestEdit" class="form-control editor" placeholder=""></textarea>
                             </div>

@@ -12,6 +12,9 @@ dl, dt, dd, ul, li {
 input, textarea {
     outline:none
 }
+a{
+    color:var(--thm-blue);
+}
 html, body, form, fieldset, p, div, h1, h2, h3, h4, h5, h6 {
     -webkit-text-size-adjust:none
 }

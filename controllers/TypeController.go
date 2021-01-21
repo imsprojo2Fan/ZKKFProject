@@ -182,8 +182,33 @@ func (this *TypeController) Rank() {
 
 }
 
-func (c *TypeController) Redirect() {
+func (this *TypeController) Redirect() {
 	//设置token
-	c.Data["_xsrf"] = c.XSRFToken()
-	c.TplName = "type.html"
+	this.Data["_xsrf"] = this.XSRFToken()
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	id := session.Get("id")
+	//首页判断是否已登录过
+	if id==nil{
+		this.Data["login"] = 0
+	}else{
+		this.Data["login"] = 1
+		uid := session.Get("id").(int)
+		//查询用户信息
+		user := userObj.SelectById(uid)
+		user.Remark = ""
+		user.Type = -1
+		this.Data["user"] = user
+		//查询公司信息
+		res := settingObj.SelectByGroup("LocalInfo")
+		bMap["company"] = models.RangeValue(res,"company")
+		bMap["phone"] = models.RangeValue(res,"phone")
+		bMap["home"] = models.RangeValue(res,"home")
+		bMap["email"] = models.RangeValue(res,"email")
+		bMap["wechat"] = models.RangeValue(res,"wechat")
+		bMap["address"] = models.RangeValue(res,"address")
+		bMap["city"] = models.RangeValue(res,"city")
+		bMap["sign"] = models.RangeValue(res,"sign")
+		this.Data["lInfo"] = bMap
+	}
+	this.TplName = "type.html"
 }

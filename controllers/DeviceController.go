@@ -223,16 +223,6 @@ func (this *DeviceController)Detail() {
 		this.Data["login"] = 0
 	}else{
 		this.Data["login"] = 1
-		//查询关联文件
-		standardIds := deviceInfo["standard"].(string)
-		if standardIds!=""{
-			deviceInfo["standard"],_ = fileObj.ListByIds(standardIds)
-		}
-		drawingIds := deviceInfo["drawing"].(string)
-		if drawingIds!=""{
-			deviceInfo["drawing"],_ = fileObj.ListByIds(drawingIds)
-		}
-
 		uid := session.Get("id").(int)
 		//查询用户信息
 		user := userObj.SelectById(uid)
@@ -253,6 +243,15 @@ func (this *DeviceController)Detail() {
 	}
 	if err==nil{
 		obj.UpdateNum("view",rid)
+	}
+	//查询关联文件
+	standardIds := deviceInfo["standard"].(string)
+	if standardIds!=""{
+		deviceInfo["standard"],_ = fileObj.ListByIds(standardIds)
+	}
+	drawingIds := deviceInfo["drawing"].(string)
+	if drawingIds!=""{
+		deviceInfo["drawing"],_ = fileObj.ListByIds(drawingIds)
 	}
 	this.Data["_xsrf"] = this.XSRFToken()
 	this.Data["info"] = deviceInfo

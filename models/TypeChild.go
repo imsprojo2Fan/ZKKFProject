@@ -15,6 +15,8 @@ type TypeChild struct {
 	Name        string `orm:"size(255)"`
 	Description string `orm:"size(1024)"`
 	Img         string
+	DetectionCycle int //检测周期，天
+	Rank int //排序
 	Updated     time.Time `orm:"auto_now_add;type(datetime)"`
 	Created     time.Time `orm:"auto_now_add;type(datetime)"`
 }
@@ -33,7 +35,7 @@ func (this *TypeChild) Insert(obj *TypeChild) error {
 func (this *TypeChild) Update(obj *TypeChild) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "tid","name", "description", "img", "updated")
+	_, err := o.Update(obj, "tid","name", "description","img","detection_cycle", "updated")
 	return err
 }
 
@@ -168,4 +170,14 @@ func (this *TypeChild) QueryByTid(tid string) []orm.Params {
 	sql := "select * from "+TypeChildTBName()+" where tid="+tid
 	_, _ = o.Raw(sql).Values(&res)
 	return res
+}
+func(this *TypeChild) UpdateRank(dataArr []map[string]string)error  {
+	sqlTxt := "insert into type_child (id,rank) values "
+	for _,item := range dataArr{
+		sqlTxt += "("+item["id"]+","+item["rank"]+"),"
+	}
+	sqlTxt = sqlTxt[0:len(sqlTxt)-1]
+	sqlTxt += " on duplicate key update rank=values(rank);"
+	_,err := orm.NewOrm().Raw(sqlTxt).Exec()
+	return err
 }

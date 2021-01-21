@@ -181,7 +181,7 @@ $(document).ready(function() {
     $('#myTable').on("click",".btn-default",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
         $('#detail_name').html(rowData.name);
-        $('#detail_detection_cycle').html(rowData.detection_cycle);
+        /*$('#detail_detection_cycle').html(rowData.detection_cycle);*/
         $('#detail_img').html("<a target='_blank' href='/img/"+rowData.img+"'>"+rowData.img+"</a>");
         let description = rowData.description;
         if(!description){
@@ -211,7 +211,6 @@ $(document).ready(function() {
             $('#edit_uploadPic').html("替换图片");
         }
         $('#edit_name').val(rowData.name);
-        $('#edit_detection_cycle').val(rowData.detection_cycle);
         $('#edit_picName').html(rowData.img);
         $('#edit_description').val(rowData.description);
         $('#requestEdit').val(rowData.request);
@@ -280,28 +279,24 @@ function renderRank() {
 
 function add(){
     let name = $('#name').val().trim();
-    let range = $('#detection_cycle').val().trim();
     let description = $('#description').val().trim();
     let img = $('#picName').html();
     let request = $('#request').val();
     if (!name){
-        swal("系统提示",'分组名称不能为空!',"warning");
+        swalParent("系统提示",'分组名称不能为空!',"warning");
         return;
     }
-    if (!range){
-        swal("系统提示",'检测周期不能为空!',"warning");
-        return;
-    }
+
     if (!img){
-        swal("系统提示",'未上传图片!',"warning");
+        swalParent("系统提示",'未上传图片!',"warning");
         return;
     }
     if (!description){
-        swal("系统提示",'请填写简述信息!',"warning");
+        swalParent("系统提示",'请填写简述信息!',"warning");
         return;
     }
     if (!request){
-        swal("系统提示",'请填写实验要求模板!',"warning");
+        swalParent("系统提示",'请填写实验要求模板!',"warning");
         return;
     }
 
@@ -313,7 +308,6 @@ function add(){
         data : {
             _xsrf:$("#token", parent.document).val(),
             name:name,
-            detection_cycle:$('#detection_cycle').val().trim(),
             img:img,
             description:description,
             request:request
@@ -327,7 +321,7 @@ function add(){
                 type = "success";
                 reset();
             }
-            swal("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             loadingParent(false,2);
@@ -338,27 +332,22 @@ function add(){
 function edit(){
     let name = $('#edit_name').val().trim();
     let description = $('#edit_description').val().trim();
-    let range = $('#edit_detection_cycle').val().trim();
     let img = $('#edit_picName').html();
     let request = $('#requestEdit').val();
     if (!name){
-        swal("系统提示",'分组名称不能为空!',"warning");
-        return;
-    }
-    if (!range){
-        swal("系统提示",'检测周期不能为空!',"warning");
+        swalParent("系统提示",'分组名称不能为空!',"warning");
         return;
     }
     if (!img){
-        swal("系统提示",'未上传图片!',"warning");
+        swalParent("系统提示",'未上传图片!',"warning");
         return;
     }
     if (!description){
-        swal("系统提示",'请填写简述信息!',"warning");
+        swalParent("系统提示",'请填写简述信息!',"warning");
         return;
     }
     if (!request){
-        swal("系统提示",'请填写实验要求模板!',"warning");
+        swalParent("系统提示",'请填写实验要求模板!',"warning");
         return;
     }
     $.ajax({
@@ -370,7 +359,6 @@ function edit(){
             _xsrf:$("#token", parent.document).val(),
             id:$('#id').val(),
             name:name,
-            detection_cycle:range,
             img:img,
             description:description,
             request:request
@@ -385,7 +373,7 @@ function edit(){
                 type = "success";
                 refresh();
             }
-            swal("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             loadingParent(false,2);
@@ -414,7 +402,7 @@ function del(id){
                     refresh();
                 },100);
             }else{
-                swal("系统提示",r.msg, "error");
+                swalParent("系统提示",r.msg, "error");
             }
         },
         complete:function () {
@@ -468,37 +456,26 @@ function batchDel() {
 }
 
 function rank() {
-    swal({
-        title: "系统提示",
-        text: '是否确定当前排序?',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#ff1200',
-        cancelButtonColor: '#474747',
-        confirmButtonText: '是',
-        cancelButtonText:'否'
-    },function(){
-        let arr = [];
-        $('#foo').find("li").each(function (index,item) {
-            let id = $(item).attr("data");
-            let rank = index+1;
-            let obj = {};
-            obj.id = id;
-            obj.rank = "\""+rank+"\"";
-            arr.push(obj);
-        });
-        loadingParent(true,2);
-        $.post(prefix+"/rank",{_xsrf:$("#token", parent.document).val(),data:JSON.stringify(arr)},function (res) {
-            loadingParent(false,2);
-            if(res.code===1){
-                swalParent("系统提示",res.msg,"success");
-            }else{
-                setTimeout(function () {
-                    swalParent("系统提示",res.msg,"error");
-                },100);
-            }
-        })
+    let arr = [];
+    $('#foo').find("li").each(function (index,item) {
+        let id = $(item).attr("data");
+        let rank = index+1;
+        let obj = {};
+        obj.id = id;
+        obj.rank = "\""+rank+"\"";
+        arr.push(obj);
     });
+    loadingParent(true,2);
+    $.post(prefix+"/rank",{_xsrf:$("#token", parent.document).val(),data:JSON.stringify(arr)},function (res) {
+        loadingParent(false,2);
+        if(res.code===1){
+            swalParent("系统提示",res.msg,"success");
+        }else{
+            setTimeout(function () {
+                swalParent("系统提示",res.msg,"error");
+            },100);
+        }
+    })
 }
 
 function reset() {

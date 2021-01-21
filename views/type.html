@@ -27,6 +27,7 @@
     <!-- slider JS/CSS -->
     <link href="../static/plugins/slide/settings.css" rel="stylesheet">
     <link href="../static/plugins/slide/shop.plugins.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
     <!--Sweet alert-->
     <link rel="stylesheet" href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.css">
     <script src="../static/plugins/sweetalert/sweetalert.min.js"></script>
@@ -36,6 +37,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../static/assets/css/style.css">
     {{/*<link rel="stylesheet" href="../static/css/index/responsive.css">*/}}
+    <link rel="stylesheet" href="../static/css/index/order.css">
     <link rel="stylesheet" href="../static/css/index/type.css">
     <!-- slider JS/CSS -->
     {{/*news-grid.html*/}}
@@ -99,7 +101,7 @@
             </div><!-- /.container -->
         </nav><!-- /.main-nav-one -->
 
-        <div class="container">
+        <div class="container filterWrap">
             <div class="collection-grid__top col-lg-12" style="margin-left: -15px;">
                 <div class="block-title text-left">
                     <h3>项目分类</h3>
@@ -140,6 +142,143 @@
                 </div>
             </div>
         </section>
+
+        <section class="blog-one blog-details-page">
+            <div class="container">
+                <div class="row">
+                    <div id="protocolInfoTip">
+                        <p class="myTip">tip:部分信息已通过个人信息自动填充，如需更改请前往会员中心更改</p>
+                    </div>
+                    <div id="protocolInfo" class="col-lg-12">
+                        <form class="form-horizontal" autocomplete="off">
+                            <table style="margin-top: 50px" id="table1" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+                                <tr>
+                                    <td align="center" class="biaoti" height="60">中科科辅技术服务协议</td>
+                                </tr>
+                                <tr>
+                                    <td align="left" >
+                                        根据《中华人民共和国合同法》及相关法律规定，甲、乙双方基于平等互利、友好协商的基本原则，就科研工作中的材料检测与分析等相关事宜，达成一致意见，签订本协议。
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" >
+                                        <div>
+                                            <span class="tabtxt2">甲方：</span>
+                                            <span style="color:red;" class="company"></span>
+                                        </div>
+                                        <div>
+                                            <span class="tabtxt2">乙方：</span>
+                                            <span style="color:#6195ff;" class="myCompany">中科科辅（北京）科技有限公司</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table width="100%" border="0" cellspacing="1" cellpadding="4" class="tabtop13" align="center">
+                                <tr style="height: 35px!important;line-height: 35px;">
+                                    <td class="btbg font-center titfont" colspan="6">甲方信息</td>
+                                </tr>
+                                <tr colspan="6">
+                                    <td class="tabtxt2">发票抬头</td>
+                                    <td class="invoice"></td>
+                                    <td class="tabtxt2">纳税人识别号</td>
+                                    <td colspan="3" class="invoice_code"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tabtxt2">委托人姓名</td>
+                                    <td class="name"></td>
+                                    <td class="tabtxt2">电话</td>
+                                    <td class="phone"></td>
+                                    <td class="tabtxt2">邮箱</td>
+                                    <td class="email"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tabtxt2">收货地址</td>
+                                    <td colspan="5" class="address"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tabtxt2">导师/负责人姓名</td>
+                                    <td colspan="2" class="teacher"></td>
+                                    <td class="tabtxt2">电话</td>
+                                    <td colspan="2" class="teacher_phone">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabtxt2">导师/负责人邮箱</td>
+                                    <td colspan="5" class="teacher_mail">-</td>
+                                </tr>
+                                <tr style="height: 35px!important;line-height: 35px;">
+                                    <td class="btbg font-center titfont" colspan="6">乙方信息</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabtxt2">公司名称</td>
+                                    <td colspan="2" class="myCompany">中科科辅（北京）科技有限公司</td>
+                                    <td class="tabtxt2">公司电话</td>
+                                    <td colspan="2" class="myCompanyPhone">010-57340647</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabtxt2">公司主页</td>
+                                    <td class="home">www.zkkefu.cn</td>
+                                    <td class="tabtxt2">公司邮箱</td>
+                                    <td class="myEmail">zheng@zkkefu.cn</td>
+                                    <td class="tabtxt2">业务微信</td>
+                                    <td class="myWechat"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tabtxt2">邮寄地址</td>
+                                    <td colspan="5" class="myAddress"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tabtxt2">付费方式</td>
+                                    <td><input type="radio" value="现金结算" name="pay"/>&nbsp;现金结算</td>
+                                    <td><input type="radio" checked value="银行汇款" name="pay"/>&nbsp;银行汇款</td>
+                                    <td><input type="radio" value="从预存款中扣除" name="pay"/>&nbsp;从预存款中扣除</td>
+                                    <td colspan="2"><input type="radio" value="其他" name="pay"/>&nbsp;其他</td>
+                                </tr>
+                                <tr>
+                                    <td class="tabtxt2">服务费用</td>
+                                    <td colspan="5">请参见最后页“EBSD收费标准”</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6">
+                                        <span class="tipRed">*</span>由于实验或测试项目受到诸如样品自身内应力、实际物相与提供的不一致、样品状态不稳定等非乙方技术问题而导致的实验失败，甲方仍需全额支付承检方样品制样费用。
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td colspan="3" style="text-align: right;padding-right: 15px;">
+                                        <input type="radio" checked value="接受" name="test_result"/>&nbsp;接受
+                                    </td>
+                                    <td colspan="3" style="text-align: left;padding-left: 15px;">
+                                        <input type="radio" value="不接受" name="test_result"/>&nbsp;不接受
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tabtxt2">协议签署日期</td>
+                                    <td colspan="2" class="date"></td>
+                                    <td class="tabtxt2">协议签署地点</td>
+                                    <td colspan="2" class="city">北京</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="tabtxt2" style="border-bottom: 1px solid #eee;">甲方代表签字</td>
+                                    <td colspan="3" class="tabtxt2" style="border-bottom: 1px solid #eee;">乙方代表签字</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="height: 215px;line-height: 215px;width: 50%;text-align: center;" class="sign">扫码或点击此处完成签名</td>
+                                    <td colspan="3" style="line-height: 215px;text-align: center;border-left: 1px solid #eee;" class="mySign"></td>
+                                </tr>
+                                <tr style="height: 35px!important;line-height: 35px;">
+                                    <td class="btbg font-center titfont" colspan="6">
+                                        技术服务要求
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div id="tableWrap"></div>
+
+                        </form>
+                    </div>
+                </div><!-- /.row -->
+            </div><!-- /.container -->
+        </section><!-- /.blog-one blog-grid-page -->
 
         <section class="cta-one" style="background-image: url(../static/assets/images/shapes/cta-bg-1-1.jpg);">
             <div class="container text-center">
@@ -223,6 +362,60 @@
             </div><!-- /.site-footer__bottom -->
         </footer><!-- /.site-footer -->
     </div><!-- /.page-wrapper -->
+
+    <div id="pdfBtn" title="下载服务协议">
+        <img src="../static/img/pdf.png">
+    </div>
+
+    <div id="lib" title="点击查看已选实验">
+        <span>0</span>
+        <img src="../static/img/lib.png">
+    </div>
+
+    <div id="signCode"></div>
+
+    <!-- 模态框 -->
+    <div class="modal fade col-lg" id="libModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="modalTitle">已选实验项目列表</span>&nbsp;&nbsp;<span id="modalTip"></span></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+                <div class="libItemWrap">
+                    <div class="typeItem">
+                        <div class="typeName">TEM微观结构</div>
+                        <hr>
+                        <div class="dWrap">
+                            <div class="dItem">
+                                <input type="hidden" class="id">
+                                <i class="fa fa-files-o" aria-hidden="true"></i>
+                                <span class="dName">扫描电子显微镜</span>
+                                <div class="countWrap">
+                                    <span class="cac cac1">-</span>&nbsp;&nbsp;<span class="count">10</span>&nbsp;&nbsp;<span class="cac cac2">+</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary back"><i class="fa fa-angle-left" aria-hidden="true"></i>&nbsp;返回列表</button>
+                <button id="orderBtn" type="button" class="btn btn-secondary">填写服务协议及实验要求&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    <div class="submitBtn">提交实验</div>
 
     <div class="search-popup">
         <div class="search-popup__overlay custom-cursor__overlay">
@@ -414,11 +607,23 @@
     <script src="../static/assets/js/jquery.circleType.js"></script>
 
     <!-- Custom Scripts -->
+    <script src="../static/plugins/qrcode/qrcode.min.js"></script>
+    <script src="../static/plugins/pdf/html2canvas.min.js"></script>
+    <script type="module" src="../static/plugins/pdf/canvas2image.js"></script>
+    <script src="../static/plugins/pdf/jspdf.min.js"></script>
+    <script src="../static/plugins/pdf/watermark.js"></script>
     <script src="../static/assets/js/theme.js"></script>
     <script src="../static/js/util/util.js"></script>
+    <script src="../static/js/util/timeUtil.js"></script>
+    <script src="../static/js/util/stringUtil.js"></script>
+    <script src="../static/js/util/imgUtil.js"></script>
     <script src="../static/js/util/browserInfo.js"></script>
     <script src="../static/js/index/login.js"></script>
+    <script src="../static/js/index/order.js"></script>
     <script src="../static/js/index/type.js"></script>
+    {{/*<script>let info = {{.info}}</script>*/}}
+    <script>let user = {{.user}}</script>
+    <script>let lInfo = {{.lInfo}}</script>
 </body>
 
 </html>
