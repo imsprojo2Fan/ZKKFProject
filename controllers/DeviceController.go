@@ -197,6 +197,12 @@ func (this *DeviceController) All() {
 	this.jsonResult(200, 1, "查询所有信息成功", res)
 }
 
+func(this *DeviceController) Reservation()  {
+	obj := new(models.Device)
+	res, _ := obj.ReservationData()
+	this.jsonResult(200, 1, "查询所有信息成功", res)
+}
+
 var obj models.Device
 var settingObj models.Setting
 var fileObj models.File

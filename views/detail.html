@@ -247,23 +247,48 @@
                             <div class="itemHead">项目简述</div>
                             <p class="sketch">{{.info.sketch}}</p>
                             <hr>
+                            <div id="dateWrap">
+                                <div class="infoTip"><span style="color: red">*</span>每周安排7天现场测试，每天设定4个时间段。原则上每位客户一天只能预约2小时,如需更多时间</div>
+                                <div class="infoTip2">请联系我们(010-57340647, 18610885057)</div>
+                                <div class="itemHead">日期选择
+                                    <div class="weekWrap">
+                                        <span class="weekWrapActive" data="1">近一周</span><span data="2">第二周</span><span data="3">第三周</span><span data="4">第四周</span>
+                                    </div>
+                                </div>
+                                <div class="itemHead">预约时间</div>
+                                <div class="timeWrap">
+                                    <table id="dateTable" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <th>时间段</th>
+                                            <th>周一/01-22</th>
+                                            <th>周二/01-23</th>
+                                            <th>周三/01-24</th>
+                                            <th>周四/01-25</th>
+                                            <th>周五/01-26</th>
+                                            <th>周六/01-27</th>
+                                            <th>周日/01-28</th>
+                                        </tr>
+                                        <tr>
+                                            <td>08:00-10:00</td>
+                                            <td>可预约</td>
+                                            <td>可预约</td>
+                                            <td>可预约</td>
+                                            <td>可预约</td>
+                                            <td>可预约</td>
+                                            <td>可预约</td>
+                                            <td>可预约</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id="messageWrap">
+                                <div class="itemHead">留言备注</div>
+                                <textarea id="message"></textarea>
+                            </div>
                             <div class="btnWrap">
                                 <button class="thm-btn contact-one__btn thm-btnActive myBtn" id="btnHead" type="button">在线下单</button>
                                 <button style="margin-left: -5px;display: none" class="thm-btn contact-one__btn myBtn" type="button">预订设备</button>
                                 <button id="submitBtn" class="thm-btn contact-one__btn" type="button"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;&nbsp;添加实验</button>
-                            </div>
-                            <div id="dateWrap">
-                                <div class="itemHead">日期选择
-                                    <div class="weekWrap">
-                                        <span class="weekWrapActive">近一周</span><span>第二周</span><span>第三周</span>
-                                    </div>
-                                </div>
-                                <div class="itemHead">预约时间</div>
-                                <div class="timeWrap"></div>
-                            </div>
-                            <div id="messageWrap">
-                                <div class="itemHead">备注留言</div>
-                                <textarea id="message"></textarea>
                             </div>
                             <div>
                                 <div class="itemHead">仪器参数</div>

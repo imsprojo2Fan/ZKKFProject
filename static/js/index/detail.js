@@ -83,6 +83,7 @@ $(function () {
         if(info.is_order==="0"){
             $('#btnHead').html("预约设备");
             $('#submitBtn').html("提交预约");
+            $('#messageWrap').show();
             $('#dateWrap').show();
             //熏染可预约时间
             renderTime();
@@ -106,25 +107,6 @@ $(function () {
         }
     }
 
-    //初始化时间选择插件
-    $("#dateInput").datepicker({
-        language: 'zh-CN', //设置语言
-        autoclose: true, //选择后自动关闭
-        clearBtn: true,//清除按钮
-        format: "yyyy-mm-dd",//日期格式
-        //todayHighlight: true,
-        todayBtn: 'linked',
-        defaultViewDate: dateUtil.getNow(),
-        startDate:dateUtil.getNow()
-    });
-    $("#dateInput").val(dateUtil.getNow());
-    $("#dateInput").datepicker().on('hide', function (e) {
-        if(!$("#dateInput").val()){
-            $("#dateInput").val(dateUtil.getNow());
-        }
-        renderTime();
-    });
-
     $('.myBtn').on("click",function () {
 
         if($(this).hasClass("thm-btnActive")){
@@ -146,7 +128,23 @@ $(function () {
             return false
         }
         if($(this).html()==="提交预约"){
-            add();
+            let timeId = $('.clickActive').attr("timeId");
+            if (!timeId){
+                swal("系统提示",'您未选择任何预约时间！',"warning");
+                return;
+            }
+            swal({
+                title: "是否已确定预约信息?",
+                text: '提交成功将不可更改!',
+                type: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#ff1200',
+                cancelButtonColor: '#474747',
+                confirmButtonText: '是',
+                cancelButtonText:'否'
+            },function(){
+                addReservation();
+            });
         }else{
             addOrder();
         }
@@ -220,6 +218,7 @@ $(function () {
         }
         $('.weekWrap span').removeClass("weekWrapActive");
         $(this).addClass("weekWrapActive");
+        renderTime();
     });
 
     $('.preloader').fadeOut(200);

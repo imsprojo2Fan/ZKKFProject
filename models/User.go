@@ -238,7 +238,7 @@ func (this *User) All(dataList *[]User) {
 
 func (this *User) AllCustomer(dataList *[]User) {
 	o := orm.NewOrm()
-	_, _ = o.Raw("select * from " + UserTBName() +" where type=0").QueryRows(dataList)
+	_, _ = o.Raw("select * from " + UserTBName() +" where type=99").QueryRows(dataList)
 }
 
 func (this *User) ListByArr(arr string, uList *[]User) {

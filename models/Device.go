@@ -146,6 +146,14 @@ func (this *Device) All() ([]orm.Params, error) {
 	return res, err
 }
 
+func (this *Device) ReservationData() ([]orm.Params, error) {
+	var res []orm.Params
+	o := orm.NewOrm()
+	sql := "select * from " + DeviceTBName() + " where is_order=0"
+	_, err := o.Raw(sql).Values(&res)
+	return res, err
+}
+
 func (this *Device) UpdateNum(col, condition string) {
 	o := orm.NewOrm()
 	sql := "update " + DeviceTBName() + " set " + col + "=" + col + "+1 where rid=? or id=?"

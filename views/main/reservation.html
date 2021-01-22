@@ -94,20 +94,38 @@
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label">日期选择</label>
-                                    <div class="col-sm-2">
-                                        <input type="text" readonly="readonly" name="date" class="form-control date" autocomplete="off"  placeholder="请选择日期">
-                                        <span class="help-block"></span>
+                                    <div class="col-sm-6">
+                                        <div class="weekWrap">
+                                            <span class="weekWrapActive" data="1">近一周</span><span data="2">第二周</span><span data="3">第三周</span><span data="4">第四周</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="form-group" style="margin-bottom: 16px;">
                                     <label class="col-sm-2 control-label form-label">时间选择</label>
-                                    <div class="col-sm-5">
-                                        <div class="timeWrap">
-                                            {{/*<span class="timeItem">08:00-10:00</span>
-                                            <span class="timeItemActive">08:00-10:00</span>
-                                            <span class="timeItem-disabled">08:00-10:00</span>*/}}
-                                        </div>
+                                    <div class="col-sm-6">
+                                        <table id="dateTable" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <th>时间段</th>
+                                                <th>周一/01-22</th>
+                                                <th>周二/01-23</th>
+                                                <th>周三/01-24</th>
+                                                <th>周四/01-25</th>
+                                                <th>周五/01-26</th>
+                                                <th>周六/01-27</th>
+                                                <th>周日/01-28</th>
+                                            </tr>
+                                            <tr>
+                                                <td>08:00-10:00</td>
+                                                <td>可预约</td>
+                                                <td>可预约</td>
+                                                <td>可预约</td>
+                                                <td>可预约</td>
+                                                <td>可预约</td>
+                                                <td>可预约</td>
+                                                <td>可预约</td>
+                                            </tr>
+                                        </table>
                                         <span class="help-block"></span>
                                     </div>
                                 </div>

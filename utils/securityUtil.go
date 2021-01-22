@@ -49,16 +49,18 @@ func AesDecrypt(crypted, key []byte) ([]byte, error) {
 }
 
 func main() {
+	//密码
 	key := []byte("0123456789abcdef")
-	result, err := AesEncrypt([]byte("pbhANIi1ZWv3ex9Jdet7nrs4ZkT6/Fz9WDDoTOE0IyU="), key)
+	salt := "ZkkfProject_"
+	result, err := AesEncrypt([]byte("root"+salt), key)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(base64.StdEncoding.EncodeToString(result))
-	origData, err := AesDecrypt(result, key)
-	if err != nil {
+	fmt.Println("DecData:",base64.StdEncoding.EncodeToString(result))
+	origData, err2 := AesDecrypt(result, key)
+	if err2 != nil {
 		panic(err)
 	}
-	fmt.Println(string(origData))
+	fmt.Println("OriData:",string(origData))
 }
 

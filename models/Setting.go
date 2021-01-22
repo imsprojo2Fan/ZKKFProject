@@ -98,7 +98,7 @@ func(this *Setting) SelectByKey(val string)(orm.Params,error) {
 
 func(this *Setting) SelectByGroup(val string)(res []Setting) {
 	o := orm.NewOrm()
-	_, _ = o.Raw("SELECT * from setting where grouping=\"" + val + "\"").QueryRows(&res)
+	_, _ = o.Raw("SELECT * from setting where grouping=\"" + val + "\" order by id asc").QueryRows(&res)
 	return res
 }
 

@@ -24,5 +24,17 @@ let stringUtil = {
             if(pair[0] == variable){return pair[1];}
         }
     return "";
-}
+    },
+    compare:function (prop) {
+        return function (obj1, obj2) {
+            let val1 = obj1[prop];
+            let val2 = obj2[prop];if (val1 < val2) {
+                return -1;
+            } else if (val1 > val2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    },
 }

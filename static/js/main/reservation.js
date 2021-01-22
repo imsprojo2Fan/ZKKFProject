@@ -54,7 +54,7 @@ $(document).ready(function() {
         size:10   //设置select高度，同时显示5个值
     });
     $("#userSel1").selectpicker('refresh');
-    //初始化设备数据
+    //初始化用户信息
     $.post("/main/user/customer",{_xsrf:$("#token", parent.document).val()},function (res) {
         if(res.code===1){
             //loading(false,2);
@@ -92,7 +92,7 @@ $(document).ready(function() {
     });
     $("#typeSel1").selectpicker('refresh');
     //初始化设备数据
-    $.post("/main/device/all",{_xsrf:$("#token", parent.document).val()},function (res) {
+    $.post("/main/device/reservation",{_xsrf:$("#token", parent.document).val()},function (res) {
         if(res.code===1){
             let tList = res.data;
             if(tList){
@@ -107,7 +107,7 @@ $(document).ready(function() {
             }
             $('#typeSel1').selectpicker('refresh');
             if(tList.length>0){
-                renderTime("add");
+                renderTime();
             }
         }
     });
@@ -115,7 +115,7 @@ $(document).ready(function() {
         /*console.log(this.value,
             this.options[this.selectedIndex].value,
             $(this).find("option:selected").val(),);*/
-        renderTime("add");
+        renderTime();
     });
 
     $('#typeSel2').selectpicker({
@@ -132,7 +132,7 @@ $(document).ready(function() {
     });
     $("#typeSel2").selectpicker('refresh');
     //初始化设备数据
-    $.post("/main/device/all",{_xsrf:$("#token", parent.document).val()},function (res) {
+    $.post("/main/device/reservation",{_xsrf:$("#token", parent.document).val()},function (res) {
         if(res.code===1){
             //loading(false,2);
             let tList = res.data;
@@ -159,23 +159,13 @@ $(document).ready(function() {
         //renderTime("edit");
     });
 
-    //初始化时间选择插件
-    $("#addForm").find(".date").datepicker({
-        language: 'zh-CN', //设置语言
-        autoclose: true, //选择后自动关闭
-        clearBtn: true,//清除按钮
-        format: "yyyy-mm-dd",//日期格式
-        //todayHighlight: true,
-        todayBtn: 'linked',
-        defaultViewDate: dateUtil.getNow(),
-        startDate:dateUtil.getNow()
-    });
-    $("#addForm").find(".date").val(dateUtil.getNow());
-    $("#addForm").find(".date").datepicker().on('hide', function (e) {
-        if(!$("#addForm").find(".date").val()){
-            $("#addForm").find(".date").val(dateUtil.getNow());
+    $('.weekWrap span').on("click",function () {
+        if($(this).hasClass("weekWrapActive")){
+            return false;
         }
-        renderTime("add","");
+        $('.weekWrap span').removeClass("weekWrapActive");
+        $(this).addClass("weekWrapActive");
+        renderTime();
     });
 
     //datatable setting
@@ -409,24 +399,17 @@ $(document).ready(function() {
 } );
 
 function add(){
-    let deviceId = $('#typeSel1').val();
-    let userId = $('#userSel1').val();
-    let date = $('#addForm').find("input[name='date']").val().trim();
-    let timeId = $('#addForm').find(".timeItemActive").attr("mydata");
-    let remark = $('#addForm').find("textarea[name='remark']").val().trim();
-    if (!timeId){
-        swalParent("系统提示",'未选择任何时间!',"warning");
-        return;
-    }
-
+    let date = $('.clickActive').attr("date");
+    let timeId = $('.clickActive').attr("timeId");
+    let message = $('#addForm').find("textarea[name='remark']").val().trim();
     //let formData = formUtil('addForm');
     let formData = {};
-    formData["uuid"] = userId;
-    formData["deviceId"] = deviceId;
+    formData["deviceId"] = $('#typeSel1').val();
     formData["date"] = date;
     formData["_xsrf"] = $("#token", parent.document).val();
     formData["timeId"] = timeId;
-    formData["remark"] = remark;
+    formData["uuid"] = $('#userSel1').val();
+    formData["message"] = message;
     $.ajax({
         url : prefix+"/add",
         type : "POST",
@@ -440,7 +423,7 @@ function add(){
             let type = "error";
             if (r.code == 1) {
                 type = "success";
-                renderTime("add","");
+                renderTime();
                 $('#addForm').find("textarea[name='remark']").val("");
             }
             swalParent("系统提示",r.msg,type);
@@ -522,51 +505,64 @@ function del(id){
     })
 }
 
-function renderTime(type,timeId) {
-    let deviceId;
-    let date;
+function renderTime(){
     let wrapObj;
-    if(type==="add"){
-        deviceId = $('#typeSel1').val();
-        date = $('#addForm').find(".date").val();
-        wrapObj = $('#addForm').find(".timeWrap");
-    }else{
-        deviceId = $('#typeSel2').val();
-        date = $('#editForm').find(".date").val();
-        wrapObj = $('#editForm').find(".timeWrap");
-    }
-    if(!deviceId){
-        return false;
-    }
-    let nowDate = dateUtil.getNow();
-    let useFlag = dateUtil.compareDate(date,nowDate);
-    //loading(true,2);
-    $.post("/reservation/timeQuery",{_xsrf:$("#token", parent.document).val(),deviceId:deviceId,date:date},function (res) {
+    let deviceId = $('#typeSel1').val();
+    let week = $('.weekWrapActive').attr("data");
+    wrapObj = $('#dateTable');
+    loadingParent(true,2);
+    $.post("/reservation/timeQuery",{_xsrf:$("#token", parent.document).val(),deviceId:deviceId,week:week},function (res) {
         if(res.code===1){
-            //loading(false,2);
+            loadingParent(false,2);
             let tList = res.data;
             if(tList){
+                let nowYear = new Date().getFullYear();
                 wrapObj.html('');
                 for(let i=0;i<tList.length;i++){
                     let item = tList[i];
-                    let isUse = item.isUse;
-                    let id = item.tId;
-                    let time = item.time;
-                    //判断是否该时段早于当前时间
-                    let timeFlag = dateUtil.compareTime(date+" "+time.substring(0,2)+":00:00");
-                    //当前预约日期小于当前日期时则禁用选择
-                    if(parseInt(timeId)===id){//熏染编辑状态选中
-                        wrapObj.append('<span mydata="'+id+'" class="timeItemActive">'+time+'</span>');
-                    }else if(!useFlag||!timeFlag||isUse===1){
-                        wrapObj.append('<span mydata="'+id+'" class="timeItem-disabled">'+time+'</span>');
+                    let dataList = item.data;
+                    dataList.sort(stringUtil.compare("tStamp"));
+                    if(i===0){
+                        wrapObj.append('<tr id="tr'+i+'"></tr>');
+                        for(let j=0;j<dataList.length;j++){
+                            let item2 = dataList[j];
+                            let date = item2.date;
+                            $('#tr'+i).append('<th>'+date+'</th>');
+                        }
                     }else{
-                        wrapObj.append('<span mydata="'+id+'" class="timeItem">'+time+'</span>');
+                        wrapObj.append('<tr id="tr'+i+'"></tr>');
+                        for(let j=0;j<dataList.length;j++){
+                            let item2 = dataList[j];
+                            let timeId = item2.timeId;
+                            let date = item2.date;
+                            let time = item2.time;
+                            let isUse = item2.isUse;
+                            if(date){
+                                //判断是否该时段早于当前时间
+                                //比较时间
+                                date = date.substring(3,date.length);
+                                date = nowYear+"-"+date;
+                                let timeFlag = dateUtil.compareTime(date+" "+time.substring(0,5)+":00");
+                                if(!timeFlag||isUse==1){
+                                    $('#tr'+i).append('<td>-</td>');
+                                }else{
+                                    $('#tr'+i).append('<td date="'+date+'" timeId="'+timeId+'" class="click '+date+'">可预约</td>');
+                                }
+                            }else{
+                                $('#tr'+i).append('<td >'+time+'</td>');
+                            }
+                        }
                     }
                 }
-                $('.timeItem').on("click",function () {
-                    $('.timeItemActive').addClass("timeItem");
-                    $('.timeItemActive').removeClass("timeItemActive");
-                    $(this).addClass("timeItemActive");
+                $('.click').on("click",function () {
+                    if($(this).hasClass("clickActive")){
+                        swal("已从本地预约列表移除","需提交预约方作系统确认！","info");
+                        $(this).removeClass("clickActive");
+                    }else{
+                        $('.clickActive').removeClass("clickActive");
+                        swal("已加入本地预约列表","需提交预约方作系统确认！","info");
+                        $(this).addClass("clickActive");
+                    }
                 });
             }else{
                 wrapObj.html('');

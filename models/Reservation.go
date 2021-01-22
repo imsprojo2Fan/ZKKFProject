@@ -13,7 +13,7 @@ type Reservation struct {
 	Uuid     int       //预约人id/user表id，可能为0，有可能为管理员创建
 	DeviceId int       //设备id
 	Rid      string    //唯一识别字符串
-	Date     time.Time //预约日期
+	Date     string //预约日期
 	TimeId   int       //系统设置表id，时间段选择
 	Status   int       //预约状态，0待确认，1已确认，2已取消，3已完成
 	Remark   string    `orm:"size(255)"`
@@ -119,18 +119,18 @@ func (this *Reservation) All() ([]orm.Params, error) {
 	_, err := o.Raw(sql).Values(&res)
 	return res, err
 }
-func (this *Reservation) TimeQuery(deviceId, date string) ([]Reservation, error) {
+func (this *Reservation) TimeQuery(deviceId, startDate,endDate string) ([]Reservation, error) {
 	var res []Reservation
 	o := orm.NewOrm()
-	sql := "select * from " + ReservationTBName() + " where device_id=" + deviceId + " and date=\"" + date + "\" and status!=2"
+	sql := "select * from " + ReservationTBName() + " where device_id=" + deviceId + " and date between \"" + startDate + "\" and \""+endDate+"\" and status!=2"
 	_, err := o.Raw(sql).QueryRows(&res)
 	return res, err
 }
 
-func (this *Reservation) ListByUidAndDate(uid,deviceId, date string) ([]Reservation, error) {
+func (this *Reservation) ListByUidAndDate(uid string) ([]Reservation, error) {
 	var res []Reservation
 	o := orm.NewOrm()
-	sql := "select * from " + ReservationTBName() + " where uid="+uid+" and device_id=" + deviceId + " and date=\"" + date + "\" and status!=2"
+	sql := "select * from " + ReservationTBName() + " where uid="+uid+" and TO_DAYS(created) = TO_DAYS(NOW()) and status!=2"
 	_, err := o.Raw(sql).QueryRows(&res)
 	return res,err
 }

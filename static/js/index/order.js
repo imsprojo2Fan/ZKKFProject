@@ -1,19 +1,9 @@
 
+function addReservation(){
 
-function add(){
-    loginFlag = $('#loginFlag').val();
-    if(loginFlag==="0"){
-        swal("系统提示","该操作需用户登录，请先登录！","warning");
-        return false
-    }
-    let date = $('#dateInput').val().trim();
-    let timeId = $('#dateWrap').find(".timeItemActive").attr("mydata");
+    let date = $('.clickActive').attr("date");
+    let timeId = $('.clickActive').attr("timeId");
     let message = $('#message').val().trim();
-    if (!timeId){
-        swal("系统提示",'您未选择任何预约时间！',"warning");
-        return;
-    }
-
     //let formData = formUtil('addForm');
     let formData = {};
     formData["deviceId"] = $('#deviceId').val();
@@ -36,9 +26,11 @@ function add(){
                 $('#message').val("");
                 swal("系统提示",r.msg+"，客服将尽快确认！","success");
             }else{
-                swal("系统提示",r.msg,"error");
-            }
+                setTimeout(function () {
+                    swal("系统提示",r.msg,"error");
+                },200);
 
+            }
         },
         complete:function () {
             $('.preloader').fadeOut(200);
@@ -48,38 +40,68 @@ function add(){
 
 function renderTime(){
     let deviceId;
-    let date;
     let wrapObj;
     deviceId = $('#deviceId').val();
-    date = $('#dateInput').val();
-    wrapObj = $(".timeWrap");
-    let nowDate = dateUtil.getNow();
-    let useFlag = dateUtil.compareDate(date,nowDate);
-    //loading(true,2);
-    $.post("/reservation/timeQuery",{_xsrf:$("#token", parent.document).val(),deviceId:deviceId,date:date},function (res) {
+    let week = $('.weekWrapActive').attr("data");
+    wrapObj = $('#dateTable');
+    $('.preloader').fadeIn(200);
+    $.post("/reservation/timeQuery",{_xsrf:$("#token", parent.document).val(),deviceId:deviceId,week:week},function (res) {
         if(res.code===1){
-            //loading(false,2);
+            $('.preloader').fadeOut(200);
             let tList = res.data;
             if(tList){
+                let nowYear = new Date().getFullYear();
                 wrapObj.html('');
                 for(let i=0;i<tList.length;i++){
                     let item = tList[i];
-                    let isUse = item.isUse;
-                    let id = item.tId;
-                    let time = item.time;
-                    //判断是否该时段早于当前时间
-                    let timeFlag = dateUtil.compareTime(date+" "+time.substring(0,2)+":00:00");
-                    //当前预约日期小于当前日期时则禁用选择
-                    if(!useFlag||!timeFlag||isUse===1){
-                        wrapObj.append('<span title="已过期或已被预约" mydata="'+id+'" class="timeItem-disabled">'+time+'</span>');
+                    let dataList = item.data;
+                    dataList.sort(stringUtil.compare("tStamp"));
+                    if(i===0){
+                        wrapObj.append('<tr id="tr'+i+'"></tr>');
+                        for(let j=0;j<dataList.length;j++){
+                            let item2 = dataList[j];
+                            let date = item2.date;
+                            $('#tr'+i).append('<th>'+date+'</th>');
+                        }
                     }else{
-                        wrapObj.append('<span mydata="'+id+'" class="timeItem">'+time+'</span>');
+                        wrapObj.append('<tr id="tr'+i+'"></tr>');
+                        for(let j=0;j<dataList.length;j++){
+                            let item2 = dataList[j];
+                            let timeId = item2.timeId;
+                            let date = item2.date;
+                            let time = item2.time;
+                            let isUse = item2.isUse;
+                            if(date){
+                                //判断是否该时段早于当前时间
+                                //比较时间
+                                date = date.substring(3,date.length);
+                                date = nowYear+"-"+date;
+                                let timeFlag = dateUtil.compareTime(date+" "+time.substring(0,5)+":00");
+                                if(!timeFlag||isUse==1){
+                                    $('#tr'+i).append('<td>-</td>');
+                                }else{
+                                    $('#tr'+i).append('<td date="'+date+'" timeId="'+timeId+'" class="click '+date+'">可预约</td>');
+                                }
+                            }else{
+                                $('#tr'+i).append('<td >'+time+'</td>');
+                            }
+                        }
                     }
                 }
-                $('.timeItem').on("click",function () {
-                    $('.timeItemActive').addClass("timeItem");
-                    $('.timeItemActive').removeClass("timeItemActive");
-                    $(this).addClass("timeItemActive");
+                $('.click').on("click",function () {
+                    loginFlag = $('#loginFlag').val();
+                    if(loginFlag==="0"){
+                        swal("系统提示","该操作需用户登录，请先登录！","warning");
+                        return false;
+                    }
+                    if($(this).hasClass("clickActive")){
+                        swal("已从本地预约列表移除","需提交预约方作系统确认！","info");
+                        $(this).removeClass("clickActive");
+                    }else{
+                        $('.clickActive').removeClass("clickActive");
+                        swal("已加入本地预约列表","需提交预约方作系统确认！","info");
+                        $(this).addClass("clickActive");
+                    }
                 });
             }else{
                 wrapObj.html('');
@@ -90,7 +112,6 @@ function renderTime(){
 
 }
 
-//[{"type":"test1","count":10,"data":[{"Name":"测试"}]}]
 function addOrder() {
     let num = $('#lib').find("span").html();
     $('#lib').find("span").html(parseInt(num)+1);
