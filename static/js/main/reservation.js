@@ -15,29 +15,21 @@ $(document).ready(function() {
     //window.parent.swalInfo('TEST',666,'error')
 
     //tab导航栏切换
-    $('#tabHref01').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
+    $('.breadcrumb span').on("click", function () {
+        if (!$(this).hasClass("active")) {
             return false;
-        }else{
-            $('#tabHref02').addClass("active");
-            $(this).removeClass("active");
-            $('#tab2').fadeOut(200);
-            $("#tab1").fadeIn(200);
+        }
+        $('.breadcrumb span').addClass("active");
+        $(this).removeClass("active");
+        let data = $(this).attr("data");
+        if (!data) {
+            return false;
+        }
+        if(data==="tab1"){
             refresh();
         }
-    });
-    $('#tabHref02').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
-            return false;
-        }else{
-            renderTime("add");
-            $('#tabHref01').addClass("active");
-            $(this).removeClass("active");
-            $('#tab1').fadeOut(200);
-            $("#tab2").fadeIn(200);
-        }
+        $('.tabWrap').fadeOut(200);
+        $("#"+data).fadeIn(200);
     });
 
     // 中文重写select 查询为空提示信息
@@ -118,47 +110,6 @@ $(document).ready(function() {
         renderTime();
     });
 
-    $('#typeSel2').selectpicker({
-        noneSelectedText: '下拉选择设备',
-        noneResultsText: '无匹配选项',
-        maxOptionsText: function (numAll, numGroup) {
-            let arr = [];
-            arr[0] = (numAll == 1) ? '最多可选中数为{n}' : '最多可选中数为{n}';
-            arr[1] = (numGroup == 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)';
-            return arr;
-        },
-        liveSearch: true,
-        size:10   //设置select高度，同时显示5个值
-    });
-    $("#typeSel2").selectpicker('refresh');
-    //初始化设备数据
-    $.post("/main/device/reservation",{_xsrf:$("#token", parent.document).val()},function (res) {
-        if(res.code===1){
-            //loading(false,2);
-            let tList = res.data;
-            if(tList){
-                $('#typeSel2').html('');
-                for(let i=0;i<tList.length;i++){
-                    let item = tList[i];
-                    $('#typeSel2').append('<option value="'+item.id+'">'+item.name+'</option>');
-                }
-            }else{
-                $('#selWrap2').html('');
-                $('#selWrap2').append('<span style="color: red;display: block;margin-top: -24px">暂无设备，请先添加!</span>');
-            }
-            $('#typeSel2').selectpicker('refresh');
-            if(tList.length>0){
-                renderTime("edit");
-            }
-        }
-    });
-    $('#typeSel2').on('change', function(e){
-        /*console.log(this.value,
-            this.options[this.selectedIndex].value,
-            $(this).find("option:selected").val(),);*/
-        //renderTime("edit");
-    });
-
     $('.weekWrap span').on("click",function () {
         if($(this).hasClass("weekWrapActive")){
             return false;
@@ -210,7 +161,6 @@ $(document).ready(function() {
                     }else{
                         return data.replace("T00:00:00+08:00","");
                     }
-
                 } },
             { data: 'time',"render":function (data) {
                     return stringUtil.maxLength(data);
@@ -229,17 +179,10 @@ $(document).ready(function() {
                     return str;
                 } },
             { data: 'updated',"width":"12%","render":function (data,type,row,meta) {
-                    if (!data){
-                        return "-";
-                    }
-                    let unixTimestamp = new Date(data);
-                    let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
-                    return commonTime;
+                    return dateUtil.GMT2Str(data);
                 }},
             { data: 'created',"width":"12%","render":function (data,type,row,meta) {
-                    let unixTimestamp = new Date(data);
-                    let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
-                    return commonTime;
+                    return dateUtil.GMT2Str(data);
                 }},
             { data: null,"width":"15%","render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
@@ -315,52 +258,19 @@ $(document).ready(function() {
             remark = "暂未填写";
         }
         $('#detailModal').find('.remark').html(remark);
-        let created = rowData.created;
-        let unixTimestamp = new Date(created) ;
-        let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
-        $('#detail_created').html(commonTime);
-
-        let updated = rowData.updated;
-        if(updated){
-            let unixTimestamp = new Date(updated) ;
-            updated = unixTimestamp.toLocaleString('chinese',{hour12:false});
-        }else{
-            updated = "暂无更新";
-        }
-
-        $('#detail_updated').html(updated);
+        $('#detail_created').html(dateUtil.GMT2Str(rowData.created));
+        $('#detail_updated').html(dateUtil.GMT2Str(rowData.updated));
         $('#detailModal').modal("show");
     });
     $('#myTable').on("click",".btn-primary",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#editForm').find("input[name='id']").val(rowData.id);
         $('#editForm').find("input[name='account']").val(rowData.account);
-        $('#typeSel2').selectpicker('val',rowData.device_id);
-        $("#typeSel2").selectpicker('refresh');
+        $('#editDevice').html(rowData.deviceName);
         let date = rowData.date;
         date = date.replace("T00:00:00+08:00","");
-        //$('#editDate').val(date).datepicker('setDate',date);
-        //初始化时间选择插件
-        $('#editDate').datepicker({
-            language: 'zh-CN', //设置语言
-            autoclose: true, //选择后自动关闭
-            clearBtn: true,//清除按钮
-            format: "yyyy-mm-dd",//日期格式
-            //todayHighlight: true,
-            todayBtn: 'linked',
-            defaultViewDate: date,
-            startDate:dateUtil.getNow()
-        });
-        $('#editDate').val(date);
-        $('#editDate').datepicker().on('hide', function (e) {
-            let val = $("#editDate").val();
-            if(!val){
-                $("#editDate").val(date);
-            }else{
-                renderTime("edit");
-            }
-        });
-        renderTime("edit",rowData.time_id);
+        $('#editDate').html(date);
+        $('#editTime').html(rowData.time);
         let status = rowData.status;
         $('#status').selectpicker('val',rowData.status);
         $("#status").selectpicker('refresh');
@@ -436,22 +346,22 @@ function add(){
 
 function edit(){
     let deviceId = $('#typeSel1').val();
-    let date = $('#editForm').find("input[name='date']").val().trim();
-    let timeId = $('#editForm').find(".timeItemActive").attr("mydata");
+    //let date = $('#editForm').find("input[name='date']").val().trim();
+    //let timeId = $('#editForm').find(".timeItemActive").attr("mydata");
     let remark = $('#editForm').find("textarea[name='remark']").val().trim();
-    if (!timeId){
+    /*if (!timeId){
         swalParent("系统提示",'未选择任何时间!',"warning");
         return;
-    }
+    }*/
 
     //let formData = formUtil('addForm');
     let formData = {};
     formData["id"] = $('#editForm').find("input[name='id']").val();
-    formData["deviceId"] = deviceId;
-    formData["date"] = date;
+    //formData["deviceId"] = deviceId;
+    //formData["date"] = date;
     formData["status"] = $('#status').val();
     formData["_xsrf"] = $("#token", parent.document).val();
-    formData["timeId"] = timeId;
+    //formData["timeId"] = timeId;
     formData["remark"] = remark;
     $.ajax({
         url : prefix+"/update",

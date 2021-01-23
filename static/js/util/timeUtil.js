@@ -90,6 +90,22 @@ let dateUtil = {
             + ":" + (mCur < 10 ? "0" + mCur : mCur) + ":" + (sCur < 10 ? "0" + sCur : sCur);
         //alert(timeCur);// 输出时间
         return timeCur;
+    },
+    GMT2Str:function (time) {
+        if(!time){
+            return "-"
+        }
+        let dtCur = new Date(time);
+        let yearCur = dtCur.getFullYear();
+        let monCur = dtCur.getMonth() + 1;
+        let dayCur = dtCur.getDate();
+        let hCur = dtCur.getHours();
+        let mCur = dtCur.getMinutes();
+        let sCur = dtCur.getSeconds();
+        let timeCur = yearCur + "-" + (monCur < 10 ? "0" + monCur : monCur) + "-"
+            + (dayCur < 10 ? "0" + dayCur : dayCur) + " " + (hCur < 10 ? "0" + hCur : hCur)
+            + ":" + (mCur < 10 ? "0" + mCur : mCur) + ":" + (sCur < 10 ? "0" + sCur : sCur);
+        return timeCur;
     }
 };
 function addZero(number) {

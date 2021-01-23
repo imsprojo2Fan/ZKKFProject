@@ -39,14 +39,14 @@ $(function () {
                         //全部设备时自动熏染设备
                         renderDevice();
                         $('#typeChildWrap').html("");
-                        $('.col-lg-4').fadeOut(10);
-                        $('#deviceWrap').parent().removeClass("col-lg-8");
+                        $('.col-lg-3').fadeOut(10);
+                        $('#deviceWrap').parent().removeClass("col-lg-9");
                         $('#deviceWrap').parent().addClass("col-lg-12");
                     }else{
                         renderChildType();
-                        $('.col-lg-4').fadeIn(10);
+                        $('.col-lg-3').fadeIn(10);
                         $('#deviceWrap').parent().removeClass("col-lg-12");
-                        $('#deviceWrap').parent().addClass("col-lg-8");
+                        $('#deviceWrap').parent().addClass("col-lg-9");
                     }
                 });
             })

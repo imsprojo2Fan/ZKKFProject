@@ -113,14 +113,10 @@ $(document).ready(function() {
                     return data;
                 } },
             { data: 'updated',"render":function (data,type,row,meta) {
-                    let unixTimestamp = new Date(data);
-                    let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
-                    return commonTime;
+                    return dateUtil.GMT2Str(data);
                 }},
             { data: 'created',"render":function (data,type,row,meta) {
-                    let unixTimestamp = new Date(data);
-                    let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
-                    return commonTime;
+                    return dateUtil.GMT2Str(data);
                 }},
             { data: null,"render":function () {
                     //let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
@@ -236,19 +232,10 @@ $(document).ready(function() {
         $('#detailModal').find('.remark').html("<span title='"+rowData.remark+"'>"+temp+"</span>");
 
         let created = rowData.created;
-        let unixTimestamp = new Date(created);
-        let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
-        $('#detailModal').find('.created').html(commonTime);
+        $('#detailModal').find('.created').html(dateUtil.GMT2Str(created));
 
         let updated = rowData.updated;
-        if(updated){
-            let unixTimestamp = new Date(updated) ;
-            updated = unixTimestamp.toLocaleString('chinese',{hour12:false});
-        }else{
-            updated = "暂无更新";
-        }
-
-        $('#detailModal').find('.updated').html(updated);
+        $('#detailModal').find('.updated').html(dateUtil.GMT2Str(updated));
         $('#detailModal').modal("show");
     });
     $('#myTable').on("click",".btn-primary",function(e){//编辑

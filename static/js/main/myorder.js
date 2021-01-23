@@ -99,9 +99,7 @@ $(document).ready(function() {
                     return str;
                 } },
             { data: 'created',"render":function (data,type,row,meta) {
-                    let unixTimestamp = new Date(data);
-                    let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
-                    return commonTime;
+                    return dateUtil.GMT2Str(data);
                 }},
             { data: null,"render":function () {
                     let html = "<a href='javascript:void(0);'  class='detail btn btn-default btn-xs'>订单详情&nbsp;<i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>&nbsp;";
@@ -162,9 +160,7 @@ $(document).ready(function() {
         }
         $('#detailModal').find('.status').html(str);
         let created = rowData.created;
-        let unixTimestamp = new Date(created);
-        let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
-        $('#detail_created').html(commonTime);
+        $('#detail_created').html(dateUtil.GMT2Str(created));
         let rid = rowData.rid;
         detail(rid);
     });

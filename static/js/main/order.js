@@ -25,8 +25,11 @@ $(document).ready(function () {
         if (!data) {
             return false;
         }
+        if(data==="tab1"){
+            refresh();
+        }
         $('.tabWrap').fadeOut(200);
-        $("#" + data).fadeIn(200);
+        $("#"+data).fadeIn(200);
     });
 
     //初始化子类分组数据
@@ -131,11 +134,7 @@ $(document).ready(function () {
                 data: 'created',
                 "width": "12%",
                 "render": function (data, type, row, meta) {
-                    let unixTimestamp = new Date(data);
-                    let commonTime = unixTimestamp.toLocaleString('chinese', {
-                        hour12: false
-                    });
-                    return commonTime;
+                    return dateUtil.GMT2Str(data);
                 }
             },
             {
@@ -220,21 +219,9 @@ $(document).ready(function () {
         }
         $('#detailModal').find('.status').html(str);
         let created = rowData.created;
-        let unixTimestamp = new Date(created);
-        let commonTime = unixTimestamp.toLocaleString('chinese', {
-            hour12: false
-        });
-        $('#detail_created').html(commonTime);
+        $('#detail_created').html(dateUtil.GMT2Str(created));
         let updated = rowData.updated;
-        if (updated) {
-            let unixTimestamp = new Date(updated);
-            updated = unixTimestamp.toLocaleString('chinese', {
-                hour12: false
-            });
-        } else {
-            updated = "暂无更新";
-        }
-        $('#detail_updated').html(updated);
+        $('#detail_updated').html(dateUtil.GMT2Str(updated));
         let rid = rowData.rid;
         detail(rid);
     });
@@ -336,7 +323,11 @@ $(document).ready(function () {
             $('#userSel').html('');
             for (let i = 0; i < tList.length; i++) {
                 let item = tList[i];
-                $('#userSel').append('<option value="' + item.Id + '">' + item.Name + '</option>');
+                let nameTemp = item.Name;
+                if(!nameTemp){
+                    nameTemp = "未填写名字";
+                }
+                $('#userSel').append('<option value="' + item.Id + '">' + nameTemp + '</option>');
             }
         } else {
             $('#userSelWrap').html('');

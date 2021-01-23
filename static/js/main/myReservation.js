@@ -92,9 +92,7 @@ $(document).ready(function() {
                     return str;
                 } },
             { data: 'created',"width":"12%","render":function (data,type,row,meta) {
-                    let unixTimestamp = new Date(data);
-                    let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
-                    return commonTime;
+                    return dateUtil.GMT2Str(data);
                 }},
             { data: null,"width":"15%","render":function () {
                     let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
@@ -165,9 +163,7 @@ $(document).ready(function() {
         }
         $('#detailModal').find('.remark').html(remark);
         let created = rowData.created;
-        let unixTimestamp = new Date(created) ;
-        let commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
-        $('#detail_created').html(commonTime);
+        $('#detail_created').html(dateUtil.GMT2Str(created));
         $('#detailModal').modal("show");
     });
 
