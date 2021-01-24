@@ -23,7 +23,7 @@ func init() {
 	//是否开启热升级，默认是 false，关闭热升级。
 	//beego.BConfig.Listen.Graceful=true
 	beego.BConfig.EnableGzip = true
-	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime=36000000000
+	//beego.BConfig.WebConfig.Session.SessionGCMaxLifetime=36000000000
 
 	beego.SetStaticPath("/file", "./file")
 	beego.SetStaticPath("/img", "./file/img")

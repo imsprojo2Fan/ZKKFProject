@@ -302,4 +302,7 @@ tr,th{
     font-size: 10px;
     margin-left: 5px;
 }
+.lib{
+    display: none;
+}
 

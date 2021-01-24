@@ -24,10 +24,10 @@ function addReservation(){
             if (r.code == 1) {
                 renderTime();
                 $('#message').val("");
-                swal("系统提示",r.msg+"，客服将尽快确认！","success");
+                mySwal("系统提示",r.msg+"，客服将尽快确认！","success");
             }else{
                 setTimeout(function () {
-                    swal("系统提示",r.msg,"error");
+                    mySwal("系统提示",r.msg,"error");
                 },200);
 
             }
@@ -91,15 +91,15 @@ function renderTime(){
                 $('.click').on("click",function () {
                     loginFlag = $('#loginFlag').val();
                     if(loginFlag==="0"){
-                        swal("系统提示","该操作需用户登录，请先登录！","warning");
+                        mySwal("系统提示","该操作需用户登录，请先登录！","warning");
                         return false;
                     }
                     if($(this).hasClass("clickActive")){
-                        swal("已从本地预约列表移除","需提交预约方作系统确认！","info");
+                        mySwal("已从本地预约列表移除","需提交预约方作系统确认！","info");
                         $(this).removeClass("clickActive");
                     }else{
                         $('.clickActive').removeClass("clickActive");
-                        swal("已加入本地预约列表","需提交预约方作系统确认！","info");
+                        mySwal("已加入本地预约列表","需提交预约方作系统确认！","info");
                         $(this).addClass("clickActive");
                     }
                 });
@@ -167,14 +167,14 @@ function addOrder() {
     }
 
     localStorage.setItem("lib",JSON.stringify(localOutArr));
-    swal("已成功加入本地实验列表","提示：需提交实验方可作系统确认","success");
+    mySwal("已成功加入本地实验列表","提示：需提交实验方可作系统确认","success");
     renderModalLib();
 }
 
 function showProtocol() {
     loginFlag = $('#loginFlag').val();
     if(loginFlag==="0"){
-        swal("系统提示","该操作需用户登录，请先登录！","warning");
+        mySwal("系统提示","该操作需用户登录，请先登录！","warning");
         return false;
     }
     let localLibTemp = localStorage.getItem("lib");
@@ -660,9 +660,9 @@ function submitOrder() {
                 $('#typeWrap').show();
                 $('.filterWrap').show(200);
                 $('#searchWrap').show();
-                swal("系统提示",r.msg+",客服将尽快确认！","success");
+                mySwal("系统提示",r.msg+",客服将尽快确认！","success");
             }else{
-                swal("系统提示",r.msg,"error");
+                mySwal("系统提示",r.msg,"error");
             }
 
         },
@@ -670,4 +670,9 @@ function submitOrder() {
             $('.preloader').fadeOut(200);
         }
     });
+}
+function mySwal(title,msg,type) {
+    setTimeout(function () {
+        swal(title,msg,type);
+    },100)
 }

@@ -85,10 +85,12 @@ $(function () {
             $('#submitBtn').html("提交预约");
             $('#messageWrap').show();
             $('#dateWrap').show();
+            $('#lib').hide();
             //熏染可预约时间
             renderTime();
         }else{
-            $('#lib').hide();
+            //熏染本地存储
+            renderModalLib();
         }
         let imgSrc = info.img;
         if(imgSrc){
@@ -100,8 +102,7 @@ $(function () {
         time = time.replace("T"," ");
         $('#created').html(time);
         $('#view').html(info.view);
-        //熏染本地存储
-        renderModalLib();
+
         if(loginFlag==="1"){
             renderInfo();
         }
