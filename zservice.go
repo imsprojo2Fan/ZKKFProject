@@ -51,9 +51,6 @@ func init() {
 			operate.Insert(&operate)
 		}
 
-
-
-
 	}
 	beego.InsertFilter("/main/*", beego.BeforeRouter, FilterUser, false)
 }

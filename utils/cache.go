@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/gob"
 	"errors"
-	"time"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/cache"
 	_ "github.com/astaxie/beego/cache/redis"
+	"time"
 )
 
 var GlobalRedis cache.Cache

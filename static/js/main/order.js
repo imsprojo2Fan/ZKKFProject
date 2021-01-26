@@ -2,6 +2,12 @@ let myTable;
 let prefix = "/main/order";
 let userInfo = parent.user();
 let uType = userInfo.type;
+let typeArr = [];
+let type;
+let request;
+let typeChildArr = [];
+let detectionCycle;
+let deviceArr = [];
 window.onresize = function () {
     let bodyHeight = window.innerHeight;
     console.log("bodyHeight:" + bodyHeight);
@@ -32,18 +38,27 @@ $(document).ready(function () {
         $("#"+data).fadeIn(200);
     });
 
-    //初始化子类分组数据
-    $.post("/main/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
-        if(res.code===1){
-            let tList = res.data;
-            if(tList){
-                for(let i=0;i<tList.length;i++){
-                    let item = tList[i];
-                    $('#filterSelect').append('<option value="'+item.id+'">'+item.name+'</option>');
-                }
-            }
-            $('#filterSelect').selectpicker('refresh');
-        }
+    // 中文重写select 查询为空提示信息
+    $('.selectpicker').selectpicker({
+        noneSelectedText: '下拉选择指定项',
+        noneResultsText: '无匹配选项',
+        maxOptionsText: function (numAll, numGroup) {
+            let arr = [];
+            arr[0] = (numAll === 1) ? '最多可选中数为{n}' : '最多可选中数为{n}';
+            arr[1] = (numGroup === 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)';
+            return arr;
+        },
+        //liveSearch: true,
+        //size:10   //设置select高度，同时显示5个值
+    });
+    $(".selectpicker").selectpicker('refresh');
+    //父类切换监听
+    $('#typeAddSel').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+        request = typeArr[clickedIndex].request;
+        $('#addTable .type').html("-");
+        $('#addTable .allDevice').html("-");
+        let selected = $(e.currentTarget).val();
+        renderChildType(selected);
     });
 
     //datatable setting
@@ -315,27 +330,7 @@ $(document).ready(function () {
         });
         $('#assignModal').modal("show");
     });
-    $.post("/main/user/assign", {
-        _xsrf: $("#token", parent.document).val()
-    }, function (res) {
-        let tList = res.data;
-        if (tList) {
-            $('#userSel').html('');
-            for (let i = 0; i < tList.length; i++) {
-                let item = tList[i];
-                let nameTemp = item.Name;
-                if(!nameTemp){
-                    nameTemp = "未填写名字";
-                }
-                $('#userSel').append('<option value="' + item.Id + '">' + nameTemp + '</option>');
-            }
-        } else {
-            $('#userSelWrap').html('');
-            $('#userSelWrap').append(
-                '<span style="color: red;display: block;margin-top: 5px">暂无用户，请先添加!</span>');
-        }
-        $('#userSel').selectpicker('refresh');
-    })
+
     $('#assignModal .btn-primary').on("click", function () {
         let rid = $('#assignModal .rid').html();
         let oldUid = $('#curUser').data("uid");
@@ -381,8 +376,85 @@ $(document).ready(function () {
     $('#reportModal .btn-primary').on("click", function () {
         report();
     });
+    //富文本监听事件
+    $('#addTable .editor').on("click",function () {
+        let id = $(this).attr("id")+"Content";
+        let val = $(this).val();
+        openWindow("/main/editor?domId="+id,"中科科辅",1200,600);
+    });
+
+    setTimeout(function () {
+        initData();
+    },100);
+
 
 });
+
+function initData() {
+    //初始化父类分组过滤数据
+    $.post("/main/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
+        if(res.code===1){
+            let tList = res.data;
+            typeArr = tList;
+            if(tList){
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i];
+                    $('#filterSelect').append('<option value="'+item.id+'">'+item.name+'</option>');
+                    $('#typeAddSel').append('<option value="'+item.id+'">'+item.name+'</option>');
+                }
+                request = typeArr[0].request;
+                $('#addParameter').html(request);
+                $('#addParameterContent').val(request);
+            }
+            $('#filterSelect').selectpicker('refresh');
+            $('#typeAddSel').selectpicker('refresh');
+            let tid = $('#typeAddSel').val();
+            renderChildType(tid);
+        }
+    });
+    //初始化用户信息
+    $.post("/main/user/customer",{_xsrf:$("#token", parent.document).val()},function (res) {
+        if(res.code===1){
+            //loading(false,2);
+            let tList = res.data;
+            if(tList){
+                $('#userAddSel').html('');
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i];
+                    let name = item.Name;
+                    if(!name){
+                        name = "未填写名字";
+                    }
+                    $('#userAddSel').append('<option value="'+item.Id+'">'+name+'</option>');
+                }
+            }else{
+                $('#userWrap').html('');
+                $('#userWrap').append('<span style="color: red;display: block;margin-top: -24px">暂无用户，请先添加!</span>');
+            }
+            $('#userAddSel').selectpicker('refresh');
+        }
+    });
+    //初始化被指派任务用户
+    $.post("/main/user/assign", {_xsrf: $("#token", parent.document).val()}, function (res) {
+        let tList = res.data;
+        if (tList) {
+            $('#userSel').html('');
+            for (let i = 0; i < tList.length; i++) {
+                let item = tList[i];
+                let nameTemp = item.Name;
+                if(!nameTemp){
+                    nameTemp = "未填写名字";
+                }
+                $('#userSel').append('<option value="' + item.Id + '">' + nameTemp + '</option>');
+            }
+        } else {
+            $('#userSelWrap').html('');
+            $('#userSelWrap').append(
+                '<span style="color: red;display: block;margin-top: 5px">暂无用户，请先添加!</span>');
+        }
+        $('#userSel').selectpicker('refresh');
+    })
+}
 
 function detail(rid) {
     loadingParent(true, 2);
@@ -435,24 +507,50 @@ function detail(rid) {
 }
 
 function add() {
-    let deviceId = $('#typeSel1').val();
-    let userId = $('#userSel1').val();
-    let date = $('#addForm').find("input[name='date']").val().trim();
-    let timeId = $('#addForm').find(".timeItemActive").attr("mydata");
-    let remark = $('#addForm').find("textarea[name='remark']").val().trim();
-    if (!timeId) {
-        swalParent("系统提示", '未选择任何时间!', "warning");
+    let ids = $('#addTable .allDevice').attr("deviceIds");
+    if(!ids){
+        swalParent("系统提示","未选择任何实验项目!","error");
         return;
     }
-
+    let item = {};
+    let Protocol = {};
+    //Protocol.Sign = $('.sign img').attr("src");
+    Protocol.Date = dateUtil.NowDate;
+    //Protocol.Pay = $("input[name='pay']:checked").val();
+    //Protocol.TestResult = $("input[name='test_result']:checked").val();
+    //Protocol.City = $('.city').html();
+    Protocol.SampleName = $('#addTable').find("input[name='sample_name']").val().trim();
+    Protocol.SampleCount = $('#addTable').find("input[name='sample_count']").val();
+    Protocol.SampleCode = $('#addTable').find("input[name='sample_code']").val().trim();
+    Protocol.DetectionCycle = $('#addTable').find('.detection_cycle').html();
+    Protocol.DetectionReport = $('#addTable').find("input[name='detection_report']:checked").val();
+    Protocol.SampleProcessing = $('#addTable').find("input[name='sample_processing']:checked").val();
+    Protocol.About = $('#addTable').find("input[name='about']").val().trim();
+    Protocol.Parameter = $('#addParameterContent').val();
+    Protocol.Other = $("#addAboutContent").val();
+    Protocol.Result = $("#addResultContent").val();
+    //Protocol.Tid = $('#typeAddSel').val();
+    //Protocol.DeviceId = ids;
+    Protocol.Uid = parseInt($('#userAddSel').val());
+    let dataArr = [];
+    item.Protocol = Protocol;
+    item.Tid = $('#typeAddSel').val();
+    item.Count = 4;
+    let DeviceArr = [];
+    $('#addTable .device').each(function () {
+        let item = {};
+        item.DeviceId = $(this).attr("data-id");
+        item.Count = 1;
+        item.Name = $(this).html();
+        DeviceArr.push(item);
+    });
+    item.Count = DeviceArr.length;
+    item.Data = DeviceArr;
+    dataArr.push(item);
     //let formData = formUtil('addForm');
     let formData = {};
-    formData["uuid"] = userId;
-    formData["deviceId"] = deviceId;
-    formData["date"] = date;
+    formData["data"] = JSON.stringify(dataArr);
     formData["_xsrf"] = $("#token", parent.document).val();
-    formData["timeId"] = timeId;
-    formData["remark"] = remark;
     $.ajax({
         url: prefix + "/add",
         type: "POST",
@@ -464,10 +562,11 @@ function add() {
         },
         success: function (r) {
             let type = "error";
-            if (r.code == 1) {
+            if (r.code === 1) {
                 type = "success";
-                renderTime("add", "");
-                $('#addForm').find("textarea[name='remark']").val("");
+                $('#deviceAddSel').selectpicker('val',['noneSelectedText'])//回到初始状态
+                $("#deviceAddSel").selectpicker('refresh');
+                reset();
             }
             swalParent("系统提示", r.msg, type);
         },
@@ -693,61 +792,92 @@ function protocolDetail(rid) {
     })
 }
 
-function renderTime(type, timeId) {
-    let deviceId;
-    let date;
-    let wrapObj;
-    if (type === "add") {
-        deviceId = $('#typeSel1').val();
-        date = $('#addForm').find(".date").val();
-        wrapObj = $('#addForm').find(".timeWrap");
-    } else {
-        deviceId = $('#typeSel2').val();
-        date = $('#editForm').find(".date").val();
-        wrapObj = $('#editForm').find(".timeWrap");
+function renderChildType(tid) {
+    if(!tid){
+        return
     }
-    if (!deviceId) {
-        return false;
-    }
-    let nowDate = dateUtil.getNow();
-    let useFlag = dateUtil.compareDate(date, nowDate);
-    //loading(true,2);
-    $.post("/reservation/timeQuery", {
-        _xsrf: $("#token", parent.document).val(),
-        deviceId: deviceId,
-        date: date
-    }, function (res) {
-        if (res.code === 1) {
-            //loading(false,2);
+    //初始化子类分组数据
+    $.post("/main/typeChild/queryByTid",{_xsrf:$("#token",parent.document).val(),tid:tid},function (res) {
+        if(res.code===1){
             let tList = res.data;
-            if (tList) {
-                wrapObj.html('');
-                for (let i = 0; i < tList.length; i++) {
+            $('#typeChiAddSelWrap').html('');
+            if(tList){
+                typeChildArr = tList;
+                $('#typeChiAddSelWrap').html('<select id="typeChiAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default"></select>');
+                for(let i=0;i<tList.length;i++){
                     let item = tList[i];
-                    let isUse = item.isUse;
-                    let id = item.tId;
-                    let time = item.time;
-                    //判断是否该时段早于当前时间
-                    let timeFlag = dateUtil.compareTime(date + " " + time.substring(0, 2) + ":00:00");
-                    //当前预约日期小于当前日期时则禁用选择
-                    if (parseInt(timeId) === id) { //熏染编辑状态选中
-                        wrapObj.append('<span mydata="' + id + '" class="timeItemActive">' + time + '</span>');
-                    } else if (!useFlag || !timeFlag || isUse === 1) {
-                        wrapObj.append('<span mydata="' + id + '" class="timeItem-disabled">' + time +
-                            '</span>');
-                    } else {
-                        wrapObj.append('<span mydata="' + id + '" class="timeItem">' + time + '</span>');
-                    }
+                    $('#typeChiAddSel').append('<option value="'+item.id+'">'+item.name+'</option>');
                 }
-                $('.timeItem').on("click", function () {
-                    $('.timeItemActive').addClass("timeItem");
-                    $('.timeItemActive').removeClass("timeItemActive");
-                    $(this).addClass("timeItemActive");
-                });
-            } else {
-                wrapObj.html('');
-                wrapObj.append('<span style="color: red;display: block;margin-top: 6px">暂无可选时间，请先添加!</span>');
+                detectionCycle = tList[0].detection_cycle;
+            }else{
+                $('#typeChiAddSelWrap').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
             }
+            $('#typeChiAddSel').selectpicker('refresh');
+            //子类切换监听
+            $('#typeChiAddSel').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+                detectionCycle = typeChildArr[clickedIndex].detection_cycle;
+                $('#addTable .type').html("-");
+                $('#addTable .allDevice').html("-");
+                renderDevice();
+            });
+            renderDevice();
+        }
+    });
+
+}
+
+function renderDevice(){
+    let typeId = $('#typeAddSel').val();
+    let ttid = $('#typeChiAddSel').val();
+
+    $.post("/type/device",{_xsrf:$("#token", parent.document).val(),typeId:typeId,ttid:ttid},function (res) {
+        if(res.data){
+            $('#deviceAddSelWrap').html("");
+            $('#addTable .type').html('-');
+            $('#addTable .allDevice').html('-');
+            let arr = res.data;
+            deviceArr = arr;
+            $('#deviceAddSelWrap').html('<select multiple id="deviceAddSel" class="selectpicker" data-size="10" data-max-options="50" data-live-search="true" data-style="btn-default"></select>');
+            for(let i=0;i<arr.length;i++){
+                let item = arr[i];
+                let name = item.name;
+                $('#deviceAddSel').append('<option deviceName="'+name+'" value="'+item.id+'">'+name+'</option>');
+            }
+            $('.selectpicker').selectpicker({
+                noneSelectedText: '下拉多选项目',
+                noneResultsText: '无匹配选项',
+                maxOptionsText: function (numAll, numGroup) {
+                    let arr = [];
+                    arr[0] = (numAll === 1) ? '最多可选中数为{n}' : '最多可选中数为{n}';
+                    arr[1] = (numGroup === 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)';
+                    return arr;
+                },
+                //liveSearch: true,
+                //size:10   //设置select高度，同时显示5个值
+            });
+            $('#deviceAddSel').selectpicker('refresh');
+            //设备切换监听
+            $('#deviceAddSel').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+                $('#addTable .allDevice').html("");
+                $('#addTable .type').html($('#typeAddSel').find("option:selected").text()/*+'&nbsp;&nbsp;&nbsp;<i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;服务周期:7个工作日'*/);
+                let options = $("#deviceAddSel option:selected");
+                for(let i=0;i<options.length;i++){
+                    let item = options[i];
+                    $('#addTable .allDevice').append('<i class="fa fa-files-o" aria-hidden="true"></i>&nbsp;<span class="device" data-id="'+$(item).val()+'">'+item.innerHTML+'</span><br>');
+                }
+                let val1 = $('#deviceAddSel').val();
+                let tArr = "";
+                $.each(val1,function (i,item) {
+                    tArr = tArr+","+item;
+                });
+                tArr = tArr.substring(1,tArr.length);
+                $('#addTable .allDevice').attr("deviceIds",tArr);
+                if(!tArr){
+                    $('#addTable .allDevice').html("-");
+                }
+            });
+        }else{
+            $('#deviceAddSelWrap').html("<span style=\"color: red;display: block;margin-top: 5px\">暂无数据，请先添加!</span>");
         }
     });
 
@@ -826,3 +956,15 @@ window.onresize = function () {
     let height = window.innerHeight - 200;
     $('.dataTables_scrollBody').css("height", height + "px");
 };
+
+function openRes(domId,content) {
+    $('#'+domId).val(content);
+    domId = domId.replace("Content","");
+    $('#'+domId).html(content);
+}
+
+function openWindow(url,name,iWidth,iHeight) {
+    let iTop = (window.screen.availHeight-30-iHeight)/2;
+    let iLeft = (window.screen.availWidth-10-iWidth)/2;
+    window.open(url,name,'height='+iHeight+',innerHeight='+iHeight+',width='+iWidth+',innerWidth='+iWidth+',top='+iTop+',left='+iLeft+',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no');
+}

@@ -1,117 +1,4 @@
 
-function addReservation(){
-
-    let date = $('.clickActive').attr("date");
-    let timeId = $('.clickActive').attr("timeId");
-    let message = $('#message').val().trim();
-    //let formData = formUtil('addForm');
-    let formData = {};
-    formData["deviceId"] = $('#deviceId').val();
-    formData["date"] = date;
-    formData["_xsrf"] = $("#token", parent.document).val();
-    formData["timeId"] = timeId;
-    formData["message"] = message;
-    $.ajax({
-        url : "/reservation/add",
-        type : "POST",
-        dataType : "json",
-        cache : false,
-        data : formData,
-        beforeSend:function(){
-            $('.preloader').fadeIn(200);
-        },
-        success : function(r) {
-            if (r.code == 1) {
-                renderTime();
-                $('#message').val("");
-                mySwal("系统提示",r.msg+"，客服将尽快确认！","success");
-            }else{
-                setTimeout(function () {
-                    mySwal("系统提示",r.msg,"error");
-                },200);
-
-            }
-        },
-        complete:function () {
-            $('.preloader').fadeOut(200);
-        }
-    });
-}
-
-function renderTime(){
-    let deviceId;
-    let wrapObj;
-    deviceId = $('#deviceId').val();
-    let week = $('.weekWrapActive').attr("data");
-    wrapObj = $('#dateTable');
-    $('.preloader').fadeIn(200);
-    $.post("/reservation/timeQuery",{_xsrf:$("#token", parent.document).val(),deviceId:deviceId,week:week},function (res) {
-        if(res.code===1){
-            $('.preloader').fadeOut(200);
-            let tList = res.data;
-            if(tList){
-                let nowYear = new Date().getFullYear();
-                wrapObj.html('');
-                for(let i=0;i<tList.length;i++){
-                    let item = tList[i];
-                    let dataList = item.data;
-                    dataList.sort(stringUtil.compare("tStamp"));
-                    if(i===0){
-                        wrapObj.append('<tr id="tr'+i+'"></tr>');
-                        for(let j=0;j<dataList.length;j++){
-                            let item2 = dataList[j];
-                            let date = item2.date;
-                            $('#tr'+i).append('<th>'+date+'</th>');
-                        }
-                    }else{
-                        wrapObj.append('<tr id="tr'+i+'"></tr>');
-                        for(let j=0;j<dataList.length;j++){
-                            let item2 = dataList[j];
-                            let timeId = item2.timeId;
-                            let date = item2.date;
-                            let time = item2.time;
-                            let isUse = item2.isUse;
-                            if(date){
-                                //判断是否该时段早于当前时间
-                                //比较时间
-                                date = date.substring(3,date.length);
-                                date = nowYear+"-"+date;
-                                let timeFlag = dateUtil.compareTime(date+" "+time.substring(0,5)+":00");
-                                if(!timeFlag||isUse==1){
-                                    $('#tr'+i).append('<td>-</td>');
-                                }else{
-                                    $('#tr'+i).append('<td date="'+date+'" timeId="'+timeId+'" class="click '+date+'">可预约</td>');
-                                }
-                            }else{
-                                $('#tr'+i).append('<td >'+time+'</td>');
-                            }
-                        }
-                    }
-                }
-                $('.click').on("click",function () {
-                    loginFlag = $('#loginFlag').val();
-                    if(loginFlag==="0"){
-                        mySwal("系统提示","该操作需用户登录，请先登录！","warning");
-                        return false;
-                    }
-                    if($(this).hasClass("clickActive")){
-                        mySwal("已从本地预约列表移除","需提交预约方作系统确认！","info");
-                        $(this).removeClass("clickActive");
-                    }else{
-                        $('.clickActive').removeClass("clickActive");
-                        mySwal("已加入本地预约列表","需提交预约方作系统确认！","info");
-                        $(this).addClass("clickActive");
-                    }
-                });
-            }else{
-                wrapObj.html('');
-                wrapObj.append('<span style="color: red;display: block;margin-top: 6px">暂无可选时间，请先添加!</span>');
-            }
-        }
-    });
-
-}
-
 function addOrder() {
     let num = $('#lib').find("span").html();
     $('#lib').find("span").html(parseInt(num)+1);
@@ -171,7 +58,7 @@ function addOrder() {
     renderModalLib();
 }
 
-function showProtocol() {
+function showProtocolForOrder() {
     loginFlag = $('#loginFlag').val();
     if(loginFlag==="0"){
         mySwal("系统提示","该操作需用户登录，请先登录！","warning");
@@ -202,7 +89,7 @@ function showProtocol() {
     renderProtocol();
     $('#libModal').modal("hide");
     $('#lib img').attr("src","../static/img/refresh.png");
-
+    $('#lib img').attr("title","返回项目信息");
 }
 
 function renderModalLib() {
@@ -575,7 +462,7 @@ function renderClick() {
     $('.editor').on("click",function () {
         let id = $(this).attr("id")+"Content";
         let val = $(this).val();
-        openWindow("/main/editor?domId="+id,"中科科辅",1000,600);
+        openWindow("/main/editor?domId="+id,"中科科辅",1200,600);
     });
 
     //协议隐藏显示
@@ -671,6 +558,7 @@ function submitOrder() {
         }
     });
 }
+
 function mySwal(title,msg,type) {
     setTimeout(function () {
         swal(title,msg,type);

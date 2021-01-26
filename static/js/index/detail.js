@@ -82,7 +82,7 @@ $(function () {
         }
         if(info.is_order==="0"){
             $('#btnHead').html("预约设备");
-            $('#submitBtn').html("提交预约");
+            $('#submitBtn').html("实验要求&nbsp;<i class=\"fa fa-angle-right\" aria-hidden=\"true\"></i>");
             $('#messageWrap').show();
             $('#dateWrap').show();
             $('#lib').hide();
@@ -128,26 +128,15 @@ $(function () {
             swal("系统提示","该操作需用户登录，请先登录！","warning");
             return false
         }
-        if($(this).html()==="提交预约"){
+        if($(this).html().indexOf("添加实验")!==-1){
+            addOrder();
+        }else{
             let timeId = $('.clickActive').attr("timeId");
             if (!timeId){
                 swal("系统提示",'您未选择任何预约时间！',"warning");
                 return;
             }
-            swal({
-                title: "是否已确定预约信息?",
-                text: '提交成功将不可更改!',
-                type: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#ff1200',
-                cancelButtonColor: '#474747',
-                confirmButtonText: '是',
-                cancelButtonText:'否'
-            },function(){
-                addReservation();
-            });
-        }else{
-            addOrder();
+            showProtocolForReservation();
         }
 
     });
@@ -167,6 +156,9 @@ $(function () {
         $('#searchWrap').show(200);
         if($(this).find("img").attr("src").indexOf("refresh")!==-1){
             $(this).find("img").attr("src","../static/img/lib.png");
+            if(info.is_order=="0"){
+                $(this).hide();
+            }
         }else{
             $('#libModal').modal("show");
         }
@@ -175,11 +167,11 @@ $(function () {
     makeCode("signCode",url+"/sign?code="+signCode,108,108);
 
     $('#orderBtn').on("click",function () {
-        showProtocol();
+        showProtocolForOrder();
     });
 
     $('.sign').on("click",function () {
-        openWindow("/sign?code="+signCode,"签字板",1000,600);
+        openWindow("/sign?code="+signCode,"签字板",1200,600);
     })
 
     $('.submitBtn').on("click",function () {
@@ -188,6 +180,7 @@ $(function () {
             swal("系统提示","请在甲方代表签字处签字","error");
             return false;
         }
+        let typeBtn = $(this).html();
         swal({
             title: "是否已确认提交信息?",
             text: '提交信息后将不可更改，请务必保存协议文件！',
@@ -198,7 +191,12 @@ $(function () {
             confirmButtonText: '是',
             cancelButtonText:'否'
         },function(){
-            submitOrder();
+            if(typeBtn==="提交实验"){
+                submitOrder();
+            }else{
+                addReservation();
+            }
+
         });
     });
 

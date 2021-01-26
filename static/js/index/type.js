@@ -111,7 +111,7 @@ $(function () {
     });
 
     $('.sign').on("click",function () {
-        openWindow("/sign?code="+signCode,"签字板",1000,600);
+        openWindow("/sign?code="+signCode,"签字板",1200,600);
     })
 
     $('.submitBtn').on("click",function () {

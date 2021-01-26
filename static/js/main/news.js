@@ -45,11 +45,11 @@ $(document).ready(function() {
     });
 
     $('#uploadPic').on('click',function () {
-        openWindow("/main/uploadPic","中科科辅",1000,600);
+        openWindow("/main/uploadPic","中科科辅",1200,600);
     });
 
     $('#edit_uploadPic').on('click',function () {
-        openWindow("/main/uploadPic","中科科辅",1000,600);
+        openWindow("/main/uploadPic","中科科辅",1200,600);
     });
 
     $('#form1').find('.addItem').on("click",function () {
@@ -57,7 +57,7 @@ $(document).ready(function() {
         if(arr.length>4){
             swalParent("系统提示","最多只上传5张图片","warning");
         }
-        openWindow("/main/uploadPic?domId=addImgWrap","中科科辅",1000,600);
+        openWindow("/main/uploadPic?domId=addImgWrap","中科科辅",1200,600);
     });
 
     $('#form2').find('.addItem').on("click",function () {

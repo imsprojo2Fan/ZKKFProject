@@ -30,6 +30,7 @@
     <div>
         <ol class="breadcrumb">
             <li><span data="tab1" id="tabHref01">数据列表</span></li>
+            <li><span data="tab2" class="active" >新增数据</span></li>
             <li><span class="active" onclick="refresh()">刷新数据</span></li>
         </ol>
     </div>
@@ -73,54 +74,111 @@
                         </table>
                     </div>
                     <div id="tab2" class="tabWrap" style="display: none">
-
                         <div class="panel-body">
                             <form class="form-horizontal" id="addForm" autocomplete="off">
 
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label">客户选择</label>
-                                    <div class="col-sm-6" id="userWrap1">
-                                        <select id="userSel1" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
+                                    <label class="col-sm-2 control-label form-label tabtxt2"><span class="red">*</span>客户选择</label>
+                                    <div class="col-sm-6" id="userWrap">
+                                        <select id="userAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
                                         </select>
-                                        <span class="help-block"></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label">预约设备</label>
-                                    <div class="col-sm-6" id="selWrap1">
-                                        <select id="typeSel1" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
+                                    <label class="col-sm-2 control-label form-label tabtxt2"><span class="red">*</span>父类分组</label>
+                                    <div class="col-sm-3 " id="typeAddSelWrap">
+                                        <select id="typeAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
                                         </select>
-                                        <span class="help-block"></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label">日期选择</label>
-                                    <div class="col-sm-2">
-                                        <input type="text" readonly="readonly" name="date" class="form-control date" autocomplete="off"  placeholder="请选择日期">
-                                        <span class="help-block"></span>
+                                    <label class="col-sm-2 control-label form-label tabtxt2"><span class="red">*</span>子类分组</label>
+                                    <div class="col-sm-3 selWrap" id="typeChiAddSelWrap">
+                                        <select class="selectpicker" id="typeChiAddSel" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                        </select>
                                     </div>
                                 </div>
 
-                                <div class="form-group" style="margin-bottom: 16px;">
-                                    <label class="col-sm-2 control-label form-label">时间选择</label>
-                                    <div class="col-sm-5">
-                                        <div class="timeWrap">
-                                            {{/*<span class="timeItem">08:00-10:00</span>
-                                            <span class="timeItemActive">08:00-10:00</span>
-                                            <span class="timeItem-disabled">08:00-10:00</span>*/}}
-                                        </div>
-                                        <span class="help-block"></span>
+                                <div class="form-group" style="margin-top: -6px;">
+                                    <label class="col-sm-2 control-label form-label tabtxt2"><span class="red">*</span>实验项目</label>
+                                    <div class="col-sm-6" id="deviceAddSelWrap">
+                                        <select id="deviceAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
+                                        </select>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="name" class="col-sm-2 control-label form-label">备注信息</label>
-                                    <div class="col-sm-8">
-                                        <textarea name="remark" class="form-control" placeholder=""></textarea>
-                                    </div>
-                                </div>
+                                <table id="addTable">
+                                    <tbody>
+                                    <tr style="color: #6195ff;font-size: 16px">
+                                        <td class="tabtxt2" style="width: 7%;">所属分类</td>
+                                        <td colspan="4" class="type">-</td>
+                                        <td class="typeMore"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2"><span class="red">*</span>已选项目</td>
+                                        <td colspan="5" class="allDevice" style="font-size: 16px">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">检测报告</td>
+                                        <td colspan="5">
+                                            <input type="radio" checked="" value="无需检测报告（默认）" name="detection_report">&nbsp;无需检测报告（默认）
+                                            <input type="radio" value="中文检测报告（加收200元）" name="detection_report">&nbsp;中文检测报告（加收200元）
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">样品编号</td>
+                                        <td colspan="5">
+                                            <input type="text" class="form-control" maxlength="255" name="sample_code" placeholder="请输入样品编号">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">样品名称</td>
+                                        <td colspan="2">
+                                            <input type="text" class="form-control" maxlength="255" name="sample_name" placeholder="请输入样品名称">
+                                        </td>
+                                        <td class="tabtxt2" style="text-align: right;padding-right: 15px;">样品数量</td>
+                                        <td colspan="2">
+                                            <input type="text" class="form-control" oninput="this.value=this.value.replace(/\D/gi,'')" maxlength="2" name="sample_count" placeholder="请输入样品数量">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">样品处理</td>
+                                        <td colspan="5">
+                                            <input type="radio" value="一般样品回收（50元）" checked="true" name="sample_processing">&nbsp;一般样品回收（50元）
+                                            <input type="radio" value="样品不回收" name="sample_processing">&nbsp;样品不回收
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">关于样品</td>
+                                        <td colspan="5">
+                                            <input type="text" class="form-control" name="about" placeholder="样品信息">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="175" class="tabtxt2">实验参数要求</td>
+                                        <td colspan="5">
+                                            <textarea class="form-control" id="addParameterContent" name="parameter"></textarea>
+                                            <div class="editor" id="addParameter"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="175" class="tabtxt2">其他特殊要求</td>
+                                        <td colspan="5">
+                                            <textarea class="form-control" id="addAboutContent" name="about" placeholder="可插入文字图片"></textarea>
+                                            <div class="editor" id="addAbout">可插入文字图片</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="175" class="tabtxt2">参考结果图片</td>
+                                        <td colspan="5">
+                                            <textarea class="form-control" id="addResultContent" name="result" placeholder="可插入文字图片"></textarea>
+                                            <div class="editor" id="addResult">可插入文字图片</div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
 
                                 <div class="form-group submitWrap">
                                     <div class="col-sm-offset-5">

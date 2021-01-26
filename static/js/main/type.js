@@ -39,15 +39,15 @@ $(document).ready(function() {
     //富文本监听事件
     $('.editor').on("click",function () {
         let id = $(this).attr("id");
-        openWindow("/main/editor?domId="+id,"中科科辅",1000,600);
+        openWindow("/main/editor?domId="+id,"中科科辅",1200,600);
     });
 
     $('#uploadPic').on('click',function () {
-        openWindow("/main/uploadPic?btnId=uploadPic&domId=picName","中科科辅",1000,600);
+        openWindow("/main/uploadPic?btnId=uploadPic&domId=picName","中科科辅",1200,600);
     });
 
     $('#edit_uploadPic').on('click',function () {
-        openWindow("/main/uploadPic?btnId=edit_uploadPic&domId=edit_picName","中科科辅",1000,600);
+        openWindow("/main/uploadPic?btnId=edit_uploadPic&domId=edit_picName","中科科辅",1200,600);
     });
 
     //初始化分组数据

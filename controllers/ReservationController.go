@@ -3,7 +3,9 @@ package controllers
 import (
 	"ZkkfProject/models"
 	"ZkkfProject/utils"
+	"encoding/json"
 	"github.com/astaxie/beego/orm"
+	"net/http"
 	"strconv"
 	"strings"
 	"sync"
@@ -216,6 +218,7 @@ func (this *ReservationController) All() {
 	res, _ := obj.All()
 	this.jsonResult(200, 1, "查询所有信息成功", res)
 }
+
 var weekArr = []string{"周一","周二","周三","周四","周五","周六","周日"}
 func (this *ReservationController) TimeQuery() {
 	deviceId := this.GetString("deviceId")
@@ -344,7 +347,18 @@ func (this *ReservationController) IndexAdd() {
 	if len(res)>0{
 		this.jsonResult(200, -1, "今日您已预约过，如需更换时间或其它需求请联系客服！", nil)
 	}
-	obj.Rid = utils.RandomString(16)
+	protocolStr := this.GetString("protocol")
+	if protocolStr == "" {
+		this.jsonResult(http.StatusOK, -1, "参数不能为空!", nil)
+	}
+	var protocol models.Protocol
+	//fmt.Println(str)
+	err = json.Unmarshal([]byte(protocolStr), &protocol)
+	if err != nil {
+		this.jsonResult(http.StatusOK, -1, "参数解析错误,"+err.Error(), err.Error())
+	}
+	rid := "R"+strconv.FormatInt(time.Now().UnixNano()-10,10)
+	obj.Rid = rid
 	obj.Uid = uid
 	obj.Uuid = uid
 	obj.Date = date
@@ -352,13 +366,25 @@ func (this *ReservationController) IndexAdd() {
 	obj.DeviceId = deviceId
 	obj.Status = 0
 	obj.Message = message
-	err = obj.Insert(&obj)
-	if err == nil {
-		//更新预约数
-		var device models.Device
-		device.UpdateNum("reservation", strconv.Itoa(deviceId))
-		this.jsonResult(200, 1, "预约成功", nil)
-	} else {
+	o := orm.NewOrm()
+	_ = o.Begin()
+	err = obj.Insert2(&obj,o)
+	if err != nil {
+		_ = o.Rollback()
 		this.jsonResult(200, -1, "预约失败,"+err.Error(), err.Error())
 	}
+	//新增协议
+	protocol.RandomId = rid
+	protocol.Uid = uid
+	protocol.Rid = "R"+strconv.FormatInt(time.Now().UnixNano()-10,10)
+	err = protocol.Insert(o,&protocol)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "预约失败,"+err.Error(), err.Error())
+	}
+	_ = o.Commit()
+	//更新预约数
+	var device models.Device
+	device.UpdateNum("reservation", strconv.Itoa(deviceId))
+	this.jsonResult(200, 1, "预约成功", nil)
 }

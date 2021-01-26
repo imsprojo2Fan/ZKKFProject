@@ -34,6 +34,11 @@ func (this *Reservation) Insert(obj *Reservation) error {
 	return err
 }
 
+func (this *Reservation) Insert2(obj *Reservation,o orm.Ormer) error {
+	_, err := o.Insert(obj)
+	return err
+}
+
 func (this *Reservation) Update(obj *Reservation) error {
 
 	o := orm.NewOrm()

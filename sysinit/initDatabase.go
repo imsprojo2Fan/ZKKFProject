@@ -27,16 +27,16 @@ func InitDatabase() {
 	dbPort := beego.AppConfig.String(dbType + "::db_port")
 	switch dbType {
 	case "sqlite3":
-		orm.RegisterDataBase(dbAlias, dbType, dbName)
+		_ = orm.RegisterDataBase(dbAlias, dbType, dbName)
 	case "mysql":
 		dbCharset := beego.AppConfig.String(dbType + "::db_charset")
-		orm.RegisterDataBase(dbAlias, dbType, dbUser+":"+dbPwd+"@tcp("+dbHost+":"+
+		_ = orm.RegisterDataBase(dbAlias, dbType, dbUser+":"+dbPwd+"@tcp("+dbHost+":"+
 			dbPort+")/"+dbName+"?parseTime=true&loc=Local&charset="+dbCharset, 30)
 	}
 	//如果是开发模式，则显示命令信息
-	isDev := (beego.AppConfig.String("runmode") == "dev")
+	isDev := beego.AppConfig.String("runmode") == "dev"
 	//自动建表
-	orm.RunSyncdb("default", false, isDev)
+	_ = orm.RunSyncdb("default", false, isDev)
 	if isDev {
 		orm.Debug = isDev
 	}

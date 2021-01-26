@@ -12,10 +12,11 @@ import (
 type Protocol struct {
 	Id       int
 	Rid      string    //协议编号
-	OrderRid string    //订单编号
-	Tid int //type表id
+	RandomId string    //订单/预约编号
+	Tid string //type表id
 	DeviceId string //设备id可选多项
-	Uid      int       //user表id
+	Uid      int       //
+	Uuid int //创建人id
 	Sign     string    //签名
 	Date    string //协议日期
 	Pay string //付费方式

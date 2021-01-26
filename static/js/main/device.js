@@ -67,7 +67,7 @@ $(document).ready(function() {
         let selected = $(e.currentTarget).val();
         renderChildType(selected);
     });
-    //初始化子类分组数据
+    //初始化父类分组过滤数据
     $.post("/main/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
         if(res.code===1){
             loading(false,2);
@@ -129,13 +129,12 @@ $(document).ready(function() {
         }
     });
 
-
     $('#uploadPic').on('click',function () {
-        openWindow("/main/uploadPic","中科科辅",1000,600);
+        openWindow("/main/uploadPic","中科科辅",1200,600);
     });
 
     $('#edit_uploadPic').on('click',function () {
-        openWindow("/main/uploadPic","中科科辅",1000,600);
+        openWindow("/main/uploadPic","中科科辅",1200,600);
     });
 
     $('#form1').find('.addItem').on("click",function () {
@@ -143,7 +142,7 @@ $(document).ready(function() {
         if(arr.length>4){
             swalParent("系统提示","最多只上传5张图片","warning");
         }
-        openWindow("/main/uploadPic?domId=addImgWrap","中科科辅",1000,600);
+        openWindow("/main/uploadPic?domId=addImgWrap","中科科辅",1200,600);
     });
 
     $('#form2').find('.addItem').on("click",function () {
@@ -152,7 +151,7 @@ $(document).ready(function() {
             swalParent("系统提示","最多只上传5张图片","warning");
             return
         }
-        openWindow("/main/uploadPic?domId=editImgWrap","中科科辅",1000,600);
+        openWindow("/main/uploadPic?domId=editImgWrap","中科科辅",1200,600);
     });
 
     //富文本监听事件
@@ -160,7 +159,7 @@ $(document).ready(function() {
         let id = $(this).attr("id");
         let val = $(this).val();
         localStorage.setItem(id,val);
-        openWindow("/main/editor?domId="+id,"中科科辅",1000,600);
+        openWindow("/main/editor?domId="+id,"中科科辅",1200,600);
     });
 
     //datatable setting

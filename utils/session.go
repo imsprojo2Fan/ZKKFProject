@@ -12,10 +12,10 @@ func InitSession()  {
 	sessionConfig := &session.ManagerConfig{
 		CookieName:"gosessionid",
 		EnableSetCookie: true,
-		Gclifetime:360000000000000000000000,
-		Maxlifetime: 360000000000000000000000,
+		Gclifetime:360000000000000,
+		Maxlifetime: 360000000000000,
 		Secure: false,
-		CookieLifeTime: 360000000000000000000000,
+		//CookieLifeTime: 360000000000000,
 		ProviderConfig: "./tmp",
 	}
 	GlobalSessions, _ = session.NewManager("memory",sessionConfig)

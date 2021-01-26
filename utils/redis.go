@@ -1,8 +1,9 @@
 package utils
 
 import (
-	_ "github.com/astaxie/beego/cache/redis"
 	"github.com/astaxie/beego/cache"
+	_ "github.com/astaxie/beego/cache/redis"
+
 	"fmt"
 )
 

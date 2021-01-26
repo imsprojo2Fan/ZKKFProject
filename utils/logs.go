@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"strings"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"strings"
 	"time"
 )
 

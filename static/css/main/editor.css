@@ -1,15 +1,21 @@
 #editor{
     width: 100%;
     height: 80vh;
-    border: 0px solid #eee;
+    border: 0 solid #eee;
 }
 .w-e-text-container{
     height: 80vh!important;
+    border: none!important;
 }
 #btnWrap{
     width: 100%;
     text-align: center;
-    margin-top: 50px;
+    margin-top: 30px;
+}
+#btnWrap button{
+    width: 100%;
+    border-radius: 0;
+    height: 90px;
 }
 .btn-group-lg > .btn, .btn-lg {
     padding: 10px 100px;

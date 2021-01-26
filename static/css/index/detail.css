@@ -269,17 +269,17 @@ hr{
     transition: transform 500ms ease, -webkit-transform 500ms ease;
 }
 
-table{
+#dateTable table{
     width: 100%;
     font-size: 14px;
 }
-table,table tr th, table tr td{
+#dateTable td{
     border: 1px solid #eee;
 }
-th{
+#dateTable th{
     font-weight: bold;
 }
-tr,th{
+#dateTable tr,#dateTable th{
     height: 35px;
     vertical-align: middle;
     text-align: center;
@@ -301,8 +301,5 @@ tr,th{
 .infoTip2{
     font-size: 10px;
     margin-left: 5px;
-}
-.lib{
-    display: none;
 }
 

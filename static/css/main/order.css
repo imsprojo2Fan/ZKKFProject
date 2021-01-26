@@ -272,3 +272,21 @@ input[type='radio'] {
     right: 15px;
     top: 53px;
 }
+#addTable{
+    width: 75%;
+    margin: 0 auto;
+}
+#addTable tr{
+    height: 35px;
+}
+#addTable textarea{
+    display: none;!important;
+}
+#addTable .editor {
+    min-height: 255px;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}

@@ -1,14 +1,13 @@
 package test
 
 import (
+	"github.com/astaxie/beego"
 	"net/http"
 	"net/http/httptest"
-	"testing"
-	"runtime"
 	"path/filepath"
+	"runtime"
+	"testing"
 
-
-	"github.com/astaxie/beego"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
