@@ -29,9 +29,10 @@
     <!-- Start Page Header -->
     <div>
         <ol class="breadcrumb">
-            <li><span data="tab1" id="tabHref01">数据列表</span></li>
-            <li><span data="tab2" class="active" >新增数据</span></li>
-            <li><span class="active" onclick="refresh()">刷新数据</span></li>
+            <li><span data="tab1" class="list">数据列表</span></li>
+            <li><span data="tab2" class="active add" >新增数据</span></li>
+            <li><span data="tab4" class="active edit" >编辑数据</span></li>
+            <li><span class="active refresh" onclick="refresh()">刷新数据</span></li>
         </ol>
     </div>
 
@@ -74,51 +75,72 @@
                         </table>
                     </div>
                     <div id="tab2" class="tabWrap" style="display: none">
+                        <img class="backBtn" title="返回列表" src="../../static/img/back.png">
                         <div class="panel-body">
                             <form class="form-horizontal" id="addForm" autocomplete="off">
 
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label tabtxt2"><span class="red">*</span>客户选择</label>
-                                    <div class="col-sm-6" id="userWrap">
-                                        <select id="userAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label tabtxt2"><span class="red">*</span>父类分组</label>
-                                    <div class="col-sm-3 " id="typeAddSelWrap">
-                                        <select id="typeAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label tabtxt2"><span class="red">*</span>子类分组</label>
-                                    <div class="col-sm-3 selWrap" id="typeChiAddSelWrap">
-                                        <select class="selectpicker" id="typeChiAddSel" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group" style="margin-top: -6px;">
-                                    <label class="col-sm-2 control-label form-label tabtxt2"><span class="red">*</span>实验项目</label>
-                                    <div class="col-sm-6" id="deviceAddSelWrap">
-                                        <select id="deviceAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
-                                        </select>
-                                    </div>
-                                </div>
-
                                 <table id="addTable">
                                     <tbody>
+                                    <tr>
+                                        <td class="tabtxt2" style="width: 9%;"><span class="red">*</span>客户选择</td>
+                                        <td colspan="4">
+                                            <select id="userAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2"><span class="red">*</span>父类分组</td>
+                                        <td colspan="4" id="typeAddSelWrap">
+                                            <select id="typeAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2"><span class="red">*</span>子类分组</td>
+                                        <td colspan="4" id="typeChildAddSelWrap">
+                                            <select id="typeChildAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2"><span class="red">*</span>实验项目</td>
+                                        <td colspan="4" id="deviceAddSelWrap">
+                                            <select id="deviceAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                    </tr>
                                     <tr style="color: #6195ff;font-size: 16px">
-                                        <td class="tabtxt2" style="width: 7%;">所属分类</td>
+                                        <td class="tabtxt2">所属分类</td>
                                         <td colspan="4" class="type">-</td>
                                         <td class="typeMore"></td>
                                     </tr>
                                     <tr>
                                         <td class="tabtxt2"><span class="red">*</span>已选项目</td>
                                         <td colspan="5" class="allDevice" style="font-size: 16px">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">付费方式</td>
+                                        <td><input type="radio" value="现金结算" name="pay"/>&nbsp;现金结算</td>
+                                        <td><input type="radio" checked value="银行汇款" name="pay"/>&nbsp;银行汇款</td>
+                                        <td><input type="radio" value="从预存款中扣除" name="pay"/>&nbsp;从预存款中扣除</td>
+                                        <td colspan="2"><input type="radio" value="其他" name="pay"/>&nbsp;其他</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" style="padding-left: 30px">
+                                            <span class="tipRed">*</span>由于实验或测试项目受到诸如样品自身内应力、实际物相与提供的不一致、样品状态不稳定等非乙方技术问题而导致的实验失败，甲方仍需全额支付承检方样品制样费用。
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #eee;">
+                                        <td colspan="3" style="text-align: right;padding-right: 15px;">
+                                            <input type="radio" checked value="接受" name="test_result"/>&nbsp;接受
+                                        </td>
+                                        <td colspan="3" style="text-align: left;padding-left: 15px;">
+                                            <input type="radio" value="不接受" name="test_result"/>&nbsp;不接受
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="tabtxt2">检测报告</td>
@@ -191,12 +213,13 @@
                         </div>
                     </div>
                     <div id="tab3" class="tabWrap" style="display: none">
-                        <img title="隐藏协议" id="more" src="../../static/img/square_down.png">
+                        <img title="显示协议" id="more" src="../../static/img/square_left.png">
                         <img id="pdfBtn" title="下载服务协议" src="../../static/img/download.png">
+                        <img class="backBtn" title="返回列表" src="../../static/img/back.png">
                         <div class="panel-body">
                             <div id="protocolInfo" class="col-lg-12">
                                 <form class="form-horizontal" autocomplete="off">
-                                    <table class="protocolTable" style="margin-top: 60px" id="table1" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+                                    <table class="protocolTable" style="margin-top: 60px;display: none" id="table1" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
                                         <tr>
                                             <td align="center" class="biaoti" height="60">中科科辅技术服务协议</td>
                                         </tr>
@@ -321,6 +344,157 @@
 
                                 </form>
                             </div>
+                        </div>
+                    </div>
+                    <div id="tab4" class="tabWrap" style="display: none">
+                        <img class="backBtn" title="返回列表" src="../../static/img/back.png">
+                        <div class="panel-body">
+                            <form class="form-horizontal" id="addForm" autocomplete="off">
+                                <input type="hidden" id="editRid">
+                                <table id="editTable">
+                                    <tbody>
+                                    <tr>
+                                        <td class="tabtxt2" style="width: 9%;"><span class="red">*</span>客户选择</td>
+                                        <td colspan="4">
+                                            <select id="userEditSel" disabled class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2" ><span class="red">*</span>父类分组</td>
+                                        <td colspan="4" id="typeEditSelWrap">
+                                            <select id="typeEditSel" disabled class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2"><span class="red">*</span>实验项目</td>
+                                        <td colspan="4" id="deviceEditSelWrap">
+                                            <select id="deviceEditSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr style="color: #6195ff;font-size: 16px">
+                                        <td class="tabtxt2">所属分类</td>
+                                        <td colspan="4" class="type">-</td>
+                                        <td class="typeMore"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2"><span class="red">*</span>已选项目</td>
+                                        <td colspan="5" class="allDevice" style="font-size: 16px">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">付费方式</td>
+                                        <td><input type="radio" value="现金结算" name="pay"/>&nbsp;现金结算</td>
+                                        <td><input type="radio" checked value="银行汇款" name="pay"/>&nbsp;银行汇款</td>
+                                        <td><input type="radio" value="从预存款中扣除" name="pay"/>&nbsp;从预存款中扣除</td>
+                                        <td colspan="2"><input type="radio" value="其他" name="pay"/>&nbsp;其他</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" style="padding-left: 30px;">
+                                            <span class="tipRed">*</span>由于实验或测试项目受到诸如样品自身内应力、实际物相与提供的不一致、样品状态不稳定等非乙方技术问题而导致的实验失败，甲方仍需全额支付承检方样品制样费用。
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #eee;">
+                                        <td colspan="3" style="text-align: right;padding-right: 15px;">
+                                            <input type="radio" checked value="接受" name="test_result"/>&nbsp;接受
+                                        </td>
+                                        <td colspan="3" style="text-align: left;padding-left: 15px;">
+                                            <input type="radio" value="不接受" name="test_result"/>&nbsp;不接受
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">检测报告</td>
+                                        <td colspan="5">
+                                            <input type="radio" checked="" value="无需检测报告（默认）" name="detection_report">&nbsp;无需检测报告（默认）
+                                            <input type="radio" value="中文检测报告（加收200元）" name="detection_report">&nbsp;中文检测报告（加收200元）
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">样品编号</td>
+                                        <td colspan="5">
+                                            <input type="text" class="form-control" maxlength="255" name="sample_code" placeholder="请输入样品编号">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">样品名称</td>
+                                        <td colspan="2">
+                                            <input type="text" class="form-control" maxlength="255" name="sample_name" placeholder="请输入样品名称">
+                                        </td>
+                                        <td class="tabtxt2" style="text-align: right;padding-right: 15px;">样品数量</td>
+                                        <td colspan="2">
+                                            <input type="text" class="form-control" oninput="this.value=this.value.replace(/\D/gi,'')" maxlength="2" name="sample_count" placeholder="请输入样品数量">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">样品处理</td>
+                                        <td colspan="5">
+                                            <input type="radio" value="一般样品回收（50元）" checked="true" name="sample_processing">&nbsp;一般样品回收（50元）
+                                            <input type="radio" value="样品不回收" name="sample_processing">&nbsp;样品不回收
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tabtxt2">关于样品</td>
+                                        <td colspan="5">
+                                            <input type="text" class="form-control" name="about" placeholder="样品信息">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="175" class="tabtxt2">实验参数要求</td>
+                                        <td colspan="5">
+                                            <textarea class="form-control" id="editParameterContent" name="parameter"></textarea>
+                                            <div class="editor" id="editParameter"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="175" class="tabtxt2">其他特殊要求</td>
+                                        <td colspan="5">
+                                            <textarea class="form-control" id="editAboutContent" name="about" placeholder="可插入文字图片"></textarea>
+                                            <div class="editor" id="editAbout">可插入文字图片</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="175" class="tabtxt2">参考结果图片</td>
+                                        <td colspan="5">
+                                            <textarea class="form-control" id="editResultContent" name="result" placeholder="可插入文字图片"></textarea>
+                                            <div class="editor" id="editResult">可插入文字图片</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="175" class="tabtxt2">制样要求</td>
+                                        <td colspan="5">
+                                            <textarea class="form-control" id="editRemark1Content" name="result" placeholder="可插入文字图片"></textarea>
+                                            <div class="editor" id="editRemark1">可插入文字图片</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="175" class="tabtxt2">测试要求</td>
+                                        <td colspan="5">
+                                            <textarea class="form-control" id="editRemark2Content" name="result" placeholder="可插入文字图片"></textarea>
+                                            <div class="editor" id="editRemark2">可插入文字图片</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="175" class="tabtxt2">数据分析要求</td>
+                                        <td colspan="5">
+                                            <textarea class="form-control" id="editRemark3Content" name="result" placeholder="可插入文字图片"></textarea>
+                                            <div class="editor" id="editRemark3">可插入文字图片</div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="form-group submitWrap">
+                                    <div class="col-sm-offset-5">
+                                        <a href="javascript:update()" class="btn btn-default">更新</a>&nbsp;&nbsp;
+                                        <a id="reset" href="javascript:reset()" class="btn btn-danger">重置</a>
+                                    </div>
+                                </div>
+
+                            </form>
                         </div>
                     </div>
                 </div>

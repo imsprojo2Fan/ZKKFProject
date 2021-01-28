@@ -105,6 +105,7 @@ func init() {
 	beego.Router("/main/order/protocol", &controllers.OrderController{}, "POST:Protocol")
 	beego.Router("/main/order/assign", &controllers.OrderController{}, "POST:Assign")
 	beego.Router("/main/order/report", &controllers.OrderController{}, "POST:Report")
+	beego.Router("/main/order/info", &controllers.OrderController{}, "POST:Info")
 	//系统设置相关
 	beego.Router("/main/setting/list", &controllers.SettingController{}, "POST:List")
 	beego.Router("/main/setting/add", &controllers.SettingController{}, "POST:Add")

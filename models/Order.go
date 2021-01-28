@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"github.com/astaxie/beego/orm"
 
@@ -93,6 +94,12 @@ func (this *Order) Update(obj *Order) error {
 
 	o := orm.NewOrm()
 	_, err := o.Update(obj,"status", "remark","file", "updated")
+	return err
+}
+
+func (this *Order) UpdateByCol(o orm.Ormer,col string,val,rid interface{}) error {
+	sqlTxt := "update `order` set "+col+"=? where rid=?"
+	_, err := o.Raw(sqlTxt,val,rid).Exec()
 	return err
 }
 
@@ -263,8 +270,45 @@ func (this *Order) UpdateStatus(rid,status string,o orm.Ormer)error{
 	_,err := o.Raw("update `order` set status=? where rid=?",status,rid).Exec()
 	return err
 }
+
 func (this *Order) UpdateReport(rid,file string)error{
 	_,err := orm.NewOrm().Raw("update `order` set file=? where rid=?",file,rid).Exec()
 	return err
+}
+
+func (this *Order) Info(rid string) (map[string]interface{},error) {
+	bMap := make(map[string]interface{})
+	o := orm.NewOrm()
+	//查询用户信息
+	var res []orm.Params
+	_,err := o.Raw("select * from `order` where rid=?",rid).Values(&res)
+	if err!=nil{
+		return nil, err
+	}
+	if res==nil{
+		return nil, errors.New("No  data!")
+	}
+	bMap = res[0]
+
+	//获取设备信息
+	var dArr []orm.Params
+	_,err = o.Raw("select d.name,d.id,o.count,t.id as tid from order_device o,device d,type t,type_child c where o.device_id=d.id and d.ttid=c.id and c.tid=t.id and o.rid=\""+rid+"\"").Values(&dArr)
+	if err!=nil{
+		return nil,err
+	}
+	bMap["selectDeviceArr"] = dArr
+	//获取协议信息
+	var protocol Protocol
+	err = o.Raw("select * from protocol where random_id=?",rid).QueryRow(&protocol)
+	if err!=nil{
+		return nil,err
+	}
+	bMap["protocol"] = protocol
+
+	//按type返回对应设备
+	var deviceArr []orm.Params
+	_,err = o.Raw("select * from device where tid=?",res[0]["tid"]).Values(&deviceArr)
+	bMap["deviceArr"] = deviceArr
+	return bMap,err
 }
 

@@ -201,6 +201,8 @@ func (this *OrderController) Add() {
 			ids += item1.DeviceId+","
 		}
 		ids = ids[0:len(ids)-1]
+		//查询公司信息
+		res := settingObj.SelectByGroup("LocalInfo")
 		//处理协议
 		var protocol models.Protocol
 		protocol.Rid = "A"+strconv.FormatInt(time.Now().UnixNano()-10,10)
@@ -213,7 +215,7 @@ func (this *OrderController) Add() {
 		protocol.Date = item.Protocol.Date
 		protocol.Pay = item.Protocol.Pay
 		protocol.TestResult = item.Protocol.TestResult
-		protocol.City = item.Protocol.City
+		protocol.City = models.RangeValue(res,"city")
 		protocol.SampleName = item.Protocol.SampleName
 		protocol.SampleCount = item.Protocol.SampleCount
 		protocol.SampleCode = item.Protocol.SampleCode
@@ -262,17 +264,67 @@ func (this *OrderController) Add() {
 }
 
 func (this *OrderController) Update() {
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	if session.Get("id")==nil{
+		this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
+	}
+	rid := this.GetString("rid")
+	dataStr := this.GetString("data")
+	if dataStr == "" {
+		this.jsonResult(http.StatusOK, -1, "参数不能为空!", nil)
+	}
+	var data models.OrderType
+	//fmt.Println(str)
+	err := json.Unmarshal([]byte(dataStr), &data)
+	if err != nil {
+		this.jsonResult(http.StatusOK, -1, "参数解析错误!"+err.Error(), err.Error())
+	}
+
+	o := orm.NewOrm()
+	_ = o.Begin()
 	var obj models.Order
-	obj.Id, _ = this.GetInt("id")
-	obj.Status, _ = this.GetInt("status")
-	obj.Remark = this.GetString("remark")
-	obj.Updated = time.Now()
-	err := obj.Update(&obj)
-	if err == nil {
-		this.jsonResult(200, 1, "操作成功", nil)
-	} else {
+	//更新order表
+	obj.Rid = rid
+	err = obj.UpdateByCol(o,"count",data.Count,rid)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(http.StatusOK, -1, "操作order表失败!"+err.Error(), err.Error())
+	}
+	//更新protocol表
+	var protocol models.Protocol
+	protocol = data.Protocol
+	protocol.Rid = rid
+	err = protocol.UpdateByRid(o,&protocol)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(http.StatusOK, -1, "操作protocol表失败!"+err.Error(), err.Error())
+	}
+	//处理order_device
+	var orderDevice models.OrderDevice
+	err = orderDevice.DelByRid(o,rid)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(http.StatusOK, -1, "操作order_device表失败!"+err.Error(), err.Error())
+	}
+	dataArr := data.Data
+	var ids string
+	var deviceArr []models.OrderDevice
+	for _,item1 := range dataArr{
+		item1.Rid = rid
+		deviceArr = append(deviceArr,item1)
+		ids += item1.DeviceId+","
+	}
+	ids = ids[0:len(ids)-1]
+	_,err = obj.MultiInsert4Device(o,deviceArr)
+	if err != nil {
+		_ = o.Rollback()
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
+	//更新订单数
+	var device models.Device
+	device.UpdateOrderNum(ids)
+	_ = o.Commit()
+	this.jsonResult(200, 1, "操作成功", nil)
 }
 
 func (this *OrderController) SoftDelete() {
@@ -519,4 +571,15 @@ func(this *OrderController) Report()  {
 		this.jsonResult(200,-1,"操作失败,"+err.Error(),err.Error())
 	}
 
+}
+
+func (this *OrderController) Info() {
+	rid := this.GetString("rid")
+	obj := new(models.Order)
+	res, err := obj.Info(rid)
+	if err!=nil{
+		this.jsonResult(200, -1, "查询信息失败,"+err.Error(), nil)
+	}else{
+		this.jsonResult(200, 1, "查询信息成功", res)
+	}
 }

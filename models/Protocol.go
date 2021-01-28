@@ -33,6 +33,9 @@ type Protocol struct {
 	Other string //其他特殊要求
 	Result string //参考结果图片
 	Remark   string    `orm:"size(255)"`
+	Remark1 string//制样要求
+	Remark2 string //测试要求
+	Remark3 string //数据分析要求
 	Updated  time.Time //`orm:"auto_now_add;type(datetime)"`
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
 }
@@ -149,8 +152,16 @@ func (this *Protocol) ListByRid(rid string) (Protocol,error) {
 
 	o := orm.NewOrm()
 	var res Protocol
-	err := o.Raw("select * from protocol where order_rid=\""+rid+"\"").QueryRow(&res)
+	err := o.Raw("select * from protocol where random_id=?",rid).QueryRow(&res)
 	return res,err
+}
+
+func (this *Protocol) UpdateByRid(o orm.Ormer,obj *Protocol) error {
+	sqlTxt := "update protocol set device_id=?,sample_name=?,sample_count=?,"
+	sqlTxt += "sample_code=?,detection_report=?,sample_processing=?,about=?,parameter=?,"
+	sqlTxt += "other=?,result=?,remark=?,remark1=?,remark2=?,remark3=?,updated=now() where random_id=?"
+	_, err := o.Raw(sqlTxt,obj.DeviceId,obj.SampleName,obj.SampleCount,obj.SampleCode,obj.DetectionReport,obj.SampleProcessing,obj.About,obj.Parameter,obj.Other,obj.Result,obj.Remark,obj.Remark1,obj.Remark2,obj.Remark3,obj.Rid).Exec()
+	return err
 }
 
 

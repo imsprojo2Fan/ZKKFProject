@@ -25,15 +25,27 @@ $(document).ready(function () {
         if (!$(this).hasClass("active")) {
             return false;
         }
-        $('.breadcrumb span').addClass("active");
-        $(this).removeClass("active");
         let data = $(this).attr("data");
         if (!data) {
             return false;
         }
+        if(data==="tab4"){
+            return ;
+        }
+        $('input').removeAttr("disabled");
+        if(data==="tab2"){
+            $('input[name=pay]:eq(1)').attr("checked",true);
+            $('input[name=test_result]:eq(0)').attr("checked",true);
+            $('input[name=detection_report]:eq(0)').attr("checked",true);
+            $('input[name=sample_processing]:eq(0)').attr("checked",true);
+        }
+        $('.breadcrumb span').addClass("active");
+        $(this).removeClass("active");
+
         if(data==="tab1"){
             refresh();
         }
+
         $('.tabWrap').fadeOut(200);
         $("#"+data).fadeIn(200);
     });
@@ -103,7 +115,7 @@ $(document).ready(function () {
             {
                 data: 'company',
                 "render": function (data) {
-                    return stringUtil.maxLength(data, 6);
+                    return stringUtil.maxLength(data, 4);
                 }
             },
             {
@@ -118,11 +130,12 @@ $(document).ready(function () {
                 "width": "6%",
                 "render": function (data) {
                     let str;
-                    if (data == "0") {
+                    data = parseInt(data);
+                    if (data === 0) {
                         str = "<span style='color:orangered'>待确认</span>";
-                    } else if (data == "1") {
+                    } else if (data === 1) {
                         str = "<span style='color:#6195FF'>已确认</span>";
-                    } else if (data == "2") {
+                    } else if (data === 2) {
                         str = "<span style='color:grey'>已取消</span>";
                     } else {
                         str = "<span style='color:green'>已完成</span>";
@@ -162,7 +175,7 @@ $(document).ready(function () {
                     html +=
                         "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a> "
                     html +=
-                        "<a href='javascript:void(0);'  class='protocol btn btn-success btn-xs'>协议下载</a> "
+                        "<a href='javascript:void(0);'  class='protocol btn btn-secondary btn-xs'>实验要求</a> "
                     html +=
                         "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>指派订单</a> "
                     html +=
@@ -242,22 +255,9 @@ $(document).ready(function () {
     });
     $('#myTable').on("click", ".btn-primary", function (e) { //编辑
         rowData = myTable.row($(this).closest('tr')).data();
-        $('#editForm').find("input[name='id']").val(rowData.id);
-        $('#editForm').find(".rid").html(rowData.rid);
-        let status = rowData.status;
-        $('#status').selectpicker('val', rowData.status);
-        $("#status").selectpicker('refresh');
-        if (status == 2 || status == 3) {
-            $("#status").parent().find("button").attr("disabled", "true");
-            $('#editBtn').hide();
-        } else {
-            $("#status").parent().find("button").removeAttr("disabled");
-            $('#editBtn').show();
-        }
-
-        $('#editForm').find("textarea[name='remark']").val(rowData.remark);
-        $('#tip').html("");
-        $('#editModal').modal("show");
+        let rid = rowData.rid;
+        $('#editRid').val(rid);
+        editOrder(rid);
     });
     $('#myTable').on("click", ".btn-danger", function (e) { //删除
         rowData = myTable.row($(this).closest('tr')).data();
@@ -284,9 +284,9 @@ $(document).ready(function () {
         /*$('#protocolModal .rid').html(rowData.rid);
         $('#protocolModal').modal("show");*/
         $('.wat').remove();
-        $('.protocolTable').show(200);
-        $("#more").attr("src", "../../static/img/square_down.png");
-        $("#more").attr("title", "隐藏协议");
+        $('.protocolTable').hide(200);
+        $("#more").attr("src", "../../static/img/square_left.png");
+        $("#more").attr("title", "显示协议");
         protocolDetail(rowData.rid);
     });
     $('#protocolModal .btn-primary').on("click", function () {
@@ -294,7 +294,13 @@ $(document).ready(function () {
     });
     $('#pdfBtn').on("click", function () {
         //imgUtil.addWatermark("protocolInfo","中科科辅");
-        imgUtil.domShot("protocolInfo", imgUtil.pagePdf, "中科科辅服务协议/" + dateUtil.nowTime());
+        if($('.protocolTable').is(":hidden")){
+            $('#more').click();
+        }
+        setTimeout(function () {
+            imgUtil.domShot("protocolInfo", imgUtil.pagePdf, "中科科辅服务协议/" + dateUtil.nowTime());
+        },500)
+
     });
     $('#more').on("click", function () {
         if ($(this).attr("title") === "隐藏协议") {
@@ -308,8 +314,12 @@ $(document).ready(function () {
         $('.protocolTable').toggle(200);
         setTimeout(function () {
             imgUtil.addWatermark("protocolInfo", "中科科辅");
-        }, 500)
+        }, 500);
 
+    });
+    $('.backBtn').on("click", function () {
+        $('.list').addClass('active');
+        $('.list').click();
     });
     $('#myTable').on("click", ".assign", function (e) {
         rowData = myTable.row($(this).closest('tr')).data();
@@ -330,7 +340,6 @@ $(document).ready(function () {
         });
         $('#assignModal').modal("show");
     });
-
     $('#assignModal .btn-primary').on("click", function () {
         let rid = $('#assignModal .rid').html();
         let oldUid = $('#curUser').data("uid");
@@ -353,7 +362,6 @@ $(document).ready(function () {
             }
         });
     });
-
     $('#myTable').on("click", ".report", function (e) {
         rowData = myTable.row($(this).closest('tr')).data();
         $('#reportModal .rid').html(rowData.rid);
@@ -382,11 +390,14 @@ $(document).ready(function () {
         let val = $(this).val();
         openWindow("/main/editor?domId="+id,"中科科辅",1200,600);
     });
-
+    $('#editTable .editor').on("click",function () {
+        let id = $(this).attr("id")+"Content";
+        let val = $(this).val();
+        openWindow("/main/editor?domId="+id,"中科科辅",1200,600);
+    });
     setTimeout(function () {
         initData();
     },100);
-
 
 });
 
@@ -401,6 +412,7 @@ function initData() {
                     let item = tList[i];
                     $('#filterSelect').append('<option value="'+item.id+'">'+item.name+'</option>');
                     $('#typeAddSel').append('<option value="'+item.id+'">'+item.name+'</option>');
+                    $('#typeEditSel').append('<option value="'+item.id+'">'+item.name+'</option>');
                 }
                 request = typeArr[0].request;
                 $('#addParameter').html(request);
@@ -408,6 +420,7 @@ function initData() {
             }
             $('#filterSelect').selectpicker('refresh');
             $('#typeAddSel').selectpicker('refresh');
+            $('#typeEditSel').selectpicker('refresh');
             let tid = $('#typeAddSel').val();
             renderChildType(tid);
         }
@@ -419,6 +432,7 @@ function initData() {
             let tList = res.data;
             if(tList){
                 $('#userAddSel').html('');
+                $('#userEditSel').html('');
                 for(let i=0;i<tList.length;i++){
                     let item = tList[i];
                     let name = item.Name;
@@ -426,12 +440,16 @@ function initData() {
                         name = "未填写名字";
                     }
                     $('#userAddSel').append('<option value="'+item.Id+'">'+name+'</option>');
+                    $('#userEditSel').append('<option value="'+item.Id+'">'+name+'</option>');
                 }
             }else{
                 $('#userWrap').html('');
                 $('#userWrap').append('<span style="color: red;display: block;margin-top: -24px">暂无用户，请先添加!</span>');
+                $('#userEditWrap').html('');
+                $('#userEditWrap').append('<span style="color: red;display: block;margin-top: -24px">暂无用户，请先添加!</span>');
             }
             $('#userAddSel').selectpicker('refresh');
+            $('#userEditSel').selectpicker('refresh');
         }
     });
     //初始化被指派任务用户
@@ -453,7 +471,8 @@ function initData() {
                 '<span style="color: red;display: block;margin-top: 5px">暂无用户，请先添加!</span>');
         }
         $('#userSel').selectpicker('refresh');
-    })
+    });
+
 }
 
 function detail(rid) {
@@ -515,9 +534,9 @@ function add() {
     let item = {};
     let Protocol = {};
     //Protocol.Sign = $('.sign img').attr("src");
-    Protocol.Date = dateUtil.NowDate;
-    //Protocol.Pay = $("input[name='pay']:checked").val();
-    //Protocol.TestResult = $("input[name='test_result']:checked").val();
+    Protocol.Date = dateUtil.NowDate();
+    Protocol.Pay = $('#addTable').find("input[name='pay']:checked").val();
+    Protocol.TestResult = $('#addTable').find("input[name='test_result']:checked").val();
     //Protocol.City = $('.city').html();
     Protocol.SampleName = $('#addTable').find("input[name='sample_name']").val().trim();
     Protocol.SampleCount = $('#addTable').find("input[name='sample_count']").val();
@@ -535,7 +554,6 @@ function add() {
     let dataArr = [];
     item.Protocol = Protocol;
     item.Tid = $('#typeAddSel').val();
-    item.Count = 4;
     let DeviceArr = [];
     $('#addTable .device').each(function () {
         let item = {};
@@ -576,15 +594,153 @@ function add() {
     });
 }
 
-function edit() {
+function editOrder(rid) {
+    loadingParent(true,2);
+    $.post(prefix+"/info?rid="+rid,{_xsrf: $("#token", parent.document).val()},function (res) {
+        if(res.code===1){
+            let data = res.data;
+            //渲染可选设备下拉框
+            let deviceArr = res.data.deviceArr;
+            if(deviceArr.length>0){
+                $('#deviceEditSelWrap').html("");
+                $('#deviceEditSelWrap').html('<select multiple id="deviceEditSel" class="selectpicker" data-size="10" data-max-options="50" data-live-search="true" data-style="btn-default"></select>');
+                $('#deviceEditSel').html("");
+                for(let i=0;i<deviceArr.length;i++){
+                    let item = deviceArr[i];
+                    let name = item.name;
+                    $('#deviceEditSel').append('<option deviceName="'+name+'" value="'+item.id+'">'+name+'</option>');
+                }
+                $('#deviceEditSel').selectpicker('refresh');
+                //初始化
+                $('#deviceEditSel').selectpicker({
+                    noneSelectedText: '下拉多选项目',
+                    noneResultsText: '无匹配选项',
+                    maxOptionsText: function (numAll, numGroup) {
+                        let arr = [];
+                        arr[0] = (numAll === 1) ? '最多可选中数为{n}' : '最多可选中数为{n}';
+                        arr[1] = (numGroup === 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)';
+                        return arr;
+                    },
+                    //liveSearch: true,
+                    //size:10   //设置select高度，同时显示5个值
+                });
+                //设备切换监听
+                $('#deviceEditSel').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+                    $('#editTable .allDevice').html("");
+                    $('#editTable .type').html($('#typeEditSel').find("option:selected").text()/*+'&nbsp;&nbsp;&nbsp;<i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;服务周期:7个工作日'*/);
+                    let options = $("#deviceEditSel option:selected");
+                    for(let i=0;i<options.length;i++){
+                        let item = options[i];
+                        $('#editTable .allDevice').append('<i class="fa fa-files-o" aria-hidden="true"></i>&nbsp;<span class="device" data-id="'+$(item).val()+'">'+item.innerHTML+'</span><br>');
+                    }
+                    let val1 = $('#deviceEditSel').val();
+                    let tArr = "";
+                    $.each(val1,function (i,item) {
+                        tArr = tArr+","+item;
+                    });
+                    tArr = tArr.substring(1,tArr.length);
+                    $('#editTable .allDevice').attr("deviceIds",tArr);
+                    if(!tArr){
+                        $('#editTable .allDevice').html("-");
+                    }
+                });
+            }else{
+                $('#deviceEditSelWrap').html("<span style=\"color: red;display: block;margin-top: 5px\">暂无数据，请先添加!</span>");
+            }
+            //设置type选中
+            $('#typeEditSel').selectpicker('val',data.tid);
+            $("#typeEditSel").selectpicker('refresh');
+            //设置项目选中
+            let deviceSelectArr = res.data.selectDeviceArr;
+            let tempArr = [];
+            for(let i=0;i<deviceSelectArr.length;i++){
+                let item = deviceSelectArr[i];
+                tempArr.push(item.id);
+                $('#editTable .allDevice').append('<i class="fa fa-files-o" aria-hidden="true"></i>&nbsp;<span class="device" data-id="'+item.id+'">'+item.innerHTML+'</span><br>');
+            }
+            $('#deviceEditSel').selectpicker('val',tempArr);
+            $("#deviceEditSel").selectpicker('refresh');
+            //处理协议
+            let protocol = data.protocol;
+            //清空选中
+            $("input[type=radio]").attr("checked",false);
+            $('#editTable').find("input[value='"+protocol.TestResult+"']").attr('checked',true);
+            $('#editTable').find("input[value='"+protocol.Pay+"']").attr('checked',true);
+            $('#editTable').find("input[value='"+protocol.DetectionReport+"']").attr('checked',true);
+            $('#editTable').find("input[value='"+protocol.SampleProcessing+"']").attr('checked',true);
+            $('#editTable').find('input[name="sample_code"]').val(protocol.SampleCode);
+            $('#tab4').find('input[name="sample_name"]').val(protocol.SampleName);
+            $('#tab4').find('input[name="sample_count"]').val(protocol.SampleCount);
+            $('#tab4').find('input[name="about"]').val(protocol.About);
+            $('#editParameterContent').val(protocol.Parameter);
+            $('#editParameter').html(protocol.Parameter);
+            $('#editAboutContent').val(protocol.Other);
+            $('#editAbout').html(protocol.Other);
+            $('#editResultContent').val(protocol.Result);
+            $('#editResult').html(protocol.Result);
+            $('#editRemark1Content').val(protocol.Remark1);
+            $('#editRemark1').html(protocol.Remark1);
+            $('#editRemark2Content').val(protocol.Remark2);
+            $('#editRemark2').html(protocol.Remark2);
+            $('#editRemark3Content').val(protocol.Remark3);
+            $('#editRemark3').html(protocol.Remark3);
+            $('.tabWrap').hide();
+            $('.list').addClass("active");
+            $('.edit').removeClass("active");
+            $('#tab4').fadeIn(200);
+            loadingParent(false,2);
+        }else{
+            swalParent("系统提示",res.msg,"error");
+        }
+    });
+}
 
-    let remark = $('#editForm').find("textarea[name='remark']").val().trim();
-    //let formData = formUtil('addForm');
+function update() {
+
+    let ids = $('#editTable .allDevice').attr("deviceIds");
+    if(!ids){
+        swalParent("系统提示","未选择任何实验项目!","error");
+        return;
+    }
+    let item = {};
+    let Protocol = {};
+    //Protocol.Sign = $('.sign img').attr("src");
+    Protocol.Date = dateUtil.NowDate;
+    Protocol.Pay = $('#editTable').find("input[name='pay']:checked").val();
+    Protocol.TestResult = $('#editTable').find("input[name='test_result']:checked").val();
+    //Protocol.City = $('.city').html();
+    Protocol.SampleName = $('#editTable').find("input[name='sample_name']").val().trim();
+    Protocol.SampleCount = $('#editTable').find("input[name='sample_count']").val();
+    Protocol.SampleCode = $('#editTable').find("input[name='sample_code']").val().trim();
+    Protocol.DetectionCycle = $('#editTable').find('.detection_cycle').html();
+    Protocol.DetectionReport = $('#editTable').find("input[name='detection_report']:checked").val();
+    Protocol.SampleProcessing = $('#editTable').find("input[name='sample_processing']:checked").val();
+    Protocol.About = $('#editTable').find("input[name='about']").val().trim();
+    Protocol.Parameter = $('#editParameterContent').val();
+    Protocol.Other = $("#editAboutContent").val();
+    Protocol.Result = $("#editResultContent").val();
+    Protocol.Remark1 = $("#editRemark1Content").val();
+    Protocol.Remark2 = $("#editRemark2Content").val();
+    Protocol.Remark3 = $("#editRemark3Content").val();
+    //Protocol.Tid = $('#typeAddSel').val();
+    Protocol.DeviceId = ids;
+    Protocol.Uid = parseInt($('#userEditSel').val());
+    item.Protocol = Protocol;
+    item.Tid = $('#typeAddSel').val();
+    let DeviceArr = [];
+    $('#editTable .device').each(function () {
+        let item = {};
+        item.DeviceId = $(this).attr("data-id");
+        item.Count = 1;
+        item.Name = $(this).html();
+        DeviceArr.push(item);
+    });
+    item.Count = DeviceArr.length;
+    item.Data = DeviceArr;
     let formData = {};
-    formData["id"] = $('#editForm').find("input[name='id']").val();
-    formData["status"] = $('#status').val();
+    formData["data"] = JSON.stringify(item);
+    formData["rid"] = $('#editRid').val();
     formData["_xsrf"] = $("#token", parent.document).val();
-    formData["remark"] = remark;
     $.ajax({
         url: prefix + "/update",
         type: "POST",
@@ -595,13 +751,12 @@ function edit() {
             loadingParent(true, 2);
         },
         success: function (r) {
-            $('#editModal').modal("hide");
             let type = "error";
-            if (r.code == 1) {
+            if (r.code === 1) {
                 type = "success";
-                refresh();
             }
-            swalParent("系统提示", r.msg, type);
+            $('.list').click();
+            swalParent("系统提示",r.msg,type);
         },
         complete: function () {
             loadingParent(false, 2);
@@ -669,13 +824,14 @@ function protocolDetail(rid) {
             $('#tab3 .myWechat').html(r.data.wechat);
             $('#tab3 .myAddress').html(r.data.address);
             $('#tab3 .myEmail').html(r.data.email);
+            //清空选中
+            $("input[type=radio]").attr("checked",false);
             $("input[value='" + protocol.Pay + "']").attr('checked', true);
             $("input[value='" + protocol.TestResult + "']").attr('checked', true);
             $('#tab3 .date').html(protocol.Date);
             $('#tab3 .sign').html("<img src='" + protocol.Sign + "'>");
             $('#tab3 .city').html(r.data.city);
             $('#tab3 .mySign').html(r.data.sign);
-            $('#tableWrap').html("");
             let devices = "";
             let innerArr = r.data.deviceArr;
             if(!r.data.type.Name){
@@ -692,53 +848,49 @@ function protocolDetail(rid) {
                 let item = innerArr[j];
                 let count = item.Count;
                 let name = item.Name;
+                let range = item.DetectionCycle;
                 devices += "<i class=\"fa fa-files-o\" aria-hidden=\"true\"></i> " + name + "*" +
-                    count + "<br/>";
+                    count + "&nbsp;&nbsp;&nbsp;<i class=\"fa fa-clock-o\" aria-hidden=\"true\"></i>&nbsp;服务周期:"+range+"个工作日<br/>";
             }
-
+            $('#tableWrap').html("");
             $('#tableWrap').append('' +
                 '<table>\n' +
                 '<tr style="height: 35px!important;line-height: 35px;">\n' +
                 '   <td class="btbg font-center titfont" colspan="6">\n技术服务要求\n</td>\n' +
                 '</tr>' +
                 '<tr style="color: #6195ff;font-size: 20px;">\n' +
-                '   <td class="tabtxt2" style="width: 7%;">所属分类</td>\n' +
+                '   <td class="tabtxt2" style="width: 9%;">所属分类</td>\n' +
                 '   <td colspan="4" class="type">' + r.data.type.Name + '</td>\n' +
                 '   <td class="typeMore"></td>\n' +
                 '</tr>\n' +
                 '<tr >\n' +
                 '   <td class="tabtxt2">已选项目</td>\n' +
-                '  <td colspan="5" height="75" class="allDevice">' + devices + '</td>\n' +
-                '</tr>\n                                ' +
-                '<tr>\n                                    ' +
-                '   <td class="tabtxt2">检测周期</td>\n                                    ' +
-                '   <td colspan="5" class="detection_cycle">' + protocol.DetectionCycle +
-                '</td>\n                                ' +
-                '</tr>\n                                ' +
-                '<tr>\n                                    ' +
-                '   <td class="tabtxt2">检测报告</td>\n                                    ' +
-                '   <td colspan="5">\n                                        ' +
+                '   <td colspan="5" height="75" class="allDevice">' + devices + '</td>\n' +
+                '</tr>\n' +
+                '<tr>\n' +
+                '   <td class="tabtxt2">检测报告</td>\n' +
+                '   <td colspan="5">\n' +
                 '       <input type="radio" value="无需检测报告（默认）" name="detection_report"/> 无需检测报告（默认）\n                                        ' +
                 '       <input type="radio" value="中文检测报告（加收200元）" name="detection_report"/> 中文检测报告（加收200元）\n                                    ' +
-                '   </td>\n                                ' +
-                '</tr>\n                                ' +
-                '<tr>\n                                    ' +
-                '   <td class="tabtxt2">样品编号</td>\n                                    ' +
-                '   <div colspan="5">\n                                        ' +
-                '       <div>' + protocol.SampleCode + '"</div>\n                                    ' +
-                '   </td>\n                                ' +
-                '</tr>\n                                ' +
-                '<tr>\n                                    ' +
-                '   <td class="tabtxt2">样品名称</td>\n                                    ' +
-                '   <td colspan="2">\n                                        ' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr>\n' +
+                '   <td class="tabtxt2">样品编号</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <div>' + protocol.SampleCode + '</div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr>\n' +
+                '   <td class="tabtxt2">样品名称</td>\n' +
+                '   <td colspan="2">\n' +
                 '       <div>' + protocol.SampleName + '</div>\n   ' +
-                '   </td>\n                                    ' +
+                '   </td>\n' +
                 '   <td class="tabtxt2" style="text-align: right;padding-right: 15px;">样品数量</td>\n                                    ' +
-                '   <td colspan="2">\n                                        ' +
-                '       <div>' + protocol.SampleCount + '</div>\n                                    ' +
-                '   </td>\n                                ' +
-                '</tr>\n                                ' +
-                '<tr>\n                                    ' +
+                '   <td colspan="2">\n' +
+                '       <div>' + protocol.SampleCount + '</div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr>\n' +
                 '   <td class="tabtxt2">样品处理</td>\n                                    ' +
                 '   <td colspan="5">\n                                        ' +
                 '       <input type="radio" value="一般样品回收（50元）" name="sample_processing"/> 一般样品回收（50元）\n                                        ' +
@@ -766,18 +918,42 @@ function protocolDetail(rid) {
                 '   </td>\n                                ' +
                 '</tr>\n                                ' +
                 '<tr>\n                                    ' +
-                '   <td height="175" class="tabtxt2">参考结果图片</td>\n                                    ' +
-                '   <td colspan="5">\n                                        ' +
-                '       <textarea class="form-control" id="resultContent" name="result" placeholder="可插入文字图片"></textarea>\n                                        ' +
-                '       <div class="editor result" id="result"></div>\n                                    ' +
-                '   </td>\n                                ' +
-                '</tr>\n                            ' +
+                '   <td height="175" class="tabtxt2">参考结果图片</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <textarea class="form-control" id="resultContent" name="result" placeholder="可插入文字图片"></textarea>\n' +
+                '       <div class="editor result" id="result"></div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr class="trHidden">\n                                    ' +
+                '   <td height="175" class="tabtxt2">制样要求</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <textarea class="form-control" id="remark1Content" name="result" placeholder="可插入文字图片"></textarea>\n' +
+                '       <div class="editor result" id="remark1"></div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr class="trHidden">\n                                    ' +
+                '   <td height="175" class="tabtxt2">测试要求</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <textarea class="form-control" id="remark2Content" name="result" placeholder="可插入文字图片"></textarea>\n' +
+                '       <div class="editor result" id="remark2"></div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr class="trHidden">\n                                    ' +
+                '   <td height="175" class="tabtxt2">分析要求</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <textarea class="form-control" id="remark3Content" name="result" placeholder="可插入文字图片"></textarea>\n' +
+                '       <div class="editor result" id="remark3"></div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
                 '</table>');
             $("input[value='" + protocol.DetectionReport + "']").attr('checked', true);
             $("input[value='" + protocol.SampleProcessing + "']").attr('checked', true);
             $('#tab3 .parameter').html(protocol.Parameter);
             $('#tab3 .other').html(protocol.Other);
             $('#tab3 .result').html(protocol.Result);
+            $('#tab3 .remark1').html(protocol.Remark1);
+            $('#tab3 .remark2').html(protocol.Remark2);
+            $('#tab3 .remark3').html(protocol.Remark3);
             $('input').attr("disabled", "true");
             setTimeout(function () {
                 imgUtil.addWatermark("protocolInfo", "中科科辅");
@@ -806,15 +982,15 @@ function renderChildType(tid) {
                 $('#typeChiAddSelWrap').html('<select id="typeChiAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default"></select>');
                 for(let i=0;i<tList.length;i++){
                     let item = tList[i];
-                    $('#typeChiAddSel').append('<option value="'+item.id+'">'+item.name+'</option>');
+                    $('#typeChildAddSel').append('<option value="'+item.id+'">'+item.name+'</option>');
                 }
                 detectionCycle = tList[0].detection_cycle;
             }else{
                 $('#typeChiAddSelWrap').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
             }
-            $('#typeChiAddSel').selectpicker('refresh');
+            $('#typeChildAddSel').selectpicker('refresh');
             //子类切换监听
-            $('#typeChiAddSel').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+            $('#typeChildAddSel').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
                 detectionCycle = typeChildArr[clickedIndex].detection_cycle;
                 $('#addTable .type').html("-");
                 $('#addTable .allDevice').html("-");
@@ -828,8 +1004,7 @@ function renderChildType(tid) {
 
 function renderDevice(){
     let typeId = $('#typeAddSel').val();
-    let ttid = $('#typeChiAddSel').val();
-
+    let ttid = $('#typeChildAddSel').val();
     $.post("/type/device",{_xsrf:$("#token", parent.document).val(),typeId:typeId,ttid:ttid},function (res) {
         if(res.data){
             $('#deviceAddSelWrap').html("");
@@ -926,14 +1101,8 @@ function report() {
 }
 
 function reset() {
-    $(":input").each(function () {
-        $(this).val("");
-    });
-    $('#actived').val(1)
-    $('#actived').selectpicker('refresh');
-    $("textarea").each(function () {
-        $(this).val("");
-    });
+    $('#addTable input').val("");
+    $("textarea").val('');
 }
 
 function refresh() {

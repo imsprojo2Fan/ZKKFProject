@@ -178,8 +178,11 @@ func (this *Device) ListByType(tid,ttid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
 	sql := "select d.id,d.tid,d.ttid,d.name,d.sketch,d.is_order,d.img,d.rid,t.name as typeName,t.request,c.name as childName,c.detection_cycle as detectionCycle from device d,`type` t,type_child c where d.tid=t.id and d.ttid=c.id"
-	if tid!="0"{
+	if tid!="0"&&ttid!=""{
 		sql += " and d.tid="+tid+" and d.ttid="+ttid
+	}
+	if ttid==""{
+		sql += " and d.tid="+tid
 	}
 	_, err := o.Raw(sql).Values(&res)
 	return res, err
