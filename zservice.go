@@ -6,10 +6,12 @@ import (
 	"ZkkfProject/sysinit"
 	_ "ZkkfProject/sysinit"
 	"ZkkfProject/utils"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/orm"
 	"net/http"
+	_ "net/http/pprof"
 	"strings"
 )
 
@@ -63,5 +65,25 @@ func TransparentStatic(ctx *context.Context) {
 }
 
 func main() {
-	beego.Run()
+
+	//开启性能调试
+	// web:
+	// 1、http://localhost:8081/ui
+	// 2、http://localhost:6060/debug/charts
+	// 3、http://localhost:6060/debug/pprof //协程调试
+	// 4、http://localhost:6060/debug/pprof/heap?debug=1
+	// 5、go tool pprof -http=:1234 http://localhost:6060/debug/pprof/profile?seconds=30 cpu调试
+	// 6、go tool pprof -http=:8081 http://localhost:6060/debug/pprof/heap 内存调试
+	go func() {
+		fmt.Println("pprof port:9998")
+		fmt.Println(http.ListenAndServe(":9998", nil))
+	}()
+
+	//开启web服务
+	go func() {
+		beego.Run()
+	}()
+
+	select {}
+
 }

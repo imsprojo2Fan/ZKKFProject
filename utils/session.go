@@ -12,8 +12,8 @@ func InitSession()  {
 	sessionConfig := &session.ManagerConfig{
 		CookieName:"gosessionid",
 		EnableSetCookie: true,
-		Gclifetime:360000000000000,
-		Maxlifetime: 360000000000000,
+		Gclifetime:3600*24,
+		Maxlifetime: 3600*24,
 		Secure: false,
 		//CookieLifeTime: 360000000000000,
 		ProviderConfig: "./tmp",
