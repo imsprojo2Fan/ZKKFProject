@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"github.com/astaxie/beego/orm"
 	"strconv"
 	"time"
@@ -11,6 +12,7 @@ type Reservation struct {
 	Id       int
 	Uid      int       //创建人id/user表id
 	Uuid     int       //预约人id/user表id，可能为0，有可能为管理员创建
+	Tid      int       //type表id
 	DeviceId int       //设备id
 	Rid      string    //唯一识别字符串
 	Date     string //预约日期
@@ -139,4 +141,22 @@ func (this *Reservation) ListByUidAndDate(uid string) ([]Reservation, error) {
 	sql := "select * from " + ReservationTBName() + " where uid="+uid+" and TO_DAYS(created) = TO_DAYS(NOW()) and status!=2 and del=0 "
 	_, err := o.Raw(sql).QueryRows(&res)
 	return res,err
+}
+
+func (this *Reservation) ListByRid(rid string) (orm.Params, error) {
+	var res[] orm.Params
+	o := orm.NewOrm()
+	sql := "select r.*,s.value as timeVal from reservation r,setting s where r.time_id=s.id and r.rid=?"
+	_,err := o.Raw(sql,rid).Values(&res)
+	if len(res)==0{
+		_ = errors.New("no data")
+		return nil, err
+	}
+	return res[0],err
+}
+
+func (this *Reservation) UpdateByRid(date,timeId,rid interface{},o orm.Ormer) error {
+	sqlTxt := "update reservation set date=?,time_id=? where rid=?"
+	_,err := o.Raw(sqlTxt,date,timeId,rid).Exec()
+	return err
 }

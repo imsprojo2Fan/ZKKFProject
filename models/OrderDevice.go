@@ -18,7 +18,6 @@ type OrderDevice struct {
 }
 
 func (this *OrderDevice) ListByRid(rid string) ([]OrderDevice,error) {
-
 	o := orm.NewOrm()
 	var res []OrderDevice
 	_,err := o.Raw("select o.*,d.name,c.detection_cycle from order_device o,device d,type_child c where o.device_id=d.id and c.id=d.ttid and o.rid=\""+rid+"\"").QueryRows(&res)
@@ -28,5 +27,9 @@ func (this *OrderDevice) ListByRid(rid string) ([]OrderDevice,error) {
 func (this *OrderDevice)DelByRid(o orm.Ormer,rid string)error{
 	sqlTxt := "delete from order_device where rid=?"
 	_,err := o.Raw(sqlTxt,rid).Exec()
+	return err
+}
+func (this *OrderDevice) Insert(o orm.Ormer,obj *OrderDevice) error {
+	_, err := o.Insert(obj)
 	return err
 }

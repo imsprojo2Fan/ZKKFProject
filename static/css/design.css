@@ -223,5 +223,16 @@ textarea {
 .rightWrap{
     margin-top: 4px;
 }
+.backBtn{
+    position: fixed;
+    right: 7%;
+    width: 4%;
+    top: 55vh;
+    cursor: pointer;
+    z-index: 99;
+}
+.backBtn:hover{
+    opacity: 0.75;
+}
 
 

@@ -92,7 +92,7 @@ func init() {
 	beego.Router("/main/reservation/all", &controllers.ReservationController{}, "POST:All")
 	beego.Router("/reservation/timeQuery", &controllers.ReservationController{}, "POST:TimeQuery")
 	beego.Router("/reservation/add", &controllers.ReservationController{}, "*:IndexAdd")
-
+	beego.Router("/main/reservation/info", &controllers.ReservationController{}, "POST:Info")
 	//订单管理
 	beego.Router("/main/order/list", &controllers.OrderController{}, "POST:List")
 	beego.Router("/main/order/list4person", &controllers.OrderController{}, "POST:ListForPerson")

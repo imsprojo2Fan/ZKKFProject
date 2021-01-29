@@ -26,6 +26,7 @@ function addReservation(){
 
     //let formData = formUtil('addForm');
     let formData = {};
+    formData["tid"] = info.tid;
     formData["deviceId"] = $('#deviceId').val();
     formData["date"] = date;
     formData["_xsrf"] = $("#token", parent.document).val();

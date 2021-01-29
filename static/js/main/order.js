@@ -30,7 +30,7 @@ $(document).ready(function () {
             return false;
         }
         if(data==="tab4"){
-            return ;
+            return false;
         }
         $('input').removeAttr("disabled");
         if(data==="tab2"){
@@ -257,7 +257,7 @@ $(document).ready(function () {
         rowData = myTable.row($(this).closest('tr')).data();
         let rid = rowData.rid;
         $('#editRid').val(rid);
-        editOrder(rid);
+        editInfo(rid);
     });
     $('#myTable').on("click", ".btn-danger", function (e) { //删除
         rowData = myTable.row($(this).closest('tr')).data();
@@ -316,10 +316,6 @@ $(document).ready(function () {
             imgUtil.addWatermark("protocolInfo", "中科科辅");
         }, 500);
 
-    });
-    $('.backBtn').on("click", function () {
-        $('.list').addClass('active');
-        $('.list').click();
     });
     $('#myTable').on("click", ".assign", function (e) {
         rowData = myTable.row($(this).closest('tr')).data();
@@ -548,6 +544,9 @@ function add() {
     Protocol.Parameter = $('#addParameterContent').val();
     Protocol.Other = $("#addAboutContent").val();
     Protocol.Result = $("#addResultContent").val();
+    Protocol.Remark1 = $('#addRemark1Content').val();
+    Protocol.Remark2 = $('#addRemark2Content').val();
+    Protocol.Remark3 = $('#addRemark3Content').val();
     //Protocol.Tid = $('#typeAddSel').val();
     //Protocol.DeviceId = ids;
     Protocol.Uid = parseInt($('#userAddSel').val());
@@ -594,7 +593,7 @@ function add() {
     });
 }
 
-function editOrder(rid) {
+function editInfo(rid) {
     loadingParent(true,2);
     $.post(prefix+"/info?rid="+rid,{_xsrf: $("#token", parent.document).val()},function (res) {
         if(res.code===1){
@@ -752,7 +751,7 @@ function update() {
         },
         success: function (r) {
             let type = "error";
-            if (r.code === 1) {
+            if (r.code == 1) {
                 type = "success";
             }
             $('.list').click();
@@ -1103,6 +1102,7 @@ function report() {
 function reset() {
     $('#addTable input').val("");
     $("textarea").val('');
+    $("#addTable .editor").html("可插入文字/图片");
 }
 
 function refresh() {

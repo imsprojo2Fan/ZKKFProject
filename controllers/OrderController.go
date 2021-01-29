@@ -178,6 +178,8 @@ func (this *OrderController) Add() {
 	var tAddArr []models.OrderType
 	var deviceArr []models.OrderDevice
 	var protocolArr []models.Protocol
+	//查询公司信息
+	res := settingObj.SelectByGroup("LocalInfo")
 	for _,item := range tArr{
 		Rid := "A"+strconv.FormatInt(time.Now().UnixNano(),10)
 		//处理订单
@@ -201,32 +203,16 @@ func (this *OrderController) Add() {
 			ids += item1.DeviceId+","
 		}
 		ids = ids[0:len(ids)-1]
-		//查询公司信息
-		res := settingObj.SelectByGroup("LocalInfo")
+
 		//处理协议
 		var protocol models.Protocol
+		protocol = item.Protocol
 		protocol.Rid = "A"+strconv.FormatInt(time.Now().UnixNano()-10,10)
 		protocol.RandomId = Rid
 		protocol.Tid = item.Tid
 		protocol.DeviceId = ids
-		protocol.Uid = item.Protocol.Uid//用户id
 		protocol.Uuid = uid//创建人id
-		protocol.Sign = item.Protocol.Sign
-		protocol.Date = item.Protocol.Date
-		protocol.Pay = item.Protocol.Pay
-		protocol.TestResult = item.Protocol.TestResult
 		protocol.City = models.RangeValue(res,"city")
-		protocol.SampleName = item.Protocol.SampleName
-		protocol.SampleCount = item.Protocol.SampleCount
-		protocol.SampleCode = item.Protocol.SampleCode
-		protocol.DetectionCycle = item.Protocol.DetectionCycle
-		protocol.DetectionReport = item.Protocol.DetectionReport
-		protocol.SampleProcessing = item.Protocol.SampleProcessing
-		protocol.About = item.Protocol.About
-		protocol.Parameter = item.Protocol.Parameter
-		protocol.Other = item.Protocol.Other
-		protocol.Result = item.Protocol.Result
-		protocol.Remark = item.Protocol.Remark
 		protocolArr = append(protocolArr,protocol)
 	}
 	_,err = obj.MultiInsert4Type(o,tAddArr)
@@ -459,27 +445,12 @@ func (this *OrderController) IndexAdd() {
 		ids = ids[0:len(ids)-1]
 		//处理协议
 		var protocol models.Protocol
+		protocol = item.Protocol
 		protocol.Rid = "A"+strconv.FormatInt(time.Now().UnixNano()-10,10)
 		protocol.RandomId = Rid
 		protocol.Tid = item.Tid
 		protocol.DeviceId = ids
 		protocol.Uid = uid
-		protocol.Sign = item.Protocol.Sign
-		protocol.Date = item.Protocol.Date
-		protocol.Pay = item.Protocol.Pay
-		protocol.TestResult = item.Protocol.TestResult
-		protocol.City = item.Protocol.City
-		protocol.SampleName = item.Protocol.SampleName
-		protocol.SampleCount = item.Protocol.SampleCount
-		protocol.SampleCode = item.Protocol.SampleCode
-		protocol.DetectionCycle = item.Protocol.DetectionCycle
-		protocol.DetectionReport = item.Protocol.DetectionReport
-		protocol.SampleProcessing = item.Protocol.SampleProcessing
-		protocol.About = item.Protocol.About
-		protocol.Parameter = item.Protocol.Parameter
-		protocol.Other = item.Protocol.Other
-		protocol.Result = item.Protocol.Result
-		protocol.Remark = item.Protocol.Remark
 		protocolArr = append(protocolArr,protocol)
 	}
 	_,err = obj.MultiInsert4Type(o,tAddArr)

@@ -28,7 +28,7 @@
     <!-- Start Page Header -->
     <div>
         <ol class="breadcrumb">
-            <li><span id="tabHref01" href="javascript:void(0)">数据列表</span></li>
+            <li><span id="tabHref01" class="list" href="javascript:void(0)">数据列表</span></li>
             <li><span id="tabHref02" class="active" href="javascript:void(0)">新增数据</span></li>
             <li><span class="active" onclick="refresh()">刷新数据</span></li>
             <li><span class="batchDel" onclick="batchDel()">批量删除</span></li>
@@ -72,7 +72,7 @@
                         </table>
                     </div>
                     <div id="tab2" style="display: none">
-
+                        <img class="backBtn" title="返回列表" src="../../static/img/back.png">
                         <div class="panel-body">
                             <form class="form-horizontal" autocomplete="off">
 
@@ -262,6 +262,7 @@
 <script src="../../static/plugins/icheck/icheck.min.js"></script>
 <script src="../../static/js/util/timeUtil.js"></script>
 <script src="../../static/js/util/util.js"></script>
+<script src="../../static/js/main/backUtil.js"></script>
 <script src="../../static/plugins/datatables/datatables.min.js"></script>
 <script src="../../static/js/main/typeChild.js?v={{ .random}}"></script>
 

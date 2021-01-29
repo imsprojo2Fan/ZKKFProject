@@ -25,7 +25,6 @@ type Protocol struct {
 	SampleName string //样品名称
 	SampleCount string //样品数量
 	SampleCode string //样品编号
-	DetectionCycle string //检测周期
 	DetectionReport string //检测报告
 	SampleProcessing string //样品处理
 	About string //关于样品

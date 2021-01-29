@@ -36,16 +36,13 @@ func (this *ReservationController) List() {
 	sortType := this.GetString("order[0][dir]")
 	var sortCol string
 	sortNum := this.GetString("order[0][column]")
-	if sortNum == "5" {
+	if sortNum == "3" {
 		sortCol = "date"
 	}
-	if sortNum == "7" {
+	if sortNum == "5" {
 		sortCol = "status"
 	}
-	if sortNum == "8" {
-		sortCol = "updated"
-	}
-	if sortNum == "9" {
+	if sortNum == "6" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
@@ -133,56 +130,126 @@ func (this *ReservationController) ListForPerson() {
 func (this *ReservationController) Add() {
 
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uid := session.Get("id").(int)
-	uuid, err := this.GetInt("uuid")
-	if err != nil {
-		uuid = 0
+	if session.Get("id")==nil{
+		this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
 	}
+	uid := session.Get("id").(int)
 	deviceId, _ := this.GetInt("deviceId")
 	timeId, _ := this.GetInt("timeId")
 	date := this.GetString("date")
-	message := this.GetString("message")
+	tid, _ := this.GetInt("tid")
+
+	protocolStr := this.GetString("protocol")
+	if protocolStr == "" {
+		this.jsonResult(http.StatusOK, -1, "参数不能为空!", nil)
+	}
+	var protocol models.Protocol
+	//fmt.Println(str)
+	err := json.Unmarshal([]byte(protocolStr), &protocol)
+	if err != nil {
+		this.jsonResult(http.StatusOK, -1, "参数解析错误,"+err.Error(), err.Error())
+	}
+	rid := "R"+strconv.FormatInt(time.Now().UnixNano()-10,10)
 	var obj models.Reservation
-	//查询当前用户当天是否已预约过该设备
-	/*var res []models.Reservation
-	res,err = obj.ListByUidAndDate(strconv.Itoa(uid))
-	if len(res)>0{
-		this.jsonResult(200, -1, "当前日期您已预约过,如需更换时间可联系管理员!", nil)
-	}*/
-	obj.Rid = utils.RandomString(16)
+	obj.Rid = rid
 	obj.Uid = uid
-	obj.Uuid = uuid
+	obj.Uuid = uid
 	obj.Date = date
 	obj.TimeId = timeId
+	obj.Tid = tid
 	obj.DeviceId = deviceId
 	obj.Status = 0
-	obj.Remark = message
-	err = obj.Insert(&obj)
-	if err == nil {
-		//更新预约数
-		var device models.Device
-		device.UpdateNum("reservation", strconv.Itoa(deviceId))
-		this.jsonResult(200, 1, "操作成功", nil)
-	} else {
-		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+	o := orm.NewOrm()
+	_ = o.Begin()
+	err = obj.Insert2(&obj,o)
+	if err != nil {
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "新增reservation表数据失败,"+err.Error(), err.Error())
 	}
+	//新增协议
+	//查询公司信息
+	localInfo := settingObj.SelectByGroup("LocalInfo")
+	protocol.RandomId = rid
+	protocol.Uid = uid
+	protocol.Rid = "R"+strconv.FormatInt(time.Now().UnixNano()-10,10)
+	protocol.City = models.RangeValue(localInfo,"city")
+	err = protocol.Insert(o,&protocol)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "新增protocol表数据失败,"+err.Error(), err.Error())
+	}
+	//新增order_type
+	var orderType models.OrderType
+	orderType.Rid = rid
+	orderType.Tid = protocol.Tid
+	orderType.Count = 1
+	err = orderType.Insert(o,&orderType)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "新增order_type表数据失败,"+err.Error(), err.Error())
+	}
+	//新增order_device
+	var orderDevice models.OrderDevice
+	orderDevice.Rid = rid
+	orderDevice.DeviceId = protocol.DeviceId
+	orderType.Count = 1
+	err = orderDevice.Insert(o,&orderDevice)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "新增order_device表数据失败,"+err.Error(), err.Error())
+	}
+
+	_ = o.Commit()
+	//更新预约数
+	var device models.Device
+	device.UpdateNum("reservation", strconv.Itoa(deviceId))
+	this.jsonResult(200, 1, "预约成功", nil)
 }
 
 func (this *ReservationController) Update() {
-	var obj models.Reservation
-	obj.Id, _ = this.GetInt("id")
-	obj.DeviceId, _ = this.GetInt("deviceId")
-	obj.Date = this.GetString("date")
-	obj.TimeId, _ = this.GetInt("timeId")
-	obj.Status, _ = this.GetInt("status")
-	obj.Remark = this.GetString("remark")
-	obj.Updated = time.Now()
-	err := obj.Update(&obj)
-	if err == nil {
-		this.jsonResult(200, 1, "操作成功", nil)
-	} else {
-		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	if session.Get("id")==nil{
+		this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
 	}
+	rid := this.GetString("rid")
+	timeId, _ := this.GetInt("timeId")
+	date := this.GetString("date")
+
+	protocolStr := this.GetString("protocol")
+	if protocolStr == "" {
+		this.jsonResult(http.StatusOK, -1, "参数不能为空!", nil)
+	}
+	var protocol models.Protocol
+	//fmt.Println(str)
+	err := json.Unmarshal([]byte(protocolStr), &protocol)
+	if err != nil {
+		this.jsonResult(http.StatusOK, -1, "参数解析错误,"+err.Error(), err.Error())
+	}
+
+	//更新reservation
+	var reservation models.Reservation
+	reservation.Rid = rid
+	reservation.Date = date
+	reservation.TimeId = timeId
+	o := orm.NewOrm()
+	_ = o.Begin()
+	if date!=""{
+		err = reservation.UpdateByRid(date,timeId,rid,o)
+		if err != nil {
+			_ = o.Rollback()
+			this.jsonResult(http.StatusOK, -1, "更新错误,"+err.Error(), err.Error())
+		}
+	}
+
+	//更新protocol
+	protocol.Rid = rid
+	err = protocol.UpdateByRid(o,&protocol)
+	if err != nil {
+		_ = o.Rollback()
+		this.jsonResult(http.StatusOK, -1, "更新错误,"+err.Error(), err.Error())
+	}
+	_ = o.Commit()
+	this.jsonResult(http.StatusOK, 1, "更新成功",nil)
 }
 
 func (this *ReservationController) Delete() {
@@ -334,6 +401,7 @@ func (this *ReservationController) IndexAdd() {
 		this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
 	}
 	uid := session.Get("id").(int)
+	tid, _ := this.GetInt("tid")
 	deviceId, _ := this.GetInt("deviceId")
 	timeId, _ := this.GetInt("timeId")
 	date := this.GetString("date")
@@ -363,6 +431,7 @@ func (this *ReservationController) IndexAdd() {
 	obj.Uuid = uid
 	obj.Date = date
 	obj.TimeId = timeId
+	obj.Tid = tid
 	obj.DeviceId = deviceId
 	obj.Status = 0
 	obj.Message = message
@@ -382,9 +451,51 @@ func (this *ReservationController) IndexAdd() {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "预约失败,"+err.Error(), err.Error())
 	}
+
+	//新增order_type
+	var orderType models.OrderType
+	orderType.Rid = rid
+	orderType.Tid = protocol.Tid
+	orderType.Count = 1
+	err = orderType.Insert(o,&orderType)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "预约失败,"+err.Error(), err.Error())
+	}
+	//新增order_device
+	var orderDevice models.OrderDevice
+	orderDevice.Rid = rid
+	orderDevice.DeviceId = protocol.DeviceId
+	orderType.Count = 1
+	err = orderDevice.Insert(o,&orderDevice)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "预约失败,"+err.Error(), err.Error())
+	}
 	_ = o.Commit()
 	//更新预约数
 	var device models.Device
 	device.UpdateNum("reservation", strconv.Itoa(deviceId))
 	this.jsonResult(200, 1, "预约成功", nil)
+}
+
+func (this *ReservationController) Info() {
+	rid := this.GetString("rid")
+	//查询reservation
+	reservation := new(models.Reservation)
+	res, err := reservation.ListByRid(rid)
+	if err!=nil{
+		this.jsonResult(200, -1, "查询信息错误,"+err.Error(), nil)
+	}
+	//查询protocol
+	var protocol models.Protocol
+	var res2 models.Protocol
+	res2,err = protocol.ListByRid(rid)
+	if err!=nil{
+		this.jsonResult(200, -1, "查询信息错误,"+err.Error(), nil)
+	}
+	bMap := make(map[string]interface{})
+	bMap["reservation"] = res
+	bMap["protocol"] = res2
+	this.jsonResult(200, 1, "查询所有信息成功", bMap)
 }
