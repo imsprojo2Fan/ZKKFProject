@@ -107,7 +107,7 @@ $(function () {
     makeCode("signCode",url+"/sign?code="+signCode,108,108);
 
     $('#orderBtn').on("click",function () {
-        showProtocol();
+        showProtocolForOrder();
     });
 
     $('.sign').on("click",function () {

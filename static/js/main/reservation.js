@@ -75,7 +75,8 @@ $(document).ready(function() {
             url: prefix+'/list',
             type: 'POST',
             data:{
-                _xsrf:$("#token", parent.document).val()
+                _xsrf: $("#token", parent.document).val(),
+                tid:$('#filterSelect').val()
             }
         },
         columns: [
@@ -123,7 +124,7 @@ $(document).ready(function() {
                     html +=
                         "<a href='javascript:void(0);'  class='protocol btn btn-secondary btn-xs'>实验要求</a> "
                     html +=
-                        "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>指派订单</a> "
+                        "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>指派任务</a> "
                     html +=
                         "<a href='javascript:void(0);'  class='report btn btn-secondary btn-xs'>实验报告</a> "
                     return html;
@@ -227,16 +228,15 @@ $(document).ready(function() {
     $('#myTable').on("click", ".protocol", function (e) {
         rowData = myTable.row($(this).closest('tr')).data();
         //console.log(rowData);
-        /*$('#protocolModal .rid').html(rowData.rid);
-        $('#protocolModal').modal("show");*/
         $('.wat').remove();
         $('.protocolTable').hide(200);
         $("#more").attr("src", "../../static/img/square_left.png");
         $("#more").attr("title", "显示协议");
-        protocolDetail(rowData.rid);
+        protocolDetail(rowData.rid,rowData);
     });
     $('#pdfBtn').on("click", function () {
         //imgUtil.addWatermark("protocolInfo","中科科辅");
+        swalParent("系统提示","已开始生成PDF，请稍等...","success");
         if($('.protocolTable').is(":hidden")){
             $('#more').click();
         }
@@ -260,14 +260,10 @@ $(document).ready(function() {
         }, 500);
 
     });
-    $('.backBtn').on("click", function () {
-        $('.list').addClass('active');
-        $('.list').click();
-    });
     $('#myTable').on("click", ".assign", function (e) {
         rowData = myTable.row($(this).closest('tr')).data();
         $('#assignModal .rid').html(rowData.rid);
-        $.post(prefix + "/assign", {
+        $.post("/main/assign/assign", {
             rid: rowData.rid,
             _xsrf: $("#token", parent.document).val()
         }, function (res) {
@@ -277,7 +273,7 @@ $(document).ready(function() {
                 $('#curUser').html(data.name);
             } else {
                 $('#curUser').data("uid", 0);
-                $('#curUser').html("<span style='color: red;'>暂未指派用户！</span>");
+                $('#curUser').html("<span style='color: red;'>暂未指派任何用户！</span>");
             }
 
         });
@@ -291,7 +287,7 @@ $(document).ready(function() {
             swalParent("系统提示", "该用户已在处理！", "error");
             return false;
         }
-        $.post(prefix + "/assign", {
+        $.post("/main/assign/assign", {
             rid: rid,
             uid: newUid,
             _xsrf: $("#token", parent.document).val()
@@ -311,11 +307,11 @@ $(document).ready(function() {
         let fileName = rowData.file;
         if (fileName) {
             $('#reportModal .btn-primary').html("更新实验报告");
-            $('#fileWrap').html("<a class='download' title='点击下载' href='javascript:void(0);'>" +
+            $('#fileWrap').html("<a style='margin-top: 6px;display: inline-block;' class='download' title='点击下载' href='javascript:void(0);'>" +
                 fileName + "</a>");
         } else {
             $('#reportModal .btn-primary').html("上传实验报告");
-            $('#fileWrap').html("<p class='red'>暂未上传实验报告！</p>");
+            $('#fileWrap').html("<p class='red' style='margin-top: 6px;'>暂未上传任何实验报告！</p>");
         }
         $('#reportModal .download').on("click", function () {
             let fileName = $('#reportModal .download').html();
@@ -327,16 +323,30 @@ $(document).ready(function() {
     $('#reportModal .btn-primary').on("click", function () {
         report();
     });
-    //富文本监听事件
-    $('.editor').on("click",function () {
-        let id = $(this).attr("id")+"Content";
-        let val = $(this).val();
-        openWindow("/main/editor?domId="+id,"中科科辅",1200,600);
-    });
+
     initData();
 });
 
 function initData() {
+
+    //初始化父类分组过滤数据
+    $.post("/main/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
+        if(res.code===1){
+            let tList = res.data;
+            typeArr = tList;
+            if(tList){
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i];
+                    $('#filterSelect').append('<option value="'+item.id+'">'+item.name+'</option>');
+                }
+                request = typeArr[0].request;
+                $('#addParameter').html(request);
+                $('#addParameterContent').val(request);
+            }
+            $('#filterSelect').selectpicker('refresh');
+        }
+    });
+
     // 中文重写select 查询为空提示信息
     $('#userSel1').selectpicker({
         noneSelectedText: '下拉选择用户',
@@ -435,6 +445,26 @@ function initData() {
         $('#addParameter').html(item.request);
         renderTime();
     });
+    //初始化被指派任务用户
+    $.post("/main/user/assign", {_xsrf: $("#token", parent.document).val()}, function (res) {
+        let tList = res.data;
+        if (tList) {
+            $('#userSel').html('');
+            for (let i = 0; i < tList.length; i++) {
+                let item = tList[i];
+                let nameTemp = item.Name;
+                if(!nameTemp){
+                    nameTemp = "未填写名字";
+                }
+                $('#userSel').append('<option value="' + item.Id + '">' + nameTemp + '</option>');
+            }
+        } else {
+            $('#userSelWrap').html('');
+            $('#userSelWrap').append(
+                '<span style="color: red;display: block;margin-top: 5px">暂无用户，请先添加!</span>');
+        }
+        $('#userSel').selectpicker('refresh');
+    });
 }
 
 function add(){
@@ -521,11 +551,11 @@ function editInfo(rid) {
             //处理协议
             let protocol = data.protocol;
             //清空选中
-            $("input[type=radio]").attr("checked",false);
-            $('#editTable').find("input[value='"+protocol.TestResult+"']").attr('checked',true);
-            $('#editTable').find("input[value='"+protocol.Pay+"']").attr('checked',true);
-            $('#editTable').find("input[value='"+protocol.DetectionReport+"']").attr('checked',true);
-            $('#editTable').find("input[value='"+protocol.SampleProcessing+"']").attr('checked',true);
+            $('input:checked').prop('checked', false);
+            $("input[value='"+protocol.TestResult+"']").prop('checked', true);
+            $("input[value='"+protocol.Pay+"']").prop('checked', true);
+            $("input[value='"+protocol.DetectionReport+"']").prop('checked', true);
+            $("input[value='"+protocol.SampleProcessing+"']").prop('checked', true);
             $('#editTable').find('input[name="sample_code"]').val(protocol.SampleCode);
             $('#tab4').find('input[name="sample_name"]').val(protocol.SampleName);
             $('#tab4').find('input[name="sample_count"]').val(protocol.SampleCount);
@@ -558,8 +588,8 @@ function edit(){
     let Protocol = {};
     //Protocol.Sign = $('.sign img').attr("src");
     Protocol.Date = dateUtil.NowDate();
-    Protocol.Pay = $("input[name='pay']:checked").val();
-    Protocol.TestResult = $("input[name='test_result']:checked").val();
+    Protocol.Pay = $('#editTable').find("input[name='pay']:checked").val();
+    Protocol.TestResult = $('#editTable').find("input[name='test_result']:checked").val();
     //Protocol.City = $('.city').html();
     Protocol.DeviceId = $('#editDeviceId').val();
     //Protocol.Tid = deviceItem.tid;
@@ -595,6 +625,7 @@ function edit(){
             let type = "error";
             if (r.code===1) {
                 type = "success";
+                reset();
                 $('.backBtn').click();
             }
             swalParent("系统提示",r.msg,type);
@@ -717,6 +748,230 @@ function renderDateSelect(deviceId,date,timeId) {
     });
 }
 
+function protocolDetail(rid,rowData){
+    $.ajax({
+        url: "/main/protocol/info",
+        type: "POST",
+        dataType: "json",
+        cache: false,
+        data: {
+            _xsrf: $("#token", parent.document).val(),
+            rid: rid
+        },
+        beforeSend: function () {
+            loadingParent(true, 2);
+        },
+        success: function (r) {
+            let user = r.data.user;
+            let protocol = r.data.protocol;
+            $('#tab3 .company').html(user.Company);
+            $('#tab3 .invoice').html(user.Invoice);
+            $('#tab3 .invoice_code').html(user.InvoiceCode);
+            $('#tab3 .name').html(user.Name);
+            $('#tab3 .phone').html(user.Phone);
+            $('#tab3 .email').html(user.Email);
+            $('#tab3 .address').html(user.Address);
+            $('#tab3 .teacher').html(user.Teacher);
+            $('#tab3 .teacher_phone').html(user.TeacherPhone);
+            $('#tab3 .teacher_mail').html(user.TeacherMail);
+            $('#tab3 .myCompany').html(r.data.company);
+            $('#tab3 .myCompanyPhone').html(r.data.phone);
+            $('#tab3 .home').html(r.data.home);
+            $('#tab3 .myEmail').html(r.data.email);
+            $('#tab3 .myWechat').html(r.data.wechat);
+            $('#tab3 .myAddress').html(r.data.address);
+            $('#tab3 .myEmail').html(r.data.email);
+            //清空选中
+            $('input:checked').prop('checked', false);
+            $("input[value='"+protocol.TestResult+"']").prop('checked', true);
+            $("input[value='"+protocol.Pay+"']").prop('checked', true);
+            $('#tab3 .date').html(protocol.Date);
+            $('#tab3 .sign').html("<img src='" + protocol.Sign + "'>");
+            $('#tab3 .city').html(r.data.city);
+            $('#tab3 .mySign').html(r.data.sign);
+            let devices = "";
+            let innerArr = r.data.deviceArr;
+            if(!r.data.type.Name){
+                if(!innerArr){
+                    swalParent("系统提示","当前订单包含分组已被删除！","error");
+                    return false;
+                }
+            }
+            if(!innerArr){
+                swalParent("系统提示","当前订单包含项目已被删除！","error");
+                return false;
+            }
+            for (let j = 0; j < innerArr.length; j++) {
+                let item = innerArr[j];
+                let count = 1;
+                let name = item.Name;
+                let range = item.DetectionCycle;
+                devices += "<i class=\"fa fa-files-o\" aria-hidden=\"true\"></i> " + name + "*" +
+                    count + "&nbsp;&nbsp;&nbsp;<i class=\"fa fa-clock-o\" aria-hidden=\"true\"></i>&nbsp;服务周期:"+range+"个工作日<br/>";
+            }
+            $('#tableWrap').html("");
+            $('#tableWrap').append('' +
+                '<table>\n' +
+                '<tr style="height: 35px!important;line-height: 35px;">\n' +
+                '   <td class="btbg font-center titfont" colspan="6">\n技术服务要求\n</td>\n' +
+                '</tr>' +
+                '<tr style="color: #6195ff;font-size: 20px;">\n' +
+                '   <td class="tabtxt2" style="width: 9%;">所属分类</td>\n' +
+                '   <td colspan="4" class="type">' + r.data.type.Name + '</td>\n' +
+                '   <td class="typeMore"></td>\n' +
+                '</tr>\n' +
+                '<tr >\n' +
+                '   <td class="tabtxt2">已选项目</td>\n' +
+                '   <td colspan="5" class="allDevice">' + devices + '</td>\n' +
+                '</tr>\n' +
+                '<tr >\n' +
+                '   <td class="tabtxt2">预约时间</td>\n' +
+                '   <td colspan="5" class="dateTime">' +rowData.date+" "+rowData.time +'</td>\n' +
+                '</tr>\n' +
+                '<tr>\n' +
+                '   <td class="tabtxt2">检测报告</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <input type="radio" value="无需检测报告（默认）" name="detection_report"/> 无需检测报告（默认）\n                                        ' +
+                '       <input type="radio" value="中文检测报告（加收200元）" name="detection_report"/> 中文检测报告（加收200元）\n                                    ' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr>\n' +
+                '   <td class="tabtxt2">样品编号</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <div>' + protocol.SampleCode + '</div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr>\n' +
+                '   <td class="tabtxt2">样品名称</td>\n' +
+                '   <td colspan="2">\n' +
+                '       <div>' + protocol.SampleName + '</div>\n   ' +
+                '   </td>\n' +
+                '   <td class="tabtxt2" style="text-align: right;padding-right: 15px;">样品数量</td>\n                                    ' +
+                '   <td colspan="2">\n' +
+                '       <div>' + protocol.SampleCount + '</div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr>\n' +
+                '   <td class="tabtxt2">样品处理</td>\n                                    ' +
+                '   <td colspan="5">\n                                        ' +
+                '       <input type="radio" value="一般样品回收（50元）" name="sample_processing"/> 一般样品回收（50元）\n                                        ' +
+                '       <input type="radio" value="样品不回收" name="sample_processing"/> 样品不回收\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td class="tabtxt2">关于样品</td>\n                                    ' +
+                '   <td colspan="5">\n                                        ' +
+                '       <div>' + protocol.About + '</div>\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td height="175" class="tabtxt2">实验参数要求</td>\n                                    ' +
+                '   <td colspan="5">\n                                        ' +
+                '       <textarea class="form-control" id="parameterContent" name="parameter" ></textarea>\n                                        ' +
+                '       <div class="editor parameter" id="parameter"></div>\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td height="175" class="tabtxt2">其他特殊要求</td>\n                                    ' +
+                '   <td colspan="5">\n                                        ' +
+                '       <textarea class="form-control" id="aboutContent" name="about" placeholder="可插入文字图片"></textarea>\n                                        ' +
+                '       <div class="editor other" id="other"></div>\n                                    ' +
+                '   </td>\n                                ' +
+                '</tr>\n                                ' +
+                '<tr>\n                                    ' +
+                '   <td height="175" class="tabtxt2">参考结果图片</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <textarea class="form-control" id="resultContent" name="result" placeholder="可插入文字图片"></textarea>\n' +
+                '       <div class="editor result" id="result"></div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr class="trHidden">\n                                    ' +
+                '   <td height="175" class="tabtxt2">制样要求</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <textarea class="form-control" id="remark1Content" name="result" placeholder="可插入文字图片"></textarea>\n' +
+                '       <div class="editor result" id="remark1"></div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr class="trHidden">\n                                    ' +
+                '   <td height="175" class="tabtxt2">测试要求</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <textarea class="form-control" id="remark2Content" name="result" placeholder="可插入文字图片"></textarea>\n' +
+                '       <div class="editor result" id="remark2"></div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '<tr class="trHidden">\n                                    ' +
+                '   <td height="175" class="tabtxt2">分析要求</td>\n' +
+                '   <td colspan="5">\n' +
+                '       <textarea class="form-control" id="remark3Content" name="result" placeholder="可插入文字图片"></textarea>\n' +
+                '       <div class="editor result" id="remark3"></div>\n' +
+                '   </td>\n' +
+                '</tr>\n' +
+                '</table>');
+            $("input[value='"+protocol.DetectionReport+"']").prop('checked', true);
+            $("input[value='"+protocol.SampleProcessing+"']").prop('checked', true);
+            $('#tab3 .parameter').html(protocol.Parameter);
+            $('#tab3 .other').html(protocol.Other);
+            $('#tab3 .result').html(protocol.Result);
+            $('#tab3 .remark1').html(protocol.Remark1);
+            $('#tab3 .remark2').html(protocol.Remark2);
+            $('#tab3 .remark3').html(protocol.Remark3);
+            $('input').attr("disabled", "true");
+            setTimeout(function () {
+                imgUtil.addWatermark("protocolInfo", "中科科辅");
+            }, 500)
+            $('#tab1').hide();
+            $('#tab3').show();
+            $('#tabHref01').addClass("active");
+        },
+        complete: function () {
+            loadingParent(false, 2);
+        }
+    })
+}
+
+function report() {
+    let files = $('#reportModal').find("input[name='file']").prop('files');
+    if (files.length === 0) {
+        swal("系统提示", "请选择上传文件!", "error");
+        return
+    }
+    let file = files[0];
+    let size = file.size;
+    if (size > 20971520) {
+        swal("系统提示", "文件大小不能超过20MB!", "error");
+        return
+    }
+    let formData = new FormData();
+    formData.append('table', "reservation");
+    formData.append('rid', $('#reportModal .rid').html());
+    formData.append('file', files[0]);
+    formData.append("_xsrf", $("#token", parent.document).val());
+    $.ajax({
+        url: "/main/file/report",
+        type: "POST",
+        cache: false,
+        processData: false,
+        contentType: false,
+        data: formData,
+        beforeSend: function () {
+            loadingParent(true, 2)
+        },
+        success: function (r) {
+            let type = "error";
+            if (r.code === 1) {
+                type = "success";
+                reset();
+            }
+            refresh();
+            $('#reportModal').modal("hide");
+            swalParent("系统提示", r.msg, type);
+        },
+        complete: function () {
+            loadingParent(false, 2)
+        }
+    });
+}
+
 function reset() {
     $("#addTable input").val("");
     $("#addTable textarea").val("");
@@ -724,6 +979,15 @@ function reset() {
 }
 
 function refresh() {
+    let tid = $('#filterSelect').val();
+    if(!tid){
+        tid = 0;
+    }
+    let param = {
+        "_xsrf":$("#token", parent.document).val(),
+        "tid": tid
+    };
+    myTable.settings()[0].ajax.data = param;
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
 }
 

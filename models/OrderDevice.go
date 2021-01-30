@@ -14,7 +14,7 @@ type OrderDevice struct {
 	Name string
 	DeviceId string
 	Count int
-	DetectionCycle int
+	DetectionCycle string
 }
 
 func (this *OrderDevice) ListByRid(rid string) ([]OrderDevice,error) {

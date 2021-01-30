@@ -81,7 +81,6 @@ func init() {
 	beego.Router("/main/device/del4batch", &controllers.DeviceController{}, "POST:Delete4Batch")
 	beego.Router("/main/device/all", &controllers.DeviceController{}, "POST:All")
 	beego.Router("/main/device/reservation", &controllers.DeviceController{}, "POST:Reservation")
-
 	//预约管理
 	beego.Router("/main/reservation/list", &controllers.ReservationController{}, "POST:List")
 	beego.Router("/main/reservation/list4person", &controllers.ReservationController{}, "POST:ListForPerson")
@@ -102,9 +101,6 @@ func init() {
 	beego.Router("/main/order/delete4soft", &controllers.OrderController{}, "POST:SoftDelete")
 	beego.Router("/main/order/all", &controllers.OrderController{}, "POST:All")
 	beego.Router("/main/order/detail", &controllers.OrderController{}, "POST:Detail")
-	beego.Router("/main/order/protocol", &controllers.OrderController{}, "POST:Protocol")
-	beego.Router("/main/order/assign", &controllers.OrderController{}, "POST:Assign")
-	beego.Router("/main/order/report", &controllers.OrderController{}, "POST:Report")
 	beego.Router("/main/order/info", &controllers.OrderController{}, "POST:Info")
 	//系统设置相关
 	beego.Router("/main/setting/list", &controllers.SettingController{}, "POST:List")
@@ -119,12 +115,16 @@ func init() {
 	beego.Router("/main/file/list", &controllers.FileController{}, "POST:List")
 	beego.Router("/main/file/all", &controllers.FileController{}, "POST:All")
 	beego.Router("/main/file/list4type", &controllers.FileController{}, "POST:List4Type")
+	beego.Router("/main/file/report", &controllers.FileController{}, "POST:Report")
 	//富文本文件管理
 	beego.Router("/main/upload", &controllers.FileController{}, "POST:Upload")
 	//图片上传
 	beego.Router("/main/upload4pic", &controllers.FileController{}, "POST:Upload4Pic")
 	beego.Router("/main/file/upload4file", &controllers.FileController{}, "POST:Upload4File")
-
+	//协议管理
+	beego.Router("/main/protocol/info", &controllers.ProtocolController{}, "POST:Info")
+	//指派任务管理
+	beego.Router("/main/assign/assign", &controllers.AssignController{}, "POST:Assign")
 	//消息管理
 	beego.Router("/main/message/listAll", &controllers.MessageController{}, "POST:ListAll")
 	//定制错误页

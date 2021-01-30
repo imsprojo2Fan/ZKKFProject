@@ -81,11 +81,14 @@ func (this *Reservation) Count(qMap map[string]interface{}) (int, error) {
 		uid := qMap["uid"].(int)
 		sql += " and r.uuid="+strconv.Itoa(uid)
 	}
+	if qMap["tid"].(string) != "0" {
+		tid := qMap["tid"].(string)
+		sql = sql + " and r.tid="+tid
+	}
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql += " and (r.remark like \"%" + key + "%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"
 	}
-	sql += " where r.del=0"
 	var arr []orm.Params
 	_, err := o.Raw(sql).Values(&arr)
 	return len(arr), err
@@ -95,10 +98,14 @@ func (this *Reservation) ListByPage(qMap map[string]interface{}) ([]orm.Params, 
 	var maps []orm.Params
 	o := orm.NewOrm()
 	//sql := "SELECT r.*,u.name,u.phone from user u,"+ReservationTBName()+" r where u.id=r.uid "
-	sql := "SELECT r.*,u.name,u.company,u.phone,d.name as deviceName,s.value as time from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id "
+	sql := "SELECT r.*,u.name,u.company,u.phone,d.name as deviceName,s.value as time from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id where r.del=0 "
 	if qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
 		sql += " and r.uuid="+strconv.Itoa(uid)
+	}
+	if qMap["tid"].(string) != "0" {
+		tid := qMap["tid"].(string)
+		sql = sql + " and r.tid="+tid
 	}
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
@@ -107,9 +114,9 @@ func (this *Reservation) ListByPage(qMap map[string]interface{}) ([]orm.Params, 
 	if qMap["sortCol"] != nil && qMap["sortType"] != nil {
 		sortCol := qMap["sortCol"].(string)
 		sorType := qMap["sortType"].(string)
-		sql = sql + " where r.del=0 order by r." + sortCol + " " + sorType
+		sql = sql + " order by r." + sortCol + " " + sorType
 	} else {
-		sql = sql + " where r.del=0 order by r.id desc"
+		sql = sql + " order by r.id desc"
 	}
 	pageNow := qMap["pageNow"].(int64)
 	pageNow_ := strconv.FormatInt(pageNow, 10)

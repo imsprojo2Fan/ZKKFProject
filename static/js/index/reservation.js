@@ -47,6 +47,8 @@ function addReservation(){
                 renderTime();
                 $('#message').val("");
                 $('#lib').click();
+                let selectDate = $('#deviceId').val()+","+date+","+timeId;
+                localStorage.setItem("selectDate",selectDate);
                 mySwal("系统提示",r.msg+"，客服将尽快确认！","success");
             }else{
                 mySwal("系统提示",r.msg,"error");
@@ -98,7 +100,7 @@ function renderTime(){
                                 date = nowYear+"-"+date;
                                 let timeFlag = dateUtil.compareTime(date+" "+time.substring(0,5)+":00");
                                 if(!timeFlag||isUse==1){
-                                    $('#tr'+i).append('<td>-</td>');
+                                    $('#tr'+i).append('<td deviceId="'+deviceId+'" date="'+date+'" timeId="'+timeId+'">-</td>');
                                 }else{
                                     $('#tr'+i).append('<td date="'+date+'" timeId="'+timeId+'" time="'+item2.time+'" class="click '+date+'">可预约</td>');
                                 }
@@ -123,6 +125,7 @@ function renderTime(){
                         $(this).addClass("clickActive");
                     }
                 });
+                renderDateSelect();
             }else{
                 wrapObj.html('');
                 wrapObj.append('<span style="color: red;display: block;margin-top: 6px">暂无可选时间，请先添加!</span>');
@@ -246,4 +249,23 @@ function renderProtocolForReservation() {
         '</table>');
     $('#parameter'+tid+"Content").val(info.request);
     renderClick();
+}
+
+function renderDateSelect() {
+    let selectDate = localStorage.getItem("selectDate");
+    if(!selectDate){
+        return
+    }
+    let arr = selectDate.split(",")
+    let deviceId = arr[0];
+    let date = arr[1];
+    let timeId = arr[2];
+    $('td').each(function () {
+        let deviceId1 = $(this).attr("deviceId");
+        let date1 = $(this).attr("date");
+        let time1 = $(this).attr("timeid");
+        if(deviceId===deviceId1&&date===date1&&timeId===time1){
+            $(this).html("<span style='color:green'>✔</span>")
+        }
+    });
 }

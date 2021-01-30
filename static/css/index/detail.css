@@ -273,7 +273,7 @@ hr{
     width: 100%;
     font-size: 14px;
 }
-#dateTable td{
+#dateTable th,#dateTable td{
     border: 1px solid #eee;
 }
 #dateTable th{
@@ -297,6 +297,7 @@ hr{
 }
 .infoTip{
     font-size: 10px;
+    line-height: 0;
 }
 .infoTip2{
     font-size: 10px;

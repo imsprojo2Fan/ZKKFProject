@@ -177,7 +177,7 @@ $(document).ready(function () {
                     html +=
                         "<a href='javascript:void(0);'  class='protocol btn btn-secondary btn-xs'>实验要求</a> "
                     html +=
-                        "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>指派订单</a> "
+                        "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>指派任务</a> "
                     html +=
                         "<a href='javascript:void(0);'  class='report btn btn-secondary btn-xs'>实验报告</a> "
                     return html;
@@ -294,6 +294,7 @@ $(document).ready(function () {
     });
     $('#pdfBtn').on("click", function () {
         //imgUtil.addWatermark("protocolInfo","中科科辅");
+        swalParent("系统提示","已开始生成PDF，请稍等...","success");
         if($('.protocolTable').is(":hidden")){
             $('#more').click();
         }
@@ -320,7 +321,7 @@ $(document).ready(function () {
     $('#myTable').on("click", ".assign", function (e) {
         rowData = myTable.row($(this).closest('tr')).data();
         $('#assignModal .rid').html(rowData.rid);
-        $.post(prefix + "/assign", {
+        $.post("/main/assign/assign", {
             rid: rowData.rid,
             _xsrf: $("#token", parent.document).val()
         }, function (res) {
@@ -330,7 +331,7 @@ $(document).ready(function () {
                 $('#curUser').html(data.name);
             } else {
                 $('#curUser').data("uid", 0);
-                $('#curUser').html("<span style='color: red;'>暂未指派用户！</span>");
+                $('#curUser').html("<span style='color: red;'>暂未指派任何用户！</span>");
             }
 
         });
@@ -344,7 +345,7 @@ $(document).ready(function () {
             swalParent("系统提示", "该用户已在处理！", "error");
             return false;
         }
-        $.post(prefix + "/assign", {
+        $.post("/main/assign/assign", {
             rid: rid,
             uid: newUid,
             _xsrf: $("#token", parent.document).val()
@@ -364,11 +365,11 @@ $(document).ready(function () {
         let fileName = rowData.file;
         if (fileName) {
             $('#reportModal .btn-primary').html("更新实验报告");
-            $('#fileWrap').html("<a class='download' title='点击下载' href='javascript:void(0);'>" +
+            $('#fileWrap').html("<a style='margin-top: 6px;display: inline-block;' class='download' title='点击下载' href='javascript:void(0);'>" +
                 fileName + "</a>");
         } else {
             $('#reportModal .btn-primary').html("上传实验报告");
-            $('#fileWrap').html("<p class='red'>暂未上传实验报告！</p>");
+            $('#fileWrap').html("<p class='red' style='margin-top: 6px;'>暂未上传任何实验报告！</p>");
         }
         $('#reportModal .download').on("click", function () {
             let fileName = $('#reportModal .download').html();
@@ -537,7 +538,7 @@ function add() {
     Protocol.SampleName = $('#addTable').find("input[name='sample_name']").val().trim();
     Protocol.SampleCount = $('#addTable').find("input[name='sample_count']").val();
     Protocol.SampleCode = $('#addTable').find("input[name='sample_code']").val().trim();
-    Protocol.DetectionCycle = $('#addTable').find('.detection_cycle').html();
+    Protocol.DetectionCycle = parseInt($('#addTable').find('.detection_cycle').html());
     Protocol.DetectionReport = $('#addTable').find("input[name='detection_report']:checked").val();
     Protocol.SampleProcessing = $('#addTable').find("input[name='sample_processing']:checked").val();
     Protocol.About = $('#addTable').find("input[name='about']").val().trim();
@@ -662,11 +663,12 @@ function editInfo(rid) {
             //处理协议
             let protocol = data.protocol;
             //清空选中
-            $("input[type=radio]").attr("checked",false);
-            $('#editTable').find("input[value='"+protocol.TestResult+"']").attr('checked',true);
-            $('#editTable').find("input[value='"+protocol.Pay+"']").attr('checked',true);
-            $('#editTable').find("input[value='"+protocol.DetectionReport+"']").attr('checked',true);
-            $('#editTable').find("input[value='"+protocol.SampleProcessing+"']").attr('checked',true);
+            $('input:checked').prop('checked', false);
+            console.log("Pay:"+protocol.Pay+" TestResult:"+protocol.TestResult+" DetectionReport:"+protocol.DetectionReport+" SampleProcessing:"+protocol.SampleProcessing);
+            $("input[value='"+protocol.TestResult+"']").prop('checked', true);
+            $("input[value='"+protocol.Pay+"']").prop('checked', true);
+            $("input[value='"+protocol.DetectionReport+"']").prop('checked', true);
+            $("input[value='"+protocol.SampleProcessing+"']").prop('checked', true);
             $('#editTable').find('input[name="sample_code"]').val(protocol.SampleCode);
             $('#tab4').find('input[name="sample_name"]').val(protocol.SampleName);
             $('#tab4').find('input[name="sample_count"]').val(protocol.SampleCount);
@@ -711,7 +713,7 @@ function update() {
     Protocol.SampleName = $('#editTable').find("input[name='sample_name']").val().trim();
     Protocol.SampleCount = $('#editTable').find("input[name='sample_count']").val();
     Protocol.SampleCode = $('#editTable').find("input[name='sample_code']").val().trim();
-    Protocol.DetectionCycle = $('#editTable').find('.detection_cycle').html();
+    Protocol.DetectionCycle = parseInt($('#editTable').find('.detection_cycle').html());
     Protocol.DetectionReport = $('#editTable').find("input[name='detection_report']:checked").val();
     Protocol.SampleProcessing = $('#editTable').find("input[name='sample_processing']:checked").val();
     Protocol.About = $('#editTable').find("input[name='about']").val().trim();
@@ -754,6 +756,7 @@ function update() {
             if (r.code == 1) {
                 type = "success";
             }
+            reset();
             $('.list').click();
             swalParent("系统提示",r.msg,type);
         },
@@ -792,7 +795,7 @@ function del(rid) {
 
 function protocolDetail(rid) {
     $.ajax({
-        url: prefix + "/protocol",
+        url: "/main/protocol/info",
         type: "POST",
         dataType: "json",
         cache: false,
@@ -824,9 +827,9 @@ function protocolDetail(rid) {
             $('#tab3 .myAddress').html(r.data.address);
             $('#tab3 .myEmail').html(r.data.email);
             //清空选中
-            $("input[type=radio]").attr("checked",false);
-            $("input[value='" + protocol.Pay + "']").attr('checked', true);
-            $("input[value='" + protocol.TestResult + "']").attr('checked', true);
+            $('input:checked').prop('checked', false);
+            $("input[value='"+protocol.TestResult+"']").prop('checked', true);
+            $("input[value='"+protocol.Pay+"']").prop('checked', true);
             $('#tab3 .date').html(protocol.Date);
             $('#tab3 .sign').html("<img src='" + protocol.Sign + "'>");
             $('#tab3 .city').html(r.data.city);
@@ -945,8 +948,8 @@ function protocolDetail(rid) {
                 '   </td>\n' +
                 '</tr>\n' +
                 '</table>');
-            $("input[value='" + protocol.DetectionReport + "']").attr('checked', true);
-            $("input[value='" + protocol.SampleProcessing + "']").attr('checked', true);
+            $("input[value='"+protocol.DetectionReport+"']").prop('checked', true);
+            $("input[value='"+protocol.SampleProcessing+"']").prop('checked', true);
             $('#tab3 .parameter').html(protocol.Parameter);
             $('#tab3 .other').html(protocol.Other);
             $('#tab3 .result').html(protocol.Result);
@@ -1070,11 +1073,12 @@ function report() {
         return
     }
     let formData = new FormData();
+    formData.append('table', "order");
     formData.append('rid', $('#reportModal .rid').html());
     formData.append('file', files[0]);
     formData.append("_xsrf", $("#token", parent.document).val());
     $.ajax({
-        url: prefix + "/report",
+        url: "/main/file/report",
         type: "POST",
         cache: false,
         processData: false,

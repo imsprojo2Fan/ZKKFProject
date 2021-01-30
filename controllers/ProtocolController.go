@@ -308,3 +308,41 @@ func (this *ProtocolController) IndexAdd() {
 	_ = o.Commit()
 	this.jsonResult(200, 1, "操作成功", nil)
 }
+
+func (this *ProtocolController) Info() {
+	rid := this.GetString("rid")
+	protocol := new(models.Protocol)
+	protocolRes, err := protocol.ListByRid(rid)
+	if err!=nil{
+		this.jsonResult(200, -1, "查询失败,"+err.Error(), nil)
+	}
+	orderType := new(models.OrderType)
+	var typeRes models.OrderType
+	typeRes,err = orderType.ListByRid(rid)
+	if err!=nil{
+		this.jsonResult(200, -1, "查询失败,"+err.Error(), nil)
+	}
+	orderDevice := new(models.OrderDevice)
+	var deviceRes []models.OrderDevice
+	deviceRes,err = orderDevice.ListByRid(rid)
+	if err!=nil{
+		this.jsonResult(200, -1, "查询失败,"+err.Error(), nil)
+	}
+	user := new(models.User)
+	u := user.SelectById(protocolRes.Uid)
+	bMap := make(map[string]interface{})
+	bMap["type"] = typeRes
+	bMap["deviceArr"] = deviceRes
+	bMap["user"] = u
+	bMap["protocol"] = protocolRes
+	res := settingObj.SelectByGroup("LocalInfo")
+	bMap["company"] = models.RangeValue(res,"company")
+	bMap["phone"] = models.RangeValue(res,"phone")
+	bMap["home"] = models.RangeValue(res,"home")
+	bMap["email"] = models.RangeValue(res,"email")
+	bMap["wechat"] = models.RangeValue(res,"wechat")
+	bMap["address"] = models.RangeValue(res,"address")
+	bMap["city"] = models.RangeValue(res,"city")
+	bMap["sign"] = models.RangeValue(res,"sign")
+	this.jsonResult(200, 1, "查询成功", bMap)
+}

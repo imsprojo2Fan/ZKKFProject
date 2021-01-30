@@ -1,6 +1,12 @@
 #tab2,#tab3,#tab4{
+    width: 75%;
+    margin: 0 auto;
     height: 100vh;
     overflow-y: auto;
+    padding-bottom: 15vh;
+}
+#addTable,#editTable{
+    margin-left: -30px;
 }
 
 #tab2 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
@@ -123,9 +129,10 @@
 table{
     width: 100%;
 }
-#addTable tr,#editTable tr{
+#addTable tr,#protocolInfo tr,#editTable tr{
     height: 55px;
     font-size: 16px;
+    text-align: left;
 }
 input[type='radio'] {
     cursor: pointer;
@@ -178,14 +185,7 @@ input[type='radio'] {
     margin-bottom: 10px;
     line-height: 20px;
 }
-#addTable,#editTable{
-    width: 75%!important;
-    margin: 0 auto;
-    height: 100vh;
-    overflow-y: auto;
-    padding-bottom: 15vh;
-    margin-left: 30px;
-}
+
 #protocolModal .rid{
     margin-top: 6px;
 }
@@ -225,17 +225,17 @@ input[type='radio'] {
     width: 25%;
 }
 
-#addTable textarea,#editTable textarea{
+#addTable textarea,#protocolInfo textarea,#editTable textarea{
     display: none;!important;
 }
-#addTable .editor,#editTable .editor {
+.editor {
     min-height: 255px;
     border: 1px solid #eee;
     border-radius: 3px;
     padding: 6px;
     margin-bottom: 8px;
 }
-#addTable h1,h2,h3,h4,h5,#editTable h1,h2,h3,h4,h5{
+#addTable h1,h2,h3,h4,h5,#protocolInfo h1,h2,h3,h4,h5,#editTable h1,h2,h3,h4,h5{
     margin-top: 0!important;
 }
 .editor{
@@ -246,4 +246,40 @@ input[type='radio'] {
     margin-top: 6px!important;
     font-size: 16px;
     color: #6195FF;
+}
+#pdfBtn{
+    position: fixed;
+    right: 7%;
+    width: 4%;
+    top: 45vh;
+    cursor: pointer;
+}
+#pdfBtn:hover{
+    opacity: 0.75;
+}
+#more{
+    position: fixed;
+    right: 7.5%;
+    width: 3%;
+    top: 35vh;
+    cursor: pointer;
+}
+#more:hover{
+    opacity: 0.75;
+}
+.dataTables_filter{
+    margin-right: 146px;
+    margin-top: 0;
+}
+#filterWrap{
+    position: fixed;
+    z-index: 999;
+    right: 15px;
+    top: 53px;
+}
+#curUser{
+    margin-top: 6px;
+}
+.rid{
+    margin-top: 6px;
 }

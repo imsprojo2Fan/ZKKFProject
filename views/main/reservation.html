@@ -14,6 +14,7 @@
 </head>
 <body>
 <input type="hidden" value="{{ ._xsrf}}" id="token">
+<a style="display: none" id="downloadBtn" href="" download>下载</a>
 <div id="loading" class="loading-wrap">
     <div class="loader" >
         <div class="la-ball-clip-rotate-multiple la-3x">
@@ -50,6 +51,11 @@
             <div id="panel" class="col-sm-12">
                 <div class="panel panel-default">
                     <div id="tab1" class="tabWrap panel-body table-responsive">
+                        <div id="filterWrap">
+                            <select onchange="refresh()"  id="filterSelect" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" tabindex="-98">
+                                <option value="0">全部分组</option>
+                            </select>
+                        </div>
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
@@ -250,7 +256,7 @@
                         <div class="panel-body">
                             <div id="protocolInfo" class="col-lg-12">
                                 <form class="form-horizontal" autocomplete="off">
-                                    <table class="protocolTable" style="margin-top: 60px;display: none" id="table1" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+                                    <table class="protocolTable" style="margin-top: 45px;display: none" id="table1" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
                                         <tr>
                                             <td align="center" class="biaoti" height="60">中科科辅技术服务协议</td>
                                         </tr>
@@ -696,6 +702,86 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+    <!-- 模态框-assign（Modal） -->
+    <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title">
+                        指派订单
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" autocomplete="off">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">订单编号</label>
+                            <div class="col-sm-6 rid" ></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">当前处理用户</label>
+                            <div class="col-sm-6" id="curUser"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">指派用户</label>
+                            <div class="col-sm-6" id="userSelWrap">
+                                <select id="userSel" class="selectpicker" data-size="10" data-live-search="true" data-style="btn-default">
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">提交</button>
+                    <button type="button" class="btn btn-default">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- 模态框-report（Modal） -->
+    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title">
+                        实验报告
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" autocomplete="off">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">订单编号</label>
+                            <div class="col-sm-6 rid" ></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">上传文件</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" name="file" type="file"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">下载文件</label>
+                            <div class="col-sm-6" id="fileWrap">
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">提交</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 
 </div>
 <!-- End Content -->
@@ -705,12 +791,16 @@
 <script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>
 <script src="../../static/plugins/bootstrap/bootstrap-select/bootstrap-select.min.js"></script>
 <script src="../../static/plugins/icheck/icheck.min.js"></script>
+<script src="../../static/plugins/pdf/html2canvas.min.js"></script>
+<script type="module" src="../../static/plugins/pdf/canvas2image.js"></script>
+<script src="../../static/plugins/pdf/jspdf.min.js"></script>
 <script type="text/javascript" src="../../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="../../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <script src="../../static/js/util/util.js"></script>
 <script src="../../static/js/main/backUtil.js"></script>
 <script src="../../static/js/util/timeUtil.js"></script>
 <script src="../../static/js/util/stringUtil.js"></script>
+<script src="../../static/js/util/imgUtil.js"></script>
 <script src="../../static/plugins/datatables/datatables.min.js"></script>
 <script src="../../static/js/main/reservation.js?v={{ .random}}"></script>
 

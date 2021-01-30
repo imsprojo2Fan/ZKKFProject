@@ -501,7 +501,7 @@ function submitOrder() {
         Protocol.SampleName = $('#'+tid).find("input[name='sample_name']").val().trim();
         Protocol.SampleCount = $('#'+tid).find("input[name='sample_count']").val();
         Protocol.SampleCode = $('#'+tid).find("input[name='sample_code']").val().trim();
-        Protocol.DetectionCycle = $('#'+tid).find('.detection_cycle').html();
+        Protocol.DetectionCycle = parseInt($('#'+tid).find('.detection_cycle').html());
         Protocol.DetectionReport = $('#'+tid).find("input[name='detection_report']:checked").val();
         Protocol.SampleProcessing = $('#'+tid).find("input[name='sample_processing']:checked").val();
         Protocol.About = $('#'+tid).find("input[name='about']").val().trim();

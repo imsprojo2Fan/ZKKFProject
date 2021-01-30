@@ -234,5 +234,8 @@ textarea {
 .backBtn:hover{
     opacity: 0.75;
 }
+.modal-footer{
+    text-align: center!important;
+}
 
 

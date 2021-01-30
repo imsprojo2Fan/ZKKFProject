@@ -271,8 +271,8 @@ func (this *Order) UpdateStatus(rid,status string,o orm.Ormer)error{
 	return err
 }
 
-func (this *Order) UpdateReport(rid,file string)error{
-	_,err := orm.NewOrm().Raw("update `order` set file=? where rid=?",file,rid).Exec()
+func (this *Order) UpdateReport(table,rid,file string)error{
+	_,err := orm.NewOrm().Raw("update `"+table+"` set file=? where rid=?",file,rid).Exec()
 	return err
 }
 

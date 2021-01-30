@@ -156,10 +156,10 @@ func (this *Protocol) ListByRid(rid string) (Protocol,error) {
 }
 
 func (this *Protocol) UpdateByRid(o orm.Ormer,obj *Protocol) error {
-	sqlTxt := "update protocol set device_id=?,sample_name=?,sample_count=?,"
+	sqlTxt := "update protocol set pay=?,test_result=?,device_id=?,sample_name=?,sample_count=?,"
 	sqlTxt += "sample_code=?,detection_report=?,sample_processing=?,about=?,parameter=?,"
 	sqlTxt += "other=?,result=?,remark=?,remark1=?,remark2=?,remark3=?,updated=now() where random_id=?"
-	_, err := o.Raw(sqlTxt,obj.DeviceId,obj.SampleName,obj.SampleCount,obj.SampleCode,obj.DetectionReport,obj.SampleProcessing,obj.About,obj.Parameter,obj.Other,obj.Result,obj.Remark,obj.Remark1,obj.Remark2,obj.Remark3,obj.Rid).Exec()
+	_, err := o.Raw(sqlTxt,obj.Pay,obj.TestResult,obj.DeviceId,obj.SampleName,obj.SampleCount,obj.SampleCode,obj.DetectionReport,obj.SampleProcessing,obj.About,obj.Parameter,obj.Other,obj.Result,obj.Remark,obj.Remark1,obj.Remark2,obj.Remark3,obj.Rid).Exec()
 	return err
 }
 
