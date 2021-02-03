@@ -78,7 +78,6 @@ $(function () {
             return false
         }
         addOrder();
-
     });
 
     $('#lib').on("click",function () {
@@ -96,12 +95,11 @@ $(function () {
         $('#deviceWrap').show(200);
         $('#typeWrap').show();
         $('#searchWrap').show(200);
-        if($(this).find("img").attr("src").indexOf("refresh")!==-1){
+        if($(this).find("img").attr("src").indexOf("back")!==-1){
             $(this).find("img").attr("src","../static/img/lib.png");
         }else{
             $('#libModal').modal("show");
         }
-
     });
 
     makeCode("signCode",url+"/sign?code="+signCode,108,108);
@@ -150,7 +148,7 @@ $(function () {
 
 function renderChildType(){
     typeId = $('#typeWrap').find(".filterActive").attr("data-filter");
-    //$('.preloader').show(300);
+    $('.preloader').fadeIn(300);
     $.post("/typeChild/queryByTid",{_xsrf:$("#token", parent.document).val(),tid:typeId},function (res) {
         $('#typeChildWrap').html("");
         if(res.data){
@@ -175,10 +173,10 @@ function renderChildType(){
             })
             renderDevice();
         }else{
-            $('#deviceWrap').html("<span class='dataTip'>未找到项目!</span>");
+            $('#deviceWrap').html("<span class='dataTip'>无匹配项目!</span>");
         }
         renderSideBar();
-        //$('.preloader').hide(300);
+        $('.preloader').fadeOut(300);
     });
 }
 
@@ -227,7 +225,7 @@ function renderDevice(){
             }
             renderItemClick();
         }else{
-            $('#deviceWrap').html("<span class='dataTip'>未找到项目!</span>");
+            $('#deviceWrap').html("<span class='dataTip'>无匹配项目!</span>");
         }
         if(typeId==="0"){
             $('.deviceItem').removeClass("col-sm-3");
@@ -259,10 +257,6 @@ function renderSideBar() {
     }
 }
 
-function renderFilter() {
-
-}
-
 function dataById(id) {
     let res = {};
     for(let i=0;i<dataArr.length;i++){
@@ -285,7 +279,7 @@ function renderItemClick(){
         let id = $(this).parent().attr("id");
         let item = dataById(id);
         if(!item){
-            swal("系统提示","未找到项目信息！","error");
+            swal("系统提示","无匹配项目信息！","error");
             return false;
         }
         if($(this).html().indexOf("立即预约")!==-1){

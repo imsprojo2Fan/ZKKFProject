@@ -6,6 +6,7 @@
     <title>新闻信息管理</title>
     <!-- ========== Css Files ========== -->
     <link href="../../static/css/root.css" rel="stylesheet">
+    <link href="../../static/css/main/common.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/design.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/main/news.css?v={{ .random}}" rel="stylesheet">
     <style>
@@ -28,8 +29,8 @@
     <!-- Start Page Header -->
     <div>
         <ol class="breadcrumb">
-            <li><span id="tabHref01" class="list" href="javascript:void(0)">数据列表</span></li>
-            <li><span id="tabHref02" class="active add" href="javascript:void(0)">新增数据</span></li>
+            <li><span data="tab1" class="list" href="javascript:void(0)">数据列表</span></li>
+            <li><span data="tab2" class="active add" href="javascript:void(0)">新增数据</span></li>
             <li><span class="active" onclick="refresh()">刷新数据</span></li>
             <li><span class="batchDel" onclick="batchDel()">批量删除</span></li>
         </ol>
@@ -49,7 +50,7 @@
             <!-- Start Panel -->
             <div id="panel" class="col-sm-12">
                 <div class="panel panel-default">
-                    <div id="tab1" class="panel-body table-responsive">
+                    <div id="tab1" class="tabWrap panel-body table-responsive">
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
@@ -67,7 +68,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div id="tab2" style="display: none">
+                    <div id="tab2" class="tabWrap" style="display: none">
                         <img class="backBtn" title="返回列表" src="../../static/img/back.png">
                         <div class="panel-body">
                             <form id="form1" class="form-horizontal" autocomplete="off">
@@ -89,14 +90,6 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>内容</label>
-                                    <div class="col-sm-3">
-                                        <input type="text" name="content" class="form-control parameter editor" id="content"   placeholder="请输入内容">
-                                        <span class="help-block"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
                                     <label for="name" class="col-sm-2 control-label form-label">图片</label>
                                     <div class="col-sm-8 " id="addImgWrap">
                                         <div class="addItem" title="添加图片">
@@ -111,6 +104,12 @@
                                 </div>
                                 <div style="padding-left: 17%"><span class="help-block"><span style="color: red">*</span>建议宽高770*450,文件小于1MB</span></div>
                                 <hr>
+                                <div class="form-group">
+                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>内容</label>
+                                    <div class="col-sm-6">
+                                        <textarea type="text" name="content" class="form-control parameter editor" id="content"   placeholder="请输入内容"></textarea>
+                                    </div>
+                                </div>
                                 <div class="form-group submitWrap">
                                     <div class="col-sm-offset-5">
                                         <a href="javascript:add()" class="btn btn-default">提交</a>&nbsp;&nbsp;
@@ -228,14 +227,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>新闻内容</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="content" class="form-control parameter editor" id="contentE" placeholder="请输入新闻内容">
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="name" class="col-sm-2 control-label form-label">图片</label>
                         <div class="col-sm-9 " id="editImgWrap">
                             <div class="addItem" title="添加图片">
@@ -246,6 +237,13 @@
                                             <img src="../../static/img/test.jpg">
                                         </div>*/}}
 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>新闻内容</label>
+                        <div class="col-sm-9">
+                            <textarea name="content" class="form-control parameter editor" id="contentE" placeholder="请输入新闻内容"></textarea>
+                            <span class="help-block"></span>
                         </div>
                     </div>
 
@@ -272,7 +270,7 @@
 <script src="../../static/js/util/stringUtil.js"></script>
 <script src="../../static/js/util/timeUtil.js"></script>
 <script src="../../static/js/util/util.js"></script>
-<script src="../../static/js/main/backUtil.js"></script>
+<script src="../../static/js/main/common.js"></script>
 <script src="../../static/plugins/datatables/datatables.min.js"></script>
 <script src="../../static/js/main/news.js?v={{ .random}}"></script>
 

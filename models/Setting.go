@@ -17,6 +17,10 @@ type Setting struct {
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func SettingTBName() string {
+	return TableName("setting")
+}
+
 func (this *Setting) SettingTBName() string {
 	return SettingTBName()
 }

@@ -106,6 +106,8 @@ $(function () {
         if(loginFlag==="1"){
             renderInfo();
         }
+        //熏染关联项目
+        renderRelate();
     }
 
     $('.myBtn').on("click",function () {
@@ -154,7 +156,7 @@ $(function () {
         $('#signCode').hide(200);
         $('#deviceInfo').show(200);
         $('#searchWrap').show(200);
-        if($(this).find("img").attr("src").indexOf("refresh")!==-1){
+        if($(this).find("img").attr("src").indexOf("back")!==-1){
             $(this).find("img").attr("src","../static/img/lib.png");
             if(info.is_order=="0"){
                 $(this).hide();
@@ -223,4 +225,39 @@ $(function () {
     $('.preloader').fadeOut(200);
 
 });
+
+function renderRelate() {
+    let ids = info.relate;
+    $('.sidebar__post').html("无关联项目!");
+    $.post("/detail/relate",{_xsrf:$('#token').val(),ids:ids},function (res) {
+        if(res.code===1){
+            let data = res.data;
+            if(data){
+                $('.sidebar__post').html("");
+            }
+            for(let i=0;i<data.length;i++){
+                let item = data[i];
+                let rid = item.Rid;
+                let name = item.Name;
+                name = stringUtil.maxLength(name,10);
+                let sketch = item.Sketch;
+                sketch = stringUtil.maxLength(sketch,25);
+                let imgSrc = info.Img;
+                if(imgSrc){
+                    imgSrc = imgSrc.split(",")[0];
+                }
+                $('.sidebar__post').append('' +
+                    '<div class="sidebar__post-single">\n' +
+                    '   <div class="sidebar__post-image">\n' +
+                    '       <img src="/img/'+imgSrc+'" onerror="this.src= \'../../static/img/default1.png\'; this.onerror = null;this.style.marginTop=\'0px\';this.style.marginLeft=\'0px\'">\n' +
+                    '   </div>\n' +
+                    '   <div class="sidebar__post-content">\n'+
+                    '       <p>'+sketch+'</p>' +
+                    '       <h3><a target="_blank" href="/detail/'+rid+'">'+name+'</a></h3>\n' +
+                    '   </div>\n' +
+                    '</div>');
+            }
+        }
+    });
+}
 

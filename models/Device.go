@@ -32,9 +32,14 @@ type Device struct {
 	Standard string //实验标准，file表id
 	Drawing string //图纸，file表id
 	Remark          string
+	Relate string //关联项目
 	Updated         time.Time `orm:"auto_now_add;type(datetime)"`
 	Created         time.Time `orm:"auto_now_add;Device(datetime)"`
 	TypeName		string `orm:"-"` //设备
+}
+
+func DeviceTBName() string {
+	return TableName("device")
 }
 
 func (a *Device) TableName() string {
@@ -50,7 +55,7 @@ func (this *Device) Insert(Device *Device) error {
 
 func (this *Device) Update(obj *Device) error {
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "name", "title","is_order", "tid","ttid", "source", "sketch", "img", "parameter", "feature", "range", "achievement", "disabled","standard","drawing", "remark", "updated")
+	_, err := o.Update(obj, "name", "title","is_order", "tid","ttid", "source", "sketch", "img", "parameter", "feature", "range", "achievement", "disabled","standard","drawing", "remark","relate", "updated")
 	return err
 }
 
@@ -169,7 +174,7 @@ func (this *Device) UpdateOrderNum(ids string) {
 func (this *Device) DetailByRid(rid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select d.id,d.rid,d.tid,d.ttid,d.name as name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,d.standard,d.drawing,t.name as typeName,t.id as tid,t.detection_cycle as detectionCycle,t.request,c.id as ttid,c.name as childName from device d,type t,type_child c where d.ttid=c.id and c.tid=t.id and d.rid=?"
+	sql := "select d.id,d.rid,d.tid,d.ttid,d.name as name,d.title,d.is_order,d.source,d.img,d.sketch,d.parameter,d.feature,d.`range`,d.achievement,d.view,d.created,d.standard,d.drawing,d.relate,t.name as typeName,t.id as tid,t.detection_cycle as detectionCycle,t.request,c.id as ttid,c.name as childName from device d,type t,type_child c where d.ttid=c.id and c.tid=t.id and d.rid=?"
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }
@@ -181,6 +186,25 @@ func (this *Device) ListByType(tid,ttid string) ([]orm.Params, error) {
 	if tid!="0"&&ttid!=""{
 		sql += " and d.tid="+tid+" and d.ttid="+ttid
 	}
+	if tid==""{
+		sql = "select * from device where ttid="+ttid
+	}
 	_, err := o.Raw(sql).Values(&res)
 	return res, err
+}
+
+func(this *Device) ListByChildType(ttid string)([]Device,error)  {
+	var res []Device
+	o := orm.NewOrm()
+	sqlTxt := "select * from device where ttid=?"
+	_,err:=o.Raw(sqlTxt,ttid).QueryRows(&res)
+	return res,err
+}
+
+func(this *Device) ListByIds(ids string)([]Device,error)  {
+	var res []Device
+	o := orm.NewOrm()
+	sqlTxt := "select rid,name,img,sketch from device where id in(?)"
+	_,err:=o.Raw(sqlTxt,ids).QueryRows(&res)
+	return res,err
 }

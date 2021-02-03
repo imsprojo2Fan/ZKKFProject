@@ -6,6 +6,7 @@
     <title>用户信息管理</title>
     <!-- ========== Css Files ========== -->
     <link href="../../static/css/root.css" rel="stylesheet">
+    <link href="../../static/css/main/common.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/design.css?v={{ .random}}" rel="stylesheet">
     <style>
 
@@ -27,8 +28,8 @@
     <!-- Start Page Header -->
     <div>
         <ol class="breadcrumb">
-            <li><span id="tabHref01" class="list" href="javascript:void(0)">数据列表</span></li>
-            <li><span id="tabHref02" class="active add" href="javascript:void(0)">新增数据</span></li>
+            <li><span data="tab1" class="list" href="javascript:void(0)">数据列表</span></li>
+            <li><span data="tab2" class="active add" href="javascript:void(0)">新增数据</span></li>
             <li><span class="active" onclick="refresh()">刷新数据</span></li>
             <li><span class="batchDel" onclick="batchDel()">批量删除</span></li>
         </ol>
@@ -48,7 +49,7 @@
             <!-- Start Panel -->
             <div id="panel" class="col-sm-12">
                 <div class="panel panel-default">
-                    <div id="tab1" class="panel-body table-responsive">
+                    <div id="tab1" class="panel-body table-responsive tabWrap">
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
@@ -69,7 +70,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div id="tab2" style="display: none">
+                    <div id="tab2" class="tabWrap" style="display: none">
                         <img class="backBtn" title="返回列表" src="../../static/img/back.png">
                         <div class="panel-body">
                             <form class="form-horizontal" id="addForm" autocomplete="off">
@@ -96,10 +97,22 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label">账号类型</label>
                                     <div class="col-sm-6">
-                                        <select id="type" class="selectpicker" >
-                                            <option selected value="99">普通用户</option>
-                                            <option value="2">管理员</option>
+                                        <select onchange="hideTypeSel(this,'addTypeSelectWrap')" id="type" class="selectpicker" >
+                                            <option selected value="4">业务经理</option>
+                                            <option value="5">制样工程师</option>
+                                            <option value="6">测试工程师</option>
+                                            <option value="7">数据分析师</option>
+                                            <option value="3">财务管理员</option>
+                                            <option value="2">普通管理员</option>
                                             <option value="1">高级管理员</option>
+                                            <option value="99">普通用户</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label form-label"><span class="red"></span>负责领域</label>
+                                    <div class="col-sm-6 " id="addTypeSelectWrap">
+                                        <select id="addTypeSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
                                         </select>
                                     </div>
                                 </div>
@@ -113,7 +126,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label"><span class="red">*</span>密码</label>
                                     <div class="col-sm-6">
-                                        <input type="password" name="password" maxlength="30" onclick="javascript:$(this).val('');"  class="form-control" placeholder="请输入密码" >
+                                        <input type="password" autocomplete="new-password" name="password" maxlength="30" onclick="javascript:$(this).val('');"  class="form-control" placeholder="请输入密码" >
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -137,7 +150,7 @@
                                 <div class="form-group">
                                     <label for="email" class="col-sm-2 control-label form-label">邮箱</label>
                                     <div class="col-sm-6">
-                                        <input type="email" name="email" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="邮箱将用于找回密码" >
+                                        <input type="text" autocomplete="new-password" name="email" onKeyUp="value=value.replace(/[^/a-zA-Z0-9.@]/g,'')"  class="form-control" maxlength="40" placeholder="邮箱将用于找回密码" >
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -327,10 +340,22 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">账号类型</label>
                             <div class="col-sm-6">
-                                <select id="editType" name="type" class="selectpicker" >
-                                    <option selected value="99">普通用户</option>
-                                    <option value="2">管理员</option>
+                                <select id="editType" onchange="hideTypeSel(this,'editTypeSelectWrap')" name="type" class="selectpicker">
+                                    <option selected value="4">业务经理</option>
+                                    <option value="5">制样工程师</option>
+                                    <option value="6">测试工程师</option>
+                                    <option value="7">数据分析师</option>
+                                    <option value="3">财务管理员</option>
+                                    <option value="2">普通管理员</option>
                                     <option value="1">高级管理员</option>
+                                    <option value="99">普通用户</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label"><span class="red"></span>负责领域</label>
+                            <div class="col-sm-6 " id="editTypeSelectWrap">
+                                <select id="editTypeSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
                                 </select>
                             </div>
                         </div>
@@ -431,7 +456,7 @@
 <script src="../../static/js/util/stringUtil.js"></script>
 <script src="../../static/js/util/timeUtil.js"></script>
 <script src="../../static/js/util/util.js"></script>
-<script src="../../static/js/main/backUtil.js"></script>
+<script src="../../static/js/main/common.js"></script>
 <script src="../../static/plugins/datatables/datatables.min.js"></script>
 <script src="../../static/js/main/user.js?v={{ .random}}"></script>
 

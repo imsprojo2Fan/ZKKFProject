@@ -15,16 +15,19 @@ type Order struct {
 	Id       int
 	Uid      int       //创建人id/user表id
 	Tid 	 int //type表id
-	Uuid     int       //处理人id
 	Rid      string    //订单编号
 	Count    int //订单项目数量
 	Price    float32 //订单金额
-	Status   int    //订单状态，0待确认，1已确认，2已取消，3已完成
+	Status   int    //订单状态 -1/已取消 0/待确认 1/已确认 2/制样 3/测试 4/数据分析 5/财务结算  6/已完成
 	Remark   string    `orm:"size(255)"`
 	File string
 	Del int //软删除标记
 	Updated  time.Time //`orm:"auto_now_add;type(datetime)"`
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
+}
+
+func OrderTBName() string {
+	return TableName("order")
 }
 
 func (a *Order) TableName() string {
@@ -153,12 +156,22 @@ func (this *Order) SelectByName(obj *Order) {
 func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 
 	o := orm.NewOrm()
-	//sql := "SELECT id from "+OrderTBName()+" r where 1=1 "
-	sql := "SELECT o.id from `order` o,user u where o.uid=u.id and o.del=0 "
-	if qMap["uid"] !=nil{
+	sql := "select * from `order` o left join assign a on o.rid=a.rid left join user u on o.uid=u.id where o.del=0 "
+	uType := qMap["uType"].(int)
+	//处理普通用户数据----------------------------------开始
+	if uType==99{
+		sql = "select o.id from `order` where o.del=0"
+	}
+	if uType==99&&qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
 		sql += " and o.uid="+strconv.Itoa(uid)
 	}
+	//处理普通用户数据----------------------------------结束
+	if uType!=99&&qMap["uid"] !=nil{
+		uid := qMap["uid"].(int)
+		sql += " and o.uuid="+strconv.Itoa(uid)
+	}
+
 	if qMap["tid"].(string) != "0" {
 		tid := qMap["tid"].(string)
 		sql = sql + " and o.tid="+tid
@@ -173,13 +186,24 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 }
 
 func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error) {
-	var maps []orm.Params
+	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "SELECT o.*,u.name,u.phone,u.company from `order` o,user u where o.uid=u.id and o.del=0 "
-	if qMap["uid"] !=nil{
+	sql := "select o.*,u.name,u.phone,u.company from `order` o left join assign a on o.rid=a.rid left join user u on o.uid=u.id where o.del=0 "
+	uType := qMap["uType"].(int)
+	//处理普通用户数据----------------------------------开始
+	if uType==99{
+		sql = "select o.*,u.name,u.phone,u.company from `order` where o.del=0"
+	}
+	if uType==99&&qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
 		sql += " and o.uid="+strconv.Itoa(uid)
 	}
+	//处理普通用户数据----------------------------------结束
+	if uType!=99&&qMap["uid"] !=nil{
+		uid := qMap["uid"].(int)
+		sql += " and a.uuid="+strconv.Itoa(uid)
+	}
+
 	if qMap["tid"].(string) != "0" {
 		tid := qMap["tid"].(string)
 		sql = sql + " and o.tid="+tid
@@ -205,8 +229,8 @@ func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error)
 	pageSize := qMap["pageSize"].(int64)
 	pageSize_ := strconv.FormatInt(pageSize, 10)
 	sql = sql + " LIMIT " + pageNow_ + "," + pageSize_
-	_, err := o.Raw(sql).Values(&maps)
-	return maps, err
+	_, err := o.Raw(sql).Values(&res)
+	return res, err
 }
 
 func (this *Order) All() ([]orm.Params, error) {
@@ -263,7 +287,7 @@ func (this *Order) ListByRid(rid string) (error,[]map[string]interface{}) {
 	return err,backArr
 }
 
-func (this *Order) UpdateStatus(rid,status string,o orm.Ormer)error{
+func (this *Order) UpdateStatus(rid,status interface{},o orm.Ormer)error{
 	if o==nil{
 		o = orm.NewOrm()
 	}

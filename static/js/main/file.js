@@ -1,14 +1,6 @@
 let myTable;
 let prefix = "/main/file";
-window.onresize = function() {
-    let bodyHeight = window.innerHeight;
-    console.log("bodyHeight:"+bodyHeight);
-    //设置表格高度
-    let tHeight = bodyHeight-210;
-    console.log("tHeight:"+tHeight);
-    $('.dataTables_scrollBody').css("height",tHeight+"px");
-};
-
+let fileName;
 $(document).ready(function() {
 
     if(!storageTest(window.localStorage)){
@@ -220,20 +212,8 @@ $(document).ready(function() {
         rowData = myTable.row($(this).closest('tr')).data();
         //console.log(rowData);
         let id = rowData.id;
-        let fileName = rowData.file_name;
-        swal({
-            title: "确定删除吗?",
-            text: '删除将无法恢复该信息!',
-            type: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#ff1200',
-            cancelButtonColor: '#474747',
-            confirmButtonText: '确定',
-            cancelButtonText:'取消'
-        },function(){
-            del(id,fileName);
-        });
-
+        fileName = rowData.file_name;
+        window.parent.confirmAlert("确定删除吗？","与当前相关的数据将全部被删除！",del,id);
     });
     $('#myTable').on("click",".download",function(e){//下载文件
         rowData = myTable.row($(this).closest('tr')).data();
@@ -314,7 +294,7 @@ function edit(){
     });
 }
 
-function del(id,fileName){
+function del(id){
 
     $.ajax({
         url : prefix+"/delete",
@@ -345,7 +325,7 @@ function del(id,fileName){
     })
 }
 
-function batchDel() {
+function batchDel(){
     let checkboxes = $('td input[type="checkbox"]');
     // 获取选中的checkbox
     let allChecked = checkboxes.filter(':checked');
@@ -353,58 +333,38 @@ function batchDel() {
         swalParent("系统提示","未选中任何删除项!","warning");
         return;
     }
+    window.parent.confirmAlert("确定删除这些数据吗？","删除将无法恢复该信息！",batchDelOperate);
+}
+
+function batchDelOperate(){
     let idArr="";
+    let checkboxes = $('td input[type="checkbox"]');
+    let allChecked = checkboxes.filter(':checked');
     for(let i=0;i<allChecked.length;i++){
         let id = $(allChecked[i]).val();
         idArr = idArr+","+id;
     }
     idArr = idArr.substring(1,idArr.length);
-    swal({
-        title: "确定删除这些数据吗?",
-        text: '删除将无法恢复该信息！',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#ff1200',
-        cancelButtonColor: '#474747',
-        confirmButtonText: '确定',
-        cancelButtonText:'取消'
-    },function(){
-        loading(true);
-        $.post(prefix+"/del4batch",{_xsrf:$("#token", parent.document).val(),idArr:idArr},function (res) {
-            loading(false);
-            if(res.code===1){
-                $("#hCheck").iCheck('uncheck');
-                refresh();
-                swalParent("系统提示",res.msg,"success");
-            }else{
-                let msg = res.msg;
-                if(!msg){
-                    msg = "当前用户无权限此操作!"
-                }
-                setTimeout(function () {
-                    swalParent("系统提示",msg,"error");
-                },100);
+    loading(true);
+    $.post(prefix+"/del4batch",{_xsrf:$("#token", parent.document).val(),idArr:idArr},function (res) {
+        loading(false);
+        if(res.code===1){
+            $("#hCheck").iCheck('uncheck');
+            refresh();
+            swalParent("系统提示",res.msg,"success");
+        }else{
+            let msg = res.msg;
+            if(!msg){
+                msg = "当前用户无权限此操作!"
             }
-        });
+            setTimeout(function () {
+                swalParent("系统提示",msg,"error");
+            },100);
+        }
     });
-}
-
-function reset() {
-    $(":input").val("");
-    $('.addItem').show();
-    $('.imgItem').html("");
-    $("textarea").val("")
 }
 
 function refresh() {
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
 }
-
-function loading(flag) {
-    window.parent.loading(flag);
-}
-window.onresize = function() {
-    let height = window.innerHeight-200;
-    $('.dataTables_scrollBody').css("height",height+"px");
-};
 

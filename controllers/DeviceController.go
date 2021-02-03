@@ -12,7 +12,7 @@ type DeviceController struct {
 }
 
 func (this *DeviceController) List() {
-	if this.CheckAuth(3){
+	if this.CheckAuth(7){
 		this.EmptyData()
 		return
 	}
@@ -114,6 +114,7 @@ func (this *DeviceController) Add() {
 	obj.Standard = this.GetString("standard")
 	obj.Drawing = this.GetString("drawing")
 	obj.Remark = this.GetString("remark")
+	obj.Relate = this.GetString("relate")
 	err := obj.Insert(&obj)
 	if err == nil {
 		this.jsonResult(200, 1, "操作成功", nil)
@@ -146,6 +147,7 @@ func (this *DeviceController) Update() {
 	obj.Standard = this.GetString("standard")
 	obj.Drawing = this.GetString("drawing")
 	obj.Remark = this.GetString("remark")
+	obj.Relate = this.GetString("relate")
 	obj.Updated = time.Now()
 	err := obj.Update(&obj)
 	if err == nil {
@@ -270,5 +272,18 @@ func (this *DeviceController) ListByType() {
 	ttid := this.GetString("ttid")
 	obj := new(models.Device)
 	res, _ := obj.ListByType(typeId,ttid)
+	this.jsonResult(200, 1, "查询信息成功", res)
+}
+
+func (this *DeviceController) Relate() {
+	ids := this.GetString("ids")
+	if ids==""{
+		this.jsonResult(200, -1, "参数错误", nil)
+	}
+	obj := new(models.Device)
+	res, err := obj.ListByIds(ids)
+	if err!=nil{
+		this.jsonResult(200, -1, "查询失败,"+err.Error(), nil)
+	}
 	this.jsonResult(200, 1, "查询信息成功", res)
 }

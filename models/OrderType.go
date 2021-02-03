@@ -19,6 +19,7 @@ type OrderType struct {
 	Data []OrderDevice `orm:"-"`
 	Protocol Protocol `orm:"-"`
 }
+
 func (this *OrderType) ListByRid(rid string) (OrderType,error) {
 	o := orm.NewOrm()
 	var res OrderType

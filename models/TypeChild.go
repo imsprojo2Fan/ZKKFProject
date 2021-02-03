@@ -21,6 +21,10 @@ type TypeChild struct {
 	Created     time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func TypeChildTBName() string {
+	return TableName("type_child")
+}
+
 func (a *TypeChild) TableName() string {
 	return TypeChildTBName()
 }
@@ -171,6 +175,15 @@ func (this *TypeChild) QueryByTid(tid string) []orm.Params {
 	_, _ = o.Raw(sql).Values(&res)
 	return res
 }
+
+func (this *TypeChild) QueryByTidDevice(tid string) []orm.Params {
+	var res []orm.Params
+	o := orm.NewOrm()
+	sql := "select * from type_child where tid="+tid
+	_, _ = o.Raw(sql).Values(&res)
+	return res
+}
+
 func(this *TypeChild) UpdateRank(dataArr []map[string]string)error  {
 	sqlTxt := "insert into type_child (id,rank) values "
 	for _,item := range dataArr{

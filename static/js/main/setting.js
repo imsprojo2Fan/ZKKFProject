@@ -340,30 +340,7 @@ function del(id){
     })
 }
 
-function reset() {
-    $(":input").each(function () {
-        $(this).val("");
-    });
-    $("textarea").each(function () {
-        $(this).val("");
-    });
-}
-
 function refresh() {
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
 }
 
-window.onresize = function() {
-    let height = window.innerHeight-200;
-    $('.dataTables_scrollBody').css("height",height+"px");
-};
-
-function swalInfo(title,msg,type) {
-    setTimeout(function () {
-        swal(title,msg,type);
-    },300);
-}
-
-function loading(flag) {
-    window.parent.loading(flag);
-}

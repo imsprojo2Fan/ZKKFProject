@@ -88,7 +88,7 @@ function showProtocolForOrder() {
     $('#signCode').show(200);
     renderProtocol();
     $('#libModal').modal("hide");
-    $('#lib img').attr("src","../static/img/refresh.png");
+    $('#lib img').attr("src","../static/img/back.png");
     $('#lib img').attr("title","返回项目信息");
 }
 
@@ -524,7 +524,7 @@ function submitOrder() {
             $('.preloader').fadeIn(200);
         },
         success : function(r) {
-            if (r.code == 1) {
+            if (r.code === 1) {
                 imgUtil.addWatermark("protocolInfo","中科科辅");
                 imgUtil.domShot("protocolInfo",imgUtil.pagePdf,"中科科辅服务协议/"+dateUtil.nowTime());
                 localStorage.setItem("lib","");

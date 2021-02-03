@@ -10,6 +10,7 @@ func init() {
 	beego.Router("/?:url", &controllers.IndexController{}, "*:Index")
 	beego.Router("/template/?:url", &controllers.IndexController{}, "*:Template")
 	beego.Router("/detail/?:rid", &controllers.DeviceController{}, "*:Detail")
+	beego.Router("/detail/relate", &controllers.DeviceController{}, "POST:Relate")
 	beego.Router("/type/all", &controllers.TypeController{}, "*:All")
 	beego.Router("/type/?:id", &controllers.TypeController{}, "*:Redirect")
 	beego.Router("/news/all", &controllers.NewsController{}, "*:All")
@@ -65,6 +66,7 @@ func init() {
 	beego.Router("/main/type/del4batch", &controllers.TypeController{}, "POST:Delete4Batch")
 	beego.Router("/main/type/all", &controllers.TypeController{}, "POST:All")
 	beego.Router("/main/type/rank", &controllers.TypeController{}, "POST:Rank")
+	beego.Router("/main/type/all4device", &controllers.TypeController{}, "POST:All4Device")
 	//设备分组管理2
 	beego.Router("/main/typeChild/list", &controllers.TypeChildController{}, "POST:List")
 	beego.Router("/main/typeChild/add", &controllers.TypeChildController{}, "POST:Add")
@@ -73,6 +75,7 @@ func init() {
 	beego.Router("/main/typeChild/del4batch", &controllers.TypeChildController{}, "POST:Delete4Batch")
 	beego.Router("/main/typeChild/all", &controllers.TypeChildController{}, "POST:All")
 	beego.Router("/main/typeChild/queryByTid", &controllers.TypeChildController{}, "POST:QueryByTid")
+	beego.Router("/main/typeChild/queryByTidDevice", &controllers.TypeChildController{}, "POST:QueryByTidDevice")
 	//设备管理
 	beego.Router("/main/device/list", &controllers.DeviceController{}, "POST:List")
 	beego.Router("/main/device/add", &controllers.DeviceController{}, "POST:Add")

@@ -1,14 +1,6 @@
 let myTable;
 let prefix = "/main/type";
 let sort;
-window.onresize = function() {
-    let bodyHeight = window.innerHeight;
-    console.log("bodyHeight:"+bodyHeight);
-    //设置表格高度
-    let tHeight = bodyHeight-210;
-    console.log("tHeight:"+tHeight);
-    $('.dataTables_scrollBody').css("height",tHeight+"px");
-};
 
 $(document).ready(function() {
 
@@ -74,7 +66,7 @@ $(document).ready(function() {
             }
         },
         columns: [
-            {"data": "id","width":"5%","render": function (data, type, row) {
+            {"data": "id","width":"8%","render": function (data, type, row) {
                     return "<div style='text-align: left'><input type='checkbox' name='check' value='"+row.id+"'><span style='margin-left: 3px;' class='tid'>"+row.id+"</span></div>";
                 }},
             { data: 'rank'},
@@ -115,7 +107,7 @@ $(document).ready(function() {
         },
         "fnInitComplete": function(oSettings, json) {
             if(!json){
-                swal("系统提示","登录超时！请刷新页面","error");
+                swalParent("系统提示","登录超时！请刷新页面","error");
                 return false;
             }
         },
@@ -208,20 +200,7 @@ $(document).ready(function() {
         rowData = myTable.row($(this).closest('tr')).data();
         console.log(rowData);
         let id = rowData.id;
-
-        swal({
-            title: "确定删除吗?",
-            text: '当前分组的设备将全部被删除!',
-            type: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#ff1200',
-            cancelButtonColor: '#474747',
-            confirmButtonText: '确定',
-            cancelButtonText:'取消'
-        },function(){
-            del(id);
-        });
-
+        window.parent.confirmAlert("确定删除吗？","与当前相关的数据将全部被删除！",del,id);
     });
 
 } );
@@ -304,9 +283,9 @@ function add(){
         },
         success : function(r) {
             let type = "error";
-            if (r.code == 1) {
+            if (r.code === 1) {
                 type = "success";
-                reset();
+                reset4success();
             }
             swalParent("系统提示",r.msg,type);
         },
@@ -383,9 +362,9 @@ function del(id){
             loadingParent(true,2);
         },
         success : function(r) {
-            if (r.code == 1) {
+            if (r.code === 1) {
                 setTimeout(function () {
-                    swal("系统提示",r.msg, "success");
+                    swalParent("系统提示",r.msg, "success");
                     refresh();
                 },100);
             }else{
@@ -398,7 +377,7 @@ function del(id){
     })
 }
 
-function batchDel() {
+function batchDel(){
     let checkboxes = $('td input[type="checkbox"]');
     // 获取选中的checkbox
     let allChecked = checkboxes.filter(':checked');
@@ -406,39 +385,34 @@ function batchDel() {
         swalParent("系统提示","未选中任何删除项!","warning");
         return;
     }
+    window.parent.confirmAlert("确定删除这些数据吗？","删除将无法恢复该信息！",batchDelOperate);
+}
+
+function batchDelOperate(){
     let idArr="";
+    let checkboxes = $('td input[type="checkbox"]');
+    let allChecked = checkboxes.filter(':checked');
     for(let i=0;i<allChecked.length;i++){
         let id = $(allChecked[i]).val();
         idArr = idArr+","+id;
     }
     idArr = idArr.substring(1,idArr.length);
-    swal({
-        title: "确定删除这些数据吗?",
-        text: '删除将无法恢复该信息！',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#ff1200',
-        cancelButtonColor: '#474747',
-        confirmButtonText: '确定',
-        cancelButtonText:'取消'
-    },function(){
-        loading(true);
-        $.post(prefix+"/del4batch",{_xsrf:$("#token", parent.document).val(),idArr:idArr},function (res) {
-            loading(false);
-            if(res.code===1){
-                $("#hCheck").iCheck('uncheck');
-                refresh();
-                swalParent("系统提示",res.msg,"success");
-            }else{
-                let msg = res.msg;
-                if(!msg){
-                    msg = "当前用户无权限此操作!"
-                }
-                setTimeout(function () {
-                    swalParent("系统提示",msg,"error");
-                },100);
+    loading(true);
+    $.post(prefix+"/del4batch",{_xsrf:$("#token", parent.document).val(),idArr:idArr},function (res) {
+        loading(false);
+        if(res.code===1){
+            $("#hCheck").iCheck('uncheck');
+            refresh();
+            swalParent("系统提示",res.msg,"success");
+        }else{
+            let msg = res.msg;
+            if(!msg){
+                msg = "当前用户无权限此操作!"
             }
-        });
+            setTimeout(function () {
+                swalParent("系统提示",msg,"error");
+            },100);
+        }
     });
 }
 
@@ -463,18 +437,6 @@ function rank() {
             },100);
         }
     })
-}
-
-function reset() {
-    $(":input").each(function () {
-        $(this).val("");
-    });
-    $('.addItem').show();
-    $('#uploadPic').html("上传图片");
-    $('#picName').html("");
-    $("textarea").each(function () {
-        $(this).val("");
-    });
 }
 
 function refresh() {
@@ -503,15 +465,3 @@ function openRes4Pic(isSuccess,btnId,domId,picName) {
         $('#'+btnId).html("上传图片");
     }
 }
-
-function swalParent(title,msg,type) {
-    window.parent.swalInfo(title,msg,type);
-}
-
-function loading(flag) {
-    window.parent.loading(flag);
-}
-window.onresize = function() {
-    let height = window.innerHeight-200;
-    $('.dataTables_scrollBody').css("height",height+"px");
-};

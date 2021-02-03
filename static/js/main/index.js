@@ -169,7 +169,7 @@ $(function () {
     },5000);
 
     //console.log(userInfo);
-    if(userInfo.type>2){
+    if(userInfo.type>7){
         $('.fa-gg-circle').parent().parent().remove();
         $('.fa-tags').parent().parent().remove();
         $('.fa-cubes').parent().parent().remove();
@@ -179,16 +179,19 @@ $(function () {
         $('.fa-file-o').parent().parent().remove();
     }
 
-    if(userInfo.type>1){
+    if(userInfo.type>7){
         $('.fa-user-plus').parent().parent().remove();
     }
     if(userInfo.type>0){
         $('.fa-cogs').parent().parent().remove();
     }
-    if(userInfo.type>2){
+    if(userInfo.type===99){
         if(!userInfo.account||!userInfo.name||!userInfo.phone||!userInfo.email||!userInfo.address||!userInfo.company||!userInfo.invoice||!userInfo.invoice_code){
             $('#infoModal').modal("show");
         }
+    }else{
+        $('.fa-cc-discover').parent().parent().remove();
+        $('.fa-clipboard').parent().parent().remove();
     }
 
     //$('#account').html(userInfo.Account);
@@ -238,7 +241,9 @@ function checkType() {
         $('iframe').contents().find('input[name="check"]').remove();
         $('iframe').contents().find('.icheckbox_flat-blue').remove();
         $('iframe').contents().find('#myTable .btn-danger').remove();
+        $('iframe').contents().find('#editType').parent().parent().hide();
     }
+
 }
 
 function swalInfo(title,msg,type){
@@ -256,4 +261,19 @@ function loading(flag,type) {
     }else{
         $('#loading'+type).fadeOut(300);
     }
+}
+
+function confirmAlert(title,msg,callback,id) {
+    swal({
+        title: title,
+        text: msg,
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#ff1200',
+        cancelButtonColor: '#474747',
+        confirmButtonText: '确定',
+        cancelButtonText:'取消'
+    },function(){
+        callback(id);
+    });
 }

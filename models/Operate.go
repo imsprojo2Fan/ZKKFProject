@@ -17,6 +17,10 @@ type Operate struct {
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func OperateTBName() string {
+	return TableName("operate")
+}
+
 func (a *Operate) TableName() string {
 	return OperateTBName()
 }

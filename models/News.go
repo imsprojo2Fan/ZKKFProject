@@ -21,6 +21,10 @@ type News struct {
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func NewsTBName() string {
+	return TableName("news")
+}
+
 func (a *News) TableName() string {
 	return NewsTBName()
 }

@@ -3,7 +3,7 @@
     height: 30px;
 }
 .col-sm-6{
-    margin-top: 6px;
+    margin-top: 0;
 }
 .timeItem{
     display: inline-block;
@@ -259,12 +259,6 @@ input[type='radio'] {
     opacity: 0.75;
 }
 
-#assignModal .rid{
-    margin-top: 6px;
-}
-#curUser{
-    margin-top: 6px;
-}
 .dataTables_filter{
     margin-right: 146px;
     margin-top: 0;
@@ -291,4 +285,22 @@ input[type='radio'] {
     padding: 6px;
     margin-bottom: 8px;
     cursor: pointer;
+}
+#assignModal .rid{
+    margin-top: 6px;
+}
+#curUser{
+    margin-top: 6px;
+}
+#curStatus{
+    margin-top: 6px;
+}
+.statusTxt-red{
+    color: red;
+}
+.statusTxt-blue{
+    color: #6195ff;
+}
+.statusTxt-green{
+   color: #4caf50;
 }

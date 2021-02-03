@@ -39,6 +39,10 @@ type Protocol struct {
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func ProtocolTBName() string {
+	return TableName("protocol")
+}
+
 func (a *Protocol) TableName() string {
 	return ProtocolTBName()
 }

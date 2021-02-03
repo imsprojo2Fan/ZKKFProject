@@ -44,6 +44,8 @@ function addReservation(){
         },
         success : function(r) {
             if (r.code === 1) {
+                imgUtil.addWatermark("protocolInfo","中科科辅");
+                imgUtil.domShot("protocolInfo",imgUtil.pagePdf,"中科科辅服务协议/"+dateUtil.nowTime());
                 renderTime();
                 $('#message').val("");
                 $('#lib').click();
@@ -156,7 +158,7 @@ function showProtocolForReservation() {
     $('#signCode').show(200);
     renderProtocolForReservation();
     $('#libModal').modal("hide");
-    $('#lib img').attr("src","../static/img/refresh.png");
+    $('#lib img').attr("src","../static/img/back.png");
     $('#lib').show();
     $('#lib span').hide();
     $('#lib').attr("title","返回项目信息");

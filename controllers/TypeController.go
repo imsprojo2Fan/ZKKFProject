@@ -14,7 +14,7 @@ type TypeController struct {
 }
 
 func (this *TypeController) List() {
-	if this.CheckAuth(1){
+	if this.CheckAuth(7){
 		this.EmptyData()
 		return
 	}
@@ -163,6 +163,47 @@ func(this *TypeController) Delete4Batch() {
 func (this *TypeController) All() {
 	obj := new(models.Type)
 	this.jsonResult(200, 1, "查询所有分组信息", obj.All())
+}
+
+func (this *TypeController) All4Device() {
+	var resArr []map[string]interface{}
+	obj := new(models.Type)
+	typeArr := obj.All()
+	child := new(models.TypeChild)
+	childArr := child.All()
+	device := new(models.Device)
+	dArr,_ := device.All()
+	for _,item := range childArr{
+		bMap := make(map[string]interface{})
+		bMap["typeChildItem"] = item
+		bMap["tid"] = item["tid"]
+		id1 := item["id"].(string)
+		var arr []orm.Params
+		for _,item1 := range dArr{
+			id2 := item1["ttid"].(string)
+			if id1==id2{
+				arr = append(arr,item1)
+			}
+		}
+		bMap["deviceArr"] = arr
+		resArr = append(resArr,bMap)
+	}
+	var backArr []map[string]interface{}
+	for _,item := range typeArr{
+		id1 := item["id"].(string)
+		tMap := make(map[string]interface{})
+		tMap["typeItem"] = item
+		var arr []map[string]interface{}
+		for _,item1 := range resArr{
+			id2 := item1["tid"].(string)
+			if id1==id2{
+				arr = append(arr,item1)
+			}
+		}
+		tMap["typeChildArr"] = arr
+		backArr = append(backArr,tMap)
+	}
+	this.jsonResult(200, 1, "查询所有分组信息", backArr)
 }
 
 func (this *TypeController) Rank() {

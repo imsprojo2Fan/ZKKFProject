@@ -12,7 +12,7 @@ type NewsController struct {
 }
 
 func (this *NewsController) List() {
-	if this.CheckAuth(3){
+	if this.CheckAuth(7){
 		this.EmptyData()
 		return
 	}

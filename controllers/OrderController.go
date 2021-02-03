@@ -15,10 +15,12 @@ type OrderController struct {
 }
 
 func (this *OrderController) List() {
-	if this.CheckAuth(3){
-		this.EmptyData()
-		return
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	if session.Get("id")==nil{
+		this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
 	}
+	uType := session.Get("type").(int)
+	uid := session.Get("id").(int)
 	GlobalDraw++
 	qMap := make(map[string]interface{})
 	backMap := make(map[string]interface{})
@@ -63,6 +65,11 @@ func (this *OrderController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
+	//处理只看到自己负责的订单
+	qMap["uType"] = uType
+	if uType>3&&uType!=7{
+		qMap["uid"] = uid
+	}
 
 	obj := new(models.Order)
 	//获取总记录数
@@ -86,7 +93,11 @@ func (this *OrderController) List() {
 
 func (this *OrderController) ListForPerson() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	if session.Get("id")==nil{
+		this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
+	}
 	uid := session.Get("id").(int)
+	uType := session.Get("type").(int)
 	GlobalDraw++
 	qMap := make(map[string]interface{})
 	backMap := make(map[string]interface{})
@@ -115,6 +126,7 @@ func (this *OrderController) ListForPerson() {
 	tid := this.GetString("tid")
 	qMap["tid"] = tid
 	qMap["uid"] = uid
+	qMap["uType"] = uType
 	qMap["pageNow"] = pageNow
 	qMap["pageSize"] = pageSize
 	qMap["sortCol"] = sortCol
@@ -183,7 +195,6 @@ func (this *OrderController) Add() {
 		var obj models.Order
 		obj.Rid = Rid
 		obj.Uid = item.Protocol.Uid//用户id
-		obj.Uuid = uid //创建人id
 		obj.Tid,_ = strconv.Atoi(item.Tid)
 		obj.Status = 0
 		obj.Count = item.Count

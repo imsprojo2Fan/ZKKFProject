@@ -25,6 +25,10 @@ type Reservation struct {
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func ReservationTBName() string {
+	return TableName("reservation")
+}
+
 func (a *Reservation) TableName() string {
 	return ReservationTBName()
 }
@@ -76,12 +80,18 @@ func (this *Reservation) Count(qMap map[string]interface{}) (int, error) {
 
 	o := orm.NewOrm()
 	//sql := "SELECT id from "+ReservationTBName()+" r where 1=1 "
-	sql := "SELECT r.id from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id and r.del=0 "
-	if qMap["uid"] !=nil{
-		uid := qMap["uid"].(int)
-		sql += " and r.uuid="+strconv.Itoa(uid)
+	sql := "SELECT r.id from reservation r LEFT JOIN assign a LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id and r.del=0 "
+	uType := qMap["uType"].(int)
+	//处理普通用户数据----------------------------------开始
+	if uType==99{
+		sql = "select r.id from reservation r where o.del=0"
 	}
-	if qMap["tid"].(string) != "0" {
+	if uType==99&&qMap["uid"] !=nil{
+		uid := qMap["uid"].(int)
+		sql += " and r.uid="+strconv.Itoa(uid)
+	}
+	//处理普通用户数据----------------------------------结束
+	if qMap["tid"] !=nil {
 		tid := qMap["tid"].(string)
 		sql = sql + " and r.tid="+tid
 	}
@@ -98,11 +108,22 @@ func (this *Reservation) ListByPage(qMap map[string]interface{}) ([]orm.Params, 
 	var maps []orm.Params
 	o := orm.NewOrm()
 	//sql := "SELECT r.*,u.name,u.phone from user u,"+ReservationTBName()+" r where u.id=r.uid "
-	sql := "SELECT r.*,u.name,u.company,u.phone,d.name as deviceName,s.value as time from reservation r LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id where r.del=0 "
-	if qMap["uid"] !=nil{
-		uid := qMap["uid"].(int)
-		sql += " and r.uuid="+strconv.Itoa(uid)
+	sql := "SELECT r.*,u.name,u.company,u.phone,d.name as deviceName,s.value as time from reservation r LEFT JOIN assign a on r.rid=a.rid LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id where r.del=0 "
+	uType := qMap["uType"].(int)
+	//处理普通用户数据----------------------------------开始
+	if uType==99{
+		sql = "select r.*,u.name,u.phone,u.company from reservation where r.del=0"
 	}
+	if uType==99&&qMap["uid"] !=nil{
+		uid := qMap["uid"].(int)
+		sql += " and r.uid="+strconv.Itoa(uid)
+	}
+	//处理普通用户数据----------------------------------结束
+	if uType!=99&&qMap["uid"] !=nil{
+		uid := qMap["uid"].(int)
+		sql += " and a.uuid="+strconv.Itoa(uid)
+	}
+
 	if qMap["tid"].(string) != "0" {
 		tid := qMap["tid"].(string)
 		sql = sql + " and r.tid="+tid
@@ -165,5 +186,12 @@ func (this *Reservation) ListByRid(rid string) (orm.Params, error) {
 func (this *Reservation) UpdateByRid(date,timeId,rid interface{},o orm.Ormer) error {
 	sqlTxt := "update reservation set date=?,time_id=? where rid=?"
 	_,err := o.Raw(sqlTxt,date,timeId,rid).Exec()
+	return err
+}
+func (this *Reservation) UpdateStatus(rid,status interface{},o orm.Ormer)error{
+	if o==nil{
+		o = orm.NewOrm()
+	}
+	_,err := o.Raw("update `reservation` set status=? where rid=?",status,rid).Exec()
 	return err
 }

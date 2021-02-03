@@ -6361,7 +6361,7 @@ a:focus {
 	color: var(--thm-black);
 	font-weight: bold;
 	font-size: 24px;
-	margin-bottom: 35px;
+	margin-bottom: 15px;
 }
 
 .sidebar__single .sidebar__title+p {
@@ -6429,8 +6429,8 @@ a:focus {
 
 .sidebar__single p {
 	margin: 0;
-	font-size: 16px;
-	line-height: 28px;
+	font-size: 15px;
+	line-height: 20px;
 	color: #848484;
 }
 

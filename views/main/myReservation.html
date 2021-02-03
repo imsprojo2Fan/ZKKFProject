@@ -6,6 +6,7 @@
     <title>我的预约</title>
     <!-- ========== Css Files ========== -->
     <link href="../../static/css/root.css" rel="stylesheet">
+    <link href="../../static/css/main/common.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/design.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/main/reservation.css?v={{ .random}}" rel="stylesheet">
     <style>
@@ -48,6 +49,11 @@
             <div id="panel" class="col-sm-12">
                 <div class="panel panel-default">
                     <div id="tab1" class="panel-body table-responsive">
+                        <div id="filterWrap">
+                            <select onchange="refresh()"  id="filterSelect" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" tabindex="-98">
+                                <option value="0">全部分组</option>
+                            </select>
+                        </div>
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>

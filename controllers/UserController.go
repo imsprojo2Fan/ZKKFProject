@@ -29,10 +29,12 @@ func (this *UserController) ListOne() {
 }
 
 func (this *UserController) List() {
-	if this.CheckAuth(3){
+	if this.CheckAuth(7){
 		this.EmptyData()
 		return
 	}
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	uType := session.Get("type").(int)
 	GlobalDraw++
 	qMap := make(map[string]interface{})
 	var dataList []orm.Params
@@ -71,7 +73,7 @@ func (this *UserController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-
+	qMap["uType"] = uType
 	obj := new(models.User)
 	//获取总记录数
 	records := obj.Count(qMap)
@@ -120,6 +122,7 @@ func (this *UserController) Add() {
 	}
 	user.Password = base64.StdEncoding.EncodeToString(result)
 	user.Remark = this.GetString("remark")
+	user.TypeJob,_ = this.GetInt("typeJob")
 	user.SelectByCol(user, "account") //查询账号是否已被用
 	if user.Id > 0 {
 		this.jsonResult(200, -1, "账号已存在!", nil)
@@ -196,6 +199,7 @@ func (this *UserController) Update() {
 	user.Created = dbUser.Created
 	user.Updated = time.Now()
 	user.Remark = this.GetString("remark")
+	user.TypeJob,_ = this.GetInt("typeJob")
 	err = user.Update(user)
 	if err==nil {
 		this.jsonResult(200, 1, "更新用户信息成功", nil)
@@ -366,7 +370,6 @@ func(this *UserController) Delete4Batch() {
 	}else{
 		this.jsonResult(200,1,"批量删除数据成功！",nil)
 	}
-
 }
 
 func (this *UserController) All() {
@@ -460,6 +463,17 @@ func SendMail4Validate(mail, code string) {
 }
 
 func (this *UserController) Assign() {
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	if session.Get("id")==nil{
+		this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
+	}
+	uType := session.Get("type").(int)
 	user := new(models.User)
-	this.jsonResult(200, 1, "查询列表",user.Assign())
+	var res []models.User
+	if uType>2{
+		res = user.Assign(strconv.Itoa(uType+1))
+	}else{
+		res = user.Assign("")
+	}
+	this.jsonResult(200, 1, "查询列表",res)
 }

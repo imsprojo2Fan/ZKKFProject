@@ -13,7 +13,7 @@ import (
  * @Date:
  * @Modified By:
  */
-
+var GlobalDraw int
 type BaseController struct {
 	beego.Controller
 }

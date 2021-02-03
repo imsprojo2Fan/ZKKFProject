@@ -21,6 +21,10 @@ type Type struct {
 	Created     time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func TypeTBName() string {
+	return TableName("type")
+}
+
 func (a *Type) TableName() string {
 	return TypeTBName()
 }

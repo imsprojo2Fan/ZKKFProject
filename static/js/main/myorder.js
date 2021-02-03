@@ -86,17 +86,7 @@ $(document).ready(function() {
                     return stringUtil.maxLength(data,15);
                 }},
             { data: 'status',"render":function (data) {
-                    let str;
-                    if(data=="0"){
-                        str = "<span style='color:orangered'>待确认</span>";
-                    }else if(data=="1"){
-                        str = "<span style='color:#6195FF'>已确认</span>";
-                    }else if(data=="2"){
-                        str = "<span style='color:grey'>已取消</span>";
-                    }else{
-                        str = "<span style='color:green'>已完成</span>";
-                    }
-                    return str;
+                    return renderStatus(data).statusTxt;
                 } },
             { data: 'created',"render":function (data,type,row,meta) {
                     return dateUtil.GMT2Str(data);
@@ -147,18 +137,7 @@ $(document).ready(function() {
     $('#myTable').on("click",".detail",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
         $('#detailModal').find('.rid').html(stringUtil.maxLength(rowData.rid));
-        let str;
-        let status = rowData.status;
-        if(status==="0"){
-            str = "<span style='color:orangered'>待确认</span>";
-        }else if(status==="1"){
-            str = "<span style='color:#6195FF'>已确认</span>";
-        }else if(status==="2"){
-            str = "<span style='color:red'>已取消</span>";
-        }else{
-            str = "<span style='color:var(--thm-green)'>已完成</span>";
-        }
-        $('#detailModal').find('.status').html(str);
+        $('#detailModal').find('.status').html(renderStatus(rowData.status).statusTxt);
         let created = rowData.created;
         $('#detail_created').html(dateUtil.GMT2Str(created));
         let rid = rowData.rid;
@@ -217,6 +196,47 @@ function refresh() {
     };
     myTable.settings()[0].ajax.data = param;
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
+}
+function renderStatus(status) {
+    let res = {}
+    let str;
+    let str2;
+    status = parseInt(status);
+    if(status===-1){
+        str2 = "<span class='statusTxt-red'>已取消</span>";
+        str = "待确认/已确认/制样中/测试中/数据分析/财务结算/已完成/<span class='statusTxt-red'>已取消</span>";
+    }
+    if(status===0){
+        str2 = "<span class='statusTxt-blue'>待确认</span>";
+        str = "<span class='statusTxt-blue'>待确认</span>/已确认/制样中/测试中/数据分析/财务结算/已完成/已取消";
+    }
+    if(status===1){
+        str2 = "<span class='statusTxt-blue'>已确认</span>";
+        str = "待确认/<span class='statusTxt-blue'>已确认</span>/制样中/测试中/数据分析/财务结算/已完成/已取消";
+    }
+    if(status===2){
+        str2 = "<span class='statusTxt-blue'>制样中</span>";
+        str = "待确认/已确认/<span class='statusTxt-blue'>制样中</span>/测试中/数据分析/财务结算/已完成/已取消";
+    }
+    if(status===3){
+        str2 = "<span class='statusTxt-blue'>测试中</span>";
+        str = "待确认/已确认/制样中/<span class='statusTxt-blue'>测试中</span>/数据分析/财务结算/已完成/已取消";
+    }
+    if(status===4){
+        str2 = "<span class='statusTxt-blue'>数据分析</span>";
+        str = "待确认/已确认/制样中/测试中/<span class='statusTxt-blue'>数据分析</span>/财务结算/已完成/已取消";
+    }
+    if(status===5){
+        str2 = "<span class='statusTxt-blue'>财务结算</span>";
+        str = "待确认/已确认/制样中/测试中/数据分析/<span class='statusTxt-blue'>财务结算</span>/已完成/已取消";
+    }
+    if(status===6){
+        str2 = "<span class='statusTxt-green'>已完成</span>";
+        str = "待确认/已确认/制样中/测试中/数据分析/财务结算/<span class='statusTxt-green'>已完成</span>/已取消";
+    }
+    res.status = str;
+    res.statusTxt = str2;
+    return res;
 }
 
 function loading(flag,type) {

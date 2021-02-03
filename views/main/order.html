@@ -6,6 +6,7 @@
     <title>订单信息管理</title>
     <!-- ========== Css Files ========== -->
     <link href="../../static/css/root.css" rel="stylesheet">
+    <link href="../../static/css/main/common.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/design.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/main/order.css?v={{ .random}}" rel="stylesheet">
     <style>
@@ -588,7 +589,7 @@
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" id="editForm" autocomplete="off">
+                    <form class="form-horizontal" id="editForm2" autocomplete="off">
                         <input type="hidden" id="id" name="id">
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">订单编号</label>
@@ -676,7 +677,7 @@
                             aria-hidden="true">×
                     </button>
                     <h4 class="modal-title">
-                        指派订单
+                        指派任务
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -686,7 +687,11 @@
                             <div class="col-sm-6 rid" ></div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label form-label">当前处理用户</label>
+                            <label class="col-sm-2 control-label form-label">任务进度</label>
+                            <div class="col-sm-10" id="curStatus"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">当前处理</label>
                             <div class="col-sm-6" id="curUser"></div>
                         </div>
                         <div class="form-group">
@@ -761,7 +766,7 @@
 <script type="text/javascript" src="../../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="../../static/plugins/bootstrap/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <script src="../../static/js/util/util.js"></script>
-<script src="../../static/js/main/backUtil.js"></script>
+<script src="../../static/js/main/common.js"></script>
 <script src="../../static/js/util/timeUtil.js"></script>
 <script src="../../static/js/util/stringUtil.js"></script>
 <script src="../../static/js/util/imgUtil.js"></script>

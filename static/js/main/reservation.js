@@ -2,17 +2,11 @@ let myTable;
 let prefix = "/main/reservation";
 let deviceList = [];
 let selectDeviceIndex = 0;
+let userInfo = parent.user();
+let uType = userInfo.type;
 let gDeviceId;
 let gDate;
 let gTimeId;
-window.onresize = function() {
-    let bodyHeight = window.innerHeight;
-    console.log("bodyHeight:"+bodyHeight);
-    //设置表格高度
-    let tHeight = bodyHeight-210;
-    console.log("tHeight:"+tHeight);
-    $('.dataTables_scrollBody').css("height",tHeight+"px");
-};
 
 $(document).ready(function() {
 
@@ -101,18 +95,7 @@ $(document).ready(function() {
                     return stringUtil.maxLength(data);
                 } },
             { data: 'status',"render":function (data) {
-                    let str;
-                    data = parseInt(data);
-                    if(data===0){
-                        str = "<span style='color:orangered'>待确认</span>";
-                    }else if(data===1){
-                        str = "<span style='color:#6195FF'>已确认</span>";
-                    }else if(data===2){
-                        str = "<span style='color:grey'>已取消</span>";
-                    }else{
-                        str = "<span style='color:green'>已完成</span>";
-                    }
-                    return str;
+                    return renderStatus(data).statusTxt;
                 } },
             { data: 'created',"width":"12%","render":function (data,type,row,meta) {
                     return dateUtil.GMT2Str(data);
@@ -171,19 +154,7 @@ $(document).ready(function() {
         $('#detailModal').find('.name').html(stringUtil.maxLength(rowData.name));
         $('#detailModal').find('.company').html(stringUtil.maxLength(rowData.company));
         $('#detailModal').find('.phone').html(stringUtil.maxLength(rowData.phone));
-
-        let str;
-        let status = rowData.status;
-        if(status=="0"){
-            str = "<span style='color:orangered'>待确认</span>";
-        }else if(status=="1"){
-            str = "<span style='color:green'>已确认</span>";
-        }else if(status=="2"){
-            str = "<span style='color:red'>已取消</span>";
-        }else{
-            str = "<span style='color:green'>已完成</span>";
-        }
-        $('#detailModal').find('.status').html("<span style='color:green'>"+str+"</span>");
+        $('#detailModal').find('.status').html(renderStatus(rowData.status).statusTxt);
         $('#detailModal').find('.deviceName').html(rowData.deviceName);
         let date = rowData.date;
         date = date.replace("T00:00:00+08:00","");
@@ -210,19 +181,7 @@ $(document).ready(function() {
         rowData = myTable.row($(this).closest('tr')).data();
         //console.log(rowData);
         let id = rowData.id;
-
-        swal({
-            title: "确定删除吗?",
-            text: '删除将无法恢复该信息!',
-            type: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#ff1200',
-            cancelButtonColor: '#474747',
-            confirmButtonText: '确定',
-            cancelButtonText:'取消'
-        },function(){
-            del(id);
-        });
+        window.parent.confirmAlert("确定删除吗？","与当前相关的数据将全部被删除！",del,id);
 
     });
     $('#myTable').on("click", ".protocol", function (e) {
@@ -269,9 +228,11 @@ $(document).ready(function() {
         }, function (res) {
             if (res.data) {
                 let data = res.data[0];
+                $('#curStatus').html(renderStatus(data.status).status);
                 $('#curUser').data("uid", data.uuid);
                 $('#curUser').html(data.name);
             } else {
+                $('#curStatus').html(renderStatus(0).status);
                 $('#curUser').data("uid", 0);
                 $('#curUser').html("<span style='color: red;'>暂未指派任何用户！</span>");
             }
@@ -295,9 +256,9 @@ $(document).ready(function() {
             if (res.code === 1) {
                 $('#assignModal').modal("hide");
                 refresh();
-                swalParent("系统提示", "订单已指派！", "success");
+                swalParent("系统提示", "任务已指派！", "success");
             } else {
-                swalParent("系统提示", "订单指派失败," + res.data, "error");
+                swalParent("系统提示", "指派任务失败," + res.data, "error");
             }
         });
     });
@@ -461,7 +422,13 @@ function initData() {
         } else {
             $('#userSelWrap').html('');
             $('#userSelWrap').append(
-                '<span style="color: red;display: block;margin-top: 5px">暂无用户，请先添加!</span>');
+                '<span style="color: red;display: block;margin-top: 6px">暂无用户，请先添加!</span>');
+        }
+        if(uType<4){
+            $('#userSel').append('<option value="-1">取消预约</option>');
+        }
+        if(uType===7||uType<2){
+            $('#userSel').append('<option value="-6">完成结算</option>');
         }
         $('#userSel').selectpicker('refresh');
     });
@@ -520,7 +487,7 @@ function add(){
             if (r.code===1) {
                 type = "success";
                 renderTime();
-                reset();
+                reset4success();
             }
             swalParent("系统提示",r.msg,type);
         },
@@ -625,7 +592,7 @@ function edit(){
             let type = "error";
             if (r.code===1) {
                 type = "success";
-                reset();
+                reset4success();
                 $('.backBtn').click();
             }
             swalParent("系统提示",r.msg,type);
@@ -793,12 +760,12 @@ function protocolDetail(rid,rowData){
             let innerArr = r.data.deviceArr;
             if(!r.data.type.Name){
                 if(!innerArr){
-                    swalParent("系统提示","当前订单包含分组已被删除！","error");
+                    swalParent("系统提示","当前预约包含分组已被删除！","error");
                     return false;
                 }
             }
             if(!innerArr){
-                swalParent("系统提示","当前订单包含项目已被删除！","error");
+                swalParent("系统提示","当前预约包含项目已被删除！","error");
                 return false;
             }
             for (let j = 0; j < innerArr.length; j++) {
@@ -960,7 +927,7 @@ function report() {
             let type = "error";
             if (r.code === 1) {
                 type = "success";
-                reset();
+                reset4success();
             }
             refresh();
             $('#reportModal').modal("hide");
@@ -972,10 +939,46 @@ function report() {
     });
 }
 
-function reset() {
-    $("#addTable input").val("");
-    $("#addTable textarea").val("");
-    $("#addTable .editor").html("可插入文字/图片");
+function renderStatus(status) {
+    let res = {}
+    let str;
+    let str2;
+    status = parseInt(status);
+    if(status===-1){
+        str2 = "<span class='statusTxt-red'>已取消</span>";
+        str = "待确认/已确认/制样中/测试中/数据分析/财务结算/已完成/<span class='statusTxt-red'>已取消</span>";
+    }
+    if(status===0){
+        str2 = "<span class='statusTxt-blue'>待确认</span>";
+        str = "<span class='statusTxt-blue'>待确认</span>/已确认/制样中/测试中/数据分析/财务结算/已完成/已取消";
+    }
+    if(status===1){
+        str2 = "<span class='statusTxt-blue'>已确认</span>";
+        str = "待确认/<span class='statusTxt-blue'>已确认</span>/制样中/测试中/数据分析/财务结算/已完成/已取消";
+    }
+    if(status===2){
+        str2 = "<span class='statusTxt-blue'>制样中</span>";
+        str = "待确认/已确认/<span class='statusTxt-blue'>制样中</span>/测试中/数据分析/财务结算/已完成/已取消";
+    }
+    if(status===3){
+        str2 = "<span class='statusTxt-blue'>测试中</span>";
+        str = "待确认/已确认/制样中/<span class='statusTxt-blue'>测试中</span>/数据分析/财务结算/已完成/已取消";
+    }
+    if(status===4){
+        str2 = "<span class='statusTxt-blue'>数据分析</span>";
+        str = "待确认/已确认/制样中/测试中/<span class='statusTxt-blue'>数据分析</span>/财务结算/已完成/已取消";
+    }
+    if(status===5){
+        str2 = "<span class='statusTxt-blue'>财务结算</span>";
+        str = "待确认/已确认/制样中/测试中/数据分析/<span class='statusTxt-blue'>财务结算</span>/已完成/已取消";
+    }
+    if(status===6){
+        str2 = "<span class='statusTxt-green'>已完成</span>";
+        str = "待确认/已确认/制样中/测试中/数据分析/财务结算/<span class='statusTxt-green'>已完成</span>/已取消";
+    }
+    res.status = str;
+    res.statusTxt = str2;
+    return res;
 }
 
 function refresh() {

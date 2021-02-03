@@ -27,6 +27,10 @@ type WXInfo struct {
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func WXInfoTBName() string {
+	return TableName("wxinfo")
+}
+
 func (a *WXInfo) TableName() string {
 	return WXInfoTBName()
 }

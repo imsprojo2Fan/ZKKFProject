@@ -275,6 +275,7 @@ hr{
 }
 #dateTable th,#dateTable td{
     border: 1px solid #eee;
+    font-size: 13px;
 }
 #dateTable th{
     font-weight: bold;

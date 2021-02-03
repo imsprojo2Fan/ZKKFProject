@@ -20,6 +20,10 @@ type File struct {
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func FileTBName() string {
+	return TableName("file")
+}
+
 func (a *File) TableName() string {
 	return FileTBName()
 }

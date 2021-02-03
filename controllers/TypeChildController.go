@@ -12,7 +12,7 @@ type TypeChildController struct {
 }
 
 func (this *TypeChildController) List() {
-	if this.CheckAuth(3){
+	if this.CheckAuth(7){
 		this.EmptyData()
 		return
 	}
@@ -154,4 +154,31 @@ func (this *TypeChildController) QueryByTid() {
 	tid := this.GetString("tid")
 	obj := new(models.TypeChild)
 	this.jsonResult(200, 1, "查询信息", obj.QueryByTid(tid))
+}
+
+func (this *TypeChildController) QueryByTidDevice() {
+	tid := this.GetString("tid")
+	obj := new(models.TypeChild)
+	childArr := obj.QueryByTid(tid)
+	device := new(models.Device)
+	dArr,err := device.All()
+	if err!=nil{
+		this.jsonResult(200, -1, "查询失败,"+err.Error(), nil)
+	}
+	var resArr []map[string]interface{}
+	for _,item := range childArr{
+		bMap := make(map[string]interface{})
+		bMap["childType"] = item
+		id1 := item["id"].(string)
+		var arr []orm.Params
+		for _,item1 := range dArr{
+			id2 := item1["ttid"].(string)
+			if id1==id2{
+				arr = append(arr,item1)
+			}
+		}
+		bMap["deviceArr"] = arr
+		resArr = append(resArr,bMap)
+	}
+	this.jsonResult(200, 1, "查询信息",resArr)
 }

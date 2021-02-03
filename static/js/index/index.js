@@ -31,9 +31,7 @@ $(window).on('load', function () {
     //熏染数据
     renderType();
     renderNews();
-
     initOwl();
-
     $('.preloader').fadeOut(200);
 });
 
@@ -61,7 +59,7 @@ function renderType(){
                 let id = item.id;
                 let img = item.img;
                 $('#deviceWrap').append('' +
-                    '<div class="col-sm-2 deviceItem">\n' +
+                    '<div class="col-sm-3 deviceItem">\n' +
                     '   <a target="_blank" href="/type/'+id+'">\n' +
                         '   <img class="devImg" src="/img/'+img+'" onerror="this.src= \'../../static/img/default1.png\'; this.onerror = null;" alt="">\n' +
                         '   </a><div class="sketch">'+sketch+'</div>\n' +

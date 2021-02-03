@@ -1,13 +1,7 @@
 let myTable;
 let prefix = "/main/user";
-window.onresize = function() {
-    let bodyHeight = window.innerHeight;
-    console.log("bodyHeight:"+bodyHeight);
-    //设置表格高度
-    let tHeight = bodyHeight-210;
-    console.log("tHeight:"+tHeight);
-    $('.dataTables_scrollBody').css("height",tHeight+"px");
-};
+let userInfo = parent.user();
+let uType = userInfo.type;
 
 $(document).ready(function() {
 
@@ -15,28 +9,21 @@ $(document).ready(function() {
     //window.parent.swalInfo('TEST',666,'error')
 
     //tab导航栏切换
-    $('#tabHref01').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
-            return false
-        }else{
-            $('#tabHref02').addClass("active");
-            $(this).removeClass("active");
-            $('#tab2').fadeOut(200);
-            $("#tab1").fadeIn(200);
+    $('.breadcrumb span').on("click", function () {
+        if (!$(this).hasClass("active")) {
+            return false;
+        }
+        let data = $(this).attr("data");
+        if (!data) {
+            return false;
+        }
+        $('.breadcrumb span').addClass("active");
+        $(this).removeClass("active");
+        if(data==="tab1"){
             refresh();
         }
-    });
-    $('#tabHref02').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
-            return false
-        }else{
-            $('#tabHref01').addClass("active");
-            $(this).removeClass("active");
-            $('#tab1').fadeOut(200);
-            $("#tab2").fadeIn(200);
-        }
+        $('.tabWrap').fadeOut(200);
+        $("#"+data).fadeIn(200);
     });
 
     //datatable setting
@@ -60,14 +47,14 @@ $(document).ready(function() {
             }
         },
         columns: [
-            {"data": "id","width":"5%","render": function (data, type, row) {
+            {"data": "id","width":"8%","render": function (data, type, row) {
                     return "<div style='text-align: left'><input type='checkbox' name='check' value='"+row.id+"'><span style='margin-left: 3px;' class='tid'>"+row.id+"</span></div>";
                 }},
             { data: 'name',"render":function (data) {
                     return stringUtil.maxLength(data,3);
                 }},
             { data: 'company',"render":function (data) {
-                    return stringUtil.maxLength(data,7);
+                    return stringUtil.maxLength(data,5);
                 }},
             { data: 'phone',"render":function (data) {
                     return stringUtil.maxLength(data,11);
@@ -83,19 +70,28 @@ $(document).ready(function() {
                 } },
             { data: 'type',"render":function (data) {
                     let str = "";
-                    if(data==99){
+                    data = parseInt(data);
+                    if(data===99){
                         str = "普通用户";
-                    }else if(data==2){
-                        str = "管理员";
-                    }else if(data==1){
+                    }else if(data===7){
+                        str = "数据分析师";
+                    }else if(data===6){
+                        str = "测试工程师";
+                    }else if(data===5){
+                        str = "制样工程师";
+                    }else if(data===4){
+                        str = "业务经理";
+                    }else if(data===3){
+                        str = "财务管理员";
+                    }else if(data===2){
+                        str = "普通管理员";
+                    }else if(data===1){
                         str = "高级管理员";
-                    }else{
-                        str = "访客";
                     }
                     return str;
                 } },
             { data: 'disabled',"render":function (data) {
-                    if(data==0){
+                    if(parseInt(data)===0){
                         return "<span style='color:green;'>正常</span>";
                     }else{
                         return "<span style='color:red;'>禁用</span>";
@@ -192,24 +188,35 @@ $(document).ready(function() {
         $('#detailModal').find('.name').html(stringUtil.maxLength(rowData.name));
 
         let str;
-        if(rowData.type==99){
+        let data = parseInt(rowData.type);
+        if(data===99){
             str = "普通用户";
-        }else if(rowData.type==2){
-            str = "管理员";
-        }else if(rowData.type==1){
+        }else if(data===7){
+            str = "数据分析师";
+        }else if(data===6){
+            str = "测试工程师";
+        }else if(data===5){
+            str = "制样工程师";
+        }else if(data===4){
+            str = "业务经理";
+        }else if(data===3){
+            str = "财务管理员";
+        }else if(data===2){
+            str = "普通管理员";
+        }else if(data===1){
             str = "高级管理员";
         }
         $('#detailModal').find('.type').html(str);
         $('#detailModal').find('.phone').html(stringUtil.maxLength(rowData.phone));
-        $('#detailModal').find('.company').html(stringUtil.maxLength(rowData.company,10));
-        $('#detailModal').find('.address').html(stringUtil.maxLength(rowData.address,15));
+        $('#detailModal').find('.company').html(stringUtil.maxLength(rowData.company,20));
+        $('#detailModal').find('.address').html(stringUtil.maxLength(rowData.address,25));
         $('#detailModal').find('.email').html(stringUtil.maxLength(rowData.email,11));
         $('#detailModal').find('.teacher').html(stringUtil.maxLength(rowData.teacher,3));
         $('#detailModal').find('.teacher_phone').html(stringUtil.maxLength(rowData.teacher_phone,11));
         $('#detailModal').find('.teacher_mail').html(stringUtil.maxLength(rowData.teacher_mail,20));
         $('#detailModal').find('.invoice').html(stringUtil.maxLength(rowData.invoice,20));
         $('#detailModal').find('.invoice_code').html(stringUtil.maxLength(rowData.invoice_code,20));
-        $('#detailModal').find('.remark').html(stringUtil.maxLength(rowData.remark,15));
+        $('#detailModal').find('.remark').html(stringUtil.maxLength(rowData.remark,25));
         let created = rowData.created;
         $('#detail_created').html(dateUtil.GMT2Str(created));
 
@@ -241,6 +248,13 @@ $(document).ready(function() {
         $('#editForm').find("input[name='invoice']").val(rowData.invoice);
         $('#editForm').find("input[name='invoice_code']").val(rowData.invoice_code);
         $('#editForm').find("textarea[name='remark']").val(rowData.remark);
+        if(parseInt(rowData.type)===99){
+            $('#editTypeSel').parent().parent().parent().hide();
+        }else{
+            $('#addTypeSel').parent().parent().parent().show();
+        }
+        $('#editTypeSel').selectpicker('val',rowData.type_job);
+        $("#editTypeSel").selectpicker('refresh');
         $('#tip').html("");
         $('#editModal').modal("show");
     });
@@ -248,23 +262,38 @@ $(document).ready(function() {
         rowData = myTable.row($(this).closest('tr')).data();
         console.log(rowData);
         let id = rowData.id;
-
-        swal({
-            title: "确定删除吗?",
-            text: '删除将无法恢复该信息!',
-            type: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#ff1200',
-            cancelButtonColor: '#474747',
-            confirmButtonText: '确定',
-            cancelButtonText:'取消'
-        },function(){
-            del(id);
-        });
+        window.parent.confirmAlert("确定删除吗？","与当前相关的数据将全部被删除！",del,id);
 
     });
-
+    initData();
 } );
+
+function initData() {
+    //初始化父类分组过滤数据
+    $.post("/main/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
+        if(res.code===1){
+            let tList = res.data;
+            typeArr = tList;
+            $('#addTypeSel').append('<option value="0">暂不选择</option>');
+            $('#editTypeSel').append('<option value="0">暂不选择</option>');
+            if(tList){
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i];
+                    $('#addTypeSel').append('<option value="'+item.id+'">'+item.name+'</option>');
+                    $('#editTypeSel').append('<option value="'+item.id+'">'+item.name+'</option>');
+                }
+            }
+            $('#addTypeSel').selectpicker('refresh');
+            $('#editTypeSel').selectpicker('refresh');
+        }
+    });
+    if(uType>1){
+        $('#type').html("");
+        $('#type').append('<option value="99">普通用户</option>');
+        $('#type').selectpicker('refresh');
+    }
+
+}
 
 function add(){
     let account = $('#addForm').find("input[name='account']").val().trim();
@@ -308,6 +337,7 @@ function add(){
     formData["_xsrf"] = $("#token", parent.document).val();
     formData["active"] = 1;
     formData["sign"] = 1;
+    formData["typeJob"] = $('#addTypeSel').val();
     $.ajax({
         url : prefix+"/add",
         type : "POST",
@@ -319,9 +349,9 @@ function add(){
         },
         success : function(r) {
             let type = "error";
-            if (r.code == 1) {
+            if (r.code===1) {
                 type = "success";
-                reset();
+                reset4success();
             }
             swalParent("系统提示",r.msg,type);
         },
@@ -364,6 +394,7 @@ function edit(){
     formData["active"] = $('#editActive').val();
     formData["gender"] = $('#editGender').val();
     formData["_xsrf"] = $("#token", parent.document).val();
+    formData["typeJob"] = $('#editTypeSel').val();
     $.ajax({
         url : prefix+"/update",
         type : "POST",
@@ -376,7 +407,7 @@ function edit(){
         success : function(r) {
             $('#editModal').modal("hide");
             let type = "error";
-            if (r.code == 1) {
+            if (r.code===1) {
                 type = "success";
                 refresh();
             }
@@ -416,7 +447,7 @@ function del(id){
     })
 }
 
-function batchDel() {
+function batchDel(){
     let checkboxes = $('td input[type="checkbox"]');
     // 获取选中的checkbox
     let allChecked = checkboxes.filter(':checked');
@@ -424,50 +455,34 @@ function batchDel() {
         swalParent("系统提示","未选中任何删除项!","warning");
         return;
     }
+    window.parent.confirmAlert("确定删除这些数据吗？","删除将无法恢复该信息！",batchDelOperate);
+}
+
+function batchDelOperate(){
     let idArr="";
+    let checkboxes = $('td input[type="checkbox"]');
+    let allChecked = checkboxes.filter(':checked');
     for(let i=0;i<allChecked.length;i++){
         let id = $(allChecked[i]).val();
         idArr = idArr+","+id;
     }
     idArr = idArr.substring(1,idArr.length);
-    swal({
-        title: "确定删除这些数据吗?",
-        text: '删除将无法恢复该信息！',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#ff1200',
-        cancelButtonColor: '#474747',
-        confirmButtonText: '确定',
-        cancelButtonText:'取消'
-    },function(){
-        loading(true);
-        $.post(prefix+"/del4batch",{_xsrf:$("#token", parent.document).val(),idArr:idArr},function (res) {
-            loading(false);
-            if(res.code===1){
-                $("#hCheck").iCheck('uncheck');
-                refresh();
-                swalParent("系统提示",res.msg,"success");
-            }else{
-                let msg = res.msg;
-                if(!msg){
-                    msg = "当前用户无权限此操作!"
-                }
-                setTimeout(function () {
-                    swalParent("系统提示",msg,"error");
-                },100);
+    loading(true);
+    $.post(prefix+"/del4batch",{_xsrf:$("#token", parent.document).val(),idArr:idArr},function (res) {
+        loading(false);
+        if(res.code===1){
+            $("#hCheck").iCheck('uncheck');
+            refresh();
+            swalParent("系统提示",res.msg,"success");
+        }else{
+            let msg = res.msg;
+            if(!msg){
+                msg = "当前用户无权限此操作!"
             }
-        });
-    });
-}
-
-function reset() {
-    $(":input").each(function () {
-        $(this).val("");
-    });
-    $('#actived').val(1)
-    $('#actived').selectpicker('refresh');
-    $("textarea").each(function () {
-        $(this).val("");
+            setTimeout(function () {
+                swalParent("系统提示",msg,"error");
+            },100);
+        }
     });
 }
 
@@ -475,10 +490,11 @@ function refresh() {
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
 }
 
-function loading(flag) {
-    window.parent.loading(flag);
+function hideTypeSel(obj,domId){
+    let val = $(obj).val();
+    if(parseInt(val)===99){
+        $('#'+domId).parent().hide();
+    }else{
+        $('#'+domId).parent().show();
+    }
 }
-window.onresize = function() {
-    let height = window.innerHeight-200;
-    $('.dataTables_scrollBody').css("height",height+"px");
-};

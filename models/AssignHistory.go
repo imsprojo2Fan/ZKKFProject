@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/astaxie/beego/orm"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -21,6 +22,10 @@ type AssignHistory struct {
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func AssignHistoryTBName() string {
+	return TableName("assign_history")
+}
+
 func (a *AssignHistory) TableName() string {
 	return AssignHistoryTBName()
 }
@@ -28,19 +33,7 @@ func (a *AssignHistory) TableName() string {
 func (this *AssignHistory) Insert(obj *AssignHistory) error {
 
 	o := orm.NewOrm()
-	_ = o.Begin()
 	_, err := o.Insert(obj)
-	if err!=nil{
-		_ = o.Rollback()
-		return err
-	}
-	order := new(Order)
-	err = order.UpdateStatus(obj.Rid,"1",o)
-	if err!=nil{
-		_ = o.Rollback()
-		return err
-	}
-	_ = o.Commit()
 	return err
 }
 
@@ -122,10 +115,15 @@ func (this *AssignHistory) DetailByRid(rid string) ([]AssignHistory, error) {
 	_,err := o.Raw(sql,rid).QueryRows(&res)
 	return res, err
 }
-func (this *AssignHistory) LimitOne(rid string) ([]orm.Params, error) {
+func (this *AssignHistory) AssignInfo(rid string) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select a.*,u.name from "+AssignHistoryTBName()+" a,user u where a.uuid=u.id and a.rid=? order by a.id desc limit 1"
+	//判断是order或reservation
+	t := "order"
+	if strings.HasPrefix(rid,"R"){
+		t = "reservation"
+	}
+	sql := "select a.*,u.name,t.status from assign_history a left join user u on a.uuid=u.id left join `"+t+"` t on t.rid=a.rid  where a.rid=? order by id desc limit 1"
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }

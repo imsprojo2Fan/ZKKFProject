@@ -17,10 +17,12 @@ type ReservationController struct {
 }
 
 func (this *ReservationController) List() {
-	if this.CheckAuth(3){
-		this.EmptyData()
-		return
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	if session.Get("id")==nil{
+		this.jsonResult(200, -1, "会话已过期，请重新登录!", nil)
 	}
+	uType := session.Get("type").(int)
+	uid := session.Get("id").(int)
 	GlobalDraw++
 	qMap := make(map[string]interface{})
 	backMap := make(map[string]interface{})
@@ -53,6 +55,11 @@ func (this *ReservationController) List() {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
+	//处理只看到自己负责的订单
+	qMap["uType"] = uType
+	if uType>3&&uType!=7{
+		qMap["uid"] = uid
+	}
 
 	obj := new(models.Reservation)
 	//获取总记录数
@@ -76,7 +83,7 @@ func (this *ReservationController) List() {
 
 func (this *ReservationController) ListForPerson() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	//uType := session.Get("type").(int)
+	uType := session.Get("type").(int)
 	uid := session.Get("id").(int)
 	GlobalDraw++
 	qMap := make(map[string]interface{})
@@ -100,8 +107,10 @@ func (this *ReservationController) ListForPerson() {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")
-
+	tid := this.GetString("tid")
+	qMap["tid"] = tid
 	qMap["uid"] = uid
+	qMap["uType"] = uType
 	qMap["pageNow"] = pageNow
 	qMap["pageSize"] = pageSize
 	qMap["sortCol"] = sortCol

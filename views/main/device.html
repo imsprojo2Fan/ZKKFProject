@@ -6,6 +6,7 @@
     <title>项目信息管理</title>
     <!-- ========== Css Files ========== -->
     <link href="../../static/css/root.css" rel="stylesheet">
+    <link href="../../static/css/main/common.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/design.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/main/device.css?v={{ .random}}" rel="stylesheet">
     <style>
@@ -28,8 +29,8 @@
     <!-- Start Page Header -->
     <div>
         <ol class="breadcrumb">
-            <li><span id="tabHref01" class="list" href="javascript:void(0)">数据列表</span></li>
-            <li><span id="tabHref02" class="active add" href="javascript:void(0)">新增数据</span></li>
+            <li><span data="tab1" class="list" href="javascript:void(0)">数据列表</span></li>
+            <li><span data="tab2" class="active add" href="javascript:void(0)">新增数据</span></li>
             <li><span class="active" onclick="refresh()">刷新数据</span></li>
             <li><span class="batchDel" onclick="batchDel()">批量删除</span></li>
         </ol>
@@ -49,7 +50,7 @@
             <!-- Start Panel -->
             <div id="panel" class="col-sm-12">
                 <div class="panel panel-default">
-                    <div id="tab1" class="panel-body table-responsive">
+                    <div id="tab1" class="tabWrap panel-body table-responsive">
                         <div id="filterWrap">
                             <select onchange="renderChildType2()"  id="filterSelect" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" tabindex="-98">
                                 <option value="0">全部分组</option>
@@ -81,23 +82,20 @@
                             </tbody>
                         </table>
                     </div>
-                    <div id="tab2" style="display: none">
+                    <div id="tab2" class="tabWrap" style="display: none">
 
                         <div class="panel-body">
                             <form id="form1" class="form-horizontal" autocomplete="off">
                                 <img class="backBtn" title="返回列表" src="../../static/img/back.png">
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label"><span class="red">*</span>父类分组</label>
-                                    <div class="col-sm-3 " id="selWrap1">
-                                        <select id="typeSel1" class="selectpicker pSelWrap" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                    <div class="col-sm-2" id="typeSelWrapAdd">
+                                        <select class="selectpicker" id="typeSelAdd" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
                                         </select>
                                     </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label"><span class="red">*</span>子类分组</label>
-                                    <div class="col-sm-3 selWrap" id="selWrap3">
-                                        <select class="selectpicker" id="typeSel3" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                    <label style="margin-left: -140px" class="col-sm-1 control-label form-label"><span class="red">*</span>子类分组</label>
+                                    <div style="margin-left: -10px" class="col-sm-3" id="typeChildSelWrapAdd" >
+                                        <select class="selectpicker" id="typeChildSelAdd" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
                                         </select>
                                         <span class="help-block"></span>
                                     </div>
@@ -105,18 +103,15 @@
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label">是否上线</label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-2">
                                         <select id="disabledSel1" class="selectpicker disabled" >
                                             <option selected value="0">上线</option>
                                             <option value="1">下线</option>
                                         </select>
                                         <span class="help-block"></span>
                                     </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label">支持现场</label>
-                                    <div class="col-sm-3">
+                                    <label style="margin-left: -140px" class="col-sm-1 control-label form-label">支持现场</label>
+                                    <div class="col-sm-3" style="margin-left: -10px">
                                         <select id="isOrder" class="selectpicker isOrder" >
                                             <option selected value="1">是</option>
                                             <option value="0">否</option>
@@ -217,6 +212,14 @@
                                     <label class="col-sm-2 control-label form-label"><span class="red"></span>图纸下载</label>
                                     <div class="col-sm-3 drawingWrap">
                                         <select id="drawingSelAdd" class="selectpicker" data-size="5" data-max-options="5" data-live-search="true" multiple data-style="btn-default">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label form-label"><span class="red"></span>关联项目</label>
+                                    <div class="col-sm-3" id="relateWrapAdd">
+                                        <select class="selectpicker" id="relateAdd" data-size="5" data-max-options="5" data-live-search="true" multiple data-style="btn-default">
                                         </select>
                                     </div>
                                 </div>
@@ -330,17 +333,14 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label form-label"><span class="red">*</span>父类分组</label>
-                        <div class="col-sm-5 " id="selWrap2">
-                            <select class="selectpicker pSelWrap" id="typeSel2" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                        <div class="col-sm-3" id="typeSelWrapEdit">
+                            <select class="selectpicker" id="typeSelEdit" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
                             </select>
                             <span class="help-block"></span>
                         </div>
-                    </div>
-
-                    <div class="form-group">
                         <label class="col-sm-2 control-label form-label"><span class="red">*</span>子类分组</label>
-                        <div class="col-sm-5 selWrap" id="selWrap4">
-                            <select class="selectpicker" id="typeSel4" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                        <div class="col-sm-3 selWrap" id="typeChildSelWrapEdit">
+                            <select class="selectpicker" id="typeChildSelEdit" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
                             </select>
                             <span class="help-block"></span>
                         </div>
@@ -348,16 +348,13 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label form-label">是否上线</label>
-                        <div class="col-sm-5">
+                        <div class="col-sm-3">
                             <select id="disabledSel2" class="selectpicker disabled" >
                                 <option selected value="0">上线</option>
                                 <option value="1">下架</option>
                             </select>
                             <span class="help-block"></span>
                         </div>
-                    </div>
-
-                    <div class="form-group">
                         <label class="col-sm-2 control-label form-label">支持现场</label>
                         <div class="col-sm-3">
                             <select id="isOrder2" class="selectpicker isOrder" >
@@ -448,7 +445,7 @@
                     <hr>
                     <div class="form-group">
                         <label class="col-sm-2 control-label form-label"><span class="red"></span>实验标准</label>
-                        <div class="col-sm-9 standardWrap">
+                        <div class="col-sm-3 standardWrap">
                             <select id="standardSelEdit" class="selectpicker" data-size="5" data-max-options="5" data-live-search="true" multiple data-style="btn-default">
                             </select>
                         </div>
@@ -456,8 +453,16 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label form-label"><span class="red"></span>图纸下载</label>
-                        <div class="col-sm-9 drawingWrap">
+                        <div class="col-sm-3 drawingWrap">
                             <select id="drawingSelEdit" class="selectpicker" data-size="5" data-max-options="5" data-live-search="true" multiple data-style="btn-default">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label form-label"><span class="red"></span>关联项目</label>
+                        <div class="col-sm-3" id="relateWrapEdit">
+                            <select class="selectpicker" id="relateEdit" data-size="5" data-max-options="5" data-live-search="true" multiple data-style="btn-default">
                             </select>
                         </div>
                     </div>
@@ -490,7 +495,7 @@
 <script src="../../static/js/util/stringUtil.js"></script>
 <script src="../../static/js/util/timeUtil.js"></script>
 <script src="../../static/js/util/util.js"></script>
-<script src="../../static/js/main/backUtil.js"></script>
+<script src="../../static/js/main/common.js"></script>
 <script src="../../static/plugins/datatables/datatables.min.js"></script>
 <script src="../../static/js/main/device.js?v={{ .random}}"></script>
 

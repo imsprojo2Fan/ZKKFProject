@@ -10,7 +10,7 @@ import (
 type User struct {
 	Id       int
 	Uid      string
-	Type     int //账号类型，0普通，1管理员，2高级管理员，3超级管理员
+	Type     int //账号类型，0超级管理员 1高级管理员 2普通管理员 3业务经理 4制样工程师 5测试工程师 6数据分析师 7财务 99普通用户
 	Sign     int //注册入口 0首页注册 1后台注册 2微信注册
 	Disabled int //是否禁用
 	Account  string
@@ -30,8 +30,13 @@ type User struct {
 	Birthday string
 	Active   int //是否激活 0未激活 1激活
 	Remark   string
+	TypeJob  int //角色负责业务模块，用于分配任务
 	Updated  time.Time `orm:"auto_now_add;type(datetime)"`
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
+}
+
+func UserTBName() string {
+	return TableName("user")
 }
 
 func (a *User) UserTBName() string {
@@ -48,7 +53,7 @@ func (this *User) Insert(obj *User) error {
 func (this *User) Update(obj *User) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "type", "disabled", "password", "phone", "email", "gender", "name","teacher","teacher_phone","teacher_mail","invoice","invoice_code","company","address", "birthday", "avatar", "active", "remark", "updated")
+	_, err := o.Update(obj, "type", "disabled", "password", "phone", "email", "gender", "name","teacher","teacher_phone","teacher_mail","invoice","invoice_code","company","address", "birthday", "avatar", "active", "remark","type_job", "updated")
 	return err
 }
 
@@ -193,11 +198,8 @@ func (this *User) SelectByEmail(email string, dataList *[]User) {
 func (this *User) Count(qMap map[string]interface{}) int {
 
 	o := orm.NewOrm()
-	//cnt,_ := o.QueryTable(new(User)).Filter("account__startswith",qMap["searchKey"]).Count() // SELECT COUNT(*) FROM USER
-	//cnt,_ := o.QueryTable("resume").Count()
-	//var count[] Resume
-	//o.Raw("select count(*) from resume where 1=1 and name like %?%",searchKey).QueryRows(count)
-	sql := "SELECT id from " + UserTBName() + " where 1=1 and id!=1 "
+	uType := qMap["uType"].(int)
+	sql := "SELECT id from " + UserTBName() + " where type>"+strconv.Itoa(uType)
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql = sql + " and (name like \"%" + key + "%\" or email like\"%" + key + "%\" or phone like \"%" + key + "%\")"
@@ -210,7 +212,8 @@ func (this *User) Count(qMap map[string]interface{}) int {
 func (this *User) ListByPage(qMap map[string]interface{}) []orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	sql := "SELECT * from " + UserTBName() + " where 1=1 and id!=1 "
+	uType := qMap["uType"].(int)
+	sql := "SELECT * from " + UserTBName() + " where type>"+strconv.Itoa(uType)
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql = sql + " and (name like \"%" + key + "%\" or email like\"%" + key + "%\" or phone like \"%" + key + "%\")"
@@ -251,9 +254,13 @@ func (this *User) SelectById(id int)User {
 	_ = o.Raw("select * from " + UserTBName()+" where id="+strconv.Itoa(id)).QueryRow(&u)
 	return  u
 }
-func (this *User) Assign()[]User {
+func (this *User) Assign(uType string)[]User {
 	o := orm.NewOrm()
 	var u []User
-	_,_ = o.Raw("select * from " + UserTBName()+" where type!=0 and type!=99").QueryRows(&u)
+	sqlTxt := "select * from user where `type`!=0 and `type`!=99"
+	if uType!=""{
+		sqlTxt += " and `type`!=1 and `type`!=2 and `type`="+uType
+	}
+	_,_ = o.Raw(sqlTxt).QueryRows(&u)
 	return  u
 }

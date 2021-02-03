@@ -1,14 +1,8 @@
 let myTable;
 let prefix = "/main/device";
-window.onresize = function() {
-    let bodyHeight = window.innerHeight;
-    console.log("bodyHeight:"+bodyHeight);
-    //设置表格高度
-    let tHeight = bodyHeight-210;
-    console.log("tHeight:"+tHeight);
-    $('.dataTables_scrollBody').css("height",tHeight+"px");
-};
-
+let typeDataArr = [];
+let gTid;
+let gTtid;
 $(document).ready(function() {
 
     if(!storageTest(window.localStorage)){
@@ -19,29 +13,21 @@ $(document).ready(function() {
     //window.parent.swalInfo('TEST',666,'error')
 
     //tab导航栏切换
-    $('#tabHref01').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
+    $('.breadcrumb span').on("click",function () {
+        if(!$(this).hasClass("active")){
             return false;
-        }else{
-            $('#tabHref02').addClass("active");
-            $(this).removeClass("active");
-            $('#tab2').fadeOut(200);
-            $("#tab1").fadeIn(200);
+        }
+        let data = $(this).attr("data");
+        if(!data){
+            return false;
+        }
+        $('.breadcrumb span').addClass("active");
+        $(this).removeClass("active");
+        if(data==="tab1"){
             refresh();
         }
-    });
-
-    $('#tabHref02').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
-            return false;
-        }else{
-            $('#tabHref01').addClass("active");
-            $(this).removeClass("active");
-            $('#tab1').fadeOut(200);
-            $("#tab2").fadeIn(200);
-        }
+        $('.tabWrap').fadeOut(300);
+        $("#"+data).fadeIn(300);
     });
 
     // 中文重写select 查询为空提示信息
@@ -58,76 +44,6 @@ $(document).ready(function() {
         //size:10   //设置select高度，同时显示5个值
     });
     $(".selectpicker").selectpicker('refresh');
-    //渲染分组下拉框
-    /*$('.pSelWrap').find("button").on("change",function () {
-        let tid = $(this).parent().find("select").val();
-        renderChildType(tid);
-    });*/
-    $('.pSelWrap').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
-        let selected = $(e.currentTarget).val();
-        renderChildType(selected);
-    });
-    //初始化父类分组过滤数据
-    $.post("/main/type/all",{_xsrf:$("#token", parent.document).val()},function (res) {
-        if(res.code===1){
-            loading(false,2);
-            let tList = res.data;
-            if(tList){
-                $('#typeSel1').html('');
-                $('#typeSel2').html('');
-                for(let i=0;i<tList.length;i++){
-                    let item = tList[i];
-                    $('#filterSelect').append('<option value="'+item.id+'">'+item.name+'</option>');
-                    $('#typeSel1').append('<option value="'+item.id+'">'+item.name+'</option>');
-                    $('#typeSel2').append('<option value="'+item.id+'">'+item.name+'</option>');
-                }
-            }else{
-                $('#selWrap1').html('');
-                $('#selWrap2').html('');
-                $('#selWrap1').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
-                $('#selWrap2').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
-            }
-            $('#filterSelect').selectpicker('refresh');
-            $('#typeSel1').selectpicker('refresh');
-            $('#typeSel2').selectpicker('refresh');
-            let tid = $('#typeSel1').val();
-            renderChildType(tid);
-        }
-    });
-
-    //初始化文件选择
-    $.post("/main/file/list4type",{_xsrf:$("#token", parent.document).val(),type:0},function (res) {
-        if(res.code===1){
-            let tList = res.data;
-            if(tList){
-                $('#standardSelAdd').html('');
-                $('#drawingSelAdd').html('');
-                $('#standardSelEdit').html('');
-                $('#drawingSelEdit').html('');
-                for(let i=0;i<tList.length;i++){
-                    let item = tList[i];
-                    $('#standardSelAdd').append('<option value="'+item.id+'">'+item.ori_name+'</option>');
-                    $('#drawingSelAdd').append('<option value="'+item.id+'">'+item.ori_name+'</option>');
-                    $('#standardSelEdit').append('<option value="'+item.id+'">'+item.ori_name+'</option>');
-                    $('#drawingSelEdit').append('<option value="'+item.id+'">'+item.ori_name+'</option>');
-                }
-            }else{
-                $('#form1 .standardWrap').html('');
-                $('#form1 .drawingWrap').html('');
-                $('#form1 .standardWrap').append('<span style="display: block;margin-top: 5px">暂无文件，请先添加!</span>');
-                $('#form1 .drawingWrap').append('<span style="display: block;margin-top: 5px">暂无文件，请先添加!</span>');
-                $('#form2 .standardWrap').html('');
-                $('#form2 .drawingWrap').html('');
-                $('#form2 .standardWrap').append('<span style="display: block;margin-top: 5px">暂无文件，请先添加!</span>');
-                $('#form2 .drawingWrap').append('<span style="display: block;margin-top: 5px">暂无文件，请先添加!</span>');
-            }
-            $('#standardSelAdd').selectpicker('refresh');
-            $('#drawingSelAdd').selectpicker('refresh');
-            $('#standardSelEdit').selectpicker('refresh');
-            $('#drawingSelEdit').selectpicker('refresh');
-
-        }
-    });
 
     $('#uploadPic').on('click',function () {
         openWindow("/main/uploadPic","中科科辅",1200,600);
@@ -185,7 +101,7 @@ $(document).ready(function() {
             }
         },
         columns: [
-            {"data": "id","width":"5%","render": function (data, type, row) {
+            {"data": "id","width":"8%","render": function (data, type, row) {
                     return "<div style='text-align: left'><input type='checkbox' name='check' value='"+row.id+"'><span style='margin-left: 3px;' class='tid'>"+row.id+"</span></div>";
                 }},
             { data: 'typeName',"width":"8%",},
@@ -344,10 +260,29 @@ $(document).ready(function() {
         rowData = myTable.row($(this).closest('tr')).data();
         $('#id').val(rowData.id);
         $('#editModal').find('.name').val(rowData.name);
-        $('#typeSel2').selectpicker('val',rowData.tid);
-        $('#typeSel2').selectpicker('refresh');
-        $('#typeSel4').selectpicker('val',rowData.ttid);
-        $('#typeSel4').selectpicker('refresh');
+        $('#typeSelEdit').selectpicker('val',rowData.tid);
+        $('#typeSelEdit').selectpicker('refresh');
+        let typeChildArr = findByTid(rowData.tid);
+        renderChildType(typeChildArr,"Edit");
+        $('#typeChildSelEdit').selectpicker('val',rowData.ttid);
+        $('#typeChildSelEdit').selectpicker('refresh');
+        let deviceArr = findByTtid(rowData.ttid,typeChildArr);
+        renderDevice4relate(deviceArr,"Edit");
+        let relate = rowData.relate;
+        if(relate){
+            let arr = relate.split(",");
+            let tempArr = [];
+            for(let i=0;i<arr.length;i++){
+                let id = arr[i];
+                if(!id){
+                    continue
+                }
+                tempArr.push(id);
+            }
+            $('#relateEdit').selectpicker('val',tempArr);
+            $("#relateEdit").selectpicker('refresh');
+        }
+
         $('#editModal').find('.disabled').selectpicker('val',rowData.disabled);
         $('#editModal').find('.disabled').selectpicker('refresh');
         $('#editModal').find('.isOrder').selectpicker('val',rowData.is_order);
@@ -423,19 +358,7 @@ $(document).ready(function() {
         rowData = myTable.row($(this).closest('tr')).data();
         //console.log(rowData);
         let id = rowData.id;
-
-        swal({
-            title: "确定删除吗?",
-            text: '删除将无法恢复该信息!',
-            type: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#ff1200',
-            cancelButtonColor: '#474747',
-            confirmButtonText: '确定',
-            cancelButtonText:'取消'
-        },function(){
-            del(id);
-        });
+        window.parent.confirmAlert("确定删除吗？","与当前相关的数据将全部被删除！",del,id);
 
     });
     $('#myTable').on("click",".preview",function (e) {
@@ -443,8 +366,111 @@ $(document).ready(function() {
         let rid = rowData.rid;
         window.open("/detail/"+rid,"_blank");
     })
-
+    initData();
 });
+
+function initData() {
+    //初始化父类分组过滤数据
+    $.post("/main/type/all4device",{_xsrf:$("#token", parent.document).val()},function (res) {
+        if(res.code===1){
+            loading(false,2);
+            let tList = res.data;
+            if(tList){
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i].typeItem;
+                    $('#filterSelect').append('<option value="'+item.id+'">'+item.name+'</option>');
+                }
+            }else{
+                $('#filterSelect').append('<span style="color: red;display: block;margin-top: 6px">暂无数据，请先添加!</span>');
+            }
+            $('#filterSelect').selectpicker('refresh');
+        }
+    });
+    //初始化文件选择
+    $.post("/main/file/list4type",{_xsrf:$("#token", parent.document).val(),type:0},function (res) {
+        if(res.code===1){
+            let tList = res.data;
+            if(tList){
+                $('#standardSelAdd').html('');
+                $('#drawingSelAdd').html('');
+                $('#standardSelEdit').html('');
+                $('#drawingSelEdit').html('');
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i];
+                    $('#standardSelAdd').append('<option value="'+item.id+'">'+item.ori_name+'</option>');
+                    $('#drawingSelAdd').append('<option value="'+item.id+'">'+item.ori_name+'</option>');
+                    $('#standardSelEdit').append('<option value="'+item.id+'">'+item.ori_name+'</option>');
+                    $('#drawingSelEdit').append('<option value="'+item.id+'">'+item.ori_name+'</option>');
+                }
+            }else{
+                $('#form1 .standardWrap').html('');
+                $('#form1 .drawingWrap').html('');
+                $('#form1 .standardWrap').append('<span style="display: block;margin-top: 6px">暂无文件，请先添加!</span>');
+                $('#form1 .drawingWrap').append('<span style="display: block;margin-top: 6px">暂无文件，请先添加!</span>');
+                $('#form2 .standardWrap').html('');
+                $('#form2 .drawingWrap').html('');
+                $('#form2 .standardWrap').append('<span style="display: block;margin-top: 6px">暂无文件，请先添加!</span>');
+                $('#form2 .drawingWrap').append('<span style="display: block;margin-top: 6px">暂无文件，请先添加!</span>');
+            }
+            $('#standardSelAdd').selectpicker('refresh');
+            $('#drawingSelAdd').selectpicker('refresh');
+            $('#standardSelEdit').selectpicker('refresh');
+            $('#drawingSelEdit').selectpicker('refresh');
+
+        }
+    });
+    init4select();
+}
+
+function init4select(){
+    //初始化父类分组过滤数据
+    $.post("/main/type/all4device",{_xsrf:$("#token", parent.document).val()},function (res) {
+        if(res.code===1){
+            let tList = res.data;
+            if(tList){
+                typeDataArr = tList;
+                $('.typeSelWrapAdd').html('<select class="selectpicker" id="typeChildSelAdd" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default"></select>');
+                $('.typeSelWrapEdit').html('<select class="selectpicker" id="typeChildSelEdit" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default"></select>');
+                for(let i=0;i<tList.length;i++){
+                    let item = tList[i].typeItem;
+                    $('#typeSelAdd').append('<option value="'+item.id+'">'+item.name+'</option>');
+                    $('#typeSelEdit').append('<option value="'+item.id+'">'+item.name+'</option>');
+                }
+            }else{
+                $('.typeSelWrapAdd').html('<span style="color: red;display: block;margin-top: 6px">暂无数据，请先添加!</span>');
+                $('.typeSelWrapEdit').html('<span style="color: red;display: block;margin-top: 6px">暂无数据，请先添加!</span>');
+            }
+            $('#typeSelAdd').selectpicker('refresh');
+            $('#typeSelEdit').selectpicker('refresh');
+            //回到初始状态
+            $('#typeSelAdd').selectpicker('val',['noneSelectedText'])
+            $("#typeSelAdd").selectpicker('refresh');
+            //渲染分组下拉框
+            $('#typeSelAdd').on('changed.bs.select', function (e,clickedIndex,newValue,oldValue) {
+                if(clickedIndex===undefined){
+                    return
+                }
+                let typeChildArr;
+                let item = typeDataArr[clickedIndex];
+                gTid = item.typeItem.id;
+                typeChildArr = item.typeChildArr;
+                $('#relateWrapAdd').html("<span style=\"color: red;display: block;margin-top: 6px\">暂无数据，请先添加!</span>");
+                renderChildType(typeChildArr,'Add');
+            });
+            $('#typeSelEdit').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+                if(clickedIndex===undefined){
+                    return
+                }
+                let typeChildArr;
+                let item = typeDataArr[clickedIndex];
+                gTid = item.typeItem.id;
+                typeChildArr = item.typeChildArr;
+                $('#relateWrapEdit').html("<span style=\"color: red;display: block;margin-top: 6px\">暂无数据，请先添加!</span>");
+                renderChildType(typeChildArr,'Edit');
+            });
+        }
+    });
+}
 
 function add(){
     let name = $('#form1').find('.name').val().trim();
@@ -461,12 +487,12 @@ function add(){
         imgSrc = imgSrc.substring(1,imgSrc.length);
         imgSrc = imgSrc.replaceAll("/img/","");
     }
-    let tid = $('#typeSel1').val();
+    let tid = $('#typeSelAdd').val();
     if(!tid){
         swalParent("系统提示",'未选择父类分组!',"warning");
         return;
     }
-    let ttid = $('#typeSel3').val();
+    let ttid = $('#typeChildSelAdd').val();
     if(!ttid){
         swalParent("系统提示",'未选择子类分组!',"warning");
         return;
@@ -487,6 +513,14 @@ function add(){
         });
         tArr2 = tArr2.substring(1,tArr2.length);
     }
+    let relateVal = $('#relateAdd').val();
+    let relateArr = "";
+    if(relateVal&&relateVal.length!==0){
+        $.each(relateVal,function (i,item) {
+            relateArr += ","+item;
+        });
+        relateArr = relateArr.substring(1,relateArr.length);
+    }
     let formData = formUtil('form1');
     formData["isOrder"] = $('#isOrder').val();
     formData["tid"] = tid;
@@ -494,6 +528,7 @@ function add(){
     formData["img"] = imgSrc;
     formData["standard"] = tArr;
     formData["drawing"] = tArr2;
+    formData["relate"] = relateArr;
     formData["disabled"] = $('#disabledSel1').val();
     formData["_xsrf"] = $("#token", parent.document).val();
     $.ajax({
@@ -509,7 +544,8 @@ function add(){
             let type = "error";
             if (r.code === 1) {
                 type = "success";
-                reset();
+                init4select();
+                reset4success();
             }
             swalParent("系统提示",r.msg,type);
         },
@@ -535,12 +571,12 @@ function edit(){
         imgSrc = imgSrc.substring(1,imgSrc.length);
         imgSrc = imgSrc.replaceAll("/img/","");
     }
-    let tid = $('#typeSel2').val();
+    let tid = $('#typeSelEdit').val();
     if(!tid){
         swalParent("系统提示",'未选择父类分组!',"warning");
         return;
     }
-    let ttid = $('#typeSel4').val();
+    let ttid = $('#typeChildSelEdit').val();
     if(!ttid){
         swalParent("系统提示",'未选择子类分组!',"warning");
         return;
@@ -561,6 +597,14 @@ function edit(){
         });
         tArr2 = tArr2.substring(1,tArr2.length);
     }
+    let relateVal = $('#relateEdit').val();
+    let relateArr = "";
+    if(relateVal&&relateVal.length!==0){
+        $.each(relateVal,function (i,item) {
+            relateArr += ","+item;
+        });
+        relateArr = relateArr.substring(1,relateArr.length);
+    }
     let formData = formUtil('form2');
     formData["isOrder"] = $('#isOrder2').val();
     formData["tid"] = tid;
@@ -569,6 +613,7 @@ function edit(){
     formData["standard"] = tArr;
     formData["drawing"] = tArr2;
     formData["disabled"] = $('#disabledSel2').val();
+    formData["relate"] = relateArr;
     formData["_xsrf"] = $("#token", parent.document).val();
     $.ajax({
         url : prefix+"/update",
@@ -582,7 +627,7 @@ function edit(){
         success : function(r) {
             $('#editModal').modal("hide");
             let type = "error";
-            if (r.code == 1) {
+            if (r.code === 1) {
                 type = "success";
                 refresh();
             }
@@ -612,6 +657,7 @@ function del(id){
             if (r.code == 1) {
                 setTimeout(function () {
                     swalParent("系统提示",r.msg, "success");
+                    init4select();
                     refresh();
                 },100);
             }else{
@@ -624,7 +670,7 @@ function del(id){
     })
 }
 
-function batchDel() {
+function batchDel(){
     let checkboxes = $('td input[type="checkbox"]');
     // 获取选中的checkbox
     let allChecked = checkboxes.filter(':checked');
@@ -632,46 +678,42 @@ function batchDel() {
         swalParent("系统提示","未选中任何删除项!","warning");
         return;
     }
+    window.parent.confirmAlert("确定删除这些数据吗？","删除将无法恢复该信息！",batchDelOperate);
+}
+
+function batchDelOperate(){
     let idArr="";
+    let checkboxes = $('td input[type="checkbox"]');
+    let allChecked = checkboxes.filter(':checked');
     for(let i=0;i<allChecked.length;i++){
         let id = $(allChecked[i]).val();
         idArr = idArr+","+id;
     }
     idArr = idArr.substring(1,idArr.length);
-    swal({
-        title: "确定删除这些数据吗?",
-        text: '删除将无法恢复该信息！',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#ff1200',
-        cancelButtonColor: '#474747',
-        confirmButtonText: '确定',
-        cancelButtonText:'取消'
-    },function(){
-        loading(true);
-        $.post(prefix+"/del4batch",{_xsrf:$("#token", parent.document).val(),idArr:idArr},function (res) {
-            loading(false);
-            if(res.code===1){
-                $("#hCheck").iCheck('uncheck');
-                refresh();
-                swalParent("系统提示",res.msg,"success");
-            }else{
-                let msg = res.msg;
-                if(!msg){
-                    msg = "当前用户无权限此操作!"
-                }
-                setTimeout(function () {
-                    swalParent("系统提示",msg,"error");
-                },100);
+    loading(true);
+    $.post(prefix+"/del4batch",{_xsrf:$("#token", parent.document).val(),idArr:idArr},function (res) {
+        loading(false);
+        if(res.code===1){
+            $("#hCheck").iCheck('uncheck');
+            init4select();
+            refresh();
+            swalParent("系统提示",res.msg,"success");
+        }else{
+            let msg = res.msg;
+            if(!msg){
+                msg = "当前用户无权限此操作!"
             }
-        });
+            setTimeout(function () {
+                swalParent("系统提示",msg,"error");
+            },100);
+        }
     });
 }
 
 function preview(oType) {
     let formId = "#form1";
     let imgWrap = "#addImgWrap";
-    let typeWrap = "#selWrap1";
+    let typeWrap = "#addTypeSelWrap";
     if(oType==="edit"){
         formId = "#form2";
         imgWrap = "#editImgWrap";
@@ -700,13 +742,6 @@ function preview(oType) {
     localStorage.setItem("t-range",$(formId).find('.range').val().trim());
     localStorage.setItem("t-achievement",$(formId).find('.achievement').val().trim());
     window.open("/template/detail","_blank");
-}
-
-function reset() {
-    $(":input").val("");
-    $('.addItem').show();
-    $('.imgItem').html("");
-    $("textarea").val("")
 }
 
 function refresh() {
@@ -755,40 +790,70 @@ function openRes4Pic(isSuccess,btnId,domId,picName) {
     }
 }
 
-function loading(flag) {
-    window.parent.loading(flag);
-}
-window.onresize = function() {
-    let height = window.innerHeight-200;
-    $('.dataTables_scrollBody').css("height",height+"px");
-};
-
-function renderChildType(tid) {
-    if(!tid){
-        return
-    }
+function renderChildType(typeChildArr,append) {
     //初始化子类分组数据
-    $.post("/main/typeChild/queryByTid",{_xsrf:$("#token",parent.document).val(),tid:tid},function (res) {
-        if(res.code===1){
-            let tList = res.data;
-            $('#selWrap3').html('');
-            $('#selWrap4').html('');
-            if(tList){
-                $('#selWrap3').html('<select id="typeSel3" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default"></select>');
-                $('#selWrap4').html('<select id="typeSel4" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default"></select>');
-                for(let i=0;i<tList.length;i++){
-                    let item = tList[i];
-                    $('#typeSel3').append('<option value="'+item.id+'">'+item.name+'</option>');
-                    $('#typeSel4').append('<option value="'+item.id+'">'+item.name+'</option>');
-                }
-            }else{
-                $('#selWrap3').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
-                $('#selWrap4').append('<span style="color: red;display: block;margin-top: 5px">暂无数据，请先添加!</span>');
+    if(typeChildArr){
+        let tList = typeChildArr;
+        $('#typeChildSelWrap'+append).html('');
+        if(tList){
+            $('#typeChildSelWrap'+append).html('<select class="selectpicker" id="typeChildSel'+append+'" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default"></select>');
+            for(let i=0;i<tList.length;i++){
+                let item = tList[i].typeChildItem;
+                $('#typeChildSel'+append).append('<option value="'+item.id+'">'+item.name+'</option>');
             }
-            $('#typeSel3').selectpicker('refresh');
-            $('#typeSel4').selectpicker('refresh');
+        }else{
+            $('#typeChildSelWrap'+append).append('<span style="color: red;display: block;margin-top: 6px">暂无数据，请先添加!</span>');
         }
-    });
+        $('#typeChildSel'+append).selectpicker({
+            noneSelectedText: '下拉选择项目',
+            noneResultsText: '无匹配选项',
+            maxOptionsText: function (numAll, numGroup) {
+                let arr = [];
+                arr[0] = (numAll === 1) ? '最多可选中数为{n}' : '最多可选中数为{n}';
+                arr[1] = (numGroup === 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)';
+                return arr;
+            },
+        });
+        //回到初始状态
+        $('#typeChildSel'+append).selectpicker('val',['noneSelectedText'])
+        $('#typeChildSel'+append).selectpicker('refresh');
+        $('#typeChildSel'+append).on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+            if(clickedIndex===undefined){
+                return
+            }
+            let data = tList[clickedIndex].deviceArr;
+            renderDevice4relate(data,append);
+        });
+    }else{
+        $('#typeChildSelWrap'+append).html('<span style="color: red;display: block;margin-top: 6px">暂无数据，请先添加!</span>');
+    }
+}
+
+function renderDevice4relate(data,append){
+    $('#relateWrap'+append).html("");
+    if(data){
+        let arr = data;
+        $('#relateWrap'+append).html('<select multiple class="selectpicker" id="relate'+append+'" data-size="10" data-max-options="50" data-live-search="true" data-style="btn-default"></select>');
+        for(let i=0;i<arr.length;i++){
+            let item = arr[i];
+            let name = item.name;
+            $('#relate'+append).append('<option deviceName="'+name+'" value="'+item.id+'">'+name+'</option>');
+        }
+        $('#relate'+append).selectpicker({
+            noneSelectedText: '下拉多选关联项目',
+            noneResultsText: '无匹配选项',
+            maxOptionsText: function (numAll, numGroup) {
+                let arr = [];
+                arr[0] = (numAll === 1) ? '最多可选中数为{n}' : '最多可选中数为{n}';
+                arr[1] = (numGroup === 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)';
+                return arr;
+            },
+        });
+        $('#relate'+append).selectpicker('refresh');
+    }else{
+        $('#relateWrap'+append).html("<span style=\"color:red;display:block;margin-top: 6px\">暂无数据，请先添加!</span>");
+    }
+
 }
 
 function renderChildType2() {
@@ -810,4 +875,28 @@ function renderChildType2() {
         refresh();
     });
 }
+
+function findByTid(tid) {
+    let resArr = [];
+    for(let i=0;i<typeDataArr.length;i++){
+        let typeId = typeDataArr[i].typeItem.id;
+        let typeChildArr = typeDataArr[i].typeChildArr;
+        if(typeId===tid){
+            resArr = typeChildArr;
+        }
+    }
+    return resArr;
+}
+function findByTtid(ttid,dataArr) {
+    let resArr = [];
+    for(let i=0;i<dataArr.length;i++){
+        let typeChildId = dataArr[i].typeChildItem.id;
+        let typeChildArr = dataArr[i].deviceArr;
+        if(typeChildId===ttid){
+            resArr = typeChildArr;
+        }
+    }
+    return resArr;
+}
+
 

@@ -19,6 +19,10 @@ type Message struct {
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+func MessageTBName() string {
+	return TableName("message")
+}
+
 func (a *Message) TableName() string {
 	return MessageTBName()
 }

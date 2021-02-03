@@ -283,3 +283,18 @@ input[type='radio'] {
 .rid{
     margin-top: 6px;
 }
+#assignModal .rid{
+    margin-top: 6px;
+}
+#curStatus{
+    margin-top: 6px;
+}
+.statusTxt-red{
+    color: red;
+}
+.statusTxt-blue{
+    color: #6195ff;
+}
+.statusTxt-green{
+    color: #4caf50;
+}
