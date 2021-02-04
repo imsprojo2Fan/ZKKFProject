@@ -108,7 +108,7 @@ func (this *Reservation) ListByPage(qMap map[string]interface{}) ([]orm.Params, 
 	var maps []orm.Params
 	o := orm.NewOrm()
 	//sql := "SELECT r.*,u.name,u.phone from user u,"+ReservationTBName()+" r where u.id=r.uid "
-	sql := "SELECT r.*,u.name,u.company,u.phone,d.name as deviceName,s.value as time from reservation r LEFT JOIN assign a on r.rid=a.rid LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id where r.del=0 "
+	sql := "SELECT r.*,u.name,u.company,u.phone,d.name as deviceName,s.value as time,e.satisfied,e.content,e.created as eTime from reservation r LEFT JOIN assign a on r.rid=a.rid LEFT JOIN user u on r.uuid=u.id LEFT JOIN device d on r.device_id=d.id LEFT JOIN setting s on r.time_id=s.id left join evaluate e on e.random_id=r.rid where r.del=0 "
 	uType := qMap["uType"].(int)
 	//处理普通用户数据----------------------------------开始
 	if uType==99{

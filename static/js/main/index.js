@@ -190,8 +190,8 @@ $(function () {
             $('#infoModal').modal("show");
         }
     }else{
-        $('.fa-cc-discover').parent().parent().remove();
-        $('.fa-clipboard').parent().parent().remove();
+        //$('.fa-cc-discover').parent().parent().remove();
+        //$('.fa-clipboard').parent().parent().remove();
     }
 
     //$('#account').html(userInfo.Account);

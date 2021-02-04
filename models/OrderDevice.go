@@ -24,6 +24,13 @@ func (this *OrderDevice) ListByRid(rid string) ([]OrderDevice,error) {
 	return res,err
 }
 
+func (this *OrderDevice) ListByRid2(rid string) ([]OrderDevice,error) {
+	o := orm.NewOrm()
+	var res []OrderDevice
+	_,err := o.Raw("select * from order_device where rid=?",rid).QueryRows(&res)
+	return res,err
+}
+
 func (this *OrderDevice)DelByRid(o orm.Ormer,rid string)error{
 	sqlTxt := "delete from order_device where rid=?"
 	_,err := o.Raw(sqlTxt,rid).Exec()

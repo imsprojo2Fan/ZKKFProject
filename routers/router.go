@@ -130,6 +130,14 @@ func init() {
 	beego.Router("/main/assign/assign", &controllers.AssignController{}, "POST:Assign")
 	//消息管理
 	beego.Router("/main/message/listAll", &controllers.MessageController{}, "POST:ListAll")
+	//评价管理
+	beego.Router("/main/evaluate/add", &controllers.EvaluateController{}, "POST:Add")
+	beego.Router("/main/evaluate/update", &controllers.EvaluateController{}, "POST:Update")
+	beego.Router("/main/evaluate/delete", &controllers.EvaluateController{}, "POST:Delete")
+	beego.Router("/main/evaluate/del4batch", &controllers.EvaluateController{}, "POST:Delete4Batch")
+	beego.Router("/main/evaluate/list", &controllers.EvaluateController{}, "POST:List")
+	beego.Router("/main/evaluate/list4randomId", &controllers.EvaluateController{}, "POST:ListByRandomId")
+	beego.Router("/index/evaluate/list4device", &controllers.EvaluateController{}, "POST:ListByDeviceRid")
 	//定制错误页
 	beego.ErrorController(&controllers.ErrorController{})
 

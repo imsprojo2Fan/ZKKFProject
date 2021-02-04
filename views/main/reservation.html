@@ -9,6 +9,7 @@
     <link href="../../static/css/main/common.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/design.css?v={{ .random}}" rel="stylesheet">
     <link href="../../static/css/main/reservation.css?v={{ .random}}" rel="stylesheet">
+    <link href="../../static/plugins/myEvaluate/style.css?v={{ .random}}" rel="stylesheet">
     <style>
 
     </style>
@@ -786,7 +787,60 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+    <!-- 模态框-evaluate（Modal） -->
+    <div class="modal fade" id="evaluateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h3 class="modal-title">
+                        服务评价
+                    </h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" class="rid">
+                    <div class="evaluateWrap">
+                        <div class="satisfiedWrap">
+                            <div class="picItem" data="0">
+                                <div></div>
+                                <span>非常满意</span>
+                            </div>
+                            <div class="picItem" data="1">
+                                <div></div>
+                                <span>满意</span>
+                            </div>
+                            <div class="picItem" data="2">
+                                <div></div>
+                                <span>一般</span>
+                            </div>
+                            <div class="picItem" data="3">
+                                <div></div>
+                                <span>不满意</span>
+                            </div>
 
+                        </div>
+                        <div class="satisfiedTxtWrap">
+                            <span>服务周到</span>
+                            <span>效率高</span>
+                            <span>处理快</span>
+                            <span>温馨解答问题</span>
+                            <span>服务满意</span>
+                            <span>服务态度恶劣</span>
+                        </div>
+                        <div class="contentWrap">
+                            <textarea maxlength="300" placeholder="请对服务做出简单评价"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">提交</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 </div>
 <!-- End Content -->
@@ -806,6 +860,7 @@
 <script src="../../static/js/util/timeUtil.js"></script>
 <script src="../../static/js/util/stringUtil.js"></script>
 <script src="../../static/js/util/imgUtil.js"></script>
+<script src="../../static/plugins/myEvaluate/index.js"></script>
 <script src="../../static/plugins/datatables/datatables.min.js"></script>
 <script src="../../static/js/main/reservation.js?v={{ .random}}"></script>
 

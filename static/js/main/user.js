@@ -73,15 +73,15 @@ $(document).ready(function() {
                     data = parseInt(data);
                     if(data===99){
                         str = "普通用户";
-                    }else if(data===7){
-                        str = "数据分析师";
                     }else if(data===6){
-                        str = "测试工程师";
+                        str = "数据分析师";
                     }else if(data===5){
-                        str = "制样工程师";
+                        str = "测试工程师";
                     }else if(data===4){
-                        str = "业务经理";
+                        str = "制样工程师";
                     }else if(data===3){
+                        str = "业务经理";
+                    }else if(data===7){
                         str = "财务管理员";
                     }else if(data===2){
                         str = "普通管理员";

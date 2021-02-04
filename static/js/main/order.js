@@ -77,9 +77,9 @@ $(document).ready(function () {
         //bSort:false,//排序
         "aoColumnDefs": [{
             "bSortable": false,
-            "aTargets": [0, 5, 7]
+            "aTargets": [0,6]
         }], //指定哪些列不排序
-        "order": [[6, "desc"]], //默认排序
+        "order": [[5, "desc"]], //默认排序
         "lengthMenu": [[30, 50, 100, 200, 500], [30, 50, 100, 200, 500]],
         "pageLength": 50,
         ajax: {
@@ -127,21 +127,6 @@ $(document).ready(function () {
                 }
             },
             {
-                data: 'remark',
-                "width": "15%",
-                "render": function (data) {
-                    return stringUtil.maxLength(data, 20);
-                }
-            },
-            /*{ data: 'updated',"width":"12%","render":function (data,type,row,meta) {
-                    if (!data){
-                        return "-";
-                    }
-                    let unixTimestamp = new Date(data);
-                    let commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
-                    return commonTime;
-                }},*/
-            {
                 data: 'created',
                 "width": "12%",
                 "render": function (data, type, row, meta) {
@@ -152,17 +137,19 @@ $(document).ready(function () {
                 data: null,
                 "render": function () {
                     let html =
-                        "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a> "
+                        "<a href='javascript:void(0);'  class='detail btn btn-default btn-xs'>查看</a> "
                     html +=
-                        "<a href='javascript:void(0);' class='up btn btn-primary btn-xs'></i>编辑</a> "
+                        "<a href='javascript:void(0);' class='edit btn btn-primary btn-xs'></i>编辑</a> "
                     html +=
-                        "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a> "
+                        "<a href='javascript:void(0);' class='del btn btn-danger btn-xs'>删除</a> "
                     html +=
                         "<a href='javascript:void(0);'  class='protocol btn btn-secondary btn-xs'>实验要求</a> "
                     html +=
                         "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>指派任务</a> "
                     html +=
-                        "<a href='javascript:void(0);'  class='report btn btn-secondary btn-xs'>实验报告</a> "
+                        "<a href='javascript:void(0);'  class='report btn btn-secondary btn-xs'>实验报告</a> ";
+                    html +=
+                        "<a href='javascript:void(0);'  class='evaluate btn btn-secondary btn-xs'>服务评价</a>&nbsp;";
                     return html;
                 }
             }
@@ -177,9 +164,11 @@ $(document).ready(function () {
             }
         },
         "createdRow": function (row, data, index) { //回调函数用于格式化返回数据
-            /*if(!data.name){
-                $('td', row).eq(2).html("暂未填写");
-            }*/
+            if(parseInt(data.status)!==6){
+                $(row).find(".evaluate").remove();
+            }else{
+                $(row).find(".assign").remove();
+            }
             let pageObj = myTable.page.info();
             let num = index + 1;
             num = num + pageObj.page * (pageObj.length);
@@ -206,7 +195,7 @@ $(document).ready(function () {
     $('.dataTables_wrapper .dataTables_filter input').css("background", "blue");
 
     let rowData;
-    $('#myTable').on("click", ".btn-default", function (e) { //查看
+    $('#myTable').on("click", ".detail", function (e) { //查看
         rowData = myTable.row($(this).closest('tr')).data();
         $('#detailModal').find('.rid').html(stringUtil.maxLength(rowData.rid));
         $('#detailModal').find('.name').html(stringUtil.maxLength(rowData.name));
@@ -222,7 +211,7 @@ $(document).ready(function () {
         let rid = rowData.rid;
         detail(rid);
     });
-    $('#myTable').on("click", ".btn-primary", function (e) { //编辑
+    $('#myTable').on("click", ".edit", function (e) { //编辑
         rowData = myTable.row($(this).closest('tr')).data();
         let rid = rowData.rid;
         $('#editRid').val(rid);
@@ -351,6 +340,51 @@ $(document).ready(function () {
         let val = $(this).val();
         openWindow("/main/editor?domId="+id,"中科科辅",1200,600);
     });
+
+    //服务评价------------------------------------------------------开始
+    $('#myTable').on("click",".evaluate",function(e){//服务评价
+        let rowData = myTable.row($(this).closest('tr')).data();
+        let rid = rowData.rid;
+        $('#evaluateModal .rid').val(rid);
+        myEva.reload();
+        let satisfied = rowData.satisfied;
+        if(satisfied&&parseInt(rowData.satisfied)!==-1){
+            //熏染数据
+            myEva.render(rowData.satisfied,rowData.content);
+            //myEva.disabled();
+            //myEva.reload();
+            //$('#evaluateModal .btn-primary').hide();
+        }else{
+            //$('#evaluateModal .btn-primary').show();
+        }
+        $('#evaluateModal').modal("show");
+    });
+    $('#evaluateModal .btn-primary').on("click",function () {
+        loadingParent(true,2);
+        let satisfied = parseInt($('.satisfiedActive').attr("data"));
+        if(!satisfied){
+            satisfied = 0;
+        }
+        $.post("/main/evaluate/add",{
+            rid:$('#evaluateModal .rid').val(),
+            satisfied:satisfied,
+            content:$('.contentWrap textarea').val().trim(),
+            _xsrf:$("#token", parent.document).val()
+        },function (r) {
+            loadingParent(false,2);
+            let type = "error";
+            if (r.code === 1) {
+                type = "success";
+                refresh();
+                $('#evaluateModal').modal("hide");
+            }
+            swalParent("系统提示", r.msg, type);
+        });
+    });
+    //初始化评价插件
+    myEva.init();
+    //服务评价------------------------------------------------------结束
+
     setTimeout(function () {
         initData();
     },100);
@@ -482,7 +516,6 @@ function detail(rid) {
                     '</span>  </div>\n</div>');
             }
         }
-
         $('#detailModal').modal("show");
     });
 }

@@ -29,29 +29,21 @@ $(document).ready(function() {
     //window.parent.swalInfo('TEST',666,'error')
 
     //tab导航栏切换
-    $('#tabHref01').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
+    $('.breadcrumb span').on("click", function () {
+        if (!$(this).hasClass("active")) {
             return false;
-        }else{
-            $('#tabHref02').addClass("active");
-            $(this).removeClass("active");
-            $('#tab2').fadeOut(200);
-            $("#tab1").fadeIn(200);
+        }
+        let data = $(this).attr("data");
+        if (!data) {
+            return false;
+        }
+        $('.breadcrumb span').addClass("active");
+        $(this).removeClass("active");
+        if(data==="tab1"){
             refresh();
         }
-    });
-    $('#tabHref02').on("click",function () {
-        let isActive = $(this).attr("class");
-        if(!isActive){
-            return false;
-        }else{
-            renderTime("add");
-            $('#tabHref01').addClass("active");
-            $(this).removeClass("active");
-            $('#tab1').fadeOut(200);
-            $("#tab2").fadeIn(200);
-        }
+        $('.tabWrap').fadeOut(200);
+        $("#"+data).fadeIn(200);
     });
 
     //datatable setting
@@ -92,8 +84,9 @@ $(document).ready(function() {
                     return dateUtil.GMT2Str(data);
                 }},
             { data: null,"render":function () {
-                    let html = "<a href='javascript:void(0);'  class='detail btn btn-default btn-xs'>订单详情&nbsp;<i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>&nbsp;";
-                    html += "<a href='javascript:void(0);'  class='result btn btn-primary btn-xs'>实验报告&nbsp;<i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i></a>";
+                    let html = "<a href='javascript:void(0);'  class='detail btn btn-primary btn-xs'>订单详情&nbsp;<i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>&nbsp;";
+                    html += "<a href='javascript:void(0);'  class='result btn btn-primary btn-xs'>实验报告&nbsp;<i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i></a>&nbsp;";
+                    html += "<a href='javascript:void(0);'  class='evaluate btn btn-primary btn-xs'>服务评价&nbsp;<i class=\"fa fa-commenting-o\" aria-hidden=\"true\"></i></a>&nbsp;";
                     return html;
                 } }
         ],
@@ -109,6 +102,9 @@ $(document).ready(function() {
         "createdRow": function ( row, data, index ) {//回调函数用于格式化返回数据
             if(!data.file){
                 $(row).find(".result").remove();
+            }
+            if(parseInt(data.status)!==6){
+                $(row).find(".evaluate").remove();
             }
             let pageObj = myTable.page.info();
             let num = index+1;
@@ -150,37 +146,98 @@ $(document).ready(function() {
         $('#downloadBtn')[0].click();
     });
 
-} );
+    //服务评价------------------------------------------------------开始
+    $('#myTable').on("click",".evaluate",function(e){//服务评价
+        let rowData = myTable.row($(this).closest('tr')).data();
+        let rid = rowData.rid;
+        $('#evaluateModal .rid').val(rid);
+        myEva.reload();
+        let satisfied = rowData.satisfied;
+        if(satisfied&&parseInt(rowData.satisfied)!==-1){
+            //熏染数据
+            myEva.render(rowData.satisfied,rowData.content);
+            myEva.disabled();
+            //myEva.reload();
+            $('#evaluateModal .btn-primary').hide();
+        }else{
+            $('#evaluateModal .btn-primary').show();
+        }
+        $('#evaluateModal').modal("show");
+    });
+    $('#evaluateModal .btn-primary').on("click",function () {
+        loadingParent(true,2);
+        let satisfied = parseInt($('.satisfiedActive').attr("data"));
+        if(!satisfied){
+            satisfied = 0;
+        }
+        $.post("/main/evaluate/add",{
+            rid:$('#evaluateModal .rid').val(),
+            satisfied:satisfied,
+            content:$('.contentWrap textarea').val().trim(),
+            _xsrf:$("#token", parent.document).val()
+        },function (r) {
+            loadingParent(false,2);
+            let type = "error";
+            if (r.code === 1) {
+                type = "success";
+                refresh();
+                reset4success();
+                $('#evaluateModal').modal("hide");
+            }
+            swalParent("系统提示", r.msg, type);
+        });
+    });
+    //初始化评价插件
+    myEva.init();
+    //服务评价------------------------------------------------------结束
+
+});
 
 function detail(rid) {
-    loadingParent(true,2);
-    $.post(prefix+"/detail",{rid:rid,_xsrf:$("#token", parent.document).val()},function (res) {
-        loadingParent(false,2);
-        console.log(res);
+    loadingParent(true, 2);
+    $.post(prefix + "/detail", {
+        rid: rid,
+        _xsrf: $("#token", parent.document).val()
+    }, function (res) {
+        loadingParent(false, 2);
         let localOutArr = res.data;
+        if(!localOutArr){
+            swalParent("系统提示","当前订单包含项目已被删除！","error");
+            return false;
+        }
         $('.libItemWrap').html("");
-        for(let i=0;i<localOutArr.length;i++){
+        for (let i = 0; i < localOutArr.length; i++) {
             let outItem = localOutArr[i];
             let tid = outItem.tid;
             let typeName = outItem.name;
+            if(!typeName){
+                $('.libItemWrap').append('<p class="red">当前订单包含分组已被删除！</p>')
+                continue;
+            }
             let innerArr = outItem.data;
             $('.libItemWrap').append('' +
                 '<div class="typeItem">\n' +
-                '   <div class="typeName">'+typeName+'</div>\n' +
+                '   <div class="typeName">' + typeName + '</div>\n' +
                 '   \n' +
-                '<div class="dWrap'+tid+'"></div>'+
+                '<div class="dWrap' + tid + '"></div>' +
                 '</div>');
-            for(let j=0;j<innerArr.length;j++){
+            if(!innerArr){
+                $('.dWrap' + tid).append('<p class="red">当前订单包含项目已被删除！</p>');
+                continue;
+            }
+            for (let j = 0; j < innerArr.length; j++) {
                 let dName = innerArr[j].name;
                 let title = dName;
-                dName = stringUtil.maxLength(dName,20);
+                dName = stringUtil.maxLength(dName, 20);
                 let dId = innerArr[j].id;
                 let count = innerArr[j].count;
-                $('.dWrap'+tid).append('<div class="dItem">\n<input type="hidden" value="'+dId+'" class="id">\n<i class="fa fa-files-o" aria-hidden="true"></i>\n<span class="dName" title="'+title+'">'+dName+'</span>\n<div class="countWrap" my-data="'+typeName+'" my-id="'+dId+'">&nbsp;&nbsp;<span class="count">x'+count+'</span>&nbsp;&nbsp;</div>\n</div>');
+                $('.dWrap' + tid).append('<div class="dItem">\n<input type="hidden" value="' + dId +
+                    '" class="id">\n<i class="fa fa-files-o" aria-hidden="true"></i>\n<span class="dName" title="' +
+                    title + '">' + dName + '</span>\n<div class="countWrap" my-data="' + typeName +
+                    '" my-id="' + dId + '">  <span class="count">x' + count +
+                    '</span>  </div>\n</div>');
             }
         }
-
-
         $('#detailModal').modal("show");
     });
 }
@@ -197,6 +254,7 @@ function refresh() {
     myTable.settings()[0].ajax.data = param;
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
 }
+
 function renderStatus(status) {
     let res = {}
     let str;

@@ -109,7 +109,9 @@ $(document).ready(function() {
                     html +=
                         "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>指派任务</a> "
                     html +=
-                        "<a href='javascript:void(0);'  class='report btn btn-secondary btn-xs'>实验报告</a> "
+                        "<a href='javascript:void(0);'  class='report btn btn-secondary btn-xs'>实验报告</a> ";
+                    html +=
+                        "<a href='javascript:void(0);'  class='evaluate btn btn-secondary btn-xs'>服务评价</a>&nbsp;";
                     return html;
                 } }
         ],
@@ -123,9 +125,11 @@ $(document).ready(function() {
             }
         },
         "createdRow": function ( row, data, index ) {//回调函数用于格式化返回数据
-            /*if(!data.name){
-                $('td', row).eq(2).html("暂未填写");
-            }*/
+            if(parseInt(data.status)!==6){
+                $(row).find(".evaluate").remove();
+            }else{
+                $(row).find(".assign").remove();
+            }
             let pageObj = myTable.page.info();
             let num = index+1;
             num = num+ pageObj.page*(pageObj.length);
@@ -284,6 +288,50 @@ $(document).ready(function() {
     $('#reportModal .btn-primary').on("click", function () {
         report();
     });
+    //服务评价------------------------------------------------------开始
+    $('#myTable').on("click",".evaluate",function(e){//服务评价
+        let rowData = myTable.row($(this).closest('tr')).data();
+        let rid = rowData.rid;
+        $('#evaluateModal .rid').val(rid);
+        myEva.reload();
+        let satisfied = rowData.satisfied;
+        if(satisfied&&parseInt(rowData.satisfied)!==-1){
+            //熏染数据
+            myEva.render(rowData.satisfied,rowData.content);
+            //myEva.disabled();
+            //myEva.reload();
+            //$('#evaluateModal .btn-primary').hide();
+        }else{
+            $('#evaluateModal .btn-primary').show();
+        }
+        $('#evaluateModal').modal("show");
+    });
+    $('#evaluateModal .btn-primary').on("click",function () {
+        loadingParent(true,2);
+        let satisfied = parseInt($('.satisfiedActive').attr("data"));
+        if(!satisfied){
+            satisfied = 0;
+        }
+        $.post("/main/evaluate/add",{
+            rid:$('#evaluateModal .rid').val(),
+            satisfied:satisfied,
+            content:$('.contentWrap textarea').val().trim(),
+            _xsrf:$("#token", parent.document).val()
+        },function (r) {
+            loadingParent(false,2);
+            let type = "error";
+            if (r.code === 1) {
+                type = "success";
+                refresh();
+                $('#evaluateModal textarea').val("");
+                $('#evaluateModal').modal("hide");
+            }
+            swalParent("系统提示", r.msg, type);
+        });
+    });
+    //初始化评价插件
+    myEva.init();
+    //服务评价------------------------------------------------------结束
 
     initData();
 });

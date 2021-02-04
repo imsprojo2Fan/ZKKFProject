@@ -1,0 +1,72 @@
+.evaluateWrap{
+    color: #979797;
+}
+.satisfiedWrap{
+    padding-bottom: 0;
+}
+.satisfiedWrap .picItem{
+    border: 0 solid red;
+    width: 24%;
+    display: inline-block;
+    text-align: center;
+}
+.satisfiedWrap .picItem span{
+    margin: 0 auto;
+    font-size: 16px;
+}
+.satisfiedWrap .picItem div{
+    width: 70px;
+    height: 70px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+.satisfiedWrap .picItem:nth-child(1) div{
+    background: url(./starts.png) -276px -94px no-repeat;
+}
+.satisfiedWrap .picItem:nth-child(2) div{
+    background: url(./starts.png) -180px -0px no-repeat;
+}
+.satisfiedWrap .picItem:nth-child(3) div{
+    background: url(./starts.png) -90px -0px no-repeat;
+}
+.satisfiedWrap .picItem:nth-child(4) div{
+    background: url(./starts.png) -0px -0px no-repeat;
+}
+.satisfiedTxtWrap{
+    text-align: center;
+    padding: 20px;
+}
+.satisfiedTxtWrap span{
+    padding: 6px 24px;
+    border: 1px solid #eee;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 6px;
+    border-radius: 3px;
+}
+.satisfiedTxtDisabled{
+    cursor: not-allowed!important;
+}
+.satisfiedTxtDisabled:hover{
+    border-color: #eee;
+}
+.satisfiedTxtWrap span:hover{
+    border: 1px solid #6195FF;
+}
+.satisfiedTxtActive{
+    border-color: #6195FF!important;
+    background: #6195ff;
+    color: white;
+}
+.contentWrap{
+    text-align: center;
+}
+.contentWrap textarea{
+    margin-left: -8px;
+    border: 1px solid #eee;
+    resize: none;
+    padding: 6px;
+    width: 82%;
+    outline: none;
+    border-radius: 3px;
+}

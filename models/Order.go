@@ -156,7 +156,7 @@ func (this *Order) SelectByName(obj *Order) {
 func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 
 	o := orm.NewOrm()
-	sql := "select * from `order` o left join assign a on o.rid=a.rid left join user u on o.uid=u.id where o.del=0 "
+	sql := "select * from `order` o left join assign a on o.rid=a.rid left join user u on o.uid=u.id left join evaluate e on o.rid=e.random_id where o.del=0 "
 	uType := qMap["uType"].(int)
 	//处理普通用户数据----------------------------------开始
 	if uType==99{
@@ -188,7 +188,7 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select o.*,u.name,u.phone,u.company from `order` o left join assign a on o.rid=a.rid left join user u on o.uid=u.id where o.del=0 "
+	sql := "select o.*,u.name,u.phone,u.company,e.satisfied,e.content,e.created as eTime from `order` o left join assign a on o.rid=a.rid left join user u on o.uid=u.id left join evaluate e on o.rid=e.random_id where o.del=0 "
 	uType := qMap["uType"].(int)
 	//处理普通用户数据----------------------------------开始
 	if uType==99{
@@ -283,7 +283,6 @@ func (this *Order) ListByRid(rid string) (error,[]map[string]interface{}) {
 		temp["data"] = tempArr
 		backArr = append(backArr,temp)
 	}
-
 	return err,backArr
 }
 

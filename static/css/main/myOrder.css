@@ -1,0 +1,313 @@
+#tab2 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: 135px!important;
+    height: 30px;
+}
+.col-sm-6{
+    margin-top: 0;
+}
+.timeItem{
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    width: 100px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    float: left;
+    text-align: center;
+    color:var(--thm-base)
+}
+.timeItem:hover{
+    background: #6195ff;
+    color: white;
+    border-color: #6195ff;
+}
+.timeItemActive{
+    background: #6195ff;
+    border: 1px solid #6195ff;
+    color: white;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    width: 100px;
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    float: left;
+    text-align: center;
+}
+.timeItemActive:hover{
+    opacity: 0.75;
+}
+.timeItem-disabled{
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    width: 100px;
+    border-radius: 4px;
+    margin-right: 5px;
+    background: #eee;
+    cursor: not-allowed;
+    float: left;
+    text-align: center;
+}
+
+.modal-header .close:focus,
+.modal-header .close:active{
+    outline: none;
+}
+#detailModal .modal-body{
+    max-height: 45vh;
+    overflow-y: auto;
+}
+
+.libItemWrap{
+    padding: 6px 48px;
+}
+
+.libItemWrap .typeName{
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 3px;
+    border-left: 3px solid #6195ff;
+    border-bottom: 1px dashed #eee;
+}
+.libItemWrap hr{
+    margin: 1px 0;
+}
+.libItemWrap .dWrap{
+    padding: 2% 8%;
+}
+.libItemWrap .dWrap i{
+    font-size: 18px;
+}
+.libItemWrap .dItem{
+    padding: 6px 35px 6px 15px;
+}
+.libItemWrap .fa-files-o{
+    color: #6195ff!important;
+}
+.libItemWrap .fa-trash-o{
+    float: right;
+    margin-top: 6px;
+    margin-right: 8%;
+    color: red;
+    cursor: pointer;
+}
+.cac{
+    font-size: 20px;
+    cursor: pointer;
+}
+.count{
+    font-size: 16px;
+}
+.countWrap{
+    display: inline-block;
+    float: right;
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none;
+}
+.form-control-static {
+    min-height: 27px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0;
+}
+.modal-footer{
+    text-align: center;
+}
+
+/*表格样式*/
+/* CSS Document */
+table{
+    width: 100%;
+}
+#tab3 tr{
+    height: 55px;
+    font-size: 16px;
+}
+input[type='radio'] {
+    cursor: pointer;
+}
+
+.tabtop13 {
+    margin-top: 13px;
+}
+.tabtop13 td{
+    height:25px;
+    line-height:150%;
+}
+.font-left{ text-align:left}
+.font-center{ text-align:center}
+.btbg{background:#b5b9bf  !important;}
+.btbg1{background:#f2fbfe !important;}
+.btbg2{background:#f3f3f3 !important;}
+.biaoti{
+    font-family: "微软雅黑";
+    font-size: 30px;
+    font-weight: bold;
+    border-bottom:1px dashed #CCCCCC;
+    color: #6195ff;
+    padding: 6px 0;
+}
+.titfont {
+    font-family: 微软雅黑;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #e9faff;
+}
+.tabtxt2 {
+    font-family: 微软雅黑;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    color: #646567;
+}
+#tab2 .tabtxt2,#tab4 .tabtxt2{
+    text-align: right;
+    padding-right: 15px;
+}
+.tabtxt3 {
+    font-family: 微软雅黑;
+    font-size: 14px;
+    padding-left: 15px;
+    color: #000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    line-height: 20px;
+}
+#tab2,#tab3,#tab4{
+    width: 75%;
+    margin: 0 auto;
+    height: 100vh;
+    overflow-y: auto;
+    padding-bottom: 15vh;
+}
+#protocolModal .rid{
+    margin-top: 6px;
+}
+.tipRed{
+    color: red;
+}
+.home{
+    color: #6195ff;
+}
+.allDevice{
+    color: #848484;
+    font-size: 20px;
+}
+.allDevice i{
+    color: #6195ff;
+}
+.wat{
+    width: 100%;
+    z-index: 0;
+    position: absolute;
+    font-family: "Panxiang";
+    color: rgba(0,0,0,0.3);
+    /*color: red;*/
+    font-size: 17px;
+    top: 0;
+}
+.watword{
+    position: relative;
+    text-align: center;
+    transform: rotate(-16deg);
+    width: 20%;
+    float: left;
+    height: 150px;
+}
+
+.sign img{
+    width: 25%;
+}
+
+#tab3 textarea{
+    display: none;!important;
+}
+#tab3 .editor {
+    min-height: 255px;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 6px;
+    margin-bottom: 8px;
+}
+#tab3 h1,h2,h3,h4,h5{
+    margin-top: 0!important;
+}
+#pdfBtn{
+    position: fixed;
+    right: 7%;
+    width: 4%;
+    top: 45vh;
+    cursor: pointer;
+}
+#pdfBtn:hover{
+    opacity: 0.75;
+}
+#more{
+    position: fixed;
+    right: 7.5%;
+    width: 3%;
+    top: 35vh;
+    cursor: pointer;
+}
+#more:hover{
+    opacity: 0.75;
+}
+
+.dataTables_filter{
+    margin-right: 146px;
+    margin-top: 0;
+}
+#filterWrap{
+    position: fixed;
+    z-index: 999;
+    right: 15px;
+    top: 53px;
+}
+#addTable,#editTable{
+    margin: 0 auto;
+}
+#addTable tr,#editTable tr{
+    height: 35px;
+}
+#addTable textarea,#editTable textarea{
+    display: none;!important;
+}
+#addTable .editor,#editTable .editor {
+    min-height: 255px;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+#assignModal .rid{
+    margin-top: 6px;
+}
+#curUser{
+    margin-top: 6px;
+}
+#curStatus{
+    margin-top: 6px;
+}
+.statusTxt-red{
+    color: red;
+}
+.statusTxt-blue{
+    color: #6195ff;
+}
+.statusTxt-green{
+   color: #4caf50;
+}
+#evaluateModal .modal-body{
+    max-height: 75vh;
+    overflow-y: auto;
+}
+.modal-title{
+    font-size: 23px;
+}

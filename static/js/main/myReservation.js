@@ -100,7 +100,9 @@ $(document).ready(function() {
                     return dateUtil.GMT2Str(data);
                 }},
             { data: null,"width":"15%","render":function () {
-                    let html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
+                    let html = "<a href='javascript:void(0);'  class='detail btn btn-primary btn-xs'>预约详情&nbsp;<i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>&nbsp;";
+                    html += "<a href='javascript:void(0);'  class='result btn btn-primary btn-xs'>实验报告&nbsp;<i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i></a>&nbsp;";
+                    html += "<a href='javascript:void(0);'  class='evaluate btn btn-primary btn-xs'>服务评价&nbsp;<i class=\"fa fa-commenting-o\" aria-hidden=\"true\"></i></a>&nbsp;";
                     return html;
                 } }
         ],
@@ -114,9 +116,15 @@ $(document).ready(function() {
             }
         },
         "createdRow": function ( row, data, index ) {//回调函数用于格式化返回数据
-            /*if(!data.name){
-                $('td', row).eq(2).html("暂未填写");
-            }*/
+            if(!data.file){
+                $(row).find(".result").remove();
+            }
+            if(parseInt(data.status)!==6){
+                $(row).find(".evaluate").remove();
+            }
+            if(parseInt(data.status)!==6){
+                $(row).find(".evaluate").remove();
+            }
             let pageObj = myTable.page.info();
             let num = index+1;
             num = num+ pageObj.page*(pageObj.length);
@@ -129,6 +137,7 @@ $(document).ready(function() {
             loadingParent(true,2);
         },
         "drawCallback": function( settings ) {
+
             let api = this.api();
             // 输出当前页的数据到浏览器控制台
             //console.log( api.rows( {page:'current'} ).data );
@@ -160,6 +169,55 @@ $(document).ready(function() {
         $('#detail_created').html(dateUtil.GMT2Str(created));
         $('#detailModal').modal("show");
     });
+    $('#myTable').on("click",".result",function(e){//实验报告
+        rowData = myTable.row($(this).closest('tr')).data();
+        let fileName = rowData.file;
+        $('#downloadBtn').attr("href","/file/report/"+fileName);
+        $('#downloadBtn')[0].click();
+    });
+    //服务评价------------------------------------------------------开始
+    $('#myTable').on("click",".evaluate",function(e){//服务评价
+        let rowData = myTable.row($(this).closest('tr')).data();
+        let rid = rowData.rid;
+        myEva.reload();
+        $('#evaluateModal .rid').val(rid);
+        let satisfied = rowData.satisfied;
+        if(satisfied&&parseInt(rowData.satisfied)!==-1){
+            //熏染数据
+            myEva.render(rowData.satisfied,rowData.content);
+            myEva.disabled();
+            //myEva.reload();
+            $('#evaluateModal .btn-primary').hide();
+        }else{
+            $('#evaluateModal .btn-primary').show();
+        }
+        $('#evaluateModal').modal("show");
+    });
+    $('#evaluateModal .btn-primary').on("click",function () {
+        loadingParent(true,2);
+        let satisfied = parseInt($('.satisfiedActive').attr("data"));
+        if(!satisfied){
+            satisfied = 0;
+        }
+        $.post("/main/evaluate/add",{
+            rid:$('#evaluateModal .rid').val(),
+            satisfied:satisfied,
+            content:$('.contentWrap textarea').val().trim(),
+            _xsrf:$("#token", parent.document).val()
+        },function (r) {
+            loadingParent(false,2);
+            let type = "error";
+            if (r.code === 1) {
+                type = "success";
+                refresh();
+                $('#evaluateModal').modal("hide");
+            }
+            swalParent("系统提示", r.msg, type);
+        });
+    });
+    //初始化评价插件
+    myEva.init();
+    //服务评价------------------------------------------------------结束
 
 } );
 

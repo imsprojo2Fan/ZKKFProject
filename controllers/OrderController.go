@@ -49,12 +49,6 @@ func (this *OrderController) List() {
 		sortCol = "status"
 	}
 	if sortNum == "5" {
-		sortCol = "remark"
-	}
-	/*if sortNum == "6" {
-		sortCol = "updated"
-	}*/
-	if sortNum == "6" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")

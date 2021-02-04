@@ -12,6 +12,7 @@ type Evaluate struct {
 	Uid      int       //创建人id/user表id
 	RandomId string    //order/reservation表rid
 	DeviceRid string  //device表rid
+	Disabled int //是否显示 0不显示 1显示
 	Satisfied int //满意度 0非常满意 1满意 2一般 3不满意
 	Content string //评价内容
 	Updated  time.Time `orm:"auto_now_add;type(datetime)"`
@@ -19,7 +20,7 @@ type Evaluate struct {
 }
 
 func EvaluateTBName() string {
-	return TableName("file")
+	return TableName("evaluate")
 }
 
 func (a *Evaluate) TableName() string {
@@ -36,7 +37,14 @@ func (this *Evaluate) Insert(obj *Evaluate) error {
 func (this *Evaluate) Update(obj *Evaluate) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "type","remark","updated")
+	_, err := o.Update(obj, "disabled","satisfied","content","updated")
+	return err
+}
+
+func (this *Evaluate) UpdateByRid(obj *Evaluate) error {
+
+	o := orm.NewOrm()
+	_, err := o.Raw("update evaluate set disabled=?,satisfied=?,content=? where random_id=?",obj.Disabled,obj.Satisfied,obj.Content,obj.RandomId).Exec()
 	return err
 }
 
@@ -48,7 +56,7 @@ func (this *Evaluate) Delete(obj *Evaluate) error {
 
 func(this *Evaluate) DeleteBatch(idArr string) error {
 	o := orm.NewOrm()
-	_,err := o.Raw("delete from Evaluate where id in "+idArr).Exec()
+	_,err := o.Raw("delete from evaluate where id in "+idArr).Exec()
 	return err
 }
 
@@ -60,7 +68,7 @@ func(this *Evaluate) SelectByCol(obj *Evaluate,col string) {
 func(this *Evaluate) SelectByIds(ids string)([]Evaluate,error) {
 	o := orm.NewOrm()
 	var res []Evaluate
-	_,err := o.Raw("select * from Evaluate where id in "+ids).QueryRows(&res)
+	_,err := o.Raw("select * from evaluate where id in "+ids).QueryRows(&res)
 	return res,err
 }
 
@@ -77,7 +85,7 @@ func (this *Evaluate) SelectByName(obj *Evaluate) {
 func (this *Evaluate) Count(qMap map[string]interface{}) (int, error) {
 
 	o := orm.NewOrm()
-	sql := "SELECT id from Evaluate where 1=1 "
+	sql := "SELECT id from evaluate where 1=1 "
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql += " and (ori_name like \"%" + key + "%\" or remark like \"%"+key+"%\")"
@@ -90,7 +98,7 @@ func (this *Evaluate) Count(qMap map[string]interface{}) (int, error) {
 func (this *Evaluate) ListByPage(qMap map[string]interface{}) ([]orm.Params, error) {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	sql := "SELECT * from Evaluate where 1=1 "
+	sql := "SELECT * from evaluate where 1=1 "
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
 		sql += " and (ori_name like \"%" + key + "%\" or remark like \"%"+key+"%\")"
@@ -119,19 +127,19 @@ func (this *Evaluate) All() ([]orm.Params, error) {
 	return res, err
 }
 
-func (this *Evaluate) ListByType(t string) ([]orm.Params, error) {
-	var res []orm.Params
+func (this *Evaluate) ListByRid(rid string) ([]Evaluate, error) {
+	var res []Evaluate
 	o := orm.NewOrm()
-	sql := "select * from " + EvaluateTBName()+" where `type`="+t
-	_, err := o.Raw(sql).Values(&res)
+	sql := "select * from " + EvaluateTBName()+" where device_rid like %?%"
+	_, err := o.Raw(sql,rid).QueryRows(&res)
 	return res, err
 }
 
-func (this *Evaluate) ListByIds(ids string) ([]Evaluate, error) {
-	var res []Evaluate
+func (this *Evaluate) ListByRandomId(rid string) (Evaluate, error) {
+	var res Evaluate
 	o := orm.NewOrm()
-	sql := "select id,ori_name,Evaluate_name from " + EvaluateTBName()+" where id in ("+ids+")"
-	_, err := o.Raw(sql).QueryRows(&res)
+	sql := "select * from " + EvaluateTBName()+" where random_id=?"
+	err := o.Raw(sql,rid).QueryRow(&res)
 	return res, err
 }
 
