@@ -181,6 +181,7 @@ $(document).ready(function() {
         let rid = rowData.rid;
         myEva.reload();
         $('#evaluateModal .rid').val(rid);
+        $('#evaluateModal .rid').val(rowData.uid);
         let satisfied = rowData.satisfied;
         if(satisfied&&parseInt(rowData.satisfied)!==-1){
             //熏染数据
@@ -201,6 +202,7 @@ $(document).ready(function() {
         }
         $.post("/main/evaluate/add",{
             rid:$('#evaluateModal .rid').val(),
+            uid:$('#evaluateModal .uid').val(),
             satisfied:satisfied,
             content:$('.contentWrap textarea').val().trim(),
             _xsrf:$("#token", parent.document).val()

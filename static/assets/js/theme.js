@@ -489,4 +489,6 @@
 
     });
 
+    $('.preloader').fadeOut(200);
+
 })(jQuery);

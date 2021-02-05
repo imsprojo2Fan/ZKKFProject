@@ -40,7 +40,7 @@ func (this *AssignController) Assign(){
 			user := new(models.User)
 			resUser := user.SelectById(uuid)
 			//通过被指定用户的角色来确定状态
-			assign.Status = resUser.Type-3
+			assign.Status = resUser.Type-2
 			assign.Uuid = uuid
 		}
 		assign.Uid = uid

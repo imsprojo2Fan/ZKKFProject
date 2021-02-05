@@ -127,11 +127,11 @@ func (this *Evaluate) All() ([]orm.Params, error) {
 	return res, err
 }
 
-func (this *Evaluate) ListByRid(rid string) ([]Evaluate, error) {
-	var res []Evaluate
+func (this *Evaluate) ListByRid(rid string) ([]orm.Params, error) {
+	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select * from " + EvaluateTBName()+" where device_rid like %?%"
-	_, err := o.Raw(sql,rid).QueryRows(&res)
+	sql := "select e.*,u.name,u.avatar,u.company from evaluate e,user u where u.id=e.uid and e.device_rid like '%"+rid+"%'"
+	_, err := o.Raw(sql).Values(&res)
 	return res, err
 }
 

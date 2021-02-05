@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"ZkkfProject/models"
-	"ZkkfProject/utils"
 	"github.com/astaxie/beego/orm"
 	"strings"
 	"time"
@@ -73,19 +72,19 @@ func (this *EvaluateController) List() {
 
 func (this *EvaluateController) Add() {
 
-	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uid := session.Get("id").(int)
+	//session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	//uid := session.Get("id").(int)
 	satisfied,_ := this.GetInt("satisfied")
 	content := this.GetString("content")
 	var obj models.Evaluate
-	obj.Uid = uid
+	obj.Uid,_ = this.GetInt("uid")
 	obj.RandomId = this.GetString("rid")
 	//查询order_device获取该订单包含几项项目
 	orderDevice := new(models.OrderDevice)
 	dArr,_ := orderDevice.ListByRid2(obj.RandomId)
 	var dStr string
 	for _,item := range dArr{
-		dStr += ","+item.Rid
+		dStr += ","+item["rid"].(string)
 	}
 	if dStr!=""{
 		dStr = dStr[1:]

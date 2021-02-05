@@ -293,6 +293,7 @@ $(document).ready(function() {
         let rowData = myTable.row($(this).closest('tr')).data();
         let rid = rowData.rid;
         $('#evaluateModal .rid').val(rid);
+        $('#evaluateModal .uid').val(rowData.uid);
         myEva.reload();
         let satisfied = rowData.satisfied;
         if(satisfied&&parseInt(rowData.satisfied)!==-1){
@@ -314,6 +315,7 @@ $(document).ready(function() {
         }
         $.post("/main/evaluate/add",{
             rid:$('#evaluateModal .rid').val(),
+            uid:$('#evaluateModal .uid').val(),
             satisfied:satisfied,
             content:$('.contentWrap textarea').val().trim(),
             _xsrf:$("#token", parent.document).val()

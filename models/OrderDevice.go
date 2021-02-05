@@ -24,10 +24,10 @@ func (this *OrderDevice) ListByRid(rid string) ([]OrderDevice,error) {
 	return res,err
 }
 
-func (this *OrderDevice) ListByRid2(rid string) ([]OrderDevice,error) {
+func (this *OrderDevice) ListByRid2(rid string) ([]orm.Params,error) {
 	o := orm.NewOrm()
-	var res []OrderDevice
-	_,err := o.Raw("select * from order_device where rid=?",rid).QueryRows(&res)
+	var res []orm.Params
+	_,err := o.Raw("select d.* from order_device o,device d where o.device_id=d.id and o.rid=?",rid).Values(&res)
 	return res,err
 }
 

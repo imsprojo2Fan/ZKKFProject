@@ -304,4 +304,55 @@ hr{
     font-size: 10px;
     margin-left: 5px;
 }
+.commentWrap{
+    border-top:1px solid #eee;
+    padding: 0 8px 8px 8px;
+}
+.cItem{
+    padding: 10px;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    margin: 0 0 -1px -1px;
+}
+.avatar{
+    font-size: 50px;
+    display: inline-block;
+}
+.cName{
+    font-weight: bold;
+    display: inline-block;
+    position: relative;
+    top: -13px;
+    width: 150px;
+}
+.satisfied{
+    background: #6195FF;
+    color: white;
+    font-size: 15px;
+    width: 100px;
+    line-height: 35px;
+    height: 35px;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+    top: -13px;
+    margin-left: 75px;
+}
+.cStatus-gray{
+    background: #848484!important;
+}
+.cStatus-red{
+    background: red!important;
+}
+.cTime{
+    float: right;
+    margin-right: 3px;
+    display: inline-block;
+    margin-top: -8px;
+}
+.cContentTxt{
+    padding: 0 20px;
+    font-size: 15px;
+}
 

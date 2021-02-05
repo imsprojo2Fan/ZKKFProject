@@ -263,6 +263,20 @@ func (this *DeviceController)Detail() {
 	}
 	this.Data["_xsrf"] = this.XSRFToken()
 	this.Data["info"] = deviceInfo
+	//查询评价
+	eva := new(models.Evaluate)
+	eArr,_ := eva.ListByRid(rid)
+	var eArr2 []orm.Params
+	for _,item := range eArr{
+		name := item["name"].(string)
+		company := item["company"].(string)
+		name = utils.SubString(name,1)+"**"
+		company = utils.SubString(company,5)+"***"
+		item["name"] = name
+		item["company"] = company
+		eArr2 = append(eArr2,item)
+	}
+	this.Data["eArr"] = eArr2
 	this.TplName = "detail.html"
 
 }

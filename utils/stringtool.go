@@ -121,3 +121,6 @@ func VerifyEmailFormat(email string) bool {
 	reg := regexp.MustCompile(pattern)
 	return reg.MatchString(email)
 }
+func SubString(s string,length int)(res string)  {
+	return string([]rune(s)[:length])
+}

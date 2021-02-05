@@ -222,6 +222,8 @@ $(function () {
         renderTime();
     });
 
+    renderEvaluate();
+
     $('.preloader').fadeOut(200);
 
 });
@@ -259,5 +261,43 @@ function renderRelate() {
             }
         }
     });
+}
+
+function renderEvaluate(){
+    if(!eArr){
+        $('.commentWrap').html("<p>暂无服务评价</p>");
+        return
+    }
+    $('.commentWrap').html("");
+    for(let i=0;i<eArr.length;i++){
+        let item = eArr[i];
+        let satisfied = item.satisfied;
+        let satisfiedTxt = '非常满意';
+        let cStatus;
+        if(satisfied==1){
+            satisfiedTxt = "满意";
+        }else if(satisfied==2){
+            cStatus = "cStatus-gray";
+            satisfiedTxt = "一般";
+        }else if(satisfied==3){
+            cStatus = "cStatus-red";
+            satisfiedTxt = "不满意";
+        }
+        let created = item.created;
+        created = created.replace("T"," ");
+        created = created.replace("+08:00","");
+        $('.commentWrap').append('' +
+            '<div class="cItem">\n' +
+            '   <div class="cHead">\n' +
+            '       <div class="avatar"><i class="fa fa-user-circle" aria-hidden="true"></i></div>\n' +
+            '       <div class="cName">'+item.name+'&nbsp;&nbsp;&nbsp;['+item.company+']</div>\n' +
+            '       <div class="satisfied '+cStatus+'">'+satisfiedTxt+'</div>\n' +
+            '       <div class="cTime"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;'+created+'</div>\n' +
+            '   </div>\n' +
+            '   <div class="cContent">\n' +
+            '       <span class="cContentTxt">'+item.content+'</span>\n' +
+            '   </div>\n' +
+            '</div>');
+    }
 }
 
