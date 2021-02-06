@@ -13,14 +13,14 @@ $(function () {
 });
 
 function reset4success() {
-    $("input").val("");
+    $("input[type=text]").val("");
     $('.addItem').show();
     $('.imgItem').html("");
     $("textarea").val("");
     $("#addTable .editor").html("可插入文字/图片");
     $('#uploadPic').html("上传图片");
     $('#picName').html("");
-    $('.selectpicker').selectpicker('val',['noneSelectedText'])
+    $('.selectpicker').selectpicker('val',['noneSelectedText']);
     $('.selectpicker').selectpicker('refresh');
 }
 

@@ -40,19 +40,16 @@ func (this *DeviceController) List() {
 	if sortNum == "3" {
 		sortCol = "disabled"
 	}
-	if sortNum == "5" {
+	if sortNum == "4" {
 		sortCol = "view"
 	}
-	if sortNum == "6" {
+	if sortNum == "5" {
 		sortCol = "order"
 	}
-	if sortNum == "7" {
+	if sortNum == "6" {
 		sortCol = "reservation"
 	}
-	if sortNum == "8" {
-		sortCol = "updated"
-	}
-	if sortNum == "9" {
+	if sortNum == "7" {
 		sortCol = "created"
 	}
 	searchKey := this.GetString("search[value]")

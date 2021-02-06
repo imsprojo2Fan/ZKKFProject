@@ -22,7 +22,6 @@ $(window).on('load', function () {
         })
         e.preventDefault();
         let offTop = $(this.hash).offset().top-75;
-        console.log(offTop);
         $('html, body').animate({
             scrollTop: offTop
         }, 600);
@@ -53,20 +52,24 @@ function renderType(){
                 sketch = sketch.replace("（","(");
                 sketch = sketch.replace("）",")");
                 sketch = sketch.replace(" ","");
-                if(sketch.length>45){
-                    sketch = sketch.substring(0,42)+"...";
+                if(sketch.length>30){
+                    sketch = sketch.substring(0,27)+"...";
                 }
                 let id = item.id;
-                let img = item.img;
+                let img = "/img/"+item.img;
                 $('#deviceWrap').append('' +
                     '<div class="col-sm-3 deviceItem">\n' +
                     '   <a target="_blank" href="/type/'+id+'">\n' +
-                        '   <img class="devImg" src="/img/'+img+'" onerror="this.src= \'../../static/img/default1.png\'; this.onerror = null;" alt="">\n' +
+                        '   <img class="devImg lazy" data-original="'+img+'" src="'+img+'" alt="图片加载失败" onerror="this.src= \'../../static/img/default1.png\'; this.onerror = null;" alt="">\n' +
                         '   </a><div class="sketch">'+sketch+'</div>\n' +
                         '   <div class="title">'+head+'</div>\n' +
                     '   ' +
                     '</div>');
-
+                $("img.lazy").lazyload({
+                    effect : "fadeIn",
+                    placeholder : "../../img/loading.gif",
+                    threshold : 200
+                });
             }
         }else{
             $('#deviceWrap').html("<span class='dataTip'>无任何分组!</span>");
@@ -129,7 +132,7 @@ function renderNews(){
                     content = content.substring(0,12)+"...";
                 }
                 let rid = item.rid;
-                let img = item.img;
+                let img = "/img/"+item.img;
                 let date = item.created;
                 date = date.replace("T"," ");
                 date = date.replace("+08:00","");
@@ -137,7 +140,7 @@ function renderNews(){
                     '<div class="col-lg-4">\n'+
                     '   <a target="_blank" href="/news/'+rid+'"><div class="blog-one__single">\n'+
                     '       <div class="blog-one__image">\n'+
-                    '           <img src="/img/'+img+'" onerror="this.src= \'../../static/img/default2.png\'; this.onerror = null;this.style.marginTop=\'18px\';this.style.marginLeft=\'45px\'" alt=""/>\n' +
+                    '           <img class="lazy" data-original="'+img+'" src="'+img+'" alt="图片加载失败" onerror="this.src= \'../../static/img/default2.png\'; this.onerror = null;this.style.marginTop=\'18px\';this.style.marginLeft=\'45px\'" alt=""/>\n' +
                     '           <div class="blog-one__date">\n'+
                     '               <i class="far fa-calendar-alt"></i>'+date+'\n' +
                     '           </div>\n' +
@@ -150,6 +153,10 @@ function renderNews(){
                     '   </div></a>\n' +
                     '</div>');
             }
+            $("img.lazy").lazyload({
+                effect : "fadeIn",
+                placeholder : "../../img/loading.gif"
+            });
             initOwl();
         }else{
             $('#newWrap').html("<span class='dataTip'>无新闻动态!</span>");

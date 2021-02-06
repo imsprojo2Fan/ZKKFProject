@@ -10,7 +10,7 @@
     .deviceItem img{
         cursor: pointer;
         width: 175px;
-        height: 135px;
+        height: 105px;
     }
     .deviceItem .sketch{
         height: 25px;

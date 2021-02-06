@@ -163,7 +163,8 @@ func (this *ReservationController) Add() {
 	var obj models.Reservation
 	obj.Rid = rid
 	obj.Uid = uid
-	obj.Uuid = uid
+	userId,_ := this.GetInt("userId")
+	obj.Uuid = userId
 	obj.Date = date
 	obj.TimeId = timeId
 	obj.Tid = tid
@@ -180,7 +181,8 @@ func (this *ReservationController) Add() {
 	//查询公司信息
 	localInfo := settingObj.SelectByGroup("LocalInfo")
 	protocol.RandomId = rid
-	protocol.Uid = uid
+	protocol.Uid = userId//用户id
+	protocol.Uuid = uid//创建人id
 	protocol.Rid = "R"+strconv.FormatInt(time.Now().UnixNano()-10,10)
 	protocol.City = models.RangeValue(localInfo,"city")
 	err = protocol.Insert(o,&protocol)
@@ -208,7 +210,6 @@ func (this *ReservationController) Add() {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "新增order_device表数据失败,"+err.Error(), err.Error())
 	}
-
 	_ = o.Commit()
 	//更新预约数
 	var device models.Device
@@ -400,8 +401,11 @@ func (this *ReservationController) TimeQuery() {
 		outMap["data"] = innerArr
 		resArr = append(resArr,outMap)
 	}
+	bMap := make(map[string]interface{})
+	bMap["now"] = utils.Now()
+	bMap["resArr"] = resArr
 
-	this.jsonResult(200, 1, "查询信息成功", resArr)
+	this.jsonResult(200, 1, "查询信息成功", bMap)
 }
 
 func (this *ReservationController) IndexAdd() {

@@ -27,10 +27,13 @@ $(document).ready(function() {
         }
         $('input').removeAttr("disabled");
         if(data==="tab2"){
-            $('input[name=pay]:eq(1)').attr("checked",true);
-            $('input[name=test_result]:eq(0)').attr("checked",true);
-            $('input[name=detection_report]:eq(0)').attr("checked",true);
-            $('input[name=sample_processing]:eq(0)').attr("checked",true);
+            $('input[name=pay]:eq(1)').prop("checked",true);
+            $('input[name=test_result]:eq(0)').prop("checked",true);
+            $('input[name=detection_report]:eq(0)').prop("checked",true);
+            $('input[name=sample_processing]:eq(0)').prop("checked",true);
+            $('input[type=text]').val();
+            $('textarea').val("");
+            $('.editor').html("可插入文字/图片");
             renderTime();
         }
         $('.breadcrumb span').addClass("active");
@@ -389,7 +392,6 @@ function initData() {
                     $('#userSel1').append('<option value="'+item.Id+'">'+name+'</option>');
                     $('#userSel2').append('<option value="'+item.Id+'">'+name+'</option>');
                 }
-
             }else{
                 $('#userWrap1').html('');
                 $('#userWrap1').append('<span style="color: red;display: block;margin-top: -24px">暂无用户，请先添加!</span>');
@@ -487,6 +489,16 @@ function initData() {
 function add(){
     let date = $('#tab2 .clickActive').attr("date");
     let timeId = $('#tab2 .clickActive').attr("timeId");
+    let userId = $('#userSel1').val();
+    if(!userId){
+        swalParent("系统提示","请选择预约用户!","error");
+        return false;
+    }
+    let deviceId = $('#typeSel1').val();
+    if(!deviceId){
+        swalParent("系统提示","请选择预约设备!","error");
+        return false;
+    }
     if(!timeId){
         swalParent("系统提示","未选择任何预约时间!","error");
         return false;
@@ -518,6 +530,7 @@ function add(){
     let formData = {};
     formData["tid"] = deviceItem.tid;
     formData["deviceId"] = deviceItem.id;
+    formData["userId"] = $('#userSel1').val();
     gDeviceId = deviceItem.id;
     formData["date"] = date;
     formData["_xsrf"] = $("#token", parent.document).val();
@@ -557,6 +570,9 @@ function editInfo(rid) {
             //设置type选中
             $('#typeSel2').selectpicker('val',reservation.device_id);
             $("#typeSel2").selectpicker('refresh');
+            //设置用户选中
+            $('#userSel2').selectpicker('val',reservation.uuid);
+            $("#userSel2").selectpicker('refresh');
             $('.hasSelect').html(reservation.date+" "+reservation.timeVal);
             //熏染时间选择
             renderTime(reservation.device_id);
@@ -696,7 +712,8 @@ function renderTime(deviceId){
     $.post("/reservation/timeQuery",{_xsrf:$("#token", parent.document).val(),deviceId:deviceId,week:week},function (res) {
         if(res.code===1){
             //loadingParent(false,2);
-            let tList = res.data;
+            let tList = res.data.resArr;
+            let now = res.data.now;
             if(tList){
                 let nowYear = new Date().getFullYear();
                 wrapObj.html('');
@@ -724,7 +741,7 @@ function renderTime(deviceId){
                                 //比较时间
                                 date = date.substring(3,date.length);
                                 date = nowYear+"-"+date;
-                                let timeFlag = dateUtil.compareTime(date+" "+time.substring(0,5)+":00");
+                                let timeFlag = dateUtil.compareTime(date+" "+time.substring(0,5)+":00",now);
                                 if(!timeFlag||isUse==1){
                                     $('.tr'+i).append('<td deviceId="'+deviceId+'" date="'+date+'" timeId="'+timeId+'">-</td>');
                                 }else{

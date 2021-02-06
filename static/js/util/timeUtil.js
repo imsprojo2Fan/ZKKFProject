@@ -66,8 +66,8 @@ let dateUtil = {
         }
     },
     //与当前比较时间大小
-    compareTime:function(time) {
-        let curTime = new Date();
+    compareTime:function(time,now) {
+        let curTime = new Date(Date.parse(now));
         //把字符串格式转化为日期类
         let startTime = new Date(Date.parse(time));
         //进行比较

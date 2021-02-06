@@ -27,10 +27,13 @@ $(document).ready(function () {
         }
         $('input').removeAttr("disabled");
         if(data==="tab2"){
-            $('input[name=pay]:eq(1)').attr("checked",true);
-            $('input[name=test_result]:eq(0)').attr("checked",true);
-            $('input[name=detection_report]:eq(0)').attr("checked",true);
-            $('input[name=sample_processing]:eq(0)').attr("checked",true);
+            $('input[name=pay]:eq(1)').prop("checked",true);
+            $('input[name=test_result]:eq(0)').prop("checked",true);
+            $('input[name=detection_report]:eq(0)').prop("checked",true);
+            $('input[name=sample_processing]:eq(0)').prop("checked",true);
+            $('input[type=text]').val();
+            $('textarea').val("");
+            $('.editor').html("可插入文字/图片");
         }
         $('.breadcrumb span').addClass("active");
         $(this).removeClass("active");
@@ -59,6 +62,10 @@ $(document).ready(function () {
     $(".selectpicker").selectpicker('refresh');
     //父类切换监听
     $('#typeAddSel').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+        let item = typeArr[clickedIndex];
+        if(!item){
+            return
+        }
         request = typeArr[clickedIndex].request;
         $('#addTable .type').html("-");
         $('#addTable .allDevice').html("-");
@@ -662,9 +669,11 @@ function editInfo(rid) {
             $("#deviceEditSel").selectpicker('refresh');
             //处理协议
             let protocol = data.protocol;
+            $('#userEditSel').selectpicker('val',protocol.Uid);
+            $("#userEditSel").selectpicker('refresh');
             //清空选中
             $('input:checked').prop('checked', false);
-            console.log("Pay:"+protocol.Pay+" TestResult:"+protocol.TestResult+" DetectionReport:"+protocol.DetectionReport+" SampleProcessing:"+protocol.SampleProcessing);
+            //console.log("Pay:"+protocol.Pay+" TestResult:"+protocol.TestResult+" DetectionReport:"+protocol.DetectionReport+" SampleProcessing:"+protocol.SampleProcessing);
             $("input[value='"+protocol.TestResult+"']").prop('checked', true);
             $("input[value='"+protocol.Pay+"']").prop('checked', true);
             $("input[value='"+protocol.DetectionReport+"']").prop('checked', true);
@@ -993,6 +1002,10 @@ function renderChildType(tid) {
             $('#typeChildAddSel').selectpicker('refresh');
             //子类切换监听
             $('#typeChildAddSel').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+                let item = typeChildArr[clickedIndex];
+                if(!item){
+                    return
+                }
                 detectionCycle = typeChildArr[clickedIndex].detection_cycle;
                 $('#addTable .type').html("-");
                 $('#addTable .allDevice').html("-");

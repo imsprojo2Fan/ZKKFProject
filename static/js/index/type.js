@@ -212,17 +212,22 @@ function renderDevice(){
                     str = "立即预约"
                 }
                 let rid = item.rid;
-                let img = item.img;
+                let img = "/img/"+item.img;
                 $('#deviceWrap').append('' +
                     '<div id="'+item.id+'" class="deviceItem col-sm-3">\n' +
                     '  <a target="_blank" href="/detail/'+rid+'">' +
-                    '    <img src="/img/'+img+'" onerror="this.src= \'../../static/img/default1.png\'; this.onerror = null;" alt="">'+
+                    '    <img class="lazy" data-original="'+img+'" src="'+img+'" alt="图片加载失败" onerror="this.src= \'../../static/img/default1.png\'; this.onerror = null;">'+
                     '  </a>\n' +
                     '  <div class="title" title="'+item.name+'">'+head+'</div>\n' +
                     '  <div class="sketch" title="'+item.sketch+'">'+sketch+'</div>\n' +
                     '  <a class="addBtn">'+str+'</a>\n' +
                     '</div>')
             }
+            $("img.lazy").lazyload({
+                effect : "fadeIn",
+                placeholder : "../../img/loading.gif",
+                threshold : 200
+            });
             renderItemClick();
         }else{
             $('#deviceWrap').html("<span class='dataTip'>无匹配项目!</span>");

@@ -78,3 +78,36 @@ func WeekByDate(num int) (weekMonday string) {
 	weekMonday = lastWeekMonday.Format("2006-01-02")
 	return
 }
+func Now()string  {
+	timeStr := time.Now().Format("2006-01-02 15:04:05")
+	return timeStr
+}
+func NowDate()string  {
+	timeStr := time.Now().Format("2006-01-02")
+	return timeStr
+}
+
+func LastDate()string  {
+	nTime := time.Now()
+	yesTime := nTime.AddDate(0,0,-1)
+	yesterday := yesTime.Format("2006-01-02")
+	return yesterday
+}
+
+func Str2Timestamp(para string) int64{
+	//toBeCharge := "2015-01-01 00:00:00"                             //待转化为时间戳的字符串 注意 这里的小时和分钟还要秒必须写 因为是跟着模板走的 修改模板的话也可以不写
+	timeLayout := "2006-01-02 15:04:05"                             //转化所需模板
+	loc, _ := time.LoadLocation("Local")                            //重要：获取时区
+	theTime, _ := time.ParseInLocation(timeLayout, para, loc) //使用模板在对应时区转化为time.time类型
+	sr := theTime.Unix()                                           //转化为时间戳 类型是int64
+	return  sr
+}
+
+func Str2Timestamp2(para string) int64{
+	//toBeCharge := "2015-01-01 00:00:00"                             //待转化为时间戳的字符串 注意 这里的小时和分钟还要秒必须写 因为是跟着模板走的 修改模板的话也可以不写
+	timeLayout := "2006-01-02"                             //转化所需模板
+	loc, _ := time.LoadLocation("Local")                            //重要：获取时区
+	theTime, _ := time.ParseInLocation(timeLayout, para, loc) //使用模板在对应时区转化为time.time类型
+	sr := theTime.Unix()                                           //转化为时间戳 类型是int64
+	return  sr
+}

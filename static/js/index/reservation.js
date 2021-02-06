@@ -72,7 +72,8 @@ function renderTime(){
     $.post("/reservation/timeQuery",{_xsrf:$("#token", parent.document).val(),deviceId:deviceId,week:week},function (res) {
         if(res.code===1){
             $('.preloader').fadeOut(200);
-            let tList = res.data;
+            let tList = res.data.resArr;
+            let now = res.data.now;
             if(tList){
                 let nowYear = new Date().getFullYear();
                 wrapObj.html('');
@@ -100,10 +101,12 @@ function renderTime(){
                                 //比较时间
                                 date = date.substring(3,date.length);
                                 date = nowYear+"-"+date;
-                                let timeFlag = dateUtil.compareTime(date+" "+time.substring(0,5)+":00");
+                                let t = date+" "+ time.substring(0,5)+":00";
+                                let timeFlag = dateUtil.compareTime(t,now);
                                 if(!timeFlag||isUse==1){
                                     $('#tr'+i).append('<td deviceId="'+deviceId+'" date="'+date+'" timeId="'+timeId+'">-</td>');
                                 }else{
+                                    //console.log(t);
                                     $('#tr'+i).append('<td date="'+date+'" timeId="'+timeId+'" time="'+item2.time+'" class="click '+date+'">可预约</td>');
                                 }
                             }else{
