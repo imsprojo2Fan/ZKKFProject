@@ -11,6 +11,7 @@ type User struct {
 	Id       int
 	Uid      string
 	Type     int //账号类型，0超级管理员 1高级管理员 2普通管理员 3业务经理 4制样工程师 5测试工程师 6数据分析师 7财务 99普通用户
+	Role 	 string //用户角色
 	Sign     int //注册入口 0首页注册 1后台注册 2微信注册
 	Disabled int //是否禁用
 	Account  string
@@ -30,7 +31,7 @@ type User struct {
 	Birthday string
 	Active   int //是否激活 0未激活 1激活
 	Remark   string
-	TypeJob  int //角色负责业务模块，用于分配任务
+	TypeJob  string //角色负责业务模块，用于分配任务
 	Updated  time.Time `orm:"auto_now_add;type(datetime)"`
 	Created  time.Time `orm:"auto_now_add;type(datetime)"`
 }
@@ -53,7 +54,7 @@ func (this *User) Insert(obj *User) error {
 func (this *User) Update(obj *User) error {
 
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "type", "disabled", "password", "phone", "email", "gender", "name","teacher","teacher_phone","teacher_mail","invoice","invoice_code","company","address", "birthday", "avatar", "active", "remark","type_job", "updated")
+	_, err := o.Update(obj, "role","type", "disabled", "password", "phone", "email", "gender", "name","teacher","teacher_phone","teacher_mail","invoice","invoice_code","company","address", "birthday", "avatar", "active", "remark","type_job", "updated")
 	return err
 }
 
@@ -263,4 +264,17 @@ func (this *User) Assign(uType string)[]User {
 	}
 	_,_ = o.Raw(sqlTxt).QueryRows(&u)
 	return  u
+}
+func (this *User) SelectByRole(role int)([]User,error) {
+	o := orm.NewOrm()
+	var uArr []User
+	_,err := o.Raw("select * from " + UserTBName()+" where role like '%"+strconv.Itoa(role)+"%' and type_job!=''").QueryRows(&uArr)
+	return  uArr,err
+}
+
+func (this *User) SelectByRole2(role int,tid string)([]User,error) {
+	o := orm.NewOrm()
+	var uArr []User
+	_,err := o.Raw("select * from " + UserTBName()+" where role like '%"+strconv.Itoa(role)+"%' and type_job like '%"+tid+"%'").QueryRows(&uArr)
+	return  uArr,err
 }

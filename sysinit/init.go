@@ -16,6 +16,7 @@ var (
 	IsLinux = false
 	SqlFlag = false
 	SignMap sync.Map
+	LogLevel string
 )
 
 func init()  {

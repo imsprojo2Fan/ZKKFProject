@@ -181,6 +181,7 @@ func (this *OrderController) Add() {
 	var tAddArr []models.OrderType
 	var deviceArr []models.OrderDevice
 	var protocolArr []models.Protocol
+	var taskArr []models.Task
 	//查询公司信息
 	res := settingObj.SelectByGroup("LocalInfo")
 	for _,item := range tArr{
@@ -216,6 +217,11 @@ func (this *OrderController) Add() {
 		protocol.Uuid = uid//创建人id
 		protocol.City = models.RangeValue(res,"city")
 		protocolArr = append(protocolArr,protocol)
+		//处理任务
+		var task models.Task
+		task.RandomId = Rid
+		task.Tid,_ = strconv.Atoi(item.Tid)
+		taskArr = append(taskArr,task)
 	}
 	_,err = obj.MultiInsert4Type(o,tAddArr)
 	if err != nil {
@@ -234,7 +240,14 @@ func (this *OrderController) Add() {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
+	//新增订单
 	_,err = obj.MultiInsert4Order(o,orderArr)
+	if err != nil {
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+	}
+	//加入任务管理
+	_,err = obj.MultiInsert4Task(o,taskArr)
 	if err != nil {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
@@ -421,6 +434,7 @@ func (this *OrderController) IndexAdd() {
 	var tAddArr []models.OrderType
 	var deviceArr []models.OrderDevice
 	var protocolArr []models.Protocol
+	var taskArr []models.Task
 	for _,item := range tArr{
 		Rid := "A"+strconv.FormatInt(time.Now().UnixNano(),10)
 		//处理订单
@@ -452,6 +466,11 @@ func (this *OrderController) IndexAdd() {
 		protocol.DeviceId = ids
 		protocol.Uid = uid
 		protocolArr = append(protocolArr,protocol)
+		//处理任务
+		var task models.Task
+		task.RandomId = Rid
+		task.Tid,_ = strconv.Atoi(item.Tid)
+		taskArr = append(taskArr,task)
 	}
 	_,err = obj.MultiInsert4Type(o,tAddArr)
 	if err != nil {
@@ -470,7 +489,14 @@ func (this *OrderController) IndexAdd() {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
+	//处理订单
 	_,err = obj.MultiInsert4Order(o,orderArr)
+	if err != nil {
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+	}
+	//处理任务
+	_,err = obj.MultiInsert4Task(o,taskArr)
 	if err != nil {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())

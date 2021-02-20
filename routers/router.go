@@ -8,6 +8,7 @@ import (
 func init() {
 	//网站首页相关
 	beego.Router("/?:url", &controllers.IndexController{}, "*:Index")
+	beego.Router("/effect/?:type", &controllers.IndexController{}, "*:Effect")
 	beego.Router("/template/?:url", &controllers.IndexController{}, "*:Template")
 	beego.Router("/detail/?:rid", &controllers.DeviceController{}, "*:Detail")
 	beego.Router("/detail/relate", &controllers.DeviceController{}, "POST:Relate")
@@ -128,6 +129,7 @@ func init() {
 	beego.Router("/main/protocol/info", &controllers.ProtocolController{}, "POST:Info")
 	//指派任务管理
 	beego.Router("/main/assign/assign", &controllers.AssignController{}, "POST:Assign")
+	beego.Router("/main/assign/list", &controllers.AssignController{}, "POST:List")
 	//消息管理
 	beego.Router("/main/message/listAll", &controllers.MessageController{}, "POST:ListAll")
 	//评价管理

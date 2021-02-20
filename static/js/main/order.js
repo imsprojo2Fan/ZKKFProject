@@ -152,7 +152,7 @@ $(document).ready(function () {
                     html +=
                         "<a href='javascript:void(0);'  class='protocol btn btn-secondary btn-xs'>实验要求</a> "
                     html +=
-                        "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>指派任务</a> "
+                        "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>任务管理</a> "
                     html +=
                         "<a href='javascript:void(0);'  class='report btn btn-secondary btn-xs'>实验报告</a> ";
                     html +=
@@ -274,12 +274,14 @@ $(document).ready(function () {
     $('#myTable').on("click", ".assign", function (e) {
         rowData = myTable.row($(this).closest('tr')).data();
         $('#assignModal .rid').html(rowData.rid);
-        $.post("/main/assign/assign", {
+        $.post("/main/assign/list", {
             rid: rowData.rid,
+            tid:rowData.tid,
             _xsrf: $("#token", parent.document).val()
         }, function (res) {
+            console.log(res);
             if (res.data) {
-                let data = res.data[0];
+                let data = res.data.res[0];
                 $('#curStatus').html(renderStatus(data.status).status);
                 $('#curUser').data("uid", data.uuid);
                 $('#curUser').html(data.name);
@@ -288,7 +290,28 @@ $(document).ready(function () {
                 $('#curUser').data("uid", 0);
                 $('#curUser').html("<span style='color: red;'>暂未指派任何用户！</span>");
             }
+            //熏染用户
+            let bArr = res.data.bArr;
 
+            for(let k=1;k<=bArr.length;k++){
+                let uArr = bArr[k-1].uArr;
+                let assignUid = bArr[k-1].assignUid;
+                if (uArr){
+                    $('#userSel'+k).html('');
+                    for (let i = 0; i < uArr.length; i++) {
+                        let item = uArr[i];
+                        let nameTemp = item.Name;
+                        if(!nameTemp){
+                            nameTemp = "未填写名字";
+                        }
+                        $('#userSel'+k).append('<option value="' + item.Id + '">' + nameTemp + '</option>');
+                    }
+                    if(assignUid){
+                        $("#userSel"+k).selectpicker("val",assignUid);
+                    }
+                    $("#userSel"+k).selectpicker('refresh');
+                }
+            }
         });
         $('#assignModal').modal("show");
     });
@@ -451,7 +474,7 @@ function initData() {
             $('#userEditSel').selectpicker('refresh');
         }
     });
-    //初始化被指派任务用户
+    //初始化被任务管理用户
     $.post("/main/user/assign", {_xsrf: $("#token", parent.document).val()}, function (res) {
         let tList = res.data;
         if (tList) {

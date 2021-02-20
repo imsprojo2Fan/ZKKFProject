@@ -97,8 +97,23 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label">账号类型</label>
                                     <div class="col-sm-6">
-                                        <select onchange="hideTypeSel(this,'addTypeSelectWrap')" id="type" class="selectpicker" >
+                                        <select onchange="hideTypeSel(this,'addTypeSelectWrap','role')" id="type" class="selectpicker" >
                                             <option selected value="3">业务经理</option>
+                                            <option value="4">制样工程师</option>
+                                            <option value="5">测试工程师</option>
+                                            <option value="6">数据分析师</option>
+                                            <option value="7">财务管理员</option>
+                                            <option value="2">普通管理员</option>
+                                            <option value="1">高级管理员</option>
+                                            <option value="99">普通用户</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label form-label">用户角色</label>
+                                    <div class="col-sm-6">
+                                        <select id="role" class="selectpicker" multiple>
+                                            <option value="3">业务经理</option>
                                             <option value="4">制样工程师</option>
                                             <option value="5">测试工程师</option>
                                             <option value="6">数据分析师</option>
@@ -112,7 +127,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label"><span class="red"></span>负责领域</label>
                                     <div class="col-sm-6 " id="addTypeSelectWrap">
-                                        <select id="addTypeSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                        <select id="addTypeSel" class="selectpicker" data-size="10" data-max-options="15" data-live-search="true" multiple data-style="btn-default">
                                         </select>
                                     </div>
                                 </div>
@@ -242,6 +257,9 @@
                         <p class="form-control-static" >账号类型：<span class="type"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
+                        <p class="form-control-static" >账号类型：<span class="role"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
                         <p class="form-control-static" >姓名：<span class="name"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
@@ -340,7 +358,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">账号类型</label>
                             <div class="col-sm-6">
-                                <select id="editType" onchange="hideTypeSel(this,'editTypeSelectWrap')" name="type" class="selectpicker">
+                                <select id="editType" onchange="hideTypeSel(this,'editTypeSelectWrap','roleEdit')" name="type" class="selectpicker">
                                     <option selected value="3">业务经理</option>
                                     <option value="4">制样工程师</option>
                                     <option value="5">测试工程师</option>
@@ -353,9 +371,24 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">用户角色</label>
+                            <div class="col-sm-6">
+                                <select id="roleEdit" class="selectpicker" multiple>
+                                    <option value="3">业务经理</option>
+                                    <option value="4">制样工程师</option>
+                                    <option value="5">测试工程师</option>
+                                    <option value="6">数据分析师</option>
+                                    <option value="7">财务管理员</option>
+                        {{/*            <option value="2">普通管理员</option>
+                                    <option value="1">高级管理员</option>
+                                    <option value="99">普通用户</option>*/}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-2 control-label form-label"><span class="red"></span>负责领域</label>
                             <div class="col-sm-6 " id="editTypeSelectWrap">
-                                <select id="editTypeSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                <select id="editTypeSel" class="selectpicker" data-size="10" data-max-options="15" multiple data-live-search="true" data-style="btn-default">
                                 </select>
                             </div>
                         </div>

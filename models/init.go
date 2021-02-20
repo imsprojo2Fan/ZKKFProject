@@ -22,9 +22,11 @@ func init() {
 	orm.RegisterModel(new(OrderDevice))
 	orm.RegisterModel(new(Protocol))
 	orm.RegisterModel(new(Assign))
+	orm.RegisterModel(new(AssignDetail))
 	orm.RegisterModel(new(AssignHistory))
 	orm.RegisterModel(new(File))
 	orm.RegisterModel(new(Evaluate))
+	orm.RegisterModel(new(Task))
 }
 
 //下面是统一的表名管理

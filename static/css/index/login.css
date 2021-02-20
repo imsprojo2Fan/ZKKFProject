@@ -1,0 +1,68 @@
+@font-face {
+    font-family: Panxiang;
+    src: url('../../../static/fonts/Panxiang.eot');
+    src:
+            url('../../../static/fonts/Panxiang.eot?#font-spider') format('embedded-opentype'),
+            url('../../../static/fonts/Panxiang.woff2') format('woff2'),
+            url('../../../static/fonts/Panxiang.woff') format('woff'),
+            url('../../../static/fonts/Panxiang.ttf') format('truetype'),
+            url('../../../static/fonts/Panxiang.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+a{
+    color: #676a6d;
+}
+a:hover{
+    color: #6195FF;
+}
+
+button:focus{
+    outline:none !important;
+}
+.bootstrap-switch-handle-off bootstrap-switch-primary{
+    background: #0b0b0b;
+    color: #ffffff;
+}
+#loginBtn{
+    background: white!important;
+    color: #0b0b0b;
+}
+#loginBtn:hover{
+    background: #6195FF!important;
+    color: white;
+}
+.auth-box{
+    width: 25%!important;
+    background: rgba(255, 255, 255, 0.25);
+}
+.auth-box .left{
+    width: 100%!important;
+}
+.auth-box .right{
+    display: none;
+}
+.auth-box .lead{
+    font-size: 13px!important;
+}
+.auth-box .content{
+    width: 18vw;
+}
+.sweet-alert fieldset{
+    display: none;
+}
+.logo h3{
+    color: white;
+}
+.lead{
+    color: white;
+}
+.fancy-checkbox{
+    color: white;
+}
+.bottom a,.bottom i{
+    color: white;
+}
+.bottom a:hover{
+    color: #6195FF!important;
+}

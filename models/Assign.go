@@ -51,6 +51,17 @@ func (this *Assign) Insert(obj *Assign) error {
 		return err
 	}
 
+	//更新task状态
+	task := new(Task)
+	task.RandomId = obj.Rid
+	task.Status = 1
+	task.Operate = 0
+	err = task.UpdateByRid(o,task)
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+
 	//指派历史
 	var assignHistory AssignHistory
 	assignHistory.Rid = obj.Rid

@@ -105,6 +105,23 @@ func (this *IndexController) Other() {
 
 }
 
+func (this *IndexController) Effect() {
+
+	eType := this.Ctx.Input.Param(":type")
+	eType = eType+".html"
+
+	var backUrl string
+	//读取本地html文档并解析，动态更改节点信息
+	filePath := "./views/effect/"+eType
+	isExit := utils.CheckFileIsExist(filePath)
+	if !isExit{
+		backUrl = "tip/404.html"
+	}else{
+		backUrl = "effect/"+eType
+	}
+	this.TplName = backUrl
+}
+
 func (this *IndexController) Mail4Index()  {
 	contact := this.GetString("contact")
 	message := this.GetString("message")

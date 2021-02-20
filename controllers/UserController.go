@@ -111,6 +111,7 @@ func (this *UserController) Add() {
 	user.Phone = this.GetString("phone")
 	user.Email = this.GetString("email")
 	user.Type, _ = this.GetInt("type")
+	user.Role = this.GetString("role")
 	password := this.GetString("password")
 	if user.Account == "" || password == "" {
 		this.jsonResult(200, -1, "账号或密码不能为空!", nil)
@@ -122,7 +123,7 @@ func (this *UserController) Add() {
 	}
 	user.Password = base64.StdEncoding.EncodeToString(result)
 	user.Remark = this.GetString("remark")
-	user.TypeJob,_ = this.GetInt("typeJob")
+	user.TypeJob = this.GetString("typeJob")
 	user.SelectByCol(user, "account") //查询账号是否已被用
 	if user.Id > 0 {
 		this.jsonResult(200, -1, "账号已存在!", nil)
@@ -158,6 +159,7 @@ func (this *UserController) Update() {
 		return
 	}
 	user.Type, _ = this.GetInt("type")
+	user.Role = this.GetString("role")
 	user.Active, _ = this.GetInt("active")
 	user.Disabled, _ = this.GetInt("disabled")
 	user.Gender = this.GetString("gender")
@@ -199,7 +201,7 @@ func (this *UserController) Update() {
 	user.Created = dbUser.Created
 	user.Updated = time.Now()
 	user.Remark = this.GetString("remark")
-	user.TypeJob,_ = this.GetInt("typeJob")
+	user.TypeJob = this.GetString("typeJob")
 	err = user.Update(user)
 	if err==nil {
 		this.jsonResult(200, 1, "更新用户信息成功", nil)

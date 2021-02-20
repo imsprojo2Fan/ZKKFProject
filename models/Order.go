@@ -92,6 +92,16 @@ func(this *Order) MultiInsert4Protocol(o orm.Ormer,arr []Protocol)(int64,error){
 	}
 	return count,err
 }
+func(this *Order) MultiInsert4Task(o orm.Ormer,arr []Task)(int64,error){
+
+	count, err := o.InsertMulti(len(arr), arr)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Printf("Insert %d task' data!\r\n", count)
+	}
+	return count,err
+}
 
 func (this *Order) Update(obj *Order) error {
 

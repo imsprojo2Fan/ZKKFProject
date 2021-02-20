@@ -5,6 +5,7 @@ import (
 	_ "ZkkfProject/routers"
 	"ZkkfProject/sysinit"
 	_ "ZkkfProject/sysinit"
+	"ZkkfProject/timer"
 	"ZkkfProject/utils"
 	"fmt"
 	"github.com/astaxie/beego"
@@ -83,6 +84,9 @@ func main() {
 	go func() {
 		beego.Run()
 	}()
+
+	//启动定时器
+	go timer.Timer()
 
 	select {}
 

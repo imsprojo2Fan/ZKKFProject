@@ -30,62 +30,13 @@
 	<link rel="apple-touch-icon" sizes="76x76" href="../../static/back/assets/img/apple-icon.png">
 
 	<link rel="stylesheet" href="../../static/css/util.css">
+	<link rel="stylesheet" href="../../static/css/index/login.css">
     <link href="https://cdn.bootcss.com/bootstrap-switch/4.0.0-alpha.1/css/bootstrap-switch.min.css" rel="stylesheet">
-
-	<style>
-        @font-face {
-            font-family: Panxiang;
-            src: url('../../static/fonts/Panxiang.eot');
-            src:
-                    url('../../static/fonts/Panxiang.eot?#font-spider') format('embedded-opentype'),
-                    url('../../static/fonts/Panxiang.woff2') format('woff2'),
-                    url('../../static/fonts/Panxiang.woff') format('woff'),
-                    url('../../static/fonts/Panxiang.ttf') format('truetype'),
-                    url('../../static/fonts/Panxiang.svg') format('svg');
-            font-weight: normal;
-            font-style: normal;
-        }
-		a{
-			color: #676a6d;
-		}
-		a:hover{
-			color: #6195FF;
-		}
-
-        button:focus{
-            outline:none !important;
-        }
-        .bootstrap-switch-handle-off bootstrap-switch-primary{
-            background: #0b0b0b;
-            color: #ffffff;
-        }
-        #loginBtn:hover{
-            background: #6195FF!important;
-        }
-		.auth-box{
-			width: 25%!important;
-		}
-		.auth-box .left{
-			width: 100%!important;
-		}
-		.auth-box .right{
-			display: none;
-		}
-		.auth-box .lead{
-			font-size: 13px!important;
-		}
-		.auth-box .content{
-			width: 18vw;
-		}
-		.sweet-alert fieldset{
-			display: none;
-		}
-
-	</style>
 
 </head>
 
 <body>
+<iframe style="position: absolute;z-index: -999;width: 100%;height: 100%;" frameborder="none" sandbox="allow-scripts allow-same-origin" id="mh" src="/effect/a4"></iframe>
 <input type="hidden" value="{{ ._xsrf}}" id="token">
 <input type="hidden" value="{{ .timeout}}" id="timeout">
 <div id="loading" class="loading-wrap" style="display: none">
@@ -107,7 +58,7 @@
 					<div class="left">
 						<div class="content">
 							<div class="header">
-								<div class="logo text-center"><a href="/"><h3 style="font-family: Panxiang">中科科辅</h3></a></div>
+								<div class="logo text-center"><a href="/"><h3 onmouseenter="changeBG(true)" onmouseout="changeBG(false)" style="font-family: Panxiang">中科科辅</h3></a></div>
 								<p class="lead">专注于定制化技术服务领域</p>
 							</div>
 							<form class="form-auth-small" onsubmit="return checkLength()">

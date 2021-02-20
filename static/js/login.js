@@ -178,3 +178,15 @@ function forget() {
         })
     });
 }
+
+function changeBG(flag) {
+    if(flag){
+        $(".auth-box").css({
+            "box-shadow": "3px 0px 10000px #ffffff"
+        });
+    }else{
+        $(".auth-box").css({
+            "box-shadow": "none"
+        });
+    }
+}

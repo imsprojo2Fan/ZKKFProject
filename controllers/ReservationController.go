@@ -210,6 +210,15 @@ func (this *ReservationController) Add() {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "新增order_device表数据失败,"+err.Error(), err.Error())
 	}
+	//处理任务
+	var task models.Task
+	task.RandomId = rid
+	task.Tid = tid
+	err = task.Insert2(o,&task)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "新增task表数据失败,"+err.Error(), err.Error())
+	}
 	_ = o.Commit()
 	//更新预约数
 	var device models.Device
@@ -465,7 +474,6 @@ func (this *ReservationController) IndexAdd() {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "预约失败,"+err.Error(), err.Error())
 	}
-
 	//新增order_type
 	var orderType models.OrderType
 	orderType.Rid = rid
@@ -482,6 +490,15 @@ func (this *ReservationController) IndexAdd() {
 	orderDevice.DeviceId = protocol.DeviceId
 	orderType.Count = 1
 	err = orderDevice.Insert(o,&orderDevice)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "预约失败,"+err.Error(), err.Error())
+	}
+	//处理任务
+	var task models.Task
+	task.RandomId = rid
+	task.Tid = tid
+	err = task.Insert2(o,&task)
 	if err!=nil{
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "预约失败,"+err.Error(), err.Error())

@@ -24,7 +24,7 @@ func (this *LoginController) LoginIndex() {
 func (this *LoginController) Timeout() {
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	var operate models.Operate
-	if session.Get("ip") != nil {
+	if session.Get("id") != nil {
 		operate.Ip = session.Get("ip").(string)
 		operate.Client = session.Get("browserInfo").(string)
 		operate.Uid = session.Get("id").(int)

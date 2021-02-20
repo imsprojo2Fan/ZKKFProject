@@ -51,7 +51,7 @@ $(document).ready(function() {
                     return "<div style='text-align: left'><input type='checkbox' name='check' value='"+row.id+"'><span style='margin-left: 3px;' class='tid'>"+row.id+"</span></div>";
                 }},
             { data: 'name',"render":function (data) {
-                    return stringUtil.maxLength(data,3);
+                    return stringUtil.maxLength(data,6);
                 }},
             { data: 'company',"render":function (data) {
                     return stringUtil.maxLength(data,5);
@@ -208,15 +208,15 @@ $(document).ready(function() {
         }
         $('#detailModal').find('.type').html(str);
         $('#detailModal').find('.phone').html(stringUtil.maxLength(rowData.phone));
-        $('#detailModal').find('.company').html(stringUtil.maxLength(rowData.company,20));
-        $('#detailModal').find('.address').html(stringUtil.maxLength(rowData.address,25));
-        $('#detailModal').find('.email').html(stringUtil.maxLength(rowData.email,11));
-        $('#detailModal').find('.teacher').html(stringUtil.maxLength(rowData.teacher,3));
+        $('#detailModal').find('.company').html(stringUtil.maxLength(rowData.company,30));
+        $('#detailModal').find('.address').html(stringUtil.maxLength(rowData.address,35));
+        $('#detailModal').find('.email').html(stringUtil.maxLength(rowData.email,30));
+        $('#detailModal').find('.teacher').html(stringUtil.maxLength(rowData.teacher,6));
         $('#detailModal').find('.teacher_phone').html(stringUtil.maxLength(rowData.teacher_phone,11));
-        $('#detailModal').find('.teacher_mail').html(stringUtil.maxLength(rowData.teacher_mail,20));
-        $('#detailModal').find('.invoice').html(stringUtil.maxLength(rowData.invoice,20));
-        $('#detailModal').find('.invoice_code').html(stringUtil.maxLength(rowData.invoice_code,20));
-        $('#detailModal').find('.remark').html(stringUtil.maxLength(rowData.remark,25));
+        $('#detailModal').find('.teacher_mail').html(stringUtil.maxLength(rowData.teacher_mail,30));
+        $('#detailModal').find('.invoice').html(stringUtil.maxLength(rowData.invoice,30));
+        $('#detailModal').find('.invoice_code').html(stringUtil.maxLength(rowData.invoice_code,30));
+        $('#detailModal').find('.remark').html(stringUtil.maxLength(rowData.remark,45));
         let created = rowData.created;
         $('#detail_created').html(dateUtil.GMT2Str(created));
 
@@ -236,6 +236,21 @@ $(document).ready(function() {
         $("#editGender").selectpicker('refresh');
         $("#editType").selectpicker('val',rowData.type);
         $("#editType").selectpicker('refresh');
+        let role = rowData.role;
+        let tempArr = [];
+        if(role){
+            let arr = role.split(",");
+
+            for(let i=0;i<arr.length;i++){
+                let id = arr[i];
+                if(!id){
+                    continue
+                }
+                tempArr.push(id);
+            }
+        }
+        $('#roleEdit').selectpicker('val',tempArr);
+        $("#roleEdit").selectpicker('refresh');
         $('#editForm').find("input[name='name']").val(rowData.name);
         $('#editForm').find("input[name='password']").val(rowData.password);
         $('#editForm').find("input[name='phone']").val(rowData.phone);
@@ -249,12 +264,26 @@ $(document).ready(function() {
         $('#editForm').find("input[name='invoice_code']").val(rowData.invoice_code);
         $('#editForm').find("textarea[name='remark']").val(rowData.remark);
         if(parseInt(rowData.type)===99){
+            $('#roleEdit').parent().parent().parent().hide();
             $('#editTypeSel').parent().parent().parent().hide();
         }else{
-            $('#addTypeSel').parent().parent().parent().show();
+            $('#roleEdit').parent().parent().parent().show();
+            $('#editTypeSel').parent().parent().parent().show();
         }
-        $('#editTypeSel').selectpicker('val',rowData.type_job);
-        $("#editTypeSel").selectpicker('refresh');
+        let type_job = rowData.type_job;
+        if(type_job){
+            let arr = type_job.split(",");
+            let tempArr = [];
+            for(let i=0;i<arr.length;i++){
+                let id = arr[i];
+                if(!id){
+                    continue
+                }
+                tempArr.push(id);
+            }
+            $('#editTypeSel').selectpicker('val',tempArr);
+            $("#editTypeSel").selectpicker('refresh');
+        }
         $('#tip').html("");
         $('#editModal').modal("show");
     });
@@ -266,7 +295,7 @@ $(document).ready(function() {
 
     });
     initData();
-} );
+});
 
 function initData() {
     //初始化父类分组过滤数据
@@ -274,8 +303,8 @@ function initData() {
         if(res.code===1){
             let tList = res.data;
             typeArr = tList;
-            $('#addTypeSel').append('<option value="0">暂不选择</option>');
-            $('#editTypeSel').append('<option value="0">暂不选择</option>');
+            //$('#addTypeSel').append('<option value="0">暂不选择</option>');
+            //$('#editTypeSel').append('<option value="0">暂不选择</option>');
             if(tList){
                 for(let i=0;i<tList.length;i++){
                     let item = tList[i];
@@ -292,7 +321,20 @@ function initData() {
         $('#type').append('<option value="99">普通用户</option>');
         $('#type').selectpicker('refresh');
     }
-
+    // 中文重写select 查询为空提示信息
+    $('.selectpicker').selectpicker({
+        noneSelectedText: '下拉选择指定项',
+        noneResultsText: '无匹配选项',
+        maxOptionsText: function (numAll, numGroup) {
+            let arr = [];
+            arr[0] = (numAll == 1) ? '最多可选中数为{n}' : '最多可选中数为{n}';
+            arr[1] = (numGroup == 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)';
+            return arr;
+        },
+        //liveSearch: true,
+        //size:10   //设置select高度，同时显示5个值
+    });
+    $(".selectpicker").selectpicker('refresh');
 }
 
 function add(){
@@ -332,12 +374,25 @@ function add(){
 
     let formData = formUtil('addForm');
     formData["type"] = $('#type').val();
+    let roleVal = $('#role').val();
+    let roleArr = "";
+    $.each(roleVal,function (i,item) {
+        roleArr += ","+item;
+    });
+    roleArr = roleArr.substring(1,roleArr.length);
+    formData["role"] = roleArr;
     formData["gender"] = $('#gender').val();
     formData["disabled"] = $('#disabled').val();
     formData["_xsrf"] = $("#token", parent.document).val();
     formData["active"] = 1;
     formData["sign"] = 1;
-    formData["typeJob"] = $('#addTypeSel').val();
+    let addTypeSel = $('#addTypeSel').val();
+    let typeArr = "";
+    $.each(addTypeSel,function (i,item) {
+        typeArr += ","+item;
+    });
+    typeArr = typeArr.substring(1,typeArr.length);
+    formData["typeJob"] = typeArr;
     $.ajax({
         url : prefix+"/add",
         type : "POST",
@@ -390,11 +445,24 @@ function edit(){
     }
     let formData = formUtil('editForm');
     formData["type"] = $('#editType').val();
+    let roleVal = $('#roleEdit').val();
+    let roleArr = "";
+    $.each(roleVal,function (i,item) {
+        roleArr += ","+item;
+    });
+    roleArr = roleArr.substring(1,roleArr.length);
+    formData["role"] = roleArr;
     formData["disabled"] = $('#editDisabled').val();
     formData["active"] = $('#editActive').val();
     formData["gender"] = $('#editGender').val();
     formData["_xsrf"] = $("#token", parent.document).val();
-    formData["typeJob"] = $('#editTypeSel').val();
+    let editTypeSel = $('#editTypeSel').val();
+    let typeArr = "";
+    $.each(editTypeSel,function (i,item) {
+        typeArr += ","+item;
+    });
+    typeArr = typeArr.substring(1,typeArr.length);
+    formData["typeJob"] = typeArr;
     $.ajax({
         url : prefix+"/update",
         type : "POST",
@@ -490,11 +558,13 @@ function refresh() {
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
 }
 
-function hideTypeSel(obj,domId){
+function hideTypeSel(obj,domId,domId2){
     let val = $(obj).val();
     if(parseInt(val)===99){
         $('#'+domId).parent().hide();
+        $('#'+domId2).parent().parent().parent().hide();
     }else{
         $('#'+domId).parent().show();
+        $('#'+domId2).parent().parent().parent().show();
     }
 }
