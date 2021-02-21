@@ -166,7 +166,7 @@ func (this *Order) SelectByName(obj *Order) {
 func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 
 	o := orm.NewOrm()
-	sql := "select * from `order` o left join assign a on o.rid=a.rid left join user u on o.uid=u.id left join evaluate e on o.rid=e.random_id where o.del=0 "
+	sql := "select * from `order` o left join assign_info a on o.rid=a.random_id left join user u on o.uid=u.id left join evaluate e on o.rid=e.random_id where o.del=0 "
 	uType := qMap["uType"].(int)
 	//处理普通用户数据----------------------------------开始
 	if uType==99{
@@ -177,10 +177,17 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 		sql += " and o.uid="+strconv.Itoa(uid)
 	}
 	//处理普通用户数据----------------------------------结束
+	//处理普通职工用户----------------------------------开始
 	if uType!=99&&qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
-		sql += " and o.uuid="+strconv.Itoa(uid)
+		uidStr := strconv.Itoa(uid)
+		sql += " and(a.s1="+uidStr
+		sql += " or a.s2="+uidStr
+		sql += " or a.s3="+uidStr
+		sql += " or a.s4="+uidStr
+		sql += " or a.s5="+uidStr+")"
 	}
+	//处理普通职工用户----------------------------------结束
 
 	if qMap["tid"].(string) != "0" {
 		tid := qMap["tid"].(string)
@@ -198,7 +205,7 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select o.*,u.name,u.phone,u.company,e.satisfied,e.content,e.created as eTime from `order` o left join assign a on o.rid=a.rid left join user u on o.uid=u.id left join evaluate e on o.rid=e.random_id where o.del=0 "
+	sql := "select o.*,u.name,u.phone,u.company,e.satisfied,e.content,e.created as eTime from `order` o left join assign_info a on o.rid=a.random_id left join user u on o.uid=u.id left join evaluate e on o.rid=e.random_id where o.del=0 "
 	uType := qMap["uType"].(int)
 	//处理普通用户数据----------------------------------开始
 	if uType==99{
@@ -209,10 +216,18 @@ func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error)
 		sql += " and o.uid="+strconv.Itoa(uid)
 	}
 	//处理普通用户数据----------------------------------结束
+
+	//处理普通职工用户----------------------------------开始
 	if uType!=99&&qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
-		sql += " and a.uuid="+strconv.Itoa(uid)
+		uidStr := strconv.Itoa(uid)
+		sql += " and(a.s1="+uidStr
+		sql += " or a.s2="+uidStr
+		sql += " or a.s3="+uidStr
+		sql += " or a.s4="+uidStr
+		sql += " or a.s5="+uidStr+")"
 	}
+	//处理普通职工用户----------------------------------结束
 
 	if qMap["tid"].(string) != "0" {
 		tid := qMap["tid"].(string)

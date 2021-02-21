@@ -27,6 +27,7 @@ func init() {
 	orm.RegisterModel(new(File))
 	orm.RegisterModel(new(Evaluate))
 	orm.RegisterModel(new(Task))
+	orm.RegisterModel(new(AssignInfo))
 }
 
 //下面是统一的表名管理

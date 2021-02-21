@@ -3,6 +3,7 @@ package timer
 import (
 	"ZkkfProject/models"
 	"ZkkfProject/sysinit"
+	"ZkkfProject/utils"
 	"fmt"
 	"github.com/robfig/cron"
 	"go.uber.org/zap"
@@ -21,7 +22,7 @@ import (
 var (
 	gTask models.Task
 	gUser models.User
-	gAssignDetail models.AssignDetail
+	gAssignInfo models.AssignInfo
 	taskLogger = sysinit.NewLogger("task")
 )
 
@@ -48,12 +49,12 @@ func Timer()  {
 	spec = "*/30 * * * * *"
 	_ = c.AddFunc(spec, func() {
 		//fmt.Println("Timer One Minute/2...",time.Now())
+		AllotTask()
 	})
 	//每30秒
 	spec = "*/15 * * * * *"
 	_ = c.AddFunc(spec, func() {
 		//fmt.Println("Timer One Minute/4...",time.Now())
-		AllotTask()
 	})
 	c.Start()
 }
@@ -82,10 +83,12 @@ func AllotTask(){
 			//对负责领域匹配
 			if strings.Contains(tid2,strconv.Itoa(tid1)){
 				flag = true
-				var assign models.Assign
-				assign.Rid = task.RandomId
-				assign.Uid = 0
-				assign.Uuid = user["uid"].(int)
+				var assign models.AssignInfo
+				assign.Rid = utils.RandomString(16)
+				assign.RandomId = task.RandomId
+				assign.Operate = 0
+				assign.S1 = user["uid"].(int)
+				assign.Uid = user["uid"].(int)
 				err := assign.Insert(&assign)
 				if err==nil{
 					//将已分配的用户移至末尾
@@ -105,7 +108,7 @@ func RankAssignUser() []map[string]interface{} {
 	//获取包含业务经理角色的用户
 	uArr,_ := gUser.SelectByRole(3)
 	//已完成任务
-	assignArr,_ := gAssignDetail.ListByStep(1,3)
+	assignArr := gAssignInfo.List4Task()
 	var tempArr []map[string]interface{}
 	for _,user := range uArr{
 		tMap := make(map[string]interface{})
@@ -114,7 +117,7 @@ func RankAssignUser() []map[string]interface{} {
 		tMap["typeJob"] = user.TypeJob
 		var count int
 		for _,assign := range assignArr{
-			uid2 := assign.Uid
+			uid2 := assign.S1//业务经理id
 			if uid1==uid2{
 				count++
 			}

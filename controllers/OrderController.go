@@ -61,7 +61,7 @@ func (this *OrderController) List() {
 	qMap["searchKey"] = searchKey
 	//处理只看到自己负责的订单
 	qMap["uType"] = uType
-	if uType>3&&uType!=7{
+	if uType>2&&uType<8{
 		qMap["uid"] = uid
 	}
 

@@ -33,7 +33,8 @@ button:focus{
     color: white;
 }
 .auth-box{
-    width: 25%!important;
+    width: 480px!important;
+    height: 435px!important;
     background: rgba(255, 255, 255, 0.25);
 }
 .auth-box .left{

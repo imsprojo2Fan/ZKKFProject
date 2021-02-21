@@ -164,6 +164,9 @@ $(document).ready(function() {
             $('.dataTables_scrollBody').css("height",window.innerHeight-270+"px");
             $('#myTable_filter').find('input').attr("placeholder","请输入姓名/手机/邮箱");
             parent.checkType();
+            if(uType>2){
+                $('.btn-primary').remove();
+            }
             loadingParent(false,2);
         }
     });

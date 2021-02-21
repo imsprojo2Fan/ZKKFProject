@@ -279,23 +279,28 @@ $(document).ready(function () {
             tid:rowData.tid,
             _xsrf: $("#token", parent.document).val()
         }, function (res) {
-            console.log(res);
             if (res.data) {
-                let data = res.data.res[0];
-                $('#curStatus').html(renderStatus(data.status).status);
-                $('#curUser').data("uid", data.uuid);
+                let data = res.data.aData;
+                let status = data.status;
+                $('#curStatus').html(renderStatus(status).status);
+
+                $('#curUser').data("uid", data.uid);
                 $('#curUser').html(data.name);
             } else {
                 $('#curStatus').html(renderStatus(0).status);
                 $('#curUser').data("uid", 0);
                 $('#curUser').html("<span style='color: red;'>暂未指派任何用户！</span>");
             }
-            //熏染用户
+            //渲染用户
             let bArr = res.data.bArr;
 
-            for(let k=1;k<=bArr.length;k++){
-                let uArr = bArr[k-1].uArr;
-                let assignUid = bArr[k-1].assignUid;
+            for(let k=0;k<bArr.length;k++){
+                let item = bArr[k];
+                if(!item){
+                    continue
+                }
+                let uArr = item.uArr;
+                let assignUid = item.assignUid;
                 if (uArr){
                     $('#userSel'+k).html('');
                     for (let i = 0; i < uArr.length; i++) {
@@ -317,15 +322,41 @@ $(document).ready(function () {
     });
     $('#assignModal .btn-primary').on("click", function () {
         let rid = $('#assignModal .rid').html();
-        let oldUid = $('#curUser').data("uid");
-        let newUid = $('#userSel').val();
-        if (oldUid == newUid) {
-            swalParent("系统提示", "该用户已在处理！", "error");
-            return false;
+        let s1 = $('#userSel0').val();
+        if(!s1){
+            swalParent("系统提示","请选择业务经理!","error");
+            return
+        }
+        let s2 = $('#userSel1').val();
+        if(!s2){
+            swalParent("系统提示","请选择制样工程师!","error");
+            return
+        }
+        let s3 = $('#userSel2').val();
+        if(!s3){
+            swalParent("系统提示","请选择测试工程师!","error");
+            return
+        }
+        let s4 = $('#userSel3').val();
+        if(!s4){
+            swalParent("系统提示","请选择数据分析师!","error");
+            return
+        }
+        let s5 = $('#userSel4').val();
+        if(!s5){
+            swalParent("系统提示","请选择财务管理员!","error");
+            return
         }
         $.post("/main/assign/assign", {
+            oType:1,
             rid: rid,
-            uid: newUid,
+            uid:s1,
+            status:1,
+            s1: s1,
+            s2: s2,
+            s3: s3,
+            s4: s4,
+            s5: s5,
             _xsrf: $("#token", parent.document).val()
         }, function (res) {
             if (res.code === 1) {
