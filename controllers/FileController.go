@@ -315,7 +315,8 @@ func(this *FileController) Report()  {
 	if err != nil {
 		this.jsonResult(http.StatusOK,-1, "读写文件失败!", nil)
 	}
-	err = obj.UpdateReport(table,rid,fileName)
+	o := orm.NewOrm()
+	err = obj.UpdateReport(o,table,rid,fileName)
 	if err==nil{
 		this.jsonResult(200,1,"操作成功!",nil)
 	}else{

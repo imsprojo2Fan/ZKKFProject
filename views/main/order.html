@@ -676,14 +676,16 @@
                             aria-hidden="true">×
                     </button>
                     <h4 class="modal-title">
-                        指派任务
+                        任务管理
                     </h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" autocomplete="off">
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">订单编号</label>
-                            <div class="col-sm-6 rid" ></div>
+                            <div class="col-sm-3 rid" ></div>
+                            <label class="col-sm-2 control-label form-label">创建时间</label>
+                            <div class="col-sm-3 created" ></div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">任务进度</label>
@@ -693,47 +695,59 @@
                             <label class="col-sm-2 control-label form-label">当前处理</label>
                             <div class="col-sm-6" id="curUser"></div>
                         </div>
+
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">业务经理</label>
                             <div class="col-sm-6" id="userSelWrap0">
-                                <select id="userSel0" class="selectpicker" data-size="5" data-live-search="true" data-style="btn-default">
+                                <select my-role="3" id="userSel0" class="selectpicker assignSel" data-size="5" data-live-search="true" data-style="btn-default">
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">制样工程师</label>
                             <div class="col-sm-6" id="userSelWrap1">
-                                <select id="userSel1" class="selectpicker" data-size="5" data-live-search="true" data-style="btn-default">
+                                <select my-role="4" id="userSel1" class="selectpicker assignSel" data-size="5" data-live-search="true" data-style="btn-default">
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">测试工程师</label>
                             <div class="col-sm-6" id="userSelWrap2">
-                                <select id="userSel2" class="selectpicker" data-size="5" data-live-search="true" data-style="btn-default">
+                                <select my-role="5" id="userSel2" class="selectpicker assignSel" data-size="5" data-live-search="true" data-style="btn-default">
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">数据分析师</label>
                             <div class="col-sm-6" id="userSelWrap3">
-                                <select id="userSel3" class="selectpicker" data-size="5" data-live-search="true" data-style="btn-default">
+                                <select my-role="6" id="userSel3" class="selectpicker assignSel" data-size="5" data-live-search="true" data-style="btn-default">
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">财务管理</label>
                             <div class="col-sm-6" id="userSelWrap4">
-                                <select id="userSel4" class="selectpicker" data-size="5" data-live-search="true" data-style="btn-default">
+                                <select my-role="7" id="userSel4" class="selectpicker assignSel" data-size="5" data-live-search="true" data-style="btn-default">
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group fileWrap">
+                            <label class="col-sm-2 control-label form-label">实验报告</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" name="file" type="file"/>
                             </div>
                         </div>
                     </form>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">提交</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-danger cancel">取消订单</button>
+                    <button type="button" class="btn btn-primary submit">提交信息</button>
+                    <button type="button" style="display: none" class="btn btn-primary confirmTask">确认任务</button>
+                    <button type="button" style="display: none" class="btn btn-success completeTask">完成任务</button>
+                    <button type="button" class="btn btn-success complete">完成订单</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

@@ -308,3 +308,11 @@ input[type='radio'] {
 #assignModal .modal-body{
     height: 65vh;
 }
+#assignModal .created{
+    margin-top: 6px;
+}
+/*下拉框宽度设置*/
+#assignModal .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    width: 140px;
+    height: 30px;
+}

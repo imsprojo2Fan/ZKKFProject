@@ -128,6 +128,7 @@ func init() {
 	//协议管理
 	beego.Router("/main/protocol/info", &controllers.ProtocolController{}, "POST:Info")
 	//指派任务管理
+	beego.Router("/main/assign/status", &controllers.AssignController{}, "POST:Status")
 	beego.Router("/main/assign/assign", &controllers.AssignController{}, "POST:Assign")
 	beego.Router("/main/assign/list", &controllers.AssignController{}, "POST:List")
 	//消息管理

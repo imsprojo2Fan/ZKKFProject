@@ -84,7 +84,7 @@ func (this *Reservation) Count(qMap map[string]interface{}) (int, error) {
 	uType := qMap["uType"].(int)
 	//处理普通用户数据----------------------------------开始
 	if uType==99{
-		sql = "select r.id from reservation r where o.del=0"
+		sql = "select r.id from reservation r where r.del=0"
 	}
 	if uType==99&&qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
@@ -112,7 +112,7 @@ func (this *Reservation) ListByPage(qMap map[string]interface{}) ([]orm.Params, 
 	uType := qMap["uType"].(int)
 	//处理普通用户数据----------------------------------开始
 	if uType==99{
-		sql = "select r.*,u.name,u.phone,u.company from reservation where r.del=0"
+		sql = "select r.*,u.name,u.phone,u.company from reservation r left join user u on r.uid=u.id where r.del=0"
 	}
 	if uType==99&&qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)

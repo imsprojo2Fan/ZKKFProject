@@ -1,6 +1,9 @@
 #tab1 tr:first-child{
     width: 90px!important;
 }
+.modal-md{
+    width: 675px!important;
+}
 .modal-body{
     max-height: 65vh;
     overflow-y: auto;

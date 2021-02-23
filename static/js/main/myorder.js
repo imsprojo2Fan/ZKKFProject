@@ -257,48 +257,6 @@ function refresh() {
     myTable.ajax.reload( null,false ); // 刷新表格数据，分页信息不会重置
 }
 
-function renderStatus(status) {
-    let res = {}
-    let str;
-    let str2;
-    status = parseInt(status);
-    if(status===-1){
-        str2 = "<span class='statusTxt-red'>已取消</span>";
-        str = "待确认/已确认/制样中/测试中/数据分析/财务结算/已完成/<span class='statusTxt-red'>已取消</span>";
-    }
-    if(status===0){
-        str2 = "<span class='statusTxt-blue'>待确认</span>";
-        str = "<span class='statusTxt-blue'>待确认</span>/已确认/制样中/测试中/数据分析/财务结算/已完成/已取消";
-    }
-    if(status===1){
-        str2 = "<span class='statusTxt-blue'>已确认</span>";
-        str = "待确认/<span class='statusTxt-blue'>已确认</span>/制样中/测试中/数据分析/财务结算/已完成/已取消";
-    }
-    if(status===2){
-        str2 = "<span class='statusTxt-blue'>制样中</span>";
-        str = "待确认/已确认/<span class='statusTxt-blue'>制样中</span>/测试中/数据分析/财务结算/已完成/已取消";
-    }
-    if(status===3){
-        str2 = "<span class='statusTxt-blue'>测试中</span>";
-        str = "待确认/已确认/制样中/<span class='statusTxt-blue'>测试中</span>/数据分析/财务结算/已完成/已取消";
-    }
-    if(status===4){
-        str2 = "<span class='statusTxt-blue'>数据分析</span>";
-        str = "待确认/已确认/制样中/测试中/<span class='statusTxt-blue'>数据分析</span>/财务结算/已完成/已取消";
-    }
-    if(status===5){
-        str2 = "<span class='statusTxt-blue'>财务结算</span>";
-        str = "待确认/已确认/制样中/测试中/数据分析/<span class='statusTxt-blue'>财务结算</span>/已完成/已取消";
-    }
-    if(status===6){
-        str2 = "<span class='statusTxt-green'>已完成</span>";
-        str = "待确认/已确认/制样中/测试中/数据分析/财务结算/<span class='statusTxt-green'>已完成</span>/已取消";
-    }
-    res.status = str;
-    res.statusTxt = str2;
-    return res;
-}
-
 function loading(flag,type) {
     window.parent.loading(flag,type);
 }

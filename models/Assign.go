@@ -15,10 +15,14 @@ import (
  */
 type Assign struct {
 	Id int
-	Uid int	//创建用户id
-	Uuid int //被指派用户id
-	Rid string
+	RandomId string
+	Operate int
+	Manager int //业务经理id
+	Uid int
 	Status int
+	Step int
+	Msg string
+	Updated time.Time
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
@@ -39,13 +43,25 @@ func (this *Assign) Insert(obj *Assign) error {
 		_ = o.Rollback()
 		return err
 	}
-	if strings.HasPrefix(obj.Rid,"A"){
+	if strings.HasPrefix(obj.RandomId,"A"){
 		order := new(Order)
-		err = order.UpdateStatus(obj.Rid,obj.Status,o)
+		err = order.UpdateStatus(obj.RandomId,obj.Status,o)
 	}else{
 		order := new(Reservation)
-		err = order.UpdateStatus(obj.Rid,obj.Status,o)
+		err = order.UpdateStatus(obj.RandomId,obj.Status,o)
 	}
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	//assign_detail添加记录
+	var assignDetail AssignDetail
+	assignDetail.Step = 0
+	assignDetail.RandomId = obj.RandomId
+	assignDetail.Status = 1
+	assignDetail.Uid = obj.Uid
+	assignDetail.Role = 3
+	err = assignDetail.Insert(o,assignDetail)
 	if err!=nil{
 		_ = o.Rollback()
 		return err
@@ -53,7 +69,7 @@ func (this *Assign) Insert(obj *Assign) error {
 
 	//更新task状态
 	task := new(Task)
-	task.RandomId = obj.Rid
+	task.RandomId = obj.RandomId
 	task.Status = 1
 	task.Operate = 0
 	err = task.UpdateByRid(o,task)
@@ -63,7 +79,7 @@ func (this *Assign) Insert(obj *Assign) error {
 	}
 
 	//指派历史
-	var assignHistory AssignHistory
+	/*var assignHistory AssignHistory
 	assignHistory.Rid = obj.Rid
 	assignHistory.Uid = obj.Uid
 	assignHistory.Uuid = obj.Uuid
@@ -72,7 +88,7 @@ func (this *Assign) Insert(obj *Assign) error {
 	if err!=nil{
 		_ = o.Rollback()
 		return err
-	}
+	}*/
 	_ = o.Commit()
 	return err
 }
@@ -81,6 +97,55 @@ func (this *Assign) Update(obj *Assign) error {
 
 	o := orm.NewOrm()
 	_, err := o.Update(obj, "title","source", "img", "content", "updated")
+	return err
+}
+
+func (this *Assign) Update4Init(o orm.Ormer,obj Assign) error {
+	_ = o.Begin()
+	sqlTxt := "update assign set manager=?,status=?,uid=?,msg=?,updated=now() where random_id=?"
+	_,err := o.Raw(sqlTxt,obj.Manager,obj.Status,obj.Uid,obj.Msg,obj.RandomId).Exec()
+
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	if strings.HasPrefix(obj.RandomId,"A"){
+		order := new(Order)
+		err = order.UpdateStatus(obj.RandomId,obj.Status,o)
+	}else{
+		order := new(Reservation)
+		err = order.UpdateStatus(obj.RandomId,obj.Status,o)
+	}
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	return err
+}
+
+func (this *Assign) Update4Status(o orm.Ormer,obj Assign) error {
+	//o := orm.NewOrm()
+	_ = o.Begin()
+	//更新assign
+	sqlTxt := "update assign set status=?,uid=? where random_id=?"
+	_,err := o.Raw(sqlTxt,obj.Status,obj.Uid,obj.RandomId).Exec()
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+
+	if strings.HasPrefix(obj.RandomId,"A"){
+		order := new(Order)
+		err = order.UpdateStatus(obj.RandomId,obj.Status,o)
+	}else{
+		order := new(Reservation)
+		err = order.UpdateStatus(obj.RandomId,obj.Status,o)
+	}
+	if err!=nil{
+		_ = o.Rollback()
+		return err
+	}
+	_ = o.Commit()
 	return err
 }
 
@@ -167,3 +232,22 @@ func (this *Assign) AssignInfo(rid string) ([]orm.Params, error) {
 	_,err := o.Raw(sql,rid).Values(&res)
 	return res, err
 }
+
+func (this *Assign)List4Task()[]Assign{
+	var res []Assign
+	o := orm.NewOrm()
+	sqlTxt := "select * from assign where DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <= date(created);"
+	_, _ = o.Raw(sqlTxt).QueryRows(&res)
+	return res
+}
+func (this *Assign) ListByRandomId(rid string) (orm.Params, error) {
+	var res []orm.Params
+	o := orm.NewOrm()
+	sql := "select a.*,u.name from assign a left join user u on a.uid=u.id  where  a.random_id=?"
+	_,err := o.Raw(sql,rid).Values(&res)
+	if res==nil{
+		return nil, err
+	}
+	return res[0], err
+}
+

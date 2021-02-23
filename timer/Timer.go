@@ -3,7 +3,6 @@ package timer
 import (
 	"ZkkfProject/models"
 	"ZkkfProject/sysinit"
-	"ZkkfProject/utils"
 	"fmt"
 	"github.com/robfig/cron"
 	"go.uber.org/zap"
@@ -22,7 +21,7 @@ import (
 var (
 	gTask models.Task
 	gUser models.User
-	gAssignInfo models.AssignInfo
+	gAssignInfo models.Assign
 	taskLogger = sysinit.NewLogger("task")
 )
 
@@ -83,11 +82,10 @@ func AllotTask(){
 			//对负责领域匹配
 			if strings.Contains(tid2,strconv.Itoa(tid1)){
 				flag = true
-				var assign models.AssignInfo
-				assign.Rid = utils.RandomString(16)
+				var assign models.Assign
 				assign.RandomId = task.RandomId
 				assign.Operate = 0
-				assign.S1 = user["uid"].(int)
+				assign.Manager = user["uid"].(int)
 				assign.Uid = user["uid"].(int)
 				err := assign.Insert(&assign)
 				if err==nil{
@@ -117,7 +115,7 @@ func RankAssignUser() []map[string]interface{} {
 		tMap["typeJob"] = user.TypeJob
 		var count int
 		for _,assign := range assignArr{
-			uid2 := assign.S1//业务经理id
+			uid2 := assign.Manager//业务经理id
 			if uid1==uid2{
 				count++
 			}

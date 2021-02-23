@@ -6,8 +6,8 @@ let clientHeight = window.innerHeight||document.documentElement.clientHeight||do
 
 $(function () {
     let account = userInfo.account;
-    if(account.length>6){
-        account = account.substring(0,3)+"...";
+    if(account.length>10){
+        account = account.substring(0,6)+"...";
     }
     $('#account').parent().attr("title","Hi,"+userInfo.account);
     $('#account').html(account);
@@ -176,7 +176,7 @@ $(function () {
         $('.fa-money').parent().parent().remove();
         $('.fa-tasks').parent().parent().remove();
         $('.fa-newspaper-o').parent().parent().remove();
-        $('.fa-file-o').parent().parent().remove();
+        $('.fa-file-archive-o').parent().parent().remove();
     }
 
     if(userInfo.type>7){
