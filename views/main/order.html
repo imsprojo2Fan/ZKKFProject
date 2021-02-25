@@ -669,7 +669,7 @@
 
     <!-- 模态框-assign（Modal） -->
     <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"
@@ -681,6 +681,10 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" autocomplete="off">
+                        <input type="hidden" id="customerId">
+                        <input type="hidden" id="step">
+                        <input type="hidden" class="msg">
+                        <input type="hidden" class="status">
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">订单编号</label>
                             <div class="col-sm-3 rid" ></div>
@@ -694,6 +698,10 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label">当前处理</label>
                             <div class="col-sm-6" id="curUser"></div>
+                        </div>
+
+                        <div class="showWrap">
+                            <i title="显示更多" class="fa fa-angle-left" aria-hidden="true"></i>
                         </div>
 
                         <div class="form-group">
@@ -732,10 +740,71 @@
                             </div>
                         </div>
 
-                        <div class="form-group fileWrap">
-                            <label class="col-sm-2 control-label form-label">实验报告</label>
-                            <div class="col-sm-6">
-                                <input class="form-control" name="file" type="file"/>
+                        <div class="form-group statementsWrap">
+                            <div class="col-sm-11 statementTable">
+                                <table class="infoTable">
+                                    <tr class="text-center">
+                                        <td colspan="7"><h3>测试服务明细单</h3></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center" colspan="7">付款通知</td>
+                                    </tr>
+                                    <tr class="text-left">
+                                        <td colspan="7" style="text-align: left"><span class="title">订单编号：</span><span class="rid"></span></td>
+                                    </tr>
+                                    <tr class="text-left">
+                                        <td colspan="3"><span class="title">委托方(付款单位)：</span><span>北京理工大学</span></td>
+                                        <td colspan="4"><span class="title">服务方(收款单位)：</span><span>中科科辅(北京)科技有限公司</span></td>
+                                    </tr>
+                                    <tr class="text-left">
+                                        <td colspan="3"><span class="title">地址：</span><span>北京市海淀区中关村南大街5号北京理工大学</span></td>
+                                        <td colspan="4"><span class="title">地址：</span><span>北京市昌平区西环路和平家园6号楼6-1-3室</span></td>
+                                    </tr>
+                                    <tr class="text-left">
+                                        <td colspan="3"><span class="title">纳税人识别号：</span><span>65416416565415</span></td>
+                                        <td colspan="4"><span class="title">开户银行：</span><span>北京农村商业银行股份有限公司昌平支行营业部</span></td>
+                                    </tr>
+                                    <tr class="text-left">
+                                        <td colspan="3"><span class="title">联系人：</span><span>郝泽辉</span></td>
+                                        <td colspan="4"><span class="title">账户：</span><span>0610 0001 0300 0012 086</span></td>
+                                    </tr>
+                                    <tr class="text-left">
+                                        <td colspan="3"><span class="title">电话：</span><span>13263396228</span></td>
+                                        <td colspan="4"><span class="title">纳税人识别号：</span><span>56464641656556561</span></td>
+                                    </tr>
+                                    <tr class="text-left">
+                                        <td colspan="3"><span class="title">电子邮箱：</span><span>test@163.com</span></td>
+                                        <td colspan="4"><span class="title">联系人：</span><span>李卓宣(电话:16601182885，邮箱:service@zkkf.cn)</span></td>
+                                    </tr>
+                                </table>
+                                <table class="itemTable" border="1">
+                                    <tr class="text-center head">
+                                        <td>序号</td>
+                                        <td>实验内容</td>
+                                        <td>设备型号</td>
+                                        <td>数量(个)</td>
+                                        <td>单价(元)</td>
+                                        <td>总额(元)</td>
+                                        <td>备注</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>1</td>
+                                        <td>高温拉伸/压缩--300至600度</td>
+                                        <td>MTS 810</td>
+                                        <td>1</td>
+                                        <td>500</td>
+                                        <td>500</td>
+                                        <td>D-1,300度</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td colspan="7"><span class="title">订单总额：</span>500 &nbsp;&nbsp;&nbsp;<span class="title">中文大写：</span>伍佰圆整</td>
+                                    </tr>
+                                </table>
+                                <div class="foot">
+                                    <span>制表：马雄伟</span>
+                                    <span>复核：李卓宣</span>
+                                    <span>审核：郑学豪</span>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -743,9 +812,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger cancel">取消订单</button>
-                    <button type="button" class="btn btn-primary submit">提交信息</button>
-                    <button type="button" style="display: none" class="btn btn-primary confirmTask">确认任务</button>
-                    <button type="button" style="display: none" class="btn btn-success completeTask">完成任务</button>
+                    <button type="button" class="btn btn-primary submit">提交指派</button>
+                    <button type="button" class="btn btn-success statement">发送对账单</button>
+                    <button type="button" class="btn btn-primary confirmTask">确认任务</button>
+                    <button type="button" class="btn btn-success completeTask">完成任务</button>
                     <button type="button" class="btn btn-success complete">完成订单</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭窗口</button>
                 </div>

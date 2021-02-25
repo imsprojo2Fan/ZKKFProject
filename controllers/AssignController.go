@@ -24,6 +24,8 @@ type AssignController struct {
 }
 
 func (this *AssignController)List(){
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	uid := session.Get("id").(int)
 	rid := this.GetString("rid")
 	tid := this.GetString("tid")
 	//查询订单关联用户信息
@@ -56,12 +58,49 @@ func (this *AssignController)List(){
 		bArr = append(bArr,tMap)
 	}
 	//下一步操作
-	step,_ := strconv.Atoi(assignInfo["step"].(string))
-	next := assignDetail.ListByStep(rid,strconv.Itoa(step+1))
+	var curItem models.AssignDetail
+	var lastItem models.AssignDetail
+	var nextItem models.AssignDetail
+	for i,item := range detailArr{
+		if i==0{
+			continue
+		}
+		lastItem = detailArr[i-1]
+		if item.Uid==uid{
+			curItem = item
+			break
+		}
+	}
+	//判断是否渲染对账单信息------------------------------------开始
+	flag := false
+	msg := assignInfo["msg"].(string)
+	if msg!=""{
+		status,_ := strconv.Atoi(assignInfo["status"].(string))
+		arr := strings.Split(msg,",")
+		var sIndex int
+		for index,item := range arr{
+			if "结算中"==item{
+				sIndex = index
+				break
+			}
+		}
+		if status>=sIndex{
+			flag = true
+		}
+	}
+	if flag{
+		tMap,_ := StatementInfo(rid,uid)
+		bMap["cInfo"] = tMap["cInfo"]
+		bMap["uInfo"] = tMap["uInfo"]
+		bMap["itemList"] = tMap["itemList"]
+	}
+	//判断是否渲染对账单信息------------------------------------结束
 
 	bMap["bArr"] = bArr
 	bMap["aData"] = assignInfo
-	bMap["next"] = next
+	bMap["lastItem"] = lastItem
+	bMap["curItem"] = curItem
+	bMap["nextItem"] = nextItem
 	this.jsonResult(200, 1, "查询信息成功",bMap)
 }
 
@@ -87,7 +126,10 @@ func (this *AssignController) Assign(){
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
 	msg := "待确认,已确认"
-	for _,item := range arr{
+	for i,item := range arr{
+		if i==0{
+			continue
+		}
 		if item.Role==4{
 			msg += ",制样中,制样完成"
 		}
@@ -97,13 +139,20 @@ func (this *AssignController) Assign(){
 		if item.Role==6{
 			msg += ",分析中,分析完成"
 		}
+		if item.Role==3{
+			msg += ",结算中,对账单已发送"
+		}
+		if item.Role==99{
+			msg += ",确认账单完毕"
+		}
 		if item.Role==7{
-			msg += ",结算中,对账单已发送,已开票待收款,已收款"
+			msg += ",已开票待收款"
 		}
 	}
-	msg += ",已完成,已取消"
+	msg += ",订单已完成"
 	assign.Uid = session.Get("id").(int)//当前处理用户id
-	assign.Status,_= this.GetInt("status")//当前状态
+	assign.Status = 1 //状态重新开始
+	assign.Step = 0
 	assign.Manager,_ = this.GetInt("manager")//业务经理
 	assign.RandomId = rid
 	assign.Msg = msg
@@ -118,12 +167,60 @@ func (this *AssignController) Assign(){
 
 }
 
-func (this *AssignController) Status(){
-	var assignInfo models.Assign
+func (this *AssignController)Confirm(){
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	rid := this.GetString("rid")
-	assignInfo.Uid,_ = this.GetInt("uid")//当前处理用户id
-	assignInfo.Status,_= this.GetInt("status")//当前状态
+	uid := session.Get("id").(int)//当前处理用户id
+	var err error
+	var assign models.Assign
+	assign.Uid = uid
+	assign.Status,_= this.GetInt("status")//当前状态
+	assign.Status = assign.Status+1
+	assign.RandomId = rid
+	Step,_ := this.GetInt("step")
+	assign.Step = Step+1
+
+	o := orm.NewOrm()
+	_ = o.Begin()
+	err = assign.Update4Status(o,assign)
+
+	//更新assign_detail
+	var assignDetail models.AssignDetail
+	assignDetail.RandomId = rid
+	assignDetail.Uid = uid
+	assignDetail.Status = 1
+	err = assignDetail.UpdateByRid(o,assignDetail)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+		return
+	}
+	_ = o.Commit()
+	this.jsonResult(200, 1, "操作成功", nil)
+}
+
+func (this *AssignController)Complete(){
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	var assignInfo models.Assign
+	var assignDetail models.AssignDetail
+	rid := this.GetString("rid")
+	uid := session.Get("id").(int)
+	status,_ := this.GetInt("status")//当前状态
+	step,_ := this.GetInt("step")
+	auto := this.GetString("auto")//下一步骤是否自动确认
+	if auto!=""{
+		status = status+2
+		step = step+1
+		r := assignDetail.ListByStep(rid,step)
+		assignInfo.Uid = r.Uid
+	}else{
+		status = status+1
+		assignInfo.Uid = uid//当前处理用户id
+	}
+
+	assignInfo.Status = status
 	assignInfo.RandomId = rid
+	assignInfo.Step = step
 	var err error
 
 	o := orm.NewOrm()
@@ -131,9 +228,10 @@ func (this *AssignController) Status(){
 	err = assignInfo.Update4Status(o,assignInfo)
 
 	//更新assign_detail
-	var assignDetail models.AssignDetail
+	//var assignDetail models.AssignDetail
+	assignDetail.Uid = uid
 	assignDetail.RandomId = rid
-	//assignDetail.Step = obj.Step
+	assignDetail.Status = 2
 	err = assignDetail.UpdateByRid(o,assignDetail)
 	if err!=nil{
 		_ = o.Rollback()
@@ -174,6 +272,74 @@ func (this *AssignController) Status(){
 
 	_ = o.Commit()
 	this.jsonResult(200, 1, "操作成功", nil)
+}
 
+func (this *AssignController) Cancel(){
+	var assignInfo models.Assign
+	rid := this.GetString("rid")
+	assignInfo.Uid,_ = this.GetInt("uid")//当前处理用户id
+	assignInfo.Status,_= this.GetInt("status")//当前状态
+	assignInfo.RandomId = rid
+	var err error
+
+	o := orm.NewOrm()
+	_ = o.Begin()
+	err = assignInfo.Update4Status(o,assignInfo)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, 1, "操作失败,"+err.Error(), err.Error())
+	}
+	_ = o.Commit()
+	this.jsonResult(200, 1, "操作成功", nil)
+
+}
+
+func(this *AssignController) Statement()  {
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	uid := session.Get("id").(int)
+	rid := this.GetString("rid")
+	bMap,err := StatementInfo(rid,uid)
+	if err!=nil{
+		this.jsonResult(200,-1,"查询失败,"+err.Error(),err.Error())
+	}
+	this.jsonResult(200,1,"查询成功",bMap)
+
+}
+
+func StatementInfo(rid string,uid int)(map[string]interface{},error)  {
+	//查询订单所有设备信息
+	var oDevice models.OrderDevice
+	itemList,err := oDevice.ListByRid3(rid)
+	if err!=nil{
+		return nil, err
+	}
+	//查询当前所处step
+	var assign models.Assign
+	var assignData orm.Params
+	assignData,err = assign.ListByRandomId(rid)
+	if err!=nil{
+		return nil, err
+	}
+	//获取公司信息
+	sArr := settingObj.SelectByGroup("StatementInfo")
+	cInfo := make(map[string]interface{})
+	cInfo["support"] = models.RangeValue(sArr,"support")
+	cInfo["address"] = models.RangeValue(sArr,"address")
+	cInfo["bank"] = models.RangeValue(sArr,"bank")
+	cInfo["account"] = models.RangeValue(sArr,"account")
+	cInfo["identification"] = models.RangeValue(sArr,"identification")
+	cInfo["contact"] = models.RangeValue(sArr,"contact")
+	cInfo["step1"] = models.RangeValue(sArr,"step1")
+	cInfo["step2"] = models.RangeValue(sArr,"step2")
+	cInfo["step3"] = models.RangeValue(sArr,"step3")
+	//查询个人用户信息
+	user := userObj.SelectById(uid)
+	bMap := make(map[string]interface{})
+	bMap["step"] = assignData["step"]
+	bMap["status"] = assignData["status"]
+	bMap["itemList"] = itemList
+	bMap["cInfo"] = cInfo
+	bMap["uInfo"] = user
+	return bMap,nil
 }
 

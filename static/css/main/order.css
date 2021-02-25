@@ -304,7 +304,7 @@ input[type='radio'] {
 .statusTxt-green{
    color: #4caf50;
 }
-
+/*指派任务弹框样式----------------------------开始*/
 #assignModal .modal-body{
     height: 65vh;
 }
@@ -316,3 +316,51 @@ input[type='radio'] {
     width: 140px;
     height: 30px;
 }
+#assignModal .showWrap{
+    width: 100%;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 30px;
+}
+#assignModal .showWrap i{
+    font-size: 25px;
+    float: right;
+    margin-right: 8px;
+    cursor: pointer;
+}
+#assignModal .statementsWrap{
+    display: none;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 35px;
+    border: 1px solid #eee;
+    padding: 8px;
+}
+#assignModal .statementsWrap h3{
+    color: #6195ff;
+    font-size: 20px;
+}
+.statementTable{
+    margin-left: 25px;
+}
+#assignModal .title{
+    font-weight: bold;
+}
+#assignModal .itemTable td{
+    height: 30px;
+}
+#assignModal .itemTable{
+    margin-top: 10px;
+}
+#assignModal .head td{
+    font-weight: bold;
+}
+#assignModal .foot span{
+    margin-top: 8px;
+    display: inline-block;
+    width: 30%;
+    text-align: center;
+}
+#assignModal .cancel,#assignModal .submit,#assignModal .statement,#assignModal .confirmTask,#assignModal .completeTask,#assignModal .complete，#assignModal .fileWrap{
+    display: none;
+}
+/*指派任务弹框样式----------------------------结束*/

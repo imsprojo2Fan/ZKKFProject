@@ -41,16 +41,20 @@ func(this *AssignDetail) MultiInsert(o orm.Ormer,rid string,arr []AssignDetail)(
 	return count,err
 }
 func(this *AssignDetail)UpdateByRid(o orm.Ormer,item AssignDetail)error{
-	sqlTxt := " update assign_detail set status=? where random_id=?"
-	_,err := o.Raw(sqlTxt,item.Status,item.RandomId).Exec()
+	sqlTxt := " update assign_detail set status=? where random_id=? and uid=?"
+	_,err := o.Raw(sqlTxt,item.Status,item.RandomId,item.Uid).Exec()
 	return err
 }
 
-func(this *AssignDetail)AssignList(rid string)(res[]AssignDetail){
+func(this *AssignDetail)AssignList(rid interface{})(res[]AssignDetail){
 	_, _ = orm.NewOrm().Raw("select a.* from assign_detail a where a.random_id=? order by a.step asc", rid).QueryRows(&res)
 	return res
 }
-func(this *AssignDetail)ListByStep(rid,step string)(res AssignDetail){
+func(this *AssignDetail)ListByUid(rid,uid interface{})(res AssignDetail){
+	_ = orm.NewOrm().Raw("select * from assign_detail where step!=0 and random_id=? and uid=?",rid,uid).QueryRow(&res)
+	return res
+}
+func(this *AssignDetail)ListByStep(rid,step interface{})(res AssignDetail){
 	_ = orm.NewOrm().Raw("select * from assign_detail where random_id=? and step=?",rid,step).QueryRow(&res)
 	return res
 }

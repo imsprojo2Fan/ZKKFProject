@@ -112,6 +112,8 @@ func (this *DeviceController) Add() {
 	obj.Drawing = this.GetString("drawing")
 	obj.Remark = this.GetString("remark")
 	obj.Relate = this.GetString("relate")
+	obj.Price,_ = this.GetInt("price")
+	obj.Version = this.GetString("version")
 	err := obj.Insert(&obj)
 	if err == nil {
 		this.jsonResult(200, 1, "操作成功", nil)
@@ -145,6 +147,8 @@ func (this *DeviceController) Update() {
 	obj.Drawing = this.GetString("drawing")
 	obj.Remark = this.GetString("remark")
 	obj.Relate = this.GetString("relate")
+	obj.Price,_ = this.GetInt("price")
+	obj.Version = this.GetString("version")
 	obj.Updated = time.Now()
 	err := obj.Update(&obj)
 	if err == nil {

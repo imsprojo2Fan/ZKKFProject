@@ -15,12 +15,13 @@ type OrderDevice struct {
 	DeviceId string
 	Count int
 	DetectionCycle string
+	Remark string
 }
 
 func (this *OrderDevice) ListByRid(rid string) ([]OrderDevice,error) {
 	o := orm.NewOrm()
 	var res []OrderDevice
-	_,err := o.Raw("select o.*,d.name,c.detection_cycle from order_device o,device d,type_child c where o.device_id=d.id and c.id=d.ttid and o.rid=\""+rid+"\"").QueryRows(&res)
+	_,err := o.Raw("select o.*,d.name,c.detection_cycle from order_device o,device d,type_child c where o.device_id=d.id and c.id=d.ttid and o.rid=?",rid).QueryRows(&res)
 	return res,err
 }
 
@@ -28,6 +29,13 @@ func (this *OrderDevice) ListByRid2(rid string) ([]orm.Params,error) {
 	o := orm.NewOrm()
 	var res []orm.Params
 	_,err := o.Raw("select d.* from order_device o,device d where o.device_id=d.id and o.rid=?",rid).Values(&res)
+	return res,err
+}
+
+func (this *OrderDevice) ListByRid3(rid string) ([]orm.Params,error) {
+	o := orm.NewOrm()
+	var res []orm.Params
+	_,err := o.Raw("select o.*,d.name,d.price,d.version from order_device o,device d where o.device_id=d.id and o.rid=?",rid).Values(&res)
 	return res,err
 }
 

@@ -2,6 +2,7 @@ let myTable;
 let prefix = "/main/order";
 let userInfo = parent.user();
 let uType = parseInt(userInfo.type);
+let uRole = parseInt(userInfo.role);
 let typeArr = [];
 let type;
 let request;
@@ -128,9 +129,10 @@ $(document).ready(function () {
             {
                 data: 'status',
                 "width": "6%",
-                "render": function (data) {
-                    data = parseInt(data);
-                    return renderStatus(data).statusTxt;
+                "render": function (data, type, row) {
+                    let status = parseInt(row.status);
+                    let msg = row.msg;
+                    return renderStatus(status,msg).statusDom;
                 }
             },
             {
@@ -172,12 +174,10 @@ $(document).ready(function () {
         },
         "createdRow": function (row, data, index) { //回调函数用于格式化返回数据
             let status = parseInt(data.status);
-            if(status!==6){
+            let msg = data.msg;
+            let statusArr = renderStatus(status,msg).statusArr;
+            if(status!==statusArr.length-1){
                 $(row).find(".evaluate").remove();
-            }else{
-                $(row).find(".assign").remove();
-            }
-            if(status<4){
                 $(row).find(".report").remove();
             }
             let pageObj = myTable.page.info();
@@ -214,7 +214,8 @@ $(document).ready(function () {
         $('#detailModal').find('.phone').html(stringUtil.maxLength(rowData.phone));
 
         let status = rowData.status;
-        $('#detailModal').find('.status').html(renderStatus(parseInt(status)).statusTxt);
+        let msg = rowData.msg;
+        $('#detailModal').find('.status').html(renderStatus(status,msg).statusTxt);
         let created = rowData.created;
         $('#detail_created').html(dateUtil.GMT2Str(created));
         let updated = rowData.updated;
@@ -275,43 +276,18 @@ $(document).ready(function () {
         }, 500);
 
     });
+
     //任务管理-------------------------------------------------开始
     $('#myTable').on("click", ".assign", function (e) {
         loadingParent(true,2);
         rowData = myTable.row($(this).closest('tr')).data();
         $('#assignModal .rid').html(rowData.rid);
         $('#assignModal .created').html(dateUtil.GMT2Str(rowData.created));
-        $('#assignModal .complete').show();
-        $('#assignModal .cancel').show();
-        $('#assignModal .submit').show();
-        $('#assignModal .confirmTask').hide();
-        $('#assignModal .completeTask').hide();
-        $('#assignModal .fileWrap').hide();
-        if(uType===3){
-            $('#userSel0').attr("disabled","true");
-            $('#assignModal .complete').hide();
-        }
-        if(uType>3&&uType<7){
-            $('.assignSel').attr("disabled","true");
-            $('#assignModal .complete').hide();
-            $('#assignModal .cancel').hide();
-            $('#assignModal .submit').hide();
-        }
-        if(uType===7){
-            $('.assignSel').attr("disabled","true");
-            $('#assignModal .cancel').hide();
-        }
-        let status = parseInt(rowData.status);
-        if(status===-1){//订单已取消
-            $('#assignModal .cancel').hide();
-            $('#assignModal .submit').hide();
-            $('.assignSel').attr("disabled","true");
-        }
-        if(status===6){//订单已完成
-            $('#assignModal .submit').hide();
-            $('#assignModal .complete').hide();
-            $('.assignSel').attr("disabled","true");
-        }
+        $('#assignModal .btn').hide();
+        $('#assignModal .btn-default').show();
+        $('#assignModal .statementsWrap').hide();//对账单
+        $('.assignSel').attr("disabled","true");
+
         $.post("/main/assign/list", {
             rid: rowData.rid,
             tid:rowData.tid,
@@ -320,28 +296,73 @@ $(document).ready(function () {
             loadingParent(false,2);
             let assignInfo = res.data.aData;
             let status = parseInt(assignInfo.status);
-            let next = res.data.next;
-            if(next&&parseInt(next.Status)===0&&uType>3){
-                $('#assignModal .confirmTask').show();
-            }
-            if(next&&parseInt(next.Status)===1){
-                $('#assignModal .completeTask').show();
+            //显示或隐藏指派下拉
+            if(status===0){
+                $('.assignSel').parent().parent().show();
+            }else{
+                $('.assignSel').parent().parent().hide();
             }
             let msg = assignInfo.msg;
-            $('#curStatus').html(renderStatus2(status,msg).allTxt);
+            $('#assignModal .msg').val(msg);
+            $('#assignModal .status').val(status);
+            $('#step').val(assignInfo.step);
+            $('#customerId').val(rowData.uid);
+            let statusItem = renderStatus(status,msg);
+
+            let curItem = res.data.curItem;
+            let lastItem = res.data.lastItem;
+            //显示指派任务
+            if(status===0){
+                $('#assignModal .assignSel').parent().parent().show();
+                $('#assignModal .showWrap i').removeClass("fa-angle-left");
+                $('#assignModal .showWrap i').addClass("fa-angle-down");
+                $('#assignModal .showWrap i').attr("title","隐藏更多");
+                $('.assignSel').removeAttr("disabled");
+                $('#assignModal .submit').show();
+            }
+            let statusArr = statusItem.statusArr;
+            let sIndex = statusIndex(statusArr,"结算中");
+            //显示取消订单
+            if(uRole===3&&status!==statusArr.length-1){
+                $('#assignModal .cancel').show();
+            }
+            //显示发送对账单
+            if(sIndex===status&&uRole===3){
+                $('#assignModal .statement').show();
+            }
+
+            //显示确认任务
+            if(lastItem&&parseInt(lastItem.Status)===2){//当上一步完成时下一步才可确认,用户未确认时不可结算
+                if(curItem&&parseInt(curItem.Status)===0&&uRole>3&&uRole===curItem.Role){
+                    $('#assignModal .confirmTask').show();
+                }
+            }
+            //显示完成任务
+            if(curItem&&parseInt(curItem.Status)===1&&uRole===curItem.Role&&uRole!==7){
+                $('#assignModal .completeTask').show();
+            }
+            //显示完成订单
+            if(status===statusArr.length-2){
+                $('#assignModal .complete').show();
+            }
+
+            //控制显示对账单
+            if(status>=sIndex){
+                $('#assignModal .statementsWrap').show();
+            }
+
+            $('#curStatus').html(statusItem.allTxt);
             $('#curUser').data("uid", assignInfo.uid);
             $('#curUser').html(assignInfo.name);
             //渲染用户
             $('#uWrap').html("");
             let bArr = res.data.bArr;
-
             for(let k=0;k<bArr.length;k++){
                 let item = bArr[k];
                 if(!item){
                     continue
                 }
                 let uArr = item.uArr;
-
                 let assignUid = item.assignUid;
                 if (uArr){
                     $('#userSel'+k).html('');
@@ -360,12 +381,110 @@ $(document).ready(function () {
                     $("#userSel"+k).selectpicker('refresh');
                 }
             }
+            console.log(res)
+            //渲染对账单
+            let cInfo = res.data.cInfo;
+            let uInfo = res.data.uInfo;
+            let dList = res.data.itemList;
+            if(cInfo){
+                let itemStr = "";
+                let allPrice = 0;
+                for(let i=0;i<dList.length;i++){
+                    let index = i+1;
+                    let item = dList[i];
+                    let name = stringUtil.maxLength(item.name,15);
+                    let price = parseInt(item.price);
+                    let version = stringUtil.maxLength(item.version,7);
+                    let count = parseInt(item.count);
+                    let remark = stringUtil.maxLength(item.remark,8);
+                    allPrice = allPrice+(count*price);
+                    let all = count*price;
+                    itemStr += '<tr class="text-center">\n' +
+                        '         <td>'+index+'</td>\n' +
+                        '         <td>'+name+'</td>\n' +
+                        '         <td>'+version+'</td>\n' +
+                        '         <td>'+count+'</td>\n' +
+                        '         <td>'+price+'</td>\n' +
+                        '         <td>'+all+'</td>\n' +
+                        '         <td>'+remark+'</td>\n' +
+                        '      </tr>';
+                }
+                let allPriceTxt = stringUtil.toZhDigit(allPrice);
+                $('#assignModal .statementsWrap').html('' +
+                    '<table class="infoTable">\n' +
+                    '   <tr class="text-center">\n' +
+                    '       <td colspan="7"><h3>测试服务明细单</h3></td>\n' +
+                    '   </tr>\n' +
+                    '   <tr>\n' +
+                    '       <td class="text-center" colspan="7">付款通知</td>\n' +
+                    '   </tr>\n' +
+                    '   <tr class="text-left">\n' +
+                    '       <td colspan="4" style="text-align: left"><span class="title">订单编号：</span><span class="rid">'+rowData.rid+'</span></td>\n' +
+                    '       <td colspan="4" style="text-align: left"><span class="title">创建时间：</span><span>'+dateUtil.GMT2Str(rowData.created)+'</span></td>\n' +
+                    '   </tr>\n' +
+                    '   <tr class="text-left">\n' +
+                    '       <td colspan="4"><span class="title">委托方(付款单位)：</span><span>'+uInfo.Company+'</span></td>\n' +
+                    '       <td colspan="4"><span class="title">服务方(收款单位)：</span><span>'+cInfo.support+'</span></td>\n' +
+                    '   </tr>\n' +
+                    '   <tr class="text-left">\n' +
+                    '       <td colspan="4"><span class="title">地址：</span><span>'+uInfo.Address+'</span></td>\n' +
+                    '       <td colspan="4"><span class="title">地址：</span><span>'+cInfo.address+'</span></td>\n' +
+                    '    </tr>\n' +
+                    '    <tr class="text-left">\n' +
+                    '       <td colspan="4"><span class="title">纳税人识别号：</span><span>'+uInfo.InvoiceCode+'</span></td>\n' +
+                    '       <td colspan="4"><span class="title">开户银行：</span><span>'+cInfo.bank+'</span></td>\n' +
+                    '    </tr>\n' +
+                    '    <tr class="text-left">\n' +
+                    '       <td colspan="4"><span class="title">联系人：</span><span>'+uInfo.Name+'</span></td>\n' +
+                    '       <td colspan="4"><span class="title">账户：</span><span>'+cInfo.account+'</span></td>\n' +
+                    '    </tr>\n' +
+                    '    <tr class="text-left">\n' +
+                    '       <td colspan="4"><span class="title">电话：</span><span>'+uInfo.Phone+'</span></td>\n' +
+                    '       <td colspan="4"><span class="title">纳税人识别号：</span><span>'+cInfo.identification+'</span></td>\n' +
+                    '     </tr>\n' +
+                    '     <tr class="text-left">\n' +
+                    '        <td colspan="4"><span class="title">电子邮箱：</span><span>'+uInfo.Email+'</span></td>\n' +
+                    '        <td colspan="4"><span class="title">联系人：</span><span>'+cInfo.contact+'</span></td>\n' +
+                    '     </tr>\n' +
+                    '  </table>\n' +
+                    '  <table class="itemTable" border="1">\n' +
+                    '     <tr class="text-center head">\n' +
+                    '         <td>序号</td>\n' +
+                    '         <td>实验内容</td>\n' +
+                    '         <td>设备型号</td>\n' +
+                    '         <td>数量(个)</td>\n' +
+                    '         <td>单价(元)</td>\n' +
+                    '         <td>总额(元)</td>\n' +
+                    '         <td>备注</td>\n' +
+                    '     </tr>\n' +itemStr+
+                    '      <tr style="font-size: 22px;height: 45px;" class="text-center">\n' +
+                    '          <td colspan="7"><span class="title">账单总额:</span>'+allPrice+'元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="title">中文大写:</span>'+allPriceTxt+'圆整</td>\n' +
+                    '      </tr>\n' +
+                    '  </table>\n' +
+                    '  <div class="foot">\n<span>制表:'+cInfo.step1+'</span>\n<span>复核:'+cInfo.step2+'</span>\n<span>审核:'+cInfo.step3+'</span>\n</div>');
+            }
+
+            $('#assignModal').modal("show");
         });
-        $('#assignModal').modal("show");
     });
+
+    $('#assignModal .showWrap i').on("click",function () {
+        if($(this).hasClass("fa-angle-left")){
+            $(this).removeClass("fa-angle-left");
+            $(this).addClass("fa-angle-down");
+            $(this).attr("title","隐藏更多");
+            $('.assignSel').parent().parent().show();
+        }else{
+            $(this).removeClass("fa-angle-down");
+            $(this).addClass("fa-angle-left");
+            $(this).attr("title","显示更多");
+            $('.assignSel').parent().parent().hide();
+        }
+    });
+    //指派确认
     $('#assignModal .submit').on("click", function () {
 
-        window.parent.confirmAlert("是否确定提交信息？","确认将更改订单状态！",function () {
+        window.parent.confirmAlert("是否确定提交信息？","确认后将更新订单状态！",function () {
             let rid = $('#assignModal .rid').html();
             let s1 = $('#userSel0').val();
             let details = [];
@@ -408,10 +527,20 @@ $(document).ready(function () {
                 swalParent("系统提示","财务管理员为必选！","error");
                 return
             }
+            //对账单
+            let obj0 = {};
+            obj0.uid = parseInt($('#userSel0').val());
+            obj0.role = parseInt($('#userSel0').attr("my-role"));
+            details.push(obj0);
+            //客户确认
             let obj = {};
-            obj.uid = s5;
-            obj.role = parseInt($('#userSel4').attr("my-role"));
+            obj.uid = $('#customerId').val();
+            obj.role = 99;
             details.push(obj);
+            let obj2 = {};
+            obj2.uid = s5;
+            obj2.role = parseInt($('#userSel4').attr("my-role"));
+            details.push(obj2);
             for(let i=0;i<details.length;i++){
                 details[i].step = i;
                 details[i].uid = parseInt(details[i].uid);
@@ -422,6 +551,7 @@ $(document).ready(function () {
             $.post("/main/assign/assign", {
                 rid: rid,
                 status:1,
+                step:$('#step').val(),
                 manager: s1,
                 details:details,
                 _xsrf: $("#token", parent.document).val()
@@ -437,10 +567,11 @@ $(document).ready(function () {
         },'');
 
     });
+    //取消订单
     $('#assignModal .cancel').on("click", function () {
         let rid = $('#assignModal .rid').html();
         window.parent.confirmAlert("确定取消吗？","取消将不可恢复！",function () {
-            $.post("/main/assign/status", {
+            $.post("/main/assign/cancel", {
                 rid: rid,
                 status:-1,
                 _xsrf: $("#token", parent.document).val()
@@ -456,104 +587,23 @@ $(document).ready(function () {
         },rid);
 
     });
+    //完成订单
     $('#assignModal .complete').on("click", function () {
         let rid = $('#assignModal .rid').html();
-        window.parent.confirmAlert("是否确定已完成？","完成将关闭订单！",function () {
-            $.post("/main/assign/status", {
-                rid: rid,
-                status:6,
-                _xsrf: $("#token", parent.document).val()
-            }, function (res) {
-                if (res.code === 1) {
-                    $('#assignModal').modal("hide");
-                    refresh();
-                    swalParent("系统提示", "操作成功！", "success");
-                } else {
-                    swalParent("系统提示", "操作失败," + res.data, "error");
-                }
-            });
-        },rid);
+        window.parent.confirmAlert("是否确定已完成？","完成将关闭该订单！",function () {
+            let status = parseInt($('#assignModal .status').val());
+            let msg = $('#assignModal .msg').val();
+            let statusArr = renderStatus(status,msg).statusArr;
+            let step = parseInt($('#step').val());
 
-    });
-    $('#assignModal .confirmTask').on("click", function () {
-        let rid = $('#assignModal .rid').html();
-        let status = parseInt($("#curStatus span").attr("data"));
-        let formData = {};
-        formData["rid"] = rid;
-        formData["_xsrf"] = $("#token", parent.document).val();
-        status++;
-        formData["status"] = status;
-        if(status===1){
-            formData["s1Status"] = 1;
-        }
-        if(status===2){
-            formData["s2Status"] = 1;
-        }
-        if(status===3){
-            formData["s3Status"] = 1;
-        }
-        if(status===4){
-            formData["s4Status"] = 1;
-        }
-        if(status===5){
-            formData["s5Status"] = 1;
-        }
-        window.parent.confirmAlert("是否确定任务信息？","确认将更改订单状态！",function () {
+            let rid = $('#assignModal .rid').html();
+            let formData = new FormData();
+            formData.append("rid",rid);
+            formData.append("_xsrf",$("#token", parent.document).val());
+            formData.append("status",status+"");
+            formData.append("step",step+"");
             $.ajax({
-                url: "/main/assign/status",
-                type: "POST",
-                dataType: "json",
-                cache: false,
-                data: formData,
-                beforeSend: function () {
-                    loadingParent(true, 2);
-                },
-                success: function (r) {
-                    if (r.code === 1) {
-                        $('#assignModal').modal("hide");
-                        refresh();
-                        swalParent("系统提示", "操作成功！", "success");
-                    }else{
-                        swalParent("系统提示", "操作失败," + res.data, "error");
-                    }
-                },
-                complete: function () {
-                    loadingParent(false, 2);
-                }
-            });
-        },rid);
-
-    });
-    $('#assignModal .completeTask').on("click", function () {
-        let rid = $('#assignModal .rid').html();
-        let status = parseInt($("#curStatus span").attr("data"));
-        let formData = new FormData();
-        formData.append("rid",rid);
-        formData.append("_xsrf",$("#token", parent.document).val());
-        status++;
-        formData.append("status",status+"");
-        formData.append("uid",$('#userSel'+(status-1)).val());
-
-        window.parent.confirmAlert("是否确定已完成任务？","确认将更改订单状态！",function () {
-            //数据分析完成任务需上传实验报告
-            if(status===5){
-                let files = $('#assignModal').find("input[name='file']").prop('files');
-                if (files.length === 0) {
-                    swalParent("系统提示", "请上传实验报告!", "error");
-                    return
-                }
-                let file = files[0];
-                let size = file.size;
-                if (size > 20971520) {
-                    swalParent("系统提示", "文件大小不能超过20MB!", "error");
-                    return
-                }
-                //let formData = new FormData();
-                formData.append('table',"order");
-                formData.append('file',files[0]);
-            }
-            $.ajax({
-                url: "/main/assign/status",
+                url: "/main/assign/complete",
                 type: "POST",
                 processData: false,
                 contentType: false,
@@ -576,6 +626,108 @@ $(document).ready(function () {
             });
         },rid);
 
+    });
+    //确认任务
+    $('#assignModal .confirmTask').on("click", function () {
+        let rid = $('#assignModal .rid').html();
+        let status = parseInt($("#curStatus span").attr("data"));
+        let formData = {};
+        formData["rid"] = rid;
+        formData["_xsrf"] = $("#token", parent.document).val();
+        formData["status"] = status;
+        formData["step"] = $('#step').val();
+
+        window.parent.confirmAlert("是否确定任务信息？","确认后将更新订单状态！",function () {
+            $.ajax({
+                url: "/main/assign/confirm",
+                type: "POST",
+                dataType: "json",
+                cache: false,
+                data: formData,
+                beforeSend: function () {
+                    //loadingParent(true, 2);
+                },
+                success: function (r) {
+                    if (r.code === 1) {
+                        $('#assignModal').modal("hide");
+                        refresh();
+                        swalParent("系统提示", "操作成功！", "success");
+                    }else{
+                        swalParent("系统提示", "操作失败," + res.data, "error");
+                    }
+                },
+                complete: function () {
+                    //loadingParent(false, 2);
+                }
+            });
+        },"");
+
+    });
+    //完成任务
+    $('#assignModal .completeTask').on("click", function () {
+
+        window.parent.confirmAlert("是否确定已完成任务？","确认后将更新订单状态！",function () {
+            //数据分析完成任务需上传实验报告
+            let status = parseInt($('#assignModal .status').val());
+            let msg = $('#assignModal .msg').val();
+            let statusArr = renderStatus(status,msg).statusArr;
+            let step = parseInt($('#step').val());
+
+            let rid = $('#assignModal .rid').html();
+            let formData = new FormData();
+            if(statusArr.length!==0&&statusArr[status+2]==="结算中"){//此过程不需确认
+                //下一步是否自动确认
+                formData.append("auto","1");
+            }
+            formData.append("rid",rid);
+            formData.append("_xsrf",$("#token", parent.document).val());
+            formData.append("status",status+"");
+            formData.append("step",step+"");
+            /*if(uRole===6){
+                let files = $('#assignModal').find("input[name='file']").prop('files');
+                if (files.length === 0) {
+                    swalParent("系统提示", "请上传实验报告!", "error");
+                    return
+                }
+                let file = files[0];
+                let size = file.size;
+                if (size > 20971520) {
+                    swalParent("系统提示", "文件大小不能超过20MB!", "error");
+                    return
+                }
+                //let formData = new FormData();
+                formData.append('table',"order");
+                formData.append('file',files[0]);
+            }*/
+            $.ajax({
+                url: "/main/assign/complete",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData,
+                beforeSend: function () {
+                    loadingParent(true, 2);
+                },
+                success: function (r) {
+                    if (r.code === 1) {
+                        $('#assignModal').modal("hide");
+                        refresh();
+                        swalParent("系统提示", "操作成功！", "success");
+                    }else{
+                        swalParent("系统提示", "操作失败," + res.data, "error");
+                    }
+                },
+                complete: function () {
+                    loadingParent(false, 2);
+                }
+            });
+        },"");
+
+    });
+
+    //发送对账单
+    $('#assignModal .statement').on("click",function () {
+        $('#assignModal .completeTask').click();
     });
     //任务管理-------------------------------------------------结束
 

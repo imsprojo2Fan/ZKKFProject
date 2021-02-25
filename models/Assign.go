@@ -102,8 +102,8 @@ func (this *Assign) Update(obj *Assign) error {
 
 func (this *Assign) Update4Init(o orm.Ormer,obj Assign) error {
 	_ = o.Begin()
-	sqlTxt := "update assign set manager=?,status=?,uid=?,msg=?,updated=now() where random_id=?"
-	_,err := o.Raw(sqlTxt,obj.Manager,obj.Status,obj.Uid,obj.Msg,obj.RandomId).Exec()
+	sqlTxt := "update assign set manager=?,status=?,step=?,uid=?,msg=?,updated=now() where random_id=?"
+	_,err := o.Raw(sqlTxt,obj.Manager,obj.Status,obj.Step,obj.Uid,obj.Msg,obj.RandomId).Exec()
 
 	if err!=nil{
 		_ = o.Rollback()
@@ -124,11 +124,9 @@ func (this *Assign) Update4Init(o orm.Ormer,obj Assign) error {
 }
 
 func (this *Assign) Update4Status(o orm.Ormer,obj Assign) error {
-	//o := orm.NewOrm()
-	_ = o.Begin()
 	//更新assign
-	sqlTxt := "update assign set status=?,uid=? where random_id=?"
-	_,err := o.Raw(sqlTxt,obj.Status,obj.Uid,obj.RandomId).Exec()
+	sqlTxt := "update assign set step=?,status=?,uid=? where random_id=?"
+	_,err := o.Raw(sqlTxt,obj.Step,obj.Status,obj.Uid,obj.RandomId).Exec()
 	if err!=nil{
 		_ = o.Rollback()
 		return err
@@ -145,7 +143,6 @@ func (this *Assign) Update4Status(o orm.Ormer,obj Assign) error {
 		_ = o.Rollback()
 		return err
 	}
-	_ = o.Commit()
 	return err
 }
 

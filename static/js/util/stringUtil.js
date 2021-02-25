@@ -37,4 +37,35 @@ let stringUtil = {
             }
         }
     },
+    /**
+     * 阿拉伯数字转中文数字,
+     * 如果传入数字时则最多处理到21位，超过21位js会自动将数字表示成科学计数法，导致精度丢失和处理出错
+     * 传入数字字符串则没有限制
+     * @param {number|string} digit
+     */
+    toZhDigit:function (digit) {
+        let chnNumChar = ["零","壹","贰","叁","肆","伍","陆","柒","捌","玖"];
+        let chnUnitChar = ["","拾","佰","仟","万","亿","万亿","亿亿"];
+        let strIns = '', chnStr = '';
+        let unitPos = 0;
+        let zero = true;
+        while(digit > 0){
+            let v = digit % 10;
+            if(v === 0){
+                if(!zero){
+                    zero = true;
+                    chnStr = chnNumChar[v] + chnStr;
+                }
+            }else{
+                zero = false;
+                strIns = chnNumChar[v];
+                strIns += chnUnitChar[unitPos];
+                chnStr = strIns + chnStr;
+            }
+            unitPos++;
+            digit = Math.floor(digit / 10);
+        }
+        return chnStr;
+
+    },
 }

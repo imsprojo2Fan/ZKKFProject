@@ -24,6 +24,8 @@ type Device struct {
 	Achievement     string `orm:"size(512)"`  //代表性成果
 	Disabled        int    //是否上线
 	IsOrder			int //是否为可预约设备 0否 1是
+	Price 			int //参考单价
+	Version 		string //设备型号
 	View            int    `orm:"size(16)"`
 	Reservation     int    `orm:"size(16)"` //预约数
 	ReservationDone int    `orm:"size(16)"` //预约完成数
@@ -55,7 +57,7 @@ func (this *Device) Insert(Device *Device) error {
 
 func (this *Device) Update(obj *Device) error {
 	o := orm.NewOrm()
-	_, err := o.Update(obj, "name", "title","is_order", "tid","ttid", "source", "sketch", "img", "parameter", "feature", "range", "achievement", "disabled","standard","drawing", "remark","relate", "updated")
+	_, err := o.Update(obj, "name", "title","is_order", "tid","ttid", "source", "sketch", "img", "parameter", "feature", "range", "achievement", "disabled","standard","drawing", "remark","relate","price","version", "updated")
 	return err
 }
 

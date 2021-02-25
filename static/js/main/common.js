@@ -52,68 +52,58 @@ window.onresize = function() {
     $('.dataTables_scrollBody').css("height",height+"px");
 };
 
-function renderStatus(status) {
-    let res = {}
-    let str;
-    let str2;
-    status = parseInt(status);
-    if(status===-1){
-        str2 = "<span class='statusTxt-red'>已取消</span>";
-        str = "待确认/已确认/制样中/测试中/数据分析/协商处理中/财务结算/已完成/<span data='"+status+"' class='status statusTxt-red'>已取消</span>";
-    }
-    if(status===0){
-        str2 = "<span class='statusTxt-blue'>待确认</span>";
-        str = "<span data='"+status+"' class='status statusTxt-blue'>待确认</span>/已确认/制样中/测试中/数据分析/协商处理中/财务结算/已完成/已取消";
-    }
-    if(status===1){
-        str2 = "<span class='statusTxt-blue'>已确认</span>";
-        str = "待确认/<span data='"+status+"' class='status statusTxt-blue'>已确认</span>/制样中/测试中/数据分析/协商处理中/财务结算/已完成/已取消";
-    }
-    if(status===2){
-        str2 = "<span class='statusTxt-blue'>制样中</span>";
-        str = "待确认/已确认/<span data='"+status+"' class='status statusTxt-blue'>制样中</span>/测试中/数据分析/协商处理中/财务结算/已完成/已取消";
-    }
-    if(status===3){
-        str2 = "<span class='statusTxt-blue'>测试中</span>";
-        str = "待确认/已确认/制样中/<span data='"+status+"' class='status statusTxt-blue'>测试中</span>/数据分析/协商处理中/财务结算/已完成/已取消";
-    }
-    if(status===4){
-        str2 = "<span class='statusTxt-blue'>数据分析</span>";
-        str = "待确认/已确认/制样中/测试中/<span data='"+status+"' class='status statusTxt-blue'>数据分析</span>/协商处理中/财务结算/已完成/已取消";
-    }
-    if(status===-5){
-        str2 = "<span class='statusTxt-blue'>财务结算</span>";
-        str = "待确认/已确认/制样中/测试中/数据分析/<span data='"+status+"' class='status statusTxt-blue'>协商处理中</span>/财务结算/已完成/已取消";
-    }
-    if(status===5){
-        str2 = "<span class='statusTxt-blue'>财务结算</span>";
-        str = "待确认/已确认/制样中/测试中/数据分析/协商处理中/<span data='"+status+"' class='status statusTxt-blue'>财务结算</span>/已完成/已取消";
-    }
-    if(status===6){
-        str2 = "<span class='statusTxt-green'>已完成</span>";
-        str = "待确认/已确认/制样中/测试中/数据分析/协商处理中/财务结算/<span data='"+status+"' class='status statusTxt-green'>已完成</span>/已取消";
-    }
-    res.status = str;
-    res.statusTxt = str2;
-    return res;
-}
-
-function renderStatus2(status,msg) {
+function renderStatus(status,msg) {
     let res = {};
-    status = parseInt(status);
-    let msgArr = msg.split(",");
     let allStr = "";
+    let statusDom = "";
+    let statusTxt = "";
+    status = parseInt(status);
+    if(!msg){
+        if(status===-1){
+            statusDom = "<span class='statusTxt-red'>已取消</span>";
+            statusTxt = "已取消";
+            allStr = "<span class='statusTxt-red'>已取消</span>";
+        }else if(status===0){
+            statusDom = "<span class='statusTxt-blue'>待确认</span>";
+            statusTxt = "待确认";
+            allStr = "<span class='statusTxt-blue'>待确认</span>";
+        }
+        res.statusDom = statusDom;
+        res.statusTxt = statusTxt;
+        res.allTxt = allStr;
+        res.statusArr = [];
+        res.statusIndex = 0;
+        return res;
+    }
+
+    let msgArr = msg.split(",");
+    res.statusArr = msgArr;
     for(let i=0;i<msgArr.length;i++){
         let temp = msgArr[i];
         if(i===status){
-            res.txt = msgArr[i];
+            res.statusDom = "<span class='statusTxt-blue'>"+msgArr[i]+"</span>";
+            res.statusTxt = msgArr[i];
             temp = "<span data='"+status+"' class='status statusTxt-blue' >"+temp+"</span>";
+            res.statusIndex = 0;
         }
         allStr += "/"+temp;
     }
-    if(status===-1){
-        allStr = allStr.replace("已取消","<span class='statusTxt-red'>已取消</span>");
+    allStr = allStr.substring(1,allStr.length);
+    res.allTxt = allStr;
+    if(!res.allTxt){
+        res.allTxt = "-";
     }
-    res.allTxt = allStr.substring(1,allStr.length)
     return res;
+}
+
+function statusIndex(arr,txt) {
+    let index = 0;
+    for(let i=0;i<arr.length;i++){
+        let txt0 = arr[i];
+        if(txt===txt0){
+            index = i;
+            break
+        }
+    }
+    return index;
 }

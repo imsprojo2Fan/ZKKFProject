@@ -128,9 +128,12 @@ func init() {
 	//协议管理
 	beego.Router("/main/protocol/info", &controllers.ProtocolController{}, "POST:Info")
 	//指派任务管理
-	beego.Router("/main/assign/status", &controllers.AssignController{}, "POST:Status")
 	beego.Router("/main/assign/assign", &controllers.AssignController{}, "POST:Assign")
 	beego.Router("/main/assign/list", &controllers.AssignController{}, "POST:List")
+	beego.Router("/main/assign/confirm", &controllers.AssignController{}, "POST:Confirm")
+	beego.Router("/main/assign/complete", &controllers.AssignController{}, "POST:Complete")
+	beego.Router("/main/assign/cancel", &controllers.AssignController{}, "POST:Cancel")
+	beego.Router("/main/assign/statement", &controllers.AssignController{}, "POST:Statement")
 	//消息管理
 	beego.Router("/main/message/listAll", &controllers.MessageController{}, "POST:ListAll")
 	//评价管理

@@ -21,6 +21,7 @@ func (this *MainController) Index() {
 	tMap := make(map[string]interface{})
 	tMap["id"] = userInfo.Id
 	tMap["type"] = userInfo.Type
+	tMap["role"] = userInfo.Role
 	tMap["account"] = userInfo.Account
 	tMap["name"] = userInfo.Name
 	tMap["email"] = userInfo.Email

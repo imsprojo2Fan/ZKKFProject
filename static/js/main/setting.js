@@ -74,7 +74,6 @@ $(function () {
         })
     });
 
-
     //datatable setting
     myTable =$('#myTable').DataTable({
         autoWidth: true,
@@ -256,11 +255,11 @@ function add(){
         },
         success : function(r) {
             let type = "error";
-            if (r.code == 1) {
+            if (r.code === 1) {
                 type = "success";
-                reset();
+                reset4success();
             }
-            swalInfo("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             loadingParent(false,2);
@@ -274,11 +273,11 @@ function edit(){
     let value = $('#value_edit').val();
     let remark = $('#remark_edit').val().trim();
     if (!grouping){
-        swalInfo("系统提示",'分组类型不能为空!',"warning");
+        swalParent("系统提示",'分组类型不能为空!',"warning");
         return;
     }
     if (!key||!value){
-        swalInfo("系统提示",'关键字或值不能为空!',"warning");
+        swalParent("系统提示",'关键字或值不能为空!',"warning");
         return;
     }
     $.ajax({
@@ -300,11 +299,11 @@ function edit(){
         success : function(r) {
             $('#editModal').modal("hide");
             let type = "error";
-            if (r.code == 1) {
+            if (r.code === 1) {
                 type = "success";
                 refresh();
             }
-            swalInfo("系统提示",r.msg,type);
+            swalParent("系统提示",r.msg,type);
         },
         complete:function () {
             loadingParent(false,2);
@@ -327,11 +326,11 @@ function del(id){
             loadingParent(true,2);
         },
         success : function(r) {
-            if (r.code == 1) {
-                swalInfo("系统提示",r.msg, "success");
+            if (r.code === 1) {
+                swalParent("系统提示",r.msg, "success");
                 refresh();
             }else{
-                swalInfo("系统提示",r.msg, "error");
+                swalParent("系统提示",r.msg, "error");
             }
         },
         complete:function () {

@@ -181,7 +181,7 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 	if uType!=99&&qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
 		uidStr := strconv.Itoa(uid)
-		sql += " and a.uid="+uidStr
+		sql += " and d.step!=0 and a.uid="+uidStr
 	}
 	//处理普通职工用户----------------------------------结束
 
@@ -201,11 +201,11 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error) {
 	var res []orm.Params
 	o := orm.NewOrm()
-	sql := "select o.*,u.name,u.phone,u.company,e.satisfied,e.content,e.created as eTime from `order` o left join assign_detail a on o.rid=a.random_id left join user u on o.uid=u.id left join evaluate e on o.rid=e.random_id where o.del=0 "
+	sql := "select o.*,u.name,u.phone,u.company,e.satisfied,e.content,e.created as eTime,a.msg from `order` o left join assign a on o.rid=a.random_id left join assign_detail d on o.rid=d.random_id  left join user u on o.uid=u.id left join evaluate e on o.rid=e.random_id where o.del=0 "
 	uType := qMap["uType"].(int)
 	//处理普通用户数据----------------------------------开始
 	if uType==99{
-		sql = "select o.*,u.name,u.phone,u.company from `order` o left join user u on o.uid=u.id where o.del=0"
+		sql = "select o.*,u.name,u.phone,u.company,a.msg from `order` o left join user u on o.uid=u.id left join assign a on o.rid=a.random_id where o.del=0"
 	}
 	if uType==99&&qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
@@ -217,7 +217,7 @@ func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error)
 	if uType!=99&&qMap["uid"] !=nil{
 		uid := qMap["uid"].(int)
 		uidStr := strconv.Itoa(uid)
-		sql += " and a.uid="+uidStr
+		sql += " and d.step!=0 and d.uid="+uidStr
 	}
 	//处理普通职工用户----------------------------------结束
 
