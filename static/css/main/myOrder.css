@@ -314,7 +314,7 @@ input[type='radio'] {
 
 /*指派任务弹框样式----------------------------开始*/
 #assignModal .modal-body{
-    height: 60vh;
+    height: 65vh;
 }
 #assignModal .created{
     margin-top: 6px;
@@ -336,9 +336,10 @@ input[type='radio'] {
     cursor: pointer;
 }
 #assignModal .statementsWrap{
+    display: none;
     margin-left: 5px;
     margin-right: 5px;
-    margin-top: 15px;
+    margin-top: 35px;
     border: 1px solid #eee;
     padding: 8px;
 }
@@ -346,8 +347,12 @@ input[type='radio'] {
     color: #6195ff;
     font-size: 20px;
 }
-.infoTable td{
-    width: 28%;
+#assignModal .infoTable tr{
+    height: 25px;
+}
+#assignModal .tdLeft{
+    padding-left: 8%;
+    width: 50%;
 }
 .statementTable{
     margin-left: 25px;
@@ -369,5 +374,8 @@ input[type='radio'] {
     display: inline-block;
     width: 30%;
     text-align: center;
+}
+#assignModal .cancel,#assignModal .submit,#assignModal .statement,#assignModal .confirmTask,#assignModal .completeTask,#assignModal .complete，#assignModal .fileWrap{
+    display: none;
 }
 /*指派任务弹框样式----------------------------结束*/

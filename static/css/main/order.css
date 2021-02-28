@@ -339,6 +339,13 @@ input[type='radio'] {
     color: #6195ff;
     font-size: 20px;
 }
+#assignModal .infoTable tr{
+    height: 25px;
+}
+#assignModal .tdLeft{
+    padding-left: 8%;
+    width: 50%;
+}
 .statementTable{
     margin-left: 25px;
 }

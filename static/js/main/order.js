@@ -419,31 +419,31 @@ $(document).ready(function () {
                     '       <td class="text-center" colspan="7">付款通知</td>\n' +
                     '   </tr>\n' +
                     '   <tr class="text-left">\n' +
-                    '       <td colspan="4" style="text-align: left"><span class="title">订单编号：</span><span class="rid">'+rowData.rid+'</span></td>\n' +
+                    '       <td class="tdLeft" colspan="4" style="text-align: left"><span class="title">订单编号：</span><span class="rid">'+rowData.rid+'</span></td>\n' +
                     '       <td colspan="4" style="text-align: left"><span class="title">创建时间：</span><span>'+dateUtil.GMT2Str(rowData.created)+'</span></td>\n' +
                     '   </tr>\n' +
                     '   <tr class="text-left">\n' +
-                    '       <td colspan="4"><span class="title">委托方(付款单位)：</span><span>'+uInfo.Company+'</span></td>\n' +
+                    '       <td class="tdLeft" colspan="4"><span class="title">委托方(付款单位)：</span><span>'+uInfo.Company+'</span></td>\n' +
                     '       <td colspan="4"><span class="title">服务方(收款单位)：</span><span>'+cInfo.support+'</span></td>\n' +
                     '   </tr>\n' +
                     '   <tr class="text-left">\n' +
-                    '       <td colspan="4"><span class="title">地址：</span><span>'+uInfo.Address+'</span></td>\n' +
+                    '       <td class="tdLeft" colspan="4"><span class="title">地址：</span><span>'+uInfo.Address+'</span></td>\n' +
                     '       <td colspan="4"><span class="title">地址：</span><span>'+cInfo.address+'</span></td>\n' +
                     '    </tr>\n' +
                     '    <tr class="text-left">\n' +
-                    '       <td colspan="4"><span class="title">纳税人识别号：</span><span>'+uInfo.InvoiceCode+'</span></td>\n' +
+                    '       <td class="tdLeft" colspan="4"><span class="title">纳税人识别号：</span><span>'+uInfo.InvoiceCode+'</span></td>\n' +
                     '       <td colspan="4"><span class="title">开户银行：</span><span>'+cInfo.bank+'</span></td>\n' +
                     '    </tr>\n' +
                     '    <tr class="text-left">\n' +
-                    '       <td colspan="4"><span class="title">联系人：</span><span>'+uInfo.Name+'</span></td>\n' +
+                    '       <td class="tdLeft" colspan="4"><span class="title">联系人：</span><span>'+uInfo.Name+'</span></td>\n' +
                     '       <td colspan="4"><span class="title">账户：</span><span>'+cInfo.account+'</span></td>\n' +
                     '    </tr>\n' +
                     '    <tr class="text-left">\n' +
-                    '       <td colspan="4"><span class="title">电话：</span><span>'+uInfo.Phone+'</span></td>\n' +
+                    '       <td class="tdLeft" colspan="4"><span class="title">电话：</span><span>'+uInfo.Phone+'</span></td>\n' +
                     '       <td colspan="4"><span class="title">纳税人识别号：</span><span>'+cInfo.identification+'</span></td>\n' +
                     '     </tr>\n' +
                     '     <tr class="text-left">\n' +
-                    '        <td colspan="4"><span class="title">电子邮箱：</span><span>'+uInfo.Email+'</span></td>\n' +
+                    '        <td class="tdLeft" colspan="4"><span class="title">电子邮箱：</span><span>'+uInfo.Email+'</span></td>\n' +
                     '        <td colspan="4"><span class="title">联系人：</span><span>'+cInfo.contact+'</span></td>\n' +
                     '     </tr>\n' +
                     '  </table>\n' +
