@@ -58,3 +58,8 @@ func(this *AssignDetail)ListByStep(rid,step interface{})(res AssignDetail){
 	_ = orm.NewOrm().Raw("select * from assign_detail where random_id=? and step=?",rid,step).QueryRow(&res)
 	return res
 }
+func(this *AssignDetail)List4Wrong(rid interface{})(res AssignDetail){
+	_ = orm.NewOrm().Raw("select * from assign_detail where role=3 and step!=0 and random_id=?",rid).QueryRow(&res)
+	return res
+}
+

@@ -378,17 +378,12 @@ function add(){
     let formData = formUtil('addForm');
     formData["type"] = $('#type').val();
     let roleVal = $('#role').val();
-    let roleArr = "";
-    $.each(roleVal,function (i,item) {
-        roleArr += ","+item;
-    });
-    roleArr = roleArr.substring(1,roleArr.length);
     let type = parseInt($('#type').val());
-    if(type!==99&&!roleArr){
+    if(type!==99&&!roleVal){
         swalParent("系统提示",'请勾选用户角色!',"warning");
         return;
     }
-    formData["role"] = roleArr;
+    formData["role"] = roleVal;
     formData["gender"] = $('#gender').val();
     formData["disabled"] = $('#disabled').val();
     formData["_xsrf"] = $("#token", parent.document).val();
@@ -453,18 +448,13 @@ function edit(){
     }
     let formData = formUtil('editForm');
     formData["type"] = $('#editType').val();
-    let roleVal = $('#role').val();
-    let roleArr = "";
-    $.each(roleVal,function (i,item) {
-        roleArr += ","+item;
-    });
-    roleArr = roleArr.substring(1,roleArr.length);
-    let type = parseInt($('#type').val());
-    if(type!==99&&!roleArr){
+    let roleVal = $('#roleEdit').val();
+    let type = parseInt($('#editType').val());
+    if(type!==99&&!roleVal){
         swalParent("系统提示",'请勾选用户角色!',"warning");
         return;
     }
-    formData["role"] = roleArr;
+    formData["role"] = roleVal;
     formData["disabled"] = $('#editDisabled').val();
     formData["active"] = $('#editActive').val();
     formData["gender"] = $('#editGender').val();

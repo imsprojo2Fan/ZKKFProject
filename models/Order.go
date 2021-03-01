@@ -166,7 +166,7 @@ func (this *Order) SelectByName(obj *Order) {
 func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 
 	o := orm.NewOrm()
-	sql := "select * from `order` o left join assign a on o.rid=a.random_id left join user u on o.uid=u.id left join evaluate e on o.rid=e.random_id where o.del=0 "
+	sql := "select * from `order` o left join assign a on o.rid=a.random_id left join assign_detail d on o.rid=d.random_id left join user u on o.uid=u.id left join evaluate e on o.rid=e.random_id where o.del=0 "
 	uType := qMap["uType"].(int)
 	//处理普通用户数据----------------------------------开始
 	if uType == 99 {
@@ -186,7 +186,7 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 	//处理普通职工用户----------------------------------结束
 	//处理非普通职工用户----------------------------------开始
 	if uType != 99 && qMap["uid"] == nil {
-		sql += " and d.step=0"
+		sql += " and(d.step=0 or d.step=-1)"
 	}
 	//处理非普通职工用户----------------------------------结束
 
@@ -210,7 +210,7 @@ func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error)
 	uType := qMap["uType"].(int)
 	//处理普通用户数据----------------------------------开始
 	if uType == 99 {
-		sql = "select o.*,u.name,u.phone,u.company,a.msg from `order` o left join user u on o.uid=u.id left join assign a on o.rid=a.random_id where o.del=0"
+		sql = "select o.*,u.name,u.phone,u.company,e.satisfied,e.content,e.created as eTime,a.msg from `order` o left join user u on o.uid=u.id left join assign a on o.rid=a.random_id left join evaluate e on o.rid=e.random_id where o.del=0"
 	}
 	if uType == 99 && qMap["uid"] != nil {
 		uid := qMap["uid"].(int)
@@ -228,7 +228,7 @@ func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error)
 
 	//处理非普通职工用户----------------------------------开始
 	if uType != 99 && qMap["uid"] == nil {
-		sql += " and d.step=0"
+		sql += " and(d.step=0 or d.step=-1)"
 	}
 	//处理非普通职工用户----------------------------------结束
 

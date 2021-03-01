@@ -58,16 +58,21 @@ function renderStatus(status,msg) {
     let statusDom = "";
     let statusTxt = "";
     status = parseInt(status);
-    if(!msg){
-        if(status===-1){
-            statusDom = "<span class='statusTxt-red'>已取消</span>";
-            statusTxt = "已取消";
-            allStr = "<span class='statusTxt-red'>已取消</span>";
-        }else if(status===0){
-            statusDom = "<span class='statusTxt-blue'>待确认</span>";
-            statusTxt = "待确认";
-            allStr = "<span class='statusTxt-blue'>待确认</span>";
-        }
+    if(status===-1){
+        statusDom = "<span class='statusTxt-red'>已取消</span>";
+        statusTxt = "已取消";
+        allStr = "<span class='statusTxt-red'>已取消</span>";
+        res.statusDom = statusDom;
+        res.statusTxt = statusTxt;
+        res.allTxt = allStr;
+        res.statusArr = [];
+        res.statusIndex = 0;
+        return res;
+    }
+    if(!msg&&status===0){
+        statusDom = "<span class='statusTxt-blue'>待确认</span>";
+        statusTxt = "待确认";
+        allStr = "<span class='statusTxt-blue'>待确认</span>";
         res.statusDom = statusDom;
         res.statusTxt = statusTxt;
         res.allTxt = allStr;

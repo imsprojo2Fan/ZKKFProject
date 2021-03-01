@@ -29,7 +29,7 @@
 .connect{
     text-align: center;
 }
-input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="date"], input[type="url"], input[type="tel"], textarea {
+.formWrap input[type="text"], .formWrap input[type="email"], .formWrap input[type="password"], .formWrap input[type="number"], .formWrap input[type="date"], .formWrap input[type="url"], .formWrap input[type="tel"], .formWrap textarea {
     height: 40px;
     width: 100%;
     border: none;

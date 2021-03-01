@@ -22,12 +22,15 @@ import (
 type AssignController struct {
 	BaseController
 }
-
+/**
+	查询订单信息
+ */
 func (this *AssignController)List(){
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uid := session.Get("id").(int)
+	curUuid := session.Get("id").(int)
 	rid := this.GetString("rid")
 	tid := this.GetString("tid")
+	uid ,_ := this.GetInt("uid")
 	//查询订单关联用户信息
 	var assign models.Assign
 	assign.RandomId = rid
@@ -66,7 +69,7 @@ func (this *AssignController)List(){
 			continue
 		}
 		lastItem = detailArr[i-1]
-		if item.Uid==uid{
+		if item.Uid==curUuid{
 			curItem = item
 			break
 		}
@@ -79,7 +82,7 @@ func (this *AssignController)List(){
 		arr := strings.Split(msg,",")
 		var sIndex int
 		for index,item := range arr{
-			if "结算中"==item{
+			if "结算中"==item||"协商处理中"==item{
 				sIndex = index
 				break
 			}
@@ -103,7 +106,9 @@ func (this *AssignController)List(){
 	bMap["nextItem"] = nextItem
 	this.jsonResult(200, 1, "查询信息成功",bMap)
 }
-
+/**
+	任务指派
+ */
 func (this *AssignController) Assign(){
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	var err error
@@ -143,7 +148,7 @@ func (this *AssignController) Assign(){
 			msg += ",结算中,对账单已发送"
 		}
 		if item.Role==99{
-			msg += ",确认账单完毕"
+			msg += ",账单确认完毕"
 		}
 		if item.Role==7{
 			msg += ",已开票待收款"
@@ -166,7 +171,9 @@ func (this *AssignController) Assign(){
 	this.jsonResult(200, 1, "操作成功", nil)
 
 }
-
+/**
+	确认任务
+ */
 func (this *AssignController)Confirm(){
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	rid := this.GetString("rid")
@@ -198,7 +205,9 @@ func (this *AssignController)Confirm(){
 	_ = o.Commit()
 	this.jsonResult(200, 1, "操作成功", nil)
 }
-
+/*
+	完成任务/订单
+ */
 func (this *AssignController)Complete(){
 	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	var assignInfo models.Assign
@@ -273,7 +282,9 @@ func (this *AssignController)Complete(){
 	_ = o.Commit()
 	this.jsonResult(200, 1, "操作成功", nil)
 }
-
+/*
+	取消订单
+ */
 func (this *AssignController) Cancel(){
 	var assignInfo models.Assign
 	rid := this.GetString("rid")
@@ -293,10 +304,11 @@ func (this *AssignController) Cancel(){
 	this.jsonResult(200, 1, "操作成功", nil)
 
 }
-
+/**
+	对账单信息
+ */
 func(this *AssignController) Statement()  {
-	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uid := session.Get("id").(int)
+	uid,_ := this.GetInt("uid")
 	rid := this.GetString("rid")
 	bMap,err := StatementInfo(rid,uid)
 	if err!=nil{
@@ -341,5 +353,58 @@ func StatementInfo(rid string,uid int)(map[string]interface{},error)  {
 	bMap["cInfo"] = cInfo
 	bMap["uInfo"] = user
 	return bMap,nil
+}
+/*
+	对账单/实验数据有误
+ */
+func(this *AssignController)Wrong(){
+	session, _ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	rid := this.GetString("rid")
+	uid := session.Get("id").(int)
+	status,_ :=this.GetInt("status")
+	msg := this.GetString("msg")
+	msg = strings.Replace(msg,"结算中","协商处理中",-1)
+	var aDetail models.AssignDetail
+	aInfo := aDetail.List4Wrong(rid)
+	//后退两步转至业务经理处理
+	status = status-1
+	step := aInfo.Step
+
+	var assignInfo models.Assign
+	assignInfo.Status = status
+	assignInfo.RandomId = rid
+	assignInfo.Step = step
+	assignInfo.Uid = aInfo.Uid
+	assignInfo.Msg = msg
+	var err error
+
+	o := orm.NewOrm()
+	_ = o.Begin()
+	err = assignInfo.Update4Status(o,assignInfo)
+
+	//更新assign_detail1
+	//更新业务经理状态
+	aDetail.Uid = aInfo.Uid
+	aDetail.RandomId = rid
+	aDetail.Status = 0
+	err = aDetail.UpdateByRid(o,aDetail)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+		return
+	}
+	//更新用户状态
+	aDetail.Uid = uid
+	aDetail.RandomId = rid
+	aDetail.Status = 0
+	err = aDetail.UpdateByRid(o,aDetail)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
+		return
+	}
+	_ = o.Commit()
+	this.jsonResult(200, 1, "操作成功!",nil)
+
 }
 

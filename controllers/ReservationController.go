@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"ZkkfProject/models"
+	"ZkkfProject/sysinit"
 	"ZkkfProject/utils"
 	"encoding/json"
 	"github.com/astaxie/beego/orm"
@@ -159,7 +160,7 @@ func (this *ReservationController) Add() {
 	if err != nil {
 		this.jsonResult(http.StatusOK, -1, "参数解析错误,"+err.Error(), err.Error())
 	}
-	rid := "R"+strconv.FormatInt(time.Now().UnixNano()-10,10)
+	rid := "R"+sysinit.IdrRender()
 	var obj models.Reservation
 	obj.Rid = rid
 	obj.Uid = uid
@@ -183,7 +184,7 @@ func (this *ReservationController) Add() {
 	protocol.RandomId = rid
 	protocol.Uid = userId//用户id
 	protocol.Uuid = uid//创建人id
-	protocol.Rid = "R"+strconv.FormatInt(time.Now().UnixNano()-10,10)
+	protocol.Rid = "R"+sysinit.IdrRender()
 	protocol.City = models.RangeValue(localInfo,"city")
 	err = protocol.Insert(o,&protocol)
 	if err!=nil{
@@ -448,7 +449,7 @@ func (this *ReservationController) IndexAdd() {
 	if err != nil {
 		this.jsonResult(http.StatusOK, -1, "参数解析错误,"+err.Error(), err.Error())
 	}
-	rid := "R"+strconv.FormatInt(time.Now().UnixNano()-10,10)
+	rid := "R"+sysinit.IdrRender()
 	obj.Rid = rid
 	obj.Uid = uid
 	obj.Uuid = uid
@@ -468,7 +469,7 @@ func (this *ReservationController) IndexAdd() {
 	//新增协议
 	protocol.RandomId = rid
 	protocol.Uid = uid
-	protocol.Rid = "R"+strconv.FormatInt(time.Now().UnixNano()-10,10)
+	protocol.Rid = "R"+sysinit.IdrRender()
 	err = protocol.Insert(o,&protocol)
 	if err!=nil{
 		_ = o.Rollback()

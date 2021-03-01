@@ -2,12 +2,12 @@ package controllers
 
 import (
 	"ZkkfProject/models"
+	"ZkkfProject/sysinit"
 	"ZkkfProject/utils"
 	"encoding/json"
 	"github.com/astaxie/beego/orm"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 type OrderController struct {
@@ -185,7 +185,7 @@ func (this *OrderController) Add() {
 	//查询公司信息
 	res := settingObj.SelectByGroup("LocalInfo")
 	for _,item := range tArr{
-		Rid := "A"+strconv.FormatInt(time.Now().UnixNano(),10)
+		Rid := "A"+sysinit.IdrRender()
 		//处理订单
 		var obj models.Order
 		obj.Rid = Rid
@@ -210,7 +210,7 @@ func (this *OrderController) Add() {
 		//处理协议
 		var protocol models.Protocol
 		protocol = item.Protocol
-		protocol.Rid = "A"+strconv.FormatInt(time.Now().UnixNano()-10,10)
+		protocol.Rid = "A"+sysinit.IdrRender()
 		protocol.RandomId = Rid
 		protocol.Tid = item.Tid
 		protocol.DeviceId = ids
@@ -436,7 +436,7 @@ func (this *OrderController) IndexAdd() {
 	var protocolArr []models.Protocol
 	var taskArr []models.Task
 	for _,item := range tArr{
-		Rid := "A"+strconv.FormatInt(time.Now().UnixNano(),10)
+		Rid := "A"+sysinit.IdrRender()
 		//处理订单
 		var obj models.Order
 		obj.Rid = Rid
@@ -460,7 +460,7 @@ func (this *OrderController) IndexAdd() {
 		//处理协议
 		var protocol models.Protocol
 		protocol = item.Protocol
-		protocol.Rid = "A"+strconv.FormatInt(time.Now().UnixNano()-10,10)
+		protocol.Rid = "A"+sysinit.IdrRender()
 		protocol.RandomId = Rid
 		protocol.Tid = item.Tid
 		protocol.DeviceId = ids

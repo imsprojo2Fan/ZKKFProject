@@ -287,10 +287,14 @@ $(document).ready(function () {
         $('#assignModal .btn-default').show();
         $('#assignModal .statementsWrap').hide();//对账单
         $('.assignSel').attr("disabled","true");
+        $('#assignModal .showWrap i').removeClass("fa-angle-down");
+        $('#assignModal .showWrap i').addClass("fa-angle-left");
+        $('#assignModal .showWrap i').attr("title","显示更多");
 
         $.post("/main/assign/list", {
             rid: rowData.rid,
             tid:rowData.tid,
+            uid:rowData.uid,
             _xsrf: $("#token", parent.document).val()
         }, function (res) {
             loadingParent(false,2);
@@ -321,13 +325,20 @@ $(document).ready(function () {
                 $('#assignModal .submit').show();
             }
             let statusArr = statusItem.statusArr;
-            let sIndex = statusIndex(statusArr,"结算中");
+            let sIndex = -1;
+            if(statusIndex(statusArr,"结算中")){
+                sIndex = statusIndex(statusArr,"结算中");
+            }
+            if(statusIndex(statusArr,"协商处理中")){
+                sIndex = statusIndex(statusArr,"协商处理中");
+            }
+
             //显示取消订单
             if(uRole===3&&status!==statusArr.length-1){
                 $('#assignModal .cancel').show();
             }
             //显示发送对账单
-            if(sIndex===status&&uRole===3){
+            if(sIndex===status&&uRole===3&&curItem.Step!==0){
                 $('#assignModal .statement').show();
             }
 
@@ -381,11 +392,11 @@ $(document).ready(function () {
                     $("#userSel"+k).selectpicker('refresh');
                 }
             }
-            console.log(res)
             //渲染对账单
             let cInfo = res.data.cInfo;
             let uInfo = res.data.uInfo;
             let dList = res.data.itemList;
+            $('#assignModal .statementsWrap').html("");
             if(cInfo){
                 let itemStr = "";
                 let allPrice = 0;
@@ -463,7 +474,6 @@ $(document).ready(function () {
                     '  </table>\n' +
                     '  <div class="foot">\n<span>制表:'+cInfo.step1+'</span>\n<span>复核:'+cInfo.step2+'</span>\n<span>审核:'+cInfo.step3+'</span>\n</div>');
             }
-
             $('#assignModal').modal("show");
         });
     });

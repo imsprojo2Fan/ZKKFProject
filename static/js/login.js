@@ -1,11 +1,19 @@
 let isPassKeyLogin = false;
+
+document.onkeydown=function(event){
+    var e = event || window.event || arguments.callee.caller.arguments[0];
+    if(e && e.keyCode===13){
+        $("#loginBtn").click();
+    }
+};
+
 $(function () {
 
     //console.log(browserInfo.getBrowserInfo());
     //console.log(browserInfo.detectOS());
     //console.log(browserInfo.digits());
 
-    if(top.location!=self.location){
+    if(top.location!==self.location){
         console.log(("exit"));
         window.parent.location.href = "/login";
     }else{

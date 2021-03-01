@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"ZkkfProject/models"
+	"ZkkfProject/sysinit"
 	"ZkkfProject/utils"
 	"encoding/json"
 	"github.com/astaxie/beego/orm"
@@ -159,7 +160,7 @@ func (this *ProtocolController) Add() {
 	}
 
 	var obj models.Order
-	obj.Rid = "A"+strconv.FormatInt(time.Now().UnixNano(),10)
+	obj.Rid = "P"+sysinit.IdrRender()
 	obj.Uid = uid
 	obj.Status = 0
 	obj.Remark = remark
@@ -259,7 +260,7 @@ func (this *ProtocolController) IndexAdd() {
 	if len(tArr) == 0 {
 		this.jsonResult(http.StatusOK, -1, "无订单数据!", nil)
 	}
-	Rid := "A"+strconv.FormatInt(time.Now().UnixNano(),10)
+	Rid := "P"+sysinit.IdrRender()
 	o := orm.NewOrm()
 	_ = o.Begin()
 	var obj models.Order

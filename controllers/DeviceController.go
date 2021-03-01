@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"ZkkfProject/models"
+	"ZkkfProject/sysinit"
 	"ZkkfProject/utils"
 	"github.com/astaxie/beego/orm"
 	"time"
@@ -93,7 +94,7 @@ func (this *DeviceController) Add() {
 		this.jsonResult(200, -1, "设备名称不能为空！", nil)
 	}
 	var obj models.Device
-	obj.Rid = utils.RandomString(16)
+	obj.Rid = sysinit.IdrRender()
 	obj.Uid = uid
 	obj.Tid, _ = this.GetInt("tid")
 	obj.Ttid, _ = this.GetInt("ttid")

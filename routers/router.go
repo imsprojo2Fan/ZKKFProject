@@ -134,6 +134,7 @@ func init() {
 	beego.Router("/main/assign/complete", &controllers.AssignController{}, "POST:Complete")
 	beego.Router("/main/assign/cancel", &controllers.AssignController{}, "POST:Cancel")
 	beego.Router("/main/assign/statement", &controllers.AssignController{}, "POST:Statement")
+	beego.Router("/main/assign/wrong", &controllers.AssignController{}, "POST:Wrong")
 	//消息管理
 	beego.Router("/main/message/listAll", &controllers.MessageController{}, "POST:ListAll")
 	//评价管理

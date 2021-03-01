@@ -111,7 +111,7 @@ $(document).ready(function() {
             let statusItem = renderStatus(status,msg);
             let statusArr = statusItem.statusArr;
             let sIndex = statusIndex(statusArr,"对账单已发送");
-            if(status<sIndex){
+            if(status===0||status<sIndex){
                 $(row).find(".statement").remove();
             }
             if(status!==statusArr.length-1){
@@ -181,6 +181,7 @@ $(document).ready(function() {
         }
         $.post("/main/assign/statement", {
             rid: rowData.rid,
+            uid:rowData.uid,
             _xsrf: $("#token", parent.document).val()
         }, function (res) {
             loadingParent(false,2);
@@ -192,6 +193,7 @@ $(document).ready(function() {
             let dList = data.itemList;
             let itemStr = "";
             let allPrice = 0;
+            $('#assignModal .statementsWrap').html("");
             for(let i=0;i<dList.length;i++){
                 let index = i+1;
                 let item = dList[i];
@@ -271,11 +273,11 @@ $(document).ready(function() {
     });
     //账单有误
     $('#assignModal .cancel').on("click", function () {
-        let rid = $('#assignModal .rid').html();
         window.parent.confirmAlert("确定账单有误吗？","客服将尽快与您确认！",function () {
-            $.post("/main/assign/cancel", {
-                rid: rid,
-                status:-1,
+            $.post("/main/assign/wrong", {
+                rid: $('#assignModal .rid').val(),
+                status:$('#assignModal .status').val(),
+                msg:$('#assignModal .msg').val(),
                 _xsrf: $("#token", parent.document).val()
             }, function (res) {
                 if (res.code === 1) {
@@ -286,7 +288,7 @@ $(document).ready(function() {
                     swalParent("系统提示", "操作失败," + res.data, "error");
                 }
             });
-        },rid);
+        },"");
 
     });
     //确认账单

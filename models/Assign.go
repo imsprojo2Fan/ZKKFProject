@@ -56,7 +56,7 @@ func (this *Assign) Insert(obj *Assign) error {
 	}
 	//assign_detail添加记录
 	var assignDetail AssignDetail
-	assignDetail.Step = 0
+	assignDetail.Step = -1//当前任务暂未认领
 	assignDetail.RandomId = obj.RandomId
 	assignDetail.Status = 1
 	assignDetail.Uid = obj.Uid
@@ -124,9 +124,19 @@ func (this *Assign) Update4Init(o orm.Ormer,obj Assign) error {
 }
 
 func (this *Assign) Update4Status(o orm.Ormer,obj Assign) error {
+
+	var err error
+	var sqlTxt string
+
 	//更新assign
-	sqlTxt := "update assign set step=?,status=?,uid=? where random_id=?"
-	_,err := o.Raw(sqlTxt,obj.Step,obj.Status,obj.Uid,obj.RandomId).Exec()
+	if obj.Msg!=""{
+		sqlTxt = "update assign set step=?,status=?,uid=?,msg=? where random_id=?"
+		_,err = o.Raw(sqlTxt,obj.Step,obj.Status,obj.Uid,obj.Msg,obj.RandomId).Exec()
+	}else{
+		sqlTxt = "update assign set step=?,status=?,uid=? where random_id=?"
+		_,err = o.Raw(sqlTxt,obj.Step,obj.Status,obj.Uid,obj.RandomId).Exec()
+	}
+
 	if err!=nil{
 		_ = o.Rollback()
 		return err
