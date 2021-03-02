@@ -311,8 +311,15 @@ function renderBarcode() {
     $('.barcodeWrap').data("data",barcode);
     JsBarcode("#barcode",barcode,{
         displayValue: true,
-        width:1.5,
-        height:50,
+        height:40,
+        width:1.5
     });
+}
+function myPrint(){
+    let dom = document.getElementById('barcode');
+    let win = window.open('/');
+    win.document.write(dom.outerHTML);
+    win.print();
+    win.close();
 }
 
