@@ -190,8 +190,8 @@ $(function () {
             $('#infoModal').modal("show");
         }
     }else{
-        //$('.fa-cc-discover').parent().parent().remove();
-        //$('.fa-clipboard').parent().parent().remove();
+        $('.fa-cc-discover').parent().parent().remove();
+        $('.fa-clipboard').parent().parent().remove();
     }
 
     //$('#account').html(userInfo.Account);
@@ -257,9 +257,9 @@ function loading(flag,type) {
         type = "1";
     }
     if(flag){
-        $('#loading'+type).fadeIn(300);
+        $('#loading'+type).fadeIn(250);
     }else{
-        $('#loading'+type).fadeOut(300);
+        $('#loading'+type).fadeOut(250);
     }
 }
 

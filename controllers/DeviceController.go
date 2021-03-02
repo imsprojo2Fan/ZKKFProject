@@ -249,6 +249,7 @@ func (this *DeviceController)Detail() {
 		bMap["address"] = models.RangeValue(res,"address")
 		bMap["city"] = models.RangeValue(res,"city")
 		bMap["sign"] = models.RangeValue(res,"sign")
+		bMap["rid"] = sysinit.IdrRender()
 		this.Data["lInfo"] = bMap
 	}
 	if err==nil{

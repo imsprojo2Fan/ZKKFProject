@@ -224,6 +224,8 @@ $(function () {
 
     renderEvaluate();
 
+    renderBarcode();
+
     $('.preloader').fadeOut(200);
 
 });
@@ -299,5 +301,18 @@ function renderEvaluate(){
             '   </div>\n' +
             '</div>');
     }
+}
+
+function renderBarcode() {
+    if(!lInfo){
+        return
+    }
+    let barcode = "B"+lInfo.rid;
+    $('.barcodeWrap').data("data",barcode);
+    JsBarcode("#barcode",barcode,{
+        displayValue: true,
+        width:1.5,
+        height:50,
+    });
 }
 

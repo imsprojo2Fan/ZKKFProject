@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"ZkkfProject/models"
+	"ZkkfProject/sysinit"
 	"ZkkfProject/utils"
 	"encoding/json"
 	"github.com/astaxie/beego/orm"
@@ -249,6 +250,7 @@ func (this *TypeController) Redirect() {
 		bMap["address"] = models.RangeValue(res,"address")
 		bMap["city"] = models.RangeValue(res,"city")
 		bMap["sign"] = models.RangeValue(res,"sign")
+		bMap["rid"] = sysinit.IdrRender()
 		this.Data["lInfo"] = bMap
 	}
 	this.TplName = "type.html"

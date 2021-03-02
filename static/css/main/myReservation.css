@@ -323,7 +323,6 @@ input[type='radio'] {
     cursor: pointer;
 }
 #assignModal .statementsWrap{
-    display: none;
     margin-left: 5px;
     margin-right: 5px;
     margin-top: 35px;

@@ -127,25 +127,25 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>副标题</label>
-                                    <div class="col-sm-3">
-                                        <input type="text" name="title" class="form-control title" maxlength="255" placeholder="请输入副标题">
-                                        <span class="help-block"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>来源</label>
-                                    <div class="col-sm-3">
-                                        <input type="text" name="source" class="form-control source" maxlength="255" placeholder="请输入来源">
-                                        <span class="help-block"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
                                     <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>简述</label>
                                     <div class="col-sm-3">
                                         <input type="text" name="sketch" class="form-control sketch" maxlength="255"  placeholder="请输入简述">
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>参考费用</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="price" class="form-control price" oninput="this.value=this.value.replace(/\D/gi,'')" maxlength="5" placeholder="参考费用">
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>设备型号</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="version" class="form-control version" maxlength="255" placeholder="设备型号">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -270,16 +270,16 @@
                     <p class="form-control-static" >项目名称：<span class="name"></span></p>
                 </div>
                 <div class="col-sm-offset-1">
-                    <p class="form-control-static" >项目标题：<span class="title"></span></p>
-                </div>
-                <div class="col-sm-offset-1">
                     <p class="form-control-static" >是否上线：<span class="disabled"></span></p>
                 </div>
                 <div class="col-sm-offset-1">
-                    <p class="form-control-static" >来源：<span class="source"></span></p>
+                    <p class="form-control-static" >简述：<span class="sketch"></span></p>
                 </div>
                 <div class="col-sm-offset-1">
-                    <p class="form-control-static" >简述：<span class="sketch"></span></p>
+                    <p class="form-control-static" >参考费用：<span class="price"></span></p>
+                </div>
+                <div class="col-sm-offset-1">
+                    <p class="form-control-static" >设备型号：<span class="version"></span></p>
                 </div>
                 <div class="col-sm-offset-1">
                     <p class="form-control-static" >仪器参数：<span class="parameter"></span></p>
@@ -372,25 +372,25 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>副标题</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="title" class="form-control title" maxlength="255" placeholder="请输入副标题">
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>来源</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="source" class="form-control source" maxlength="255" placeholder="请输入来源">
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>简述</label>
                         <div class="col-sm-9">
                             <input type="text" name="sketch" class="form-control sketch" maxlength="255"  placeholder="请输入简述">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>参考费用</label>
+                        <div class="col-sm-3">
+                            <input type="text" name="price" class="form-control price" oninput="this.value=this.value.replace(/\D/gi,'')" maxlength="5" placeholder="参考费用">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>设备型号</label>
+                        <div class="col-sm-3">
+                            <input type="text" name="version" class="form-control version" maxlength="255" placeholder="设备型号">
                             <span class="help-block"></span>
                         </div>
                     </div>

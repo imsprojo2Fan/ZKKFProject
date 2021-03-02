@@ -512,6 +512,7 @@ function submitOrder() {
         dataArr.push(item);
     }
     let formData = {};
+    formData["barcode"] = "B"+lInfo.rid;
     formData["data"] = JSON.stringify(dataArr);
     formData["_xsrf"] = $("#token", parent.document).val();
     $.ajax({

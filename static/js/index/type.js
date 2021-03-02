@@ -143,6 +143,8 @@ $(function () {
         $('#downloadBtn')[0].click();
     });
 
+    renderBarcode();
+
     $('.preloader').fadeOut(300);
 })
 
@@ -295,4 +297,17 @@ function renderItemClick(){
             addOrder();
         }
     })
+}
+
+function renderBarcode(){
+    if(!lInfo){
+        return
+    }
+    let barcode = "B"+lInfo.rid;
+    $('.barcodeWrap').data("data",barcode);
+    JsBarcode("#barcode",barcode,{
+        displayValue: true,
+        width:1.5,
+        height:50,
+    });
 }

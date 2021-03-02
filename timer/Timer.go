@@ -62,9 +62,29 @@ func AllotTask(){
 
 	//待分配任务
 	taskArr,_ := gTask.ListByStatus("0")
+	//区分后台创建任务和前台客户生成任务
+	var uTaskArr []models.Task
+	var unTaskArr []models.Task
+	for _,t := range taskArr{
+		if t.Uid!=0{
+			uTaskArr = append(uTaskArr,t)
+		}else{
+			unTaskArr = append(unTaskArr,t)
+		}
+	}
 
-	if taskArr==nil{
+	if uTaskArr==nil&&unTaskArr==nil{
 		return
+	}
+
+	//精确分配任务
+	for _,task := range uTaskArr{
+		var assign models.Assign
+		assign.RandomId = task.RandomId
+		assign.Operate = 0
+		assign.Manager = task.Uid
+		assign.Uid = task.Uid
+		_ = assign.Insert(&assign)
 	}
 
 	uArr := RankAssignUser()
@@ -73,7 +93,7 @@ func AllotTask(){
 		return
 	}
 
-	for _,task := range taskArr{
+	for _,task := range unTaskArr{
 		tid1 := task.Tid
 		//判断是否有匹配用户
 		flag := false
@@ -142,7 +162,6 @@ func RankAssignUser() []map[string]interface{} {
 	return tempArr
 
 }
-
 
 func DeleteSlice1(delIndex int,a []map[string]interface{}) []map[string]interface{} {
 	var ret []map[string]interface{}

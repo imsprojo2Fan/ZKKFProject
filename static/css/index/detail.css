@@ -324,7 +324,9 @@ hr{
     display: inline-block;
     position: relative;
     top: -13px;
-    width: 150px;
+    width: 135px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 .satisfied{
     background: #6195FF;
@@ -354,5 +356,9 @@ hr{
 .cContentTxt{
     padding: 0 20px;
     font-size: 15px;
+}
+.barcodeWrap{
+    float: right;
+    margin-top: -75px;
 }
 

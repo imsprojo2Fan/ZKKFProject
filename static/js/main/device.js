@@ -204,7 +204,8 @@ $(document).ready(function() {
         rowData = myTable.row($(this).closest('tr')).data();
         $('#detailModal').find('.type').html(rowData.typeName);
         $('#detailModal').find('.name').html(rowData.name);
-        $('#detailModal').find('.title').html(rowData.title);
+        $('#detailModal').find('.price').html(rowData.price);
+        $('#detailModal').find('.version').html(rowData.version);
         let disabled = rowData.disabled;
         if(disabled==="0"){
             $('#detailModal').find('.disabled').html("<span style='color: green'>上线</span>");
@@ -281,8 +282,8 @@ $(document).ready(function() {
         $('#editModal').find('.disabled').selectpicker('refresh');
         $('#editModal').find('.isOrder').selectpicker('val',rowData.is_order);
         $('#editModal').find('.isOrder').selectpicker('refresh');
-        $('#editModal').find('.title').val(rowData.title);
-        $('#editModal').find('.source').val(rowData.source);
+        $('#editModal').find('.price').val(rowData.price);
+        $('#editModal').find('.version').val(rowData.version);
         $('#editModal').find('.sketch').val(rowData.sketch);
         $('#editModal').find('.parameter').val(rowData.parameter);
         $('#editModal').find('.feature').val(rowData.feature);
@@ -472,6 +473,11 @@ function add(){
         swalParent("系统提示",'设备名称不能为空!',"warning");
         return;
     }
+    let price = $('#form1').find('.price').val().trim();
+    if (!price){
+        swalParent("系统提示",'参考费用不能为空!',"warning");
+        return;
+    }
     let imgSrc = "";
     $('#addImgWrap').find(".imgItem").each(function () {
         let src = $(this).find("img").attr("src");
@@ -554,6 +560,11 @@ function edit(){
     //let img = $('#edit_picVal').val();
     if (!name){
         swalParent("系统提示",'分组名称不能为空!',"warning");
+        return;
+    }
+    let price = $('#form2').find('.price').val().trim();
+    if (!price){
+        swalParent("系统提示",'参考费用不能为空!',"warning");
         return;
     }
     let imgSrc = "";

@@ -154,7 +154,7 @@ func (this *AssignController) Assign(){
 			msg += ",已开票待收款"
 		}
 	}
-	msg += ",订单已完成"
+	msg += ",已完成"
 	assign.Uid = session.Get("id").(int)//当前处理用户id
 	assign.Status = 1 //状态重新开始
 	assign.Step = 0

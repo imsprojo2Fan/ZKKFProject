@@ -13,6 +13,7 @@ import (
 // Model Struct
 type Order struct {
 	Id      int
+	Barcode string
 	Uid     int     //创建人id/user表id
 	Tid     int     //type表id
 	Rid     string  //订单编号
@@ -184,6 +185,7 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 		sql += " and d.step!=0 and a.uid=" + uidStr
 	}
 	//处理普通职工用户----------------------------------结束
+
 	//处理非普通职工用户----------------------------------开始
 	if uType != 99 && qMap["uid"] == nil {
 		sql += " and(d.step=0 or d.step=-1)"

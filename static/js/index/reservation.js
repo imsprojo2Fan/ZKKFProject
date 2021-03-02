@@ -31,7 +31,7 @@ function addReservation(){
     formData["date"] = date;
     formData["_xsrf"] = $("#token", parent.document).val();
     formData["timeId"] = timeId;
-    //formData["message"] = message;
+    formData["barcode"] = "B"+lInfo.rid;
     formData["protocol"] = JSON.stringify(Protocol);
     $.ajax({
         url : "/reservation/add",

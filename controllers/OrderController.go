@@ -8,6 +8,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type OrderController struct {
@@ -184,10 +185,12 @@ func (this *OrderController) Add() {
 	var taskArr []models.Task
 	//查询公司信息
 	res := settingObj.SelectByGroup("LocalInfo")
+	barcode := "B"+sysinit.IdrRender()
 	for _,item := range tArr{
 		Rid := "A"+sysinit.IdrRender()
 		//处理订单
 		var obj models.Order
+		obj.Barcode = barcode
 		obj.Rid = Rid
 		obj.Uid = item.Protocol.Uid//用户id
 		obj.Tid,_ = strconv.Atoi(item.Tid)
@@ -220,6 +223,7 @@ func (this *OrderController) Add() {
 		//处理任务
 		var task models.Task
 		task.RandomId = Rid
+		task.Uid = uid//创建人id，后台创建则自动分配给自己
 		task.Tid,_ = strconv.Atoi(item.Tid)
 		taskArr = append(taskArr,task)
 	}
@@ -427,6 +431,10 @@ func (this *OrderController) IndexAdd() {
 	if len(tArr) == 0 {
 		this.jsonResult(http.StatusOK, -1, "无订单数据!", nil)
 	}
+	barcode := this.GetString("barcode")
+	if barcode==""||!strings.HasPrefix(barcode,"B"){
+		this.jsonResult(http.StatusOK, -1, "参数错误!", nil)
+	}
 	o := orm.NewOrm()
 	_ = o.Begin()
 	var obj models.Order
@@ -439,6 +447,7 @@ func (this *OrderController) IndexAdd() {
 		Rid := "A"+sysinit.IdrRender()
 		//处理订单
 		var obj models.Order
+		obj.Barcode = barcode
 		obj.Rid = Rid
 		obj.Uid = uid
 		obj.Tid,_ = strconv.Atoi(item.Tid)

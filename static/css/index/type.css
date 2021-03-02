@@ -248,3 +248,7 @@
     opacity: 0.75;
     color: white;
 }
+.barcodeWrap{
+    float: right;
+    margin-top: -75px;
+}

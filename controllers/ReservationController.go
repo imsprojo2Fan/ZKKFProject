@@ -162,10 +162,11 @@ func (this *ReservationController) Add() {
 	}
 	rid := "R"+sysinit.IdrRender()
 	var obj models.Reservation
+	obj.Barcode = "B"+sysinit.IdrRender()
 	obj.Rid = rid
-	obj.Uid = uid
 	userId,_ := this.GetInt("userId")
-	obj.Uuid = userId
+	obj.Uid = userId
+	obj.Uuid = uid
 	obj.Date = date
 	obj.TimeId = timeId
 	obj.Tid = tid
@@ -205,7 +206,7 @@ func (this *ReservationController) Add() {
 	var orderDevice models.OrderDevice
 	orderDevice.Rid = rid
 	orderDevice.DeviceId = protocol.DeviceId
-	orderType.Count = 1
+	orderDevice.Count = 1
 	err = orderDevice.Insert(o,&orderDevice)
 	if err!=nil{
 		_ = o.Rollback()
@@ -214,6 +215,7 @@ func (this *ReservationController) Add() {
 	//处理任务
 	var task models.Task
 	task.RandomId = rid
+	task.Uid = uid
 	task.Tid = tid
 	err = task.Insert2(o,&task)
 	if err!=nil{
@@ -449,9 +451,14 @@ func (this *ReservationController) IndexAdd() {
 	if err != nil {
 		this.jsonResult(http.StatusOK, -1, "参数解析错误,"+err.Error(), err.Error())
 	}
+	barcode := this.GetString("barcode")
+	if barcode==""||!strings.HasPrefix(barcode,"B"){
+		this.jsonResult(http.StatusOK, -1, "参数错误!", nil)
+	}
 	rid := "R"+sysinit.IdrRender()
+	obj.Barcode = barcode
 	obj.Rid = rid
-	obj.Uid = uid
+	obj.Uid = uid//预约人id
 	obj.Uuid = uid
 	obj.Date = date
 	obj.TimeId = timeId
@@ -489,7 +496,7 @@ func (this *ReservationController) IndexAdd() {
 	var orderDevice models.OrderDevice
 	orderDevice.Rid = rid
 	orderDevice.DeviceId = protocol.DeviceId
-	orderType.Count = 1
+	orderDevice.Count = 1
 	err = orderDevice.Insert(o,&orderDevice)
 	if err!=nil{
 		_ = o.Rollback()

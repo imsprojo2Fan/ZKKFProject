@@ -14,6 +14,7 @@ import (
  */
 type Task struct {
 	Id int
+	Uid int
 	RandomId string
 	Tid int
 	Status int
