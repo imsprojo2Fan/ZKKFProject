@@ -112,7 +112,7 @@ func (this *Reservation) Count(qMap map[string]interface{}) (int, error) {
 	}
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
-		sql += " and (r.rid like \"%" + key + "%\" or d.name like \"%"+key+"%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"
+		sql += " and (r.barcode like \"%" + key + "%\" or r.rid like \"%" + key + "%\" or d.name like \"%"+key+"%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"
 	}
 	var arr []orm.Params
 	_, err := o.Raw(sql).Values(&arr)
@@ -155,7 +155,7 @@ func (this *Reservation) ListByPage(qMap map[string]interface{}) ([]orm.Params, 
 	}
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
-		sql += " and (r.rid like \"%" + key + "%\" or d.name like \"%"+key+"%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"
+		sql += " and (r.barcode like \"%" + key + "%\" or r.rid like \"%" + key + "%\" or d.name like \"%"+key+"%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"
 	}
 	if qMap["sortCol"] != nil && qMap["sortType"] != nil {
 		sortCol := qMap["sortCol"].(string)

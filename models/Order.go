@@ -198,7 +198,7 @@ func (this *Order) DataCount(qMap map[string]interface{}) (int, error) {
 	}
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
-		sql += " and (o.remark like \"%" + key + "%\" or o.rid like \"%" + key + "%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"
+		sql += " and (o.barcode like \"%" + key + "%\" or o.rid like \"%" + key + "%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"
 	}
 	var arr []orm.Params
 	_, err := o.Raw(sql).Values(&arr)
@@ -240,7 +240,7 @@ func (this *Order) ListByPage(qMap map[string]interface{}) ([]orm.Params, error)
 	}
 	if qMap["searchKey"] != "" {
 		key := qMap["searchKey"].(string)
-		sql += " and (o.remark like \"%" + key + "%\" or o.rid like \"%" + key + "%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"
+		sql += " and (o.barcode like \"%" + key + "%\" or o.rid like \"%" + key + "%\" or u.name like \"%" + key + "%\" or u.phone like \"%" + key + "%\")"
 	}
 	if qMap["sortCol"] != nil && qMap["sortType"] != nil {
 		sortCol := qMap["sortCol"].(string)
