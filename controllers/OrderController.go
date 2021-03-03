@@ -295,15 +295,6 @@ func (this *OrderController) Update() {
 		_ = o.Rollback()
 		this.jsonResult(http.StatusOK, -1, "操作order表失败!"+err.Error(), err.Error())
 	}
-	//更新protocol表
-	var protocol models.Protocol
-	protocol = data.Protocol
-	protocol.Rid = rid
-	err = protocol.UpdateByRid(o,&protocol)
-	if err!=nil{
-		_ = o.Rollback()
-		this.jsonResult(http.StatusOK, -1, "操作protocol表失败!"+err.Error(), err.Error())
-	}
 	//处理order_device
 	var orderDevice models.OrderDevice
 	err = orderDevice.DelByRid(o,rid)
@@ -325,6 +316,18 @@ func (this *OrderController) Update() {
 		_ = o.Rollback()
 		this.jsonResult(200, -1, "操作失败,"+err.Error(), err.Error())
 	}
+
+	//更新protocol表
+	var protocol models.Protocol
+	protocol = data.Protocol
+	protocol.Rid = rid
+	protocol.DeviceId = ids
+	err = protocol.UpdateByRid(o,&protocol)
+	if err!=nil{
+		_ = o.Rollback()
+		this.jsonResult(http.StatusOK, -1, "操作protocol表失败!"+err.Error(), err.Error())
+	}
+
 	//更新订单数
 	var device models.Device
 	device.UpdateOrderNum(ids)

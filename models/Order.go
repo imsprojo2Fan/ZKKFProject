@@ -345,7 +345,7 @@ func (this *Order) Info(rid string) (map[string]interface{}, error) {
 
 	//获取设备信息
 	var dArr []orm.Params
-	_, err = o.Raw("select d.name,d.id,o.count,t.id as tid from order_device o,device d,type t,type_child c where o.device_id=d.id and d.ttid=c.id and c.tid=t.id and o.rid=\"" + rid + "\"").Values(&dArr)
+	_, err = o.Raw("select d.name,d.id,o.count,o.remark,t.id as tid from order_device o,device d,type t,type_child c where o.device_id=d.id and d.ttid=c.id and c.tid=t.id and o.rid=\"" + rid + "\"").Values(&dArr)
 	if err != nil {
 		return nil, err
 	}

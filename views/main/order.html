@@ -84,31 +84,24 @@
                                     <tr>
                                         <td class="tabtxt2" style="width: 10%;"><span class="red">*</span>客户选择</td>
                                         <td colspan="4">
-                                            <select id="userAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
+                                            <select id="userAddSel" class="selectpicker" data-size="10" data-live-search="true">
                                             </select>
                                         </td>
                                         <td></td>
                                     </tr>
                                     <tr>
                                         <td class="tabtxt2"><span class="red">*</span>父类分组</td>
-                                        <td colspan="4" id="typeAddSelWrap">
-                                            <select id="typeAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
-                                            </select>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="tabtxt2"><span class="red">*</span>子类分组</td>
-                                        <td colspan="4" id="typeChildAddSelWrap">
-                                            <select id="typeChildAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                        <td colspan="4" id="typeSelectWrap">
+                                            <select id="typeSelect" class="selectpicker" data-size="10" data-live-search="true" data-style="btn-default">
+                                                <option value="0">下拉选择分类</option>
                                             </select>
                                         </td>
                                         <td></td>
                                     </tr>
                                     <tr>
                                         <td class="tabtxt2"><span class="red">*</span>实验项目</td>
-                                        <td colspan="4" id="deviceAddSelWrap">
-                                            <select id="deviceAddSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
+                                        <td colspan="4" id="deviceSelectWrap">
+                                            <select id="deviceSelect" class="selectpicker" data-size="10" multiple data-live-search="true">
                                             </select>
                                         </td>
                                         <td></td>
@@ -120,11 +113,21 @@
                                     </tr>
                                     <tr>
                                         <td class="tabtxt2"><span class="red">*</span>已选项目</td>
-                                        <td colspan="5" class="allDevice" style="font-size: 16px">-</td>
+                                        <td colspan="5">
+                                            <table class="deviceTable" id="deviceTable">
+                                                <tr>
+                                                    <td class="title" style="width: 10%">序号</td>
+                                                    <td class="title" style="width: 45%">项目名称</td>
+                                                    <td class="title" style="width: 10%">数量</td>
+                                                    <td class="title" >备注信息</td>
+                                                </tr>
+                                                <tr><td colspan="4">下拉选择项目</td></tr>
+                                            </table>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="tabtxt2">付费方式</td>
-                                        <td><input type="radio" value="现金结算" name="pay"/>&nbsp;现金结算</td>
+                                        <td><input type="radio" value="现金结算" name="pay"/>&nbsp;&nbsp;现金结算</td>
                                         <td><input type="radio" checked value="银行汇款" name="pay"/>&nbsp;银行汇款</td>
                                         <td><input type="radio" value="从预存款中扣除" name="pay"/>&nbsp;从预存款中扣除</td>
                                         <td colspan="2"><input type="radio" value="其他" name="pay"/>&nbsp;其他</td>
@@ -385,7 +388,7 @@
                                     <tr>
                                         <td class="tabtxt2" ><span class="red">*</span>父类分组</td>
                                         <td colspan="4" id="typeEditSelWrap">
-                                            <select id="typeEditSel" disabled class="selectpicker" data-size="10" data-max-options="5" data-live-search="true" data-style="btn-default">
+                                            <select id="typeSelect2" disabled class="selectpicker" data-size="10" data-live-search="true" data-style="btn-default">
                                             </select>
                                         </td>
                                         <td></td>
@@ -393,7 +396,7 @@
                                     <tr>
                                         <td class="tabtxt2"><span class="red">*</span>实验项目</td>
                                         <td colspan="4" id="deviceEditSelWrap">
-                                            <select id="deviceEditSel" class="selectpicker" data-size="10" data-max-options="5" data-live-search="true">
+                                            <select id="deviceSelect2" class="selectpicker" data-size="10" data-live-search="true" multiple>
                                             </select>
                                         </td>
                                         <td></td>
@@ -405,7 +408,10 @@
                                     </tr>
                                     <tr>
                                         <td class="tabtxt2"><span class="red">*</span>已选项目</td>
-                                        <td colspan="5" class="allDevice" style="font-size: 16px">-</td>
+                                        <td colspan="5">
+                                            <table class="deviceTable" id="deviceTable2">
+                                            </table>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="tabtxt2">付费方式</td>
@@ -918,9 +924,8 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-</div>
-<!-- End Content -->
 
+</div>
 <script src="../../static/js/jquery.min.js"></script>
 <script src="../../static/plugins/bootstrap/bootstrap.min.js"></script>
 <script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>

@@ -188,8 +188,8 @@ func (this *Device) ListByType(tid,ttid string) ([]orm.Params, error) {
 	if tid!="0"&&ttid!=""{
 		sql += " and d.tid="+tid+" and d.ttid="+ttid
 	}
-	if tid==""{
-		sql = "select * from device where ttid="+ttid
+	if tid!="0"&&ttid==""{
+		sql += " and d.tid="+tid
 	}
 	_, err := o.Raw(sql).Values(&res)
 	return res, err

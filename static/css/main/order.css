@@ -1,5 +1,5 @@
 #tab2 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-    width: 135px!important;
+    width: 150px!important;
     height: 30px;
 }
 .col-sm-6{
@@ -371,3 +371,43 @@ input[type='radio'] {
     display: none;
 }
 /*指派任务弹框样式----------------------------结束*/
+
+/*项目列表样式-------------------------------开始*/
+.deviceTable table,.deviceTable tr,.deviceTable td{
+    border: 1px solid #eee;
+}
+.deviceTable tr{
+    height: 35px;
+}
+.deviceTable td{
+    text-align: center;
+}
+.deviceTable .title{
+    font-weight: bold;
+}
+.deviceTable input{
+    padding: 3px;
+    width: 90%;
+}
+.deviceTable .count{
+    text-align: center;
+    padding: 3px;
+}
+/*项目列表样式-------------------------------结束*/
+/*更多操作样式-------------------------------开始*/
+.dropdownWrap{
+    padding: 3px 10px;
+    position: absolute;
+    margin-left: -93px;
+    margin-top: 25px;
+    display: none;
+}
+.dropdownItem{
+    width: 100%;
+    height: 35px;
+}
+.dropdownItem:hover{
+    background: #6195ff;
+    color: white;
+}
+/*更多操作样式-------------------------------结束*/
