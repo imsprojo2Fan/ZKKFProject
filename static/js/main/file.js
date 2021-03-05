@@ -256,7 +256,7 @@ function add(){
             let type = "error";
             if (r.code === 1) {
                 type = "success";
-                reset();
+                reset4success();
             }
             swalParent("系统提示",r.msg,type);
         },

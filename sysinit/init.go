@@ -4,6 +4,7 @@ import (
 	"ZkkfProject/utils"
 	"github.com/astaxie/beego"
 	"github.com/holdno/snowFlakeByGo"
+	"github.com/imsprojo2fan/utillib"
 	"runtime"
 	"strconv"
 	"sync"
@@ -13,7 +14,7 @@ import (
 type Init struct {}
 var (
 	IsDev bool
-	Host string
+	Host string //富文本上传图片使用主机地址
 	InitTime int64
 	IsLinux = false
 	SqlFlag = false
@@ -28,6 +29,10 @@ func init()  {
 	IsDev,_ = beego.AppConfig.Bool("is_dev")
 	Host = beego.AppConfig.String("host")
 	SqlFlag,_ = beego.AppConfig.Bool("sql")
+
+	if !IsDev{
+		Host = utillib.ExternalIP()
+	}
 
 	system := runtime.GOOS
 	if system!="windows"{

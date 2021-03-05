@@ -6,6 +6,7 @@ require (
 	github.com/astaxie/beego v1.11.1
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/holdno/snowFlakeByGo v0.0.0-20180510033652-d23f8a8cadd7
+	github.com/imsprojo2fan/utillib v0.0.0-20210305014632-f344e977c397
 	github.com/lib/pq v1.9.0 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/robfig/cron v1.2.0
