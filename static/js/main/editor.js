@@ -2,7 +2,6 @@ let editor;
 let domId;
 let receive;
 $(document).ready(function() {
-    debugger
     domId = $('#domId').val();
     //receive = $('#'+domId,window.opener).val();
     receive = window.opener.document.getElementById(domId).value;

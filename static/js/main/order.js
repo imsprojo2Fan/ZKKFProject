@@ -74,6 +74,13 @@ $(document).ready(function () {
         renderChildType(selected);
     });
 
+    //更多操作事件监听
+    $(document).on("click",function () {
+        $('.myDropdown').find("i").addClass("fa-angle-left");
+        $('.myDropdown').find("i").removeClass("fa-angle-down");
+        $('.dropdownWrap').hide(200);
+    });
+
     //datatable setting
     myTable = $('#myTable').DataTable({
         autoWidth: true,
@@ -116,7 +123,7 @@ $(document).ready(function () {
             {
                 data: 'company',
                 "render": function (data) {
-                    return stringUtil.maxLength(data, 4);
+                    return stringUtil.maxLength(data, 10);
                 }
             },
             {
@@ -128,7 +135,7 @@ $(document).ready(function () {
             },
             {
                 data: 'status',
-                "width": "6%",
+                "width": "10%",
                 "render": function (data, type, row) {
                     let status = parseInt(row.status);
                     let msg = row.msg;
@@ -137,7 +144,7 @@ $(document).ready(function () {
             },
             {
                 data: 'created',
-                "width": "12%",
+                "width": "15%",
                 "render": function (data, type, row, meta) {
                     return dateUtil.GMT2Str(data);
                 }
@@ -151,18 +158,12 @@ $(document).ready(function () {
                         "<a href='javascript:void(0);' class='edit btn btn-primary btn-xs'></i>编辑</a> "
                     html +=
                         "<a href='javascript:void(0);' class='del btn btn-danger btn-xs'>删除</a> "
-                    html +=
-                        "<a href='javascript:void(0);'  class='protocol btn btn-secondary btn-xs'>实验要求</a> "
-                    html +=
-                        "<a href='javascript:void(0);'  class='assign btn btn-secondary btn-xs'>任务管理</a> "
-                    html +=
-                        "<a href='javascript:void(0);'  class='report btn btn-secondary btn-xs'>实验报告</a> ";
-                    html +=
-                        "<a href='javascript:void(0);'  class='evaluate btn btn-secondary btn-xs'>服务评价</a>&nbsp;";
                     html += "<a class='btn btn-secondary btn-xs myDropdown'>更多操作&nbsp;&nbsp;<i class='fa fa-angle-left' aria-hidden='true'></i></a>"
                     html += "<div class='dropdownWrap'>" +
                                 "<button class='dropdownItem protocol btn btn-secondary btn-xs'>实验要求</button>" +
-                                "<button class='dropdownItem protocol btn btn-secondary btn-xs'>任务管理</button>" +
+                                "<button class='dropdownItem assign btn btn-secondary btn-xs'>任务管理</button>" +
+                                "<button class='dropdownItem report btn btn-secondary btn-xs'>实验报告</button>" +
+                                "<button class='dropdownItem evaluate btn btn-secondary btn-xs'>服务评价</button>" +
                             "</div>";
                     return html;
                 }
@@ -204,22 +205,32 @@ $(document).ready(function () {
             $('.dataTables_scrollBody').css("height", window.innerHeight - 270 + "px");
             $('#myTable_filter').find('input').attr("placeholder", "请输入名称、手机号或订单号");
             //更多操作
-            $('.myDropdown').on("click",function () {
+            $('.myDropdown').on("click",function (event) {
                 if($(this).find("i").hasClass("fa-angle-left")){
                     $('.myDropdown').find("i").addClass("fa-angle-left");
                     $('.myDropdown').find("i").removeClass("fa-angle-down");
                     $('.dropdownWrap').hide(200);
+                    //设置显示
                     $(this).find("i").removeClass("fa-angle-left");
                     $(this).find("i").addClass("fa-angle-down");
+                    let top = $(this).offset().top+24;
+                    let left = $(this).offset().left+1;
                     $(this).parent().find(".dropdownWrap").css({
-                        display:"inline-block"
-                    });
+                        top:top,
+                        left:left
+                    })
+                    $(this).parent().find(".dropdownWrap").show(200);
                 }else{
                     $(this).find("i").addClass("fa-angle-left");
                     $(this).find("i").removeClass("fa-angle-down");
                     $(this).parent().find(".dropdownWrap").css({display:"none"})
                 }
-
+                event.stopPropagation();    //  阻止事件冒泡
+            });
+            $('.dataTables_scrollBody').scroll(function () {
+                $('.myDropdown').find("i").addClass("fa-angle-left");
+                $('.myDropdown').find("i").removeClass("fa-angle-down");
+                $('.dropdownWrap').hide();
             });
             parent.checkType();
             loadingParent(false, 2);

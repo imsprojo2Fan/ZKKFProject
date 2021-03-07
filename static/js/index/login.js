@@ -1,4 +1,5 @@
 let t =0;
+let host = window.location.host;
 $(function () {
     let loginFlag = $('#loginFlag').val();
     if(loginFlag==="1"){
@@ -63,6 +64,7 @@ $(function () {
                 type:"login",
                 account:account,
                 password:password,
+                host:host,
                 browserInfo:browserInfo.getBrowserInfo()+"/"+browserInfo.detectOS()+"/"+browserInfo.digits(),
                 _xsrf:$('#token').val()
             },

@@ -395,16 +395,19 @@ input[type='radio'] {
 }
 /*项目列表样式-------------------------------结束*/
 /*更多操作样式-------------------------------开始*/
+.myDropdown{
+    width: 95px;
+}
 .dropdownWrap{
     padding: 3px 10px;
-    position: absolute;
-    margin-left: -93px;
-    margin-top: 25px;
+    position: fixed;
     display: none;
 }
 .dropdownItem{
-    width: 100%;
+    width: 125px;
     height: 35px;
+    display: block;
+    margin-left: -12px;
 }
 .dropdownItem:hover{
     background: #6195ff;

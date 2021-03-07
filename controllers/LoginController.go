@@ -61,6 +61,7 @@ func (this *LoginController) Validate() {
 		//普通登录
 		account := this.GetString("account")
 		password := this.GetString("password")
+		host := this.GetString("host")
 		if account == "" || password == "" {
 			this.jsonResult(http.StatusOK, -1, "账号或密码不能为空!", nil)
 		}
@@ -92,6 +93,7 @@ func (this *LoginController) Validate() {
 		_ = session.Set("account", user.Account)
 		_ = session.Set("id", user.Id)
 		_ = session.Set("type", user.Type)
+		session.Set("host", host)
 		fmt.Println("Account:", user.Account, "id:", session.Get("id"))
 		var operate models.Operate
 		operate.Ip = ip
