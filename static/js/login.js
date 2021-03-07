@@ -1,5 +1,5 @@
 let isPassKeyLogin = false;
-
+let host = window.location.host;
 document.onkeydown=function(event){
     var e = event || window.event || arguments.callee.caller.arguments[0];
     if(e && e.keyCode===13){
@@ -73,6 +73,7 @@ $(function () {
                 type:"login",
                 account:account,
                 password:password,
+                host:host,
                 browserInfo:browserInfo.getBrowserInfo()+"/"+browserInfo.detectOS()+"/"+browserInfo.digits(),
                 _xsrf:$('#token').val()
             },
